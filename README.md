@@ -1,5 +1,7 @@
 # Polar Sun Moon Analysis
-
+hf sync hf://buckets/8Planetterraforming/planet-alphabet-mapping-1-26-bucket ./local
+hf sync ./data hf://buckets/8Planetterraforming/planet-alphabet-mapping-1-26-bucket
+curl -LsSf https://hf.co/cli/install.sh | bash
 Production-quality Python 3.12 scientific project for analyzing seasonal apparent altitude of the Sun and Moon at the North and South Poles during vernal and autumnal equinoxes from 2006 through 2024.
 
 ## Scientific scope
