@@ -183,52 +183,20 @@ The ultimate objective is to support future research into sustainable land manag
 
 ---
 
-# Sample Dataset Images
+#Validation Examples
 
-<table>
-<tr>
-<td align="center">
-<img src="https://huggingface.co/datasets/8Planetterraforming/planet-alphabet-mapping-1-26/resolve/main/examples/A.png" width="170"><br>
-<b>A</b><br>
-Object Identification
-</td>
+<p align="center">
+  <img src="https://huggingface.co/datasets/8Planetterraforming/planet-alphabet-mapping-1-26/resolve/main/examples/correct/manual_corrected_reference.png" width="420" alt="Correct Reference">
+</p>
 
-<td align="center">
-<img src="https://huggingface.co/datasets/8Planetterraforming/planet-alphabet-mapping-1-26/resolve/main/examples/B.png" width="170"><br>
-<b>B</b><br>
-Terrain Geometry
-</td>
+<p align="center">
+  <img src="https://huggingface.co/datasets/8Planetterraforming/planet-alphabet-mapping-1-26/resolve/main/examples/errors/error_1.png" width="420" alt="Error 1">
+  <img src="https://huggingface.co/datasets/8Planetterraforming/planet-alphabet-mapping-1-26/resolve/main/examples/errors/error_2.png" width="420" alt="Error 2">
+</p>
 
-<td align="center">
-<img src="https://huggingface.co/datasets/8Planetterraforming/planet-alphabet-mapping-1-26/resolve/main/examples/C.png" width="170"><br>
-<b>C</b><br>
-Surface Mapping
-</td>
-</tr>
-
-<tr>
-<td align="center">
-<img src="https://huggingface.co/datasets/8Planetterraforming/planet-alphabet-mapping-1-26/resolve/main/examples/D.png" width="170"><br>
-<b>D</b><br>
-Water Analysis
-</td>
-
-<td align="center">
-<img src="https://huggingface.co/datasets/8Planetterraforming/planet-alphabet-mapping-1-26/resolve/main/examples/E.png" width="170"><br>
-<b>E</b><br>
-Planet Monitoring
-</td>
-
-<td align="center">
-<img src="https://huggingface.co/datasets/8Planetterraforming/planet-alphabet-mapping-1-26/resolve/main/examples/F.png" width="170"><br>
-<b>F</b><br>
-3D Spatial Reconstruction
-</td>
-</tr>
-</table>
-
-> Replace the example image paths above with the actual image filenames stored in the dataset repository.
-
+<p align="center">
+  <img src="https://huggingface.co/datasets/8Planetterraforming/planet-alphabet-mapping-1-26/resolve/main/examples/errors/error_3.png" width="420" alt="Error 3">
+</p>
 ---
 
 ## Dataset
