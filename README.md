@@ -1,5 +1,4 @@
 # Planet Polar Sun Moon Analysis Terra 
-<img width="1536" height="519" alt="31232" src="https://github.com/user-attachments/assets/c5f4c852-fa92-49e0-8006-894ca3718397" />
 
 Production-quality Python 3.12 scientific project for analyzing seasonal apparent altitude of the Sun and Moon at the North and South Poles during vernal and autumnal equinoxes from 2006 through 2024.
 
@@ -14,6 +13,7 @@ Official API documentation: <https://ssd-api.jpl.nasa.gov/doc/horizons.html>
 The project does not use machine learning, image processing, Prithvi, lunar phases, or monthly orbital analysis. It downloads Horizons observer ephemerides, validates required quantities, stores observations in Pandas DataFrames, computes statistics, and exports CSV, Excel, figures, and a PDF report.
 
 ## Computed quantities
+<img width="1536" height="519" alt="31232" src="https://github.com/user-attachments/assets/c5f4c852-fa92-49e0-8006-894ca3718397" />
 
 For every generated vernal and autumnal equinox from 2006 through 2024, the pipeline computes the following for the North Pole (90°N) and South Pole (90°S):
 
