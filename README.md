@@ -205,3 +205,4 @@ The ultimate objective is to support future research into sustainable land manag
 ```bash
 hf sync hf://buckets/8Planetterraforming/planet-alphabet-mapping-1-26-bucket ./local
 ```
+<img width="1536" height="519" alt="file_0000000006f8724399c3b9a55bf80a79 (1)" src="https://github.com/user-attachments/assets/b33067e9-0d82-4671-979f-264c9bfb1e5e" />
