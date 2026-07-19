@@ -3,7 +3,10 @@ from __future__ import annotations
 
 import argparse
 import logging
+from pathlib import Path
+
 import pandas as pd
+
 from .config import PipelineConfig
 from .pipeline import PolarEquinoxPipeline
 from .validation import validate_observations
@@ -12,7 +15,12 @@ from .validation import validate_observations
 def main() -> None:
     """Parse command-line arguments and run the requested pipeline command."""
     parser = argparse.ArgumentParser(description="Analyze polar equinox ephemerides from NASA JPL Horizons.")
-    parser.add_argument("command", nargs="?", default="all", choices=["all", "download", "analyze", "report", "plots", "website", "validate"])
+    parser.add_argument(
+        "command",
+        nargs="?",
+        default="all",
+        choices=["all", "download", "analyze", "report", "plots", "website", "validate"],
+    )
     parser.add_argument("--start-year", type=int, default=2006)
     parser.add_argument("--end-year", type=int, default=2024)
     parser.add_argument("--output-dir", default="results")
@@ -22,8 +30,19 @@ def main() -> None:
     parser.add_argument("--force-download", action="store_true")
     parser.add_argument("--log-level", default="INFO")
     args = parser.parse_args()
-    logging.basicConfig(level=getattr(logging, args.log_level.upper()), format="%(asctime)s %(levelname)s %(name)s: %(message)s")
-    config = PipelineConfig(start_year=args.start_year, end_year=args.end_year, output_dir=__import__('pathlib').Path(args.output_dir), data_dir=__import__('pathlib').Path(args.data_dir), cache_dir=__import__('pathlib').Path(args.cache_dir), website_dir=__import__('pathlib').Path(args.website_dir), force_download=args.force_download)
+    logging.basicConfig(
+        level=getattr(logging, args.log_level.upper()),
+        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    )
+    config = PipelineConfig(
+        start_year=args.start_year,
+        end_year=args.end_year,
+        output_dir=Path(args.output_dir),
+        data_dir=Path(args.data_dir),
+        cache_dir=Path(args.cache_dir),
+        website_dir=Path(args.website_dir),
+        force_download=args.force_download,
+    )
     pipeline = PolarEquinoxPipeline(config=config)
     if args.command == "all":
         pipeline.run(args.start_year, args.end_year)
