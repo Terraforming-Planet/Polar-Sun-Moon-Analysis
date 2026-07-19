@@ -18,7 +18,9 @@ LOGGER = logging.getLogger(__name__)
 class PolarEquinoxPipeline:
     """Download, validate, analyze, and export polar equinox ephemerides."""
 
-    def __init__(self, output_dir: Path | str = "outputs", cache_dir: Path | str = ".cache/horizons") -> None:
+    def __init__(
+        self, output_dir: Path | str = "outputs", cache_dir: Path | str = ".cache/horizons"
+    ) -> None:
         """Initialize the pipeline with output and cache locations."""
         self.output_dir = Path(output_dir)
         self.client = HorizonsClient(cache_dir=cache_dir)

@@ -9,14 +9,23 @@ import pandas as pd
 from matplotlib.backends.backend_pdf import PdfPages
 
 
+def _excel_safe_frame(frame: pd.DataFrame) -> pd.DataFrame:
+    """Return a copy with timezone-aware datetimes serialized for Excel."""
+    safe = frame.copy()
+    for column in safe.columns:
+        if isinstance(safe[column].dtype, pd.DatetimeTZDtype):
+            safe[column] = safe[column].dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+    return safe
+
+
 def export_tables(observations: pd.DataFrame, statistics: pd.DataFrame, out_dir: Path) -> None:
     """Export observations and statistics to CSV and Excel workbooks."""
     out_dir.mkdir(parents=True, exist_ok=True)
     observations.to_csv(out_dir / "observations.csv", index=False)
     statistics.to_csv(out_dir / "statistics.csv", index=False)
     with pd.ExcelWriter(out_dir / "polar_equinox_analysis.xlsx") as writer:
-        observations.to_excel(writer, sheet_name="observations", index=False)
-        statistics.to_excel(writer, sheet_name="statistics", index=False)
+        _excel_safe_frame(observations).to_excel(writer, sheet_name="observations", index=False)
+        _excel_safe_frame(statistics).to_excel(writer, sheet_name="statistics", index=False)
 
 
 def create_figures(observations: pd.DataFrame, out_dir: Path) -> list[Path]:
@@ -47,6 +56,14 @@ def create_figures(observations: pd.DataFrame, out_dir: Path) -> list[Path]:
     return paths
 
 
+def _pdf_safe_frame(frame: pd.DataFrame) -> pd.DataFrame:
+    """Return a display-safe frame for PDF table previews."""
+    safe = _excel_safe_frame(frame)
+    numeric_columns = safe.select_dtypes(include="number").columns
+    safe[numeric_columns] = safe[numeric_columns].round(6)
+    return safe
+
+
 def export_pdf_report(
     observations: pd.DataFrame,
     statistics: pd.DataFrame,
@@ -69,11 +86,16 @@ def export_pdf_report(
             axis.axis("off")
             pdf.savefig(fig)
             plt.close(fig)
-        for title, frame in {"Observation preview": observations.head(20), "Statistics": statistics}.items():
+        for title, frame in {
+            "Observation preview": observations.head(20),
+            "Statistics": statistics,
+        }.items():
             fig, axis = plt.subplots(figsize=(11, 8.5))
             axis.axis("off")
             axis.set_title(title)
-            axis.table(cellText=frame.round(6).values, colLabels=frame.columns, loc="center")
+            axis.table(
+                cellText=_pdf_safe_frame(frame).values, colLabels=frame.columns, loc="center"
+            )
             pdf.savefig(fig)
             plt.close(fig)
     return pdf_path

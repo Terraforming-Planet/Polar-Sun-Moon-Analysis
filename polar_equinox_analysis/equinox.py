@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from .horizons import HorizonsClient, HorizonsResponseError
 from .models import EquinoxEvent
@@ -34,8 +34,8 @@ class EquinoxFinder:
         if season not in self.WINDOWS:
             raise ValueError(f"Unknown season: {season}")
         start_month, start_day, stop_month, stop_day = self.WINDOWS[season]
-        left = datetime(year, start_month, start_day, tzinfo=timezone.utc)
-        right = datetime(year, stop_month, stop_day, 23, 59, tzinfo=timezone.utc)
+        left = datetime(year, start_month, start_day, tzinfo=UTC)
+        right = datetime(year, stop_month, stop_day, 23, 59, tzinfo=UTC)
         left_dec = self.client.sun_declination(left)
         right_dec = self.client.sun_declination(right)
         if left_dec * right_dec > 0:

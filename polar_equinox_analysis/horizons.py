@@ -12,7 +12,7 @@ import hashlib
 import json
 import logging
 import time
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -101,7 +101,9 @@ class HorizonsClient:
         )
         rows = self._parse_csv_rows(self.fetch_text(params))
         if not rows:
-            raise HorizonsResponseError("No ephemeris rows returned. Raw response unavailable after parse.")
+            raise HorizonsResponseError(
+                "No ephemeris rows returned. Raw response unavailable after parse."
+            )
         row = rows[len(rows) // 2]
         return {
             "declination_deg": self._required_float(row, ["DEC", "DEC_(ICRF)"]),
@@ -138,8 +140,8 @@ class HorizonsClient:
     @staticmethod
     def _format_time(value: datetime) -> str:
         if value.tzinfo is None:
-            value = value.replace(tzinfo=timezone.utc)
-        return value.astimezone(timezone.utc).strftime("%Y-%b-%d %H:%M")
+            value = value.replace(tzinfo=UTC)
+        return value.astimezone(UTC).strftime("%Y-%b-%d %H:%M")
 
     @staticmethod
     def _validate_raw_response(text: str) -> None:
@@ -155,7 +157,9 @@ class HorizonsClient:
             soe = lines.index("$$SOE")
             eoe = lines.index("$$EOE")
         except ValueError as exc:
-            raise HorizonsResponseError(f"Missing data block in Horizons response:\n{text}") from exc
+            raise HorizonsResponseError(
+                f"Missing data block in Horizons response:\n{text}"
+            ) from exc
         header_line = next((line for line in reversed(lines[:soe]) if "," in line), None)
         if header_line is None:
             raise HorizonsResponseError(f"Missing CSV header in Horizons response:\n{text}")
