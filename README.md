@@ -1,4 +1,5 @@
 # Polar Sun Moon Analysis
+<img width="1536" height="1024" alt="file_00000000f9e471f8b9c0c17cc1835537" src="https://github.com/user-attachments/assets/9b46b022-b3c1-4429-8f42-0b9ebad7daba" />
 
 Production-quality Python 3.12 scientific project for analyzing seasonal apparent altitude of the Sun and Moon at the North and South Poles during vernal and autumnal equinoxes from 2006 through 2024.
 
@@ -197,13 +198,6 @@ The ultimate objective is to support future research into sustainable land manag
 <p align="center">
   <img src="https://huggingface.co/datasets/8Planetterraforming/planet-alphabet-mapping-1-26/resolve/main/examples/errors/error_3.png" width="420" alt="Error 3">
 </p>
-
----
-
-## Dataset
-
-https://huggingface.co/datasets/8Planetterraforming/planet-alphabet-mapping-1-26
-
 ---
 
 ## Synchronization
@@ -211,4 +205,4 @@ https://huggingface.co/datasets/8Planetterraforming/planet-alphabet-mapping-1-26
 ```bash
 hf sync hf://buckets/8Planetterraforming/planet-alphabet-mapping-1-26-bucket ./local
 ```
-
+<img width="1536" height="519" alt="file_0000000006f8724399c3b9a55bf80a79 (1)" src="https://github.com/user-attachments/assets/b33067e9-0d82-4671-979f-264c9bfb1e5e" />
