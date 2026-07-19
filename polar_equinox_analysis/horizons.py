@@ -36,7 +36,7 @@ class HorizonsClient:
 
     def __init__(
         self,
-        cache_dir: Path | str = ".cache/horizons",
+        cache_dir: Path | str = "cache/horizons",
         retries: int = 4,
         backoff_seconds: float = 2.0,
         timeout_seconds: int = 60,
@@ -47,29 +47,47 @@ class HorizonsClient:
         self.retries = retries
         self.backoff_seconds = backoff_seconds
         self.timeout_seconds = timeout_seconds
+        self.force_download = False
 
-    def fetch_text(self, params: dict[str, Any]) -> str:
-        """Return raw Horizons response text, using cache before network."""
+    def fetch_text(self, params: dict[str, Any], force: bool = False) -> str:
+        """Return raw Horizons response text, using permanent cache before network.
+
+        Each request stores the URL, parameters, timestamp, status code,
+        execution time, and raw response. Cached responses are never
+        downloaded again unless ``force`` is true.
+        """
         normalized = json.dumps(params, sort_keys=True, default=str)
         cache_key = hashlib.sha256(normalized.encode("utf-8")).hexdigest()
         cache_path = self.cache_dir / f"{cache_key}.txt"
-        if cache_path.exists():
-            LOGGER.debug("Using cached Horizons response %s", cache_path)
+        metadata_path = self.cache_dir / f"{cache_key}.json"
+        if cache_path.exists() and not force and not self.force_download:
+            LOGGER.info("Using cached Horizons response %s", cache_path)
             return cache_path.read_text(encoding="utf-8")
 
         last_error: Exception | None = None
         for attempt in range(1, self.retries + 1):
             try:
                 LOGGER.info("Requesting Horizons API, attempt %s", attempt)
+                started = time.perf_counter()
                 response = requests.get(
                     self.API_URL,
                     params=params,
                     timeout=self.timeout_seconds,
                 )
+                elapsed = time.perf_counter() - started
                 response.raise_for_status()
                 text = response.text
                 self._validate_raw_response(text)
                 cache_path.write_text(text, encoding="utf-8")
+                metadata_path.write_text(json.dumps({
+                    "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+                    "url": response.url,
+                    "parameters": params,
+                    "response_code": response.status_code,
+                    "execution_time_seconds": elapsed,
+                    "cache_key": cache_key,
+                    "raw_response_path": str(cache_path),
+                }, indent=2, sort_keys=True), encoding="utf-8")
                 return text
             except (requests.RequestException, HorizonsResponseError) as exc:
                 last_error = exc
