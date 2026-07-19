@@ -183,7 +183,7 @@ The ultimate objective is to support future research into sustainable land manag
 
 ---
 
-#Validation Examples
+## Validation Examples
 
 <p align="center">
   <img src="https://huggingface.co/datasets/8Planetterraforming/planet-alphabet-mapping-1-26/resolve/main/examples/correct/manual_corrected_reference.png" width="420" alt="Correct Reference">
@@ -197,12 +197,6 @@ The ultimate objective is to support future research into sustainable land manag
 <p align="center">
   <img src="https://huggingface.co/datasets/8Planetterraforming/planet-alphabet-mapping-1-26/resolve/main/examples/errors/error_3.png" width="420" alt="Error 3">
 </p>
----
-
-## Dataset
-
-https://huggingface.co/datasets/8Planetterraforming/planet-alphabet-mapping-1-26
-
 ---
 
 ## Synchronization
