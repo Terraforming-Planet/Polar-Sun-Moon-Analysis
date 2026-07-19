@@ -1,9 +1,11 @@
 """Client and validators for the official NASA JPL Horizons API.
 
-This module intentionally talks directly to the official Horizons endpoint at
-https://ssd.jpl.nasa.gov/api/horizons.api and never computes or substitutes
-astronomical quantities locally. If Horizons omits a required field, the raw
-response is written to the error message and processing stops.
+This module intentionally talks directly to the official machine-to-machine
+Horizons endpoint at https://ssd.jpl.nasa.gov/api/horizons.api with the query
+parameters required by the official API documentation. It never computes or
+substitutes astronomical quantities locally. If Horizons omits a required field,
+the raw response or parsed row is included in the error message and processing
+stops.
 """
 
 from __future__ import annotations
@@ -11,6 +13,7 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import re
 import time
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -87,6 +90,7 @@ class HorizonsClient:
         timestamp: datetime,
     ) -> dict[str, float]:
         """Fetch one apparent altitude and declination observation for a body."""
+        self._validate_timestamp(timestamp)
         start = self._format_time(timestamp - timedelta(minutes=1))
         stop = self._format_time(timestamp + timedelta(minutes=1))
         params = self._base_params(body, start, stop)
@@ -99,27 +103,32 @@ class HorizonsClient:
                 "QUANTITIES": "4,20",
             }
         )
-        rows = self._parse_csv_rows(self.fetch_text(params))
+        text = self.fetch_text(params)
+        rows = self._parse_csv_rows(text)
         if not rows:
-            raise HorizonsResponseError(
-                "No ephemeris rows returned. Raw response unavailable after parse."
-            )
-        row = rows[len(rows) // 2]
+            raise HorizonsResponseError(f"No ephemeris rows returned by Horizons:\n{text}")
+        unique_rows = self._deduplicate_rows(rows)
+        row = unique_rows[len(unique_rows) // 2]
         return {
-            "declination_deg": self._required_float(row, ["DEC", "DEC_(ICRF)"]),
-            "apparent_altitude_deg": self._required_float(row, ["EL", "Elev", "Elevation"]),
+            "declination_deg": self._required_float(row, ["DEC", "DEC_(ICRF)", "DEC_(a-app)"]),
+            "apparent_altitude_deg": self._required_float(
+                row,
+                ["EL", "Elev", "Elevation", "Elev_(a-app)", "Elevation_(a-app)"],
+            ),
         }
 
     def sun_declination(self, timestamp: datetime) -> float:
         """Fetch apparent geocentric Sun declination at one instant."""
+        self._validate_timestamp(timestamp)
         start = self._format_time(timestamp)
         stop = self._format_time(timestamp + timedelta(minutes=1))
         params = self._base_params("Sun", start, stop)
         params.update({"CENTER": "500@399", "STEP_SIZE": "1m", "QUANTITIES": "4"})
-        rows = self._parse_csv_rows(self.fetch_text(params))
+        text = self.fetch_text(params)
+        rows = self._parse_csv_rows(text)
         if not rows:
-            raise HorizonsResponseError("No Sun declination rows returned from Horizons.")
-        return self._required_float(rows[0], ["DEC", "DEC_(ICRF)"])
+            raise HorizonsResponseError(f"No Sun declination rows returned from Horizons:\n{text}")
+        return self._required_float(rows[0], ["DEC", "DEC_(ICRF)", "DEC_(a-app)"])
 
     def _base_params(self, body: str, start: str, stop: str) -> dict[str, str]:
         if body not in self.BODY_COMMANDS:
@@ -134,8 +143,14 @@ class HorizonsClient:
             "MAKE_EPHEM": "YES",
             "OBJ_DATA": "NO",
             "TIME_TYPE": "UT",
+            "ANG_FORMAT": "DEG",
             "APPARENT": "AIRLESS",
         }
+
+    @staticmethod
+    def _validate_timestamp(value: datetime) -> None:
+        if not isinstance(value, datetime):
+            raise TypeError(f"timestamp must be a datetime, got {type(value).__name__}")
 
     @staticmethod
     def _format_time(value: datetime) -> str:
@@ -175,12 +190,34 @@ class HorizonsClient:
         return rows
 
     @staticmethod
-    def _required_float(row: dict[str, str], candidates: list[str]) -> float:
-        normalized = {key.strip().lower(): value for key, value in row.items()}
+    def _deduplicate_rows(rows: list[dict[str, str]]) -> list[dict[str, str]]:
+        unique_rows: list[dict[str, str]] = []
+        seen: set[tuple[tuple[str, str], ...]] = set()
+        for row in rows:
+            key = tuple(sorted(row.items()))
+            if key not in seen:
+                unique_rows.append(row)
+                seen.add(key)
+        return unique_rows
+
+    @staticmethod
+    def _normalize_column_name(name: str) -> str:
+        return re.sub(r"[^a-z0-9]", "", name.lower())
+
+    @classmethod
+    def _required_float(cls, row: dict[str, str], candidates: list[str]) -> float:
+        normalized = {cls._normalize_column_name(key): value for key, value in row.items()}
         for name in candidates:
-            key = name.lower()
+            key = cls._normalize_column_name(name)
             if key in normalized and normalized[key] not in {"", "n.a."}:
-                return float(normalized[key])
+                try:
+                    return float(normalized[key])
+                except ValueError as exc:
+                    raise HorizonsResponseError(
+                        "Required quantity was present but not a decimal degree value. "
+                        "Confirm ANG_FORMAT=DEG is being honored by NASA Horizons. "
+                        f"Candidate={name}; value={normalized[key]!r}; row={row}"
+                    ) from exc
         raise HorizonsResponseError(
             "Required quantity unavailable in NASA Horizons row. "
             f"Candidates={candidates}; row={row}"

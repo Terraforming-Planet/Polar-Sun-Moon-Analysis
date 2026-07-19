@@ -9,7 +9,7 @@ from _pytest.monkeypatch import MonkeyPatch
 from polar_equinox_analysis.analysis import scientific_summary, summarize_statistics
 from polar_equinox_analysis.models import EquinoxEvent
 from polar_equinox_analysis.pipeline import PolarEquinoxPipeline
-from polar_equinox_analysis.reporting import create_figures, export_tables
+from polar_equinox_analysis.reporting import create_figures, export_summary_documents, export_tables
 
 
 def sample_observations() -> pd.DataFrame:
@@ -51,6 +51,14 @@ def test_table_and_figure_exports(tmp_path: Path) -> None:
     assert (tmp_path / "observations.csv").exists()
     assert (tmp_path / "statistics.csv").exists()
     assert (tmp_path / "polar_equinox_analysis.xlsx").exists()
+    assert (tmp_path / "observations.json").exists()
+    assert (tmp_path / "statistics.json").exists()
+    assert (tmp_path / "observations.md").exists()
+    assert (tmp_path / "statistics.md").exists()
+    assert (tmp_path / "observations.html").exists()
+    assert (tmp_path / "statistics.html").exists()
+    summary_paths = export_summary_documents("summary", tmp_path)
+    assert all(path.exists() for path in summary_paths.values())
     assert len(figures) == 2
     assert all(path.exists() for path in figures)
 
@@ -78,3 +86,5 @@ def test_pipeline_with_mocked_horizons(tmp_path: Path, monkeypatch: MonkeyPatch)
 
     assert outputs["pdf_report"].exists()
     assert (tmp_path / "out" / "scientific_summary.txt").exists()
+    assert (tmp_path / "out" / "scientific_summary.md").exists()
+    assert (tmp_path / "out" / "scientific_summary.html").exists()

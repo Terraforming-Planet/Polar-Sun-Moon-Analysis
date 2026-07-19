@@ -2,34 +2,68 @@
 
 from __future__ import annotations
 
+from datetime import datetime
+from html import escape
 from pathlib import Path
+from typing import Any
 
 import matplotlib.pyplot as plt
 import pandas as pd
 from matplotlib.backends.backend_pdf import PdfPages
 
 
-def _excel_safe_frame(frame: pd.DataFrame) -> pd.DataFrame:
-    """Return a copy with timezone-aware datetimes serialized for Excel."""
+def _serialize_value(value: Any) -> Any:
+    """Convert values that external formats cannot represent safely."""
+    if isinstance(value, datetime) and value.tzinfo is not None:
+        return value.isoformat()
+    return value
+
+
+def _portable_frame(frame: pd.DataFrame) -> pd.DataFrame:
+    """Return a copy with timezone-aware datetimes serialized for portable exports."""
     safe = frame.copy()
     for column in safe.columns:
         if isinstance(safe[column].dtype, pd.DatetimeTZDtype):
             safe[column] = safe[column].dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+        elif safe[column].dtype == "object":
+            safe[column] = safe[column].map(_serialize_value)
     return safe
 
 
+def _markdown_table(frame: pd.DataFrame) -> str:
+    """Render a compact Markdown table without optional pandas dependencies."""
+    headers = [str(column) for column in frame.columns.tolist()]
+    lines = ["| " + " | ".join(headers) + " |", "| " + " | ".join(["---"] * len(headers)) + " |"]
+    for row in frame.astype(str).values.tolist():
+        lines.append("| " + " | ".join(str(value) for value in row) + " |")
+    return "\n".join(lines)
+
+
 def export_tables(observations: pd.DataFrame, statistics: pd.DataFrame, out_dir: Path) -> None:
-    """Export observations and statistics to CSV and Excel workbooks."""
+    """Export observations and statistics to CSV, JSON, Markdown, HTML, and Excel."""
     out_dir.mkdir(parents=True, exist_ok=True)
-    observations.to_csv(out_dir / "observations.csv", index=False)
-    statistics.to_csv(out_dir / "statistics.csv", index=False)
+    portable_observations = _portable_frame(observations)
+    portable_statistics = _portable_frame(statistics)
+
+    portable_observations.to_csv(out_dir / "observations.csv", index=False)
+    portable_statistics.to_csv(out_dir / "statistics.csv", index=False)
+    portable_observations.to_json(out_dir / "observations.json", orient="records", indent=2)
+    portable_statistics.to_json(out_dir / "statistics.json", orient="records", indent=2)
+    (out_dir / "observations.md").write_text(
+        _markdown_table(portable_observations), encoding="utf-8"
+    )
+    (out_dir / "statistics.md").write_text(_markdown_table(portable_statistics), encoding="utf-8")
+    portable_observations.to_html(out_dir / "observations.html", index=False)
+    portable_statistics.to_html(out_dir / "statistics.html", index=False)
     with pd.ExcelWriter(out_dir / "polar_equinox_analysis.xlsx") as writer:
-        _excel_safe_frame(observations).to_excel(writer, sheet_name="observations", index=False)
-        _excel_safe_frame(statistics).to_excel(writer, sheet_name="statistics", index=False)
+        portable_observations.to_excel(writer, sheet_name="observations", index=False)
+        portable_statistics.to_excel(writer, sheet_name="statistics", index=False)
 
 
 def create_figures(observations: pd.DataFrame, out_dir: Path) -> list[Path]:
     """Create publication-quality line figures for altitude and declination."""
+    if observations.empty:
+        raise ValueError("Cannot create figures from an empty observations table.")
     figures_dir = out_dir / "figures"
     figures_dir.mkdir(parents=True, exist_ok=True)
     paths: list[Path] = []
@@ -38,7 +72,10 @@ def create_figures(observations: pd.DataFrame, out_dir: Path) -> list[Path]:
         "declination_deg": "Declination (degrees)",
     }.items():
         fig, axes = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
-        for axis, pole in zip(axes, sorted(observations["pole"].unique()), strict=True):
+        poles = [str(pole) for pole in sorted(observations["pole"].dropna().unique().tolist())]
+        if len(poles) != len(axes):
+            raise ValueError(f"Expected exactly {len(axes)} poles for plotting, got {poles}")
+        for axis, pole in zip(axes, poles, strict=True):
             subset = observations[observations["pole"] == pole]
             for (season, body), group in subset.groupby(["season", "body"]):
                 axis.plot(group["year"], group[quantity], marker="o", label=f"{season} {body}")
@@ -58,10 +95,27 @@ def create_figures(observations: pd.DataFrame, out_dir: Path) -> list[Path]:
 
 def _pdf_safe_frame(frame: pd.DataFrame) -> pd.DataFrame:
     """Return a display-safe frame for PDF table previews."""
-    safe = _excel_safe_frame(frame)
+    safe = _portable_frame(frame)
     numeric_columns = safe.select_dtypes(include="number").columns
     safe[numeric_columns] = safe[numeric_columns].round(6)
     return safe
+
+
+def export_summary_documents(summary: str, out_dir: Path) -> dict[str, Path]:
+    """Export the scientific summary as text, Markdown, and HTML."""
+    out_dir.mkdir(parents=True, exist_ok=True)
+    text_path = out_dir / "scientific_summary.txt"
+    markdown_path = out_dir / "scientific_summary.md"
+    html_path = out_dir / "scientific_summary.html"
+    text_path.write_text(summary, encoding="utf-8")
+    markdown_path.write_text(f"# Scientific Summary\n\n```text\n{summary}\n```\n", encoding="utf-8")
+    html_path.write_text(
+        "<!doctype html>\n"
+        "<html lang='en'><head><meta charset='utf-8'><title>Scientific Summary</title></head>"
+        f"<body><h1>Scientific Summary</h1><pre>{escape(summary)}</pre></body></html>\n",
+        encoding="utf-8",
+    )
+    return {"text": text_path, "markdown": markdown_path, "html": html_path}
 
 
 def export_pdf_report(

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Polar Sun Moon Analysis</title>
+  <style>
+    body { font-family: system-ui, sans-serif; line-height: 1.55; margin: 2rem auto; max-width: 900px; padding: 0 1rem; }
+    code { background: #f4f4f4; padding: 0.1rem 0.25rem; }
+  </style>
+</head>
+<body>
+  <h1>Polar Sun Moon Analysis</h1>
+  <p>
+    Scientific Python project for analyzing seasonal apparent altitude and declination of the Sun and Moon
+    at the North Pole and South Pole during vernal and autumnal equinoxes from 2006 through 2024.
+  </p>
+  <h2>Scientific scope</h2>
+  <ul>
+    <li>Official NASA JPL Horizons observer ephemerides only.</li>
+    <li>Sun and Moon apparent altitude above the local horizon.</li>
+    <li>Sun and Moon declination.</li>
+    <li>North Pole and South Pole topocentric observers.</li>
+  </ul>
+  <h2>NASA Horizons references</h2>
+  <p>
+    The project calls the machine-to-machine Horizons API programmatically with required query parameters.
+    For browser use, open the <a href="https://ssd.jpl.nasa.gov/horizons/app.html">Horizons web application</a>.
+    Developers should consult the <a href="https://ssd-api.jpl.nasa.gov/doc/horizons.html">official Horizons API documentation</a>.
+  </p>
+  <h2>Outputs</h2>
+  <p>
+    Running <code>python -m polar_equinox_analysis</code> exports CSV, Excel, JSON, Markdown, HTML,
+    PNG figures, plain-text summary, and PDF report files under <code>outputs/</code>.
+  </p>
+</body>
+</html>
