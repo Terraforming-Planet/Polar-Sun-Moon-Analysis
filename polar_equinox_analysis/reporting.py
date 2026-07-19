@@ -147,8 +147,11 @@ def export_pdf_report(
             fig, axis = plt.subplots(figsize=(11, 8.5))
             axis.axis("off")
             axis.set_title(title)
+            safe_frame = _pdf_safe_frame(frame)
             axis.table(
-                cellText=_pdf_safe_frame(frame).values, colLabels=frame.columns, loc="center"
+                cellText=safe_frame.astype(str).values.tolist(),
+                colLabels=frame.columns.tolist(),
+                loc="center",
             )
             pdf.savefig(fig)
             plt.close(fig)
