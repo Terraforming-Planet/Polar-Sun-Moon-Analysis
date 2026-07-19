@@ -4,9 +4,11 @@ Production-quality Python 3.12 scientific project for analyzing seasonal apparen
 
 ## Scientific scope
 
-This repository uses **only official NASA JPL Horizons ephemerides** through the official Horizons API:
+This repository uses **only official NASA JPL Horizons ephemerides** through the official machine-to-machine Horizons API. The API endpoint is used programmatically with required query parameters; it is not a standalone human web page.
 
-<https://ssd.jpl.nasa.gov/api/horizons.api>
+Human browser interface: <https://ssd.jpl.nasa.gov/horizons/app.html>
+
+Official API documentation: <https://ssd-api.jpl.nasa.gov/doc/horizons.html>
 
 The project does not use machine learning, image processing, Prithvi, lunar phases, or monthly orbital analysis. It downloads Horizons observer ephemerides, validates required quantities, stores observations in Pandas DataFrames, computes statistics, and exports CSV, Excel, figures, and a PDF report.
 
@@ -28,7 +30,15 @@ Generated files are written under `outputs/` by default:
 - `observations.csv`
 - `statistics.csv`
 - `polar_equinox_analysis.xlsx`
+- `observations.json`
+- `statistics.json`
+- `observations.md`
+- `statistics.md`
+- `observations.html`
+- `statistics.html`
 - `scientific_summary.txt`
+- `scientific_summary.md`
+- `scientific_summary.html`
 - `polar_equinox_report.pdf`
 - `figures/apparent_altitude_deg.png`
 - `figures/declination_deg.png`

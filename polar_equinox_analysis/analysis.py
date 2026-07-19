@@ -6,6 +6,20 @@ import numpy as np
 import pandas as pd
 
 
+def _polynomial_coefficients(years: np.ndarray, values: np.ndarray, degree: int) -> np.ndarray:
+    """Return polynomial coefficients, or NaNs when too few observations exist."""
+    if len(values) <= degree:
+        return np.full(degree + 1, np.nan, dtype=float)
+    return np.polyfit(years, values, deg=degree)
+
+
+def _correlation(years: np.ndarray, values: np.ndarray) -> float:
+    """Return correlation with year, or NaN when correlation is undefined."""
+    if len(values) <= 1 or np.all(years == years[0]) or np.all(values == values[0]):
+        return float(np.nan)
+    return float(np.corrcoef(years, values)[0, 1])
+
+
 def summarize_statistics(data: pd.DataFrame) -> pd.DataFrame:
     """Compute descriptive, trend, polynomial, and correlation statistics."""
     records: list[dict[str, object]] = []
@@ -19,9 +33,8 @@ def summarize_statistics(data: pd.DataFrame) -> pd.DataFrame:
     for keys, group in long.groupby(group_cols, dropna=False):
         years = group["year"].to_numpy(dtype=float)
         values = group["value"].to_numpy(dtype=float)
-        linear = np.polyfit(years, values, deg=1)
-        poly2 = np.polyfit(years, values, deg=2)
-        correlation = float(np.corrcoef(years, values)[0, 1]) if len(values) > 1 else np.nan
+        linear = _polynomial_coefficients(years, values, degree=1)
+        poly2 = _polynomial_coefficients(years, values, degree=2)
         records.append(
             {
                 "pole": keys[0],
@@ -29,7 +42,9 @@ def summarize_statistics(data: pd.DataFrame) -> pd.DataFrame:
                 "body": keys[2],
                 "quantity": keys[3],
                 "mean": float(np.mean(values)),
-                "standard_deviation": float(np.std(values, ddof=1)),
+                "standard_deviation": float(np.std(values, ddof=1))
+                if len(values) > 1
+                else float(np.nan),
                 "minimum": float(np.min(values)),
                 "maximum": float(np.max(values)),
                 "linear_trend_slope_per_year": float(linear[0]),
@@ -37,7 +52,7 @@ def summarize_statistics(data: pd.DataFrame) -> pd.DataFrame:
                 "polynomial_trend_quadratic": float(poly2[0]),
                 "polynomial_trend_linear": float(poly2[1]),
                 "polynomial_trend_intercept": float(poly2[2]),
-                "correlation_with_year": correlation,
+                "correlation_with_year": _correlation(years, values),
             }
         )
     return pd.DataFrame.from_records(records)

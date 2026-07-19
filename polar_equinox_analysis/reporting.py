@@ -150,7 +150,7 @@ def export_pdf_report(
             safe_frame = _pdf_safe_frame(frame)
             axis.table(
                 cellText=safe_frame.astype(str).values.tolist(),
-                colLabels=safe_frame.columns.tolist(),
+                colLabels=frame.columns.tolist(),
                 loc="center",
             )
             pdf.savefig(fig)
