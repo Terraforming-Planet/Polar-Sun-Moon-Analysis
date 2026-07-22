@@ -1,0 +1,137 @@
+[
+  {
+    "id": "nasa-firms-viirs",
+    "agency": "NASA / NOAA",
+    "mission": "Suomi NPP, NOAA-20, NOAA-21",
+    "instrument": "VIIRS 375 m active fire",
+    "phenomena": [
+      "active_fire",
+      "thermal_anomaly"
+    ],
+    "temporal_coverage": "2012-present (platform dependent)",
+    "latency": "Near-real-time; global observations generally available within 3 hours",
+    "spatial_resolution": "375 m fire product",
+    "access": "MAP_KEY required for FIRMS area API",
+    "url": "https://firms.modaps.eosdis.nasa.gov/api/",
+    "limitations": "Cloud, scan geometry and overpass timing can hide or delay a detection."
+  },
+  {
+    "id": "nasa-eonet",
+    "agency": "NASA",
+    "mission": "Earth Observatory Natural Event Tracker",
+    "instrument": "Multi-source event catalogue",
+    "phenomena": [
+      "wildfire",
+      "flood",
+      "storm",
+      "volcano",
+      "sea_lake_ice"
+    ],
+    "temporal_coverage": "Provider catalogue metadata",
+    "latency": "Event dependent; not an emergency alert feed",
+    "spatial_resolution": "Event geometry",
+    "access": "Public API",
+    "url": "https://eonet.gsfc.nasa.gov/api/v3/events",
+    "limitations": "Curated event catalogue, not a pixel-level sensor measurement."
+  },
+  {
+    "id": "esa-sentinel-1",
+    "agency": "ESA / European Commission",
+    "mission": "Copernicus Sentinel-1",
+    "instrument": "C-band synthetic aperture radar",
+    "phenomena": [
+      "flood",
+      "surface_water",
+      "ground_deformation"
+    ],
+    "temporal_coverage": "2014-present",
+    "latency": "Product and acquisition dependent",
+    "spatial_resolution": "Mode dependent; commonly about 10 m for IW products",
+    "access": "Copernicus Data Space account/API",
+    "url": "https://dataspace.copernicus.eu/",
+    "limitations": "Radar sees surface backscatter, not water depth or subsurface reservoirs."
+  },
+  {
+    "id": "esa-sentinel-3-slstr",
+    "agency": "ESA / European Commission",
+    "mission": "Copernicus Sentinel-3",
+    "instrument": "SLSTR",
+    "phenomena": [
+      "land_surface_temperature",
+      "sea_surface_temperature",
+      "fire"
+    ],
+    "temporal_coverage": "2016-present",
+    "latency": "Product dependent",
+    "spatial_resolution": "1 km thermal infrared",
+    "access": "Copernicus Data Space",
+    "url": "https://www.esa.int/Applications/Observing_the_Earth/Copernicus/Sentinel-3/Instruments",
+    "limitations": "Thermal infrared does not measure through opaque cloud."
+  },
+  {
+    "id": "nasa-cnes-swot",
+    "agency": "NASA / CNES / CSA / UK Space Agency",
+    "mission": "SWOT",
+    "instrument": "KaRIn radar interferometer and nadir altimeter",
+    "phenomena": [
+      "water_surface_elevation",
+      "river_slope",
+      "water_extent",
+      "ocean_topography"
+    ],
+    "temporal_coverage": "2022-present",
+    "latency": "Science product dependent",
+    "spatial_resolution": "Product dependent",
+    "access": "NASA Earthdata / PO.DAAC",
+    "url": "https://swot.jpl.nasa.gov/",
+    "limitations": "Volume needs bathymetry or an area-elevation-volume relationship."
+  },
+  {
+    "id": "nasa-smap",
+    "agency": "NASA",
+    "mission": "SMAP",
+    "instrument": "L-band microwave radiometer",
+    "phenomena": [
+      "surface_soil_moisture",
+      "freeze_thaw"
+    ],
+    "temporal_coverage": "2015-present",
+    "latency": "Product dependent",
+    "spatial_resolution": "About 36 km for radiometer soil moisture",
+    "access": "NASA Earthdata / NSIDC",
+    "url": "https://smap.jpl.nasa.gov/",
+    "limitations": "Represents shallow surface soil moisture, not detailed water inside rock."
+  },
+  {
+    "id": "nasa-grace-fo",
+    "agency": "NASA / GFZ",
+    "mission": "GRACE and GRACE-FO",
+    "instrument": "Satellite-to-satellite gravity ranging",
+    "phenomena": [
+      "terrestrial_water_storage",
+      "groundwater_anomaly",
+      "ice_mass"
+    ],
+    "temporal_coverage": "2002-present with mission gap",
+    "latency": "Monthly science products",
+    "spatial_resolution": "Regional, hundreds of kilometres",
+    "access": "NASA GRACE Tellus",
+    "url": "https://grace.jpl.nasa.gov/",
+    "limitations": "Cannot locate individual fractures or small aquifers."
+  },
+  {
+    "id": "noaa-multibeam",
+    "agency": "NOAA",
+    "mission": "Ocean Exploration",
+    "instrument": "Shipborne multibeam sonar",
+    "phenomena": [
+      "seafloor_bathymetry"
+    ],
+    "temporal_coverage": "Survey dependent",
+    "latency": "Cruise and archive dependent",
+    "spatial_resolution": "Depth and survey dependent; much finer than satellite altimetry",
+    "access": "Public expedition and archive data",
+    "url": "https://oceanexplorer.noaa.gov/explainers/mapping/",
+    "limitations": "Requires vessels or autonomous platforms; not a satellite measurement."
+  }
+]

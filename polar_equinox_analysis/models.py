@@ -41,3 +41,5 @@ class BodyObservation:
     body: str
     apparent_altitude_deg: float
     declination_deg: float
+    source_url: str = "https://ssd.jpl.nasa.gov/api/horizons.api"
+    record_kind: str = "ephemeris"

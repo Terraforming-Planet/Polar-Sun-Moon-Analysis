@@ -10,7 +10,7 @@ def _polynomial_coefficients(years: np.ndarray, values: np.ndarray, degree: int)
     """Return polynomial coefficients, or NaNs when too few observations exist."""
     if len(values) <= degree:
         return np.full(degree + 1, np.nan, dtype=float)
-    return np.polyfit(years, values, deg=degree)
+    return np.asarray(np.polyfit(years, values, deg=degree), dtype=float)
 
 
 def _correlation(years: np.ndarray, values: np.ndarray) -> float:

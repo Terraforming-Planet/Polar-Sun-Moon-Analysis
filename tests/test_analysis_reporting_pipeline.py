@@ -69,17 +69,20 @@ def test_pipeline_with_mocked_horizons(tmp_path: Path, monkeypatch: MonkeyPatch)
     monkeypatch.setattr(
         pipeline.finder,
         "events",
-        lambda start_year, end_year: [
+        lambda start_year, end_year, include_future: [
             EquinoxEvent(year=2024, season="vernal", timestamp_utc=event_time)
         ],
     )
     monkeypatch.setattr(
         pipeline.client,
-        "observer_ephemeris",
-        lambda body, observer, timestamp: {
-            "declination_deg": 0.0 if body == "Sun" else 1.0,
-            "apparent_altitude_deg": 10.0 if observer.name == "North Pole" else -10.0,
-        },
+        "observer_ephemerides",
+        lambda body, observer, timestamps: [
+            {
+                "declination_deg": 0.0 if body == "Sun" else 1.0,
+                "apparent_altitude_deg": 10.0 if observer.name == "North Pole" else -10.0,
+            }
+            for _ in timestamps
+        ],
     )
 
     outputs = pipeline.run(start_year=2024, end_year=2024)

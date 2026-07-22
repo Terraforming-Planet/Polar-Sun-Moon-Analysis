@@ -33,10 +33,23 @@ jobs:
         run: python -m ruff check .
 
       - name: Mypy type check
-        run: python -m mypy polar_equinox_analysis tests
+        run: python -m mypy polar_equinox_analysis terra_hazards tests
 
       - name: Pytest
         run: python -m pytest -q
 
       - name: Compile Python modules
-        run: python -m compileall polar_equinox_analysis tests
+        run: python -m compileall polar_equinox_analysis terra_hazards tests
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Test and build web application
+        working-directory: web
+        run: |
+          npm ci
+          npm test
+          npm run build
