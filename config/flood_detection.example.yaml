@@ -1,0 +1,17 @@
+backend_url: https://openeo.dataspace.copernicus.eu
+collection: SENTINEL1_GRD
+spatial_extent:
+  west: 16.7
+  south: 50.08
+  east: 18.0
+  north: 50.5
+before_period:
+  - '2024-08-25'
+  - '2024-09-09'
+after_period:
+  - '2024-09-14'
+  - '2024-09-22'
+polarization: VV
+orbit_state: descending
+coefficient: sigma0-ellipsoid
+output_dir: docs/data/copernicus/flood_detection
