@@ -38,7 +38,9 @@ def validate_bbox(bbox: list[float]) -> None:
 def git_commit() -> str:
     try:
         return subprocess.check_output(
-            ["git", "rev-parse", "HEAD"], text=True, stderr=subprocess.DEVNULL
+            ["git", "rev-parse", "HEAD"],
+            text=True,
+            stderr=subprocess.DEVNULL,
         ).strip()
     except (OSError, subprocess.CalledProcessError):
         return "unknown"
@@ -81,7 +83,9 @@ def search_items(
 def item_record(region: str, item: dict[str, Any]) -> dict[str, Any]:
     props = item.get("properties", {})
     assets = item.get("assets", {})
-    preview = assets.get("thumbnail", {}).get("href") or assets.get("rendered_preview", {}).get("href")
+    preview = assets.get("thumbnail", {}).get("href") or assets.get(
+        "rendered_preview", {}
+    ).get("href")
     return {
         "region": region,
         "id": item.get("id"),
@@ -92,7 +96,11 @@ def item_record(region: str, item: dict[str, Any]) -> dict[str, Any]:
         "collection": item.get("collection"),
         "preview_url": preview,
         "self_url": next(
-            (link.get("href") for link in item.get("links", []) if link.get("rel") == "self"),
+            (
+                link.get("href")
+                for link in item.get("links", [])
+                if link.get("rel") == "self"
+            ),
             None,
         ),
     }
@@ -100,14 +108,24 @@ def item_record(region: str, item: dict[str, Any]) -> dict[str, Any]:
 
 def write_json(path: Path, value: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(value, indent=2, ensure_ascii=False), encoding="utf-8")
+    path.write_text(
+        json.dumps(value, indent=2, ensure_ascii=False),
+        encoding="utf-8",
+    )
 
 
 def write_csv(path: Path, records: list[dict[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fields = [
-        "region", "id", "datetime", "cloud_cover", "platform", "constellation",
-        "collection", "preview_url", "self_url",
+        "region",
+        "id",
+        "datetime",
+        "cloud_cover",
+        "platform",
+        "constellation",
+        "collection",
+        "preview_url",
+        "self_url",
     ]
     with path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields)
@@ -130,7 +148,13 @@ def make_chart(path: Path, records: list[dict[str, Any]]) -> None:
         plt.ylabel("Available scenes")
         plt.xlabel("Observation date (UTC)")
     else:
-        plt.text(0.5, 0.5, "No matching observations", ha="center", va="center")
+        plt.text(
+            0.5,
+            0.5,
+            "No matching observations",
+            ha="center",
+            va="center",
+        )
         plt.axis("off")
     plt.title("Copernicus CDSE observations by date")
     plt.tight_layout()
@@ -138,47 +162,105 @@ def make_chart(path: Path, records: list[dict[str, Any]]) -> None:
     plt.close()
 
 
-def make_report(path: Path, metadata: dict[str, Any], records: list[dict[str, Any]]) -> None:
-    template = Template("""<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
-<title>Copernicus CDSE analysis</title><style>
-body{font-family:system-ui,sans-serif;max-width:1100px;margin:2rem auto;padding:0 1rem;line-height:1.5}
-table{border-collapse:collapse;width:100%;font-size:.9rem}th,td{border:1px solid #ccc;padding:.45rem;text-align:left}
-code{background:#eee;padding:.1rem .25rem}img{max-width:100%}
-</style></head><body>
+def make_report(
+    path: Path,
+    metadata: dict[str, Any],
+    records: list[dict[str, Any]],
+) -> None:
+    template = Template(
+        """<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Copernicus CDSE analysis</title>
+<style>
+body {
+  font-family: system-ui, sans-serif;
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  line-height: 1.5;
+}
+table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+th, td { border: 1px solid #ccc; padding: .45rem; text-align: left; }
+code { background: #eee; padding: .1rem .25rem; }
+img { max-width: 100%; }
+</style>
+</head>
+<body>
 <h1>Copernicus CDSE polar-region catalogue analysis</h1>
-<p><strong>Evidence class:</strong> OBSERVATION metadata returned by the official CDSE STAC catalogue.</p>
-<ul><li>Run: {{ meta.run_at_utc }}</li><li>Collection: <code>{{ meta.collection }}</code></li>
-<li>Date range: {{ meta.start_date }} – {{ meta.end_date }}</li><li>Scenes: {{ meta.scene_count }}</li>
-<li>Mode: {{ 'test' if meta.test_mode else 'full' }}</li></ul>
-<img src="../charts/copernicus/observation_timeline.png" alt="Observation timeline">
-<h2>Observations</h2><table><thead><tr><th>Region</th><th>Date</th><th>Cloud %</th><th>ID</th></tr></thead><tbody>
-{% for row in rows %}<tr><td>{{ row.region }}</td><td>{{ row.datetime }}</td><td>{{ row.cloud_cover }}</td><td>{{ row.id }}</td></tr>{% endfor %}
-</tbody></table>
-<p>This report describes catalogue availability, not emergency alerts or direct measurements at the exact geographic poles.</p>
-</body></html>""")
+<p>
+<strong>Evidence class:</strong>
+OBSERVATION metadata returned by the official CDSE STAC catalogue.
+</p>
+<ul>
+<li>Run: {{ meta.run_at_utc }}</li>
+<li>Collection: <code>{{ meta.collection }}</code></li>
+<li>Date range: {{ meta.start_date }} – {{ meta.end_date }}</li>
+<li>Scenes: {{ meta.scene_count }}</li>
+<li>Mode: {{ 'test' if meta.test_mode else 'full' }}</li>
+</ul>
+<img
+  src="../charts/copernicus/observation_timeline.png"
+  alt="Observation timeline"
+>
+<h2>Observations</h2>
+<table>
+<thead>
+<tr><th>Region</th><th>Date</th><th>Cloud %</th><th>ID</th></tr>
+</thead>
+<tbody>
+{% for row in rows %}
+<tr>
+<td>{{ row.region }}</td>
+<td>{{ row.datetime }}</td>
+<td>{{ row.cloud_cover }}</td>
+<td>{{ row.id }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+<p>
+This report describes catalogue availability, not emergency alerts or direct
+measurements at the exact geographic poles.
+</p>
+</body>
+</html>
+"""
+    )
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(template.render(meta=metadata, rows=records), encoding="utf-8")
+    path.write_text(
+        template.render(meta=metadata, rows=records),
+        encoding="utf-8",
+    )
 
 
 def run(config_path: Path, test_mode: bool = False) -> dict[str, Any]:
     config = load_config(config_path)
     root = Path(config.get("output_root", "docs"))
-    limit = min(int(config.get("limit_per_region", 100)), 10 if test_mode else 100)
+    configured_limit = int(config.get("limit_per_region", 100))
+    limit = min(configured_limit, 10 if test_mode else 100)
     all_records: list[dict[str, Any]] = []
     region_summary: dict[str, Any] = {}
 
     for key, region in config["regions"].items():
         bbox = [float(value) for value in region["bbox"]]
         items = search_items(
-            config["stac_url"], config["collection"], bbox,
-            config["start_date"], config["end_date"],
-            float(config.get("cloud_cover_max", 100)), limit,
+            config["stac_url"],
+            config["collection"],
+            bbox,
+            config["start_date"],
+            config["end_date"],
+            float(config.get("cloud_cover_max", 100)),
+            limit,
         )
         records = [item_record(key, item) for item in items]
         all_records.extend(records)
         region_summary[key] = {
-            "name": region.get("name", key), "bbox": bbox, "scene_count": len(records)
+            "name": region.get("name", key),
+            "bbox": bbox,
+            "scene_count": len(records),
         }
 
     now = datetime.now(UTC).isoformat()
@@ -195,17 +277,26 @@ def run(config_path: Path, test_mode: bool = False) -> dict[str, Any]:
         "git_commit": git_commit(),
         "regions": region_summary,
         "limitations": [
-            "Configured regions are representative polar study areas, not exact 90-degree pole points.",
-            "This stage analyses catalogue metadata and scene availability, not pixel-level environmental change.",
+            (
+                "Configured regions are representative polar study areas, "
+                "not exact 90-degree pole points."
+            ),
+            (
+                "This stage analyses catalogue metadata and scene availability, "
+                "not pixel-level environmental change."
+            ),
         ],
     }
-    fingerprint = hashlib.sha256(json.dumps(all_records, sort_keys=True).encode()).hexdigest()
-    metadata["records_sha256"] = fingerprint
+    encoded_records = json.dumps(all_records, sort_keys=True).encode()
+    metadata["records_sha256"] = hashlib.sha256(encoded_records).hexdigest()
 
     data_dir = root / "data" / "copernicus"
     chart_path = root / "charts" / "copernicus" / "observation_timeline.png"
     report_path = root / "reports" / "copernicus-analysis.html"
-    write_json(data_dir / "latest_results.json", {"metadata": metadata, "observations": all_records})
+    write_json(
+        data_dir / "latest_results.json",
+        {"metadata": metadata, "observations": all_records},
+    )
     write_json(data_dir / "run_metadata.json", metadata)
     write_csv(data_dir / "observations.csv", all_records)
     make_chart(chart_path, all_records)
@@ -214,7 +305,9 @@ def run(config_path: Path, test_mode: bool = False) -> dict[str, Any]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Run the Copernicus CDSE STAC pipeline")
+    parser = argparse.ArgumentParser(
+        description="Run the Copernicus CDSE STAC pipeline"
+    )
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--test", action="store_true")
     args = parser.parse_args()
