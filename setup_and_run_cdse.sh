@@ -41,7 +41,11 @@ fi
 python -m pytest -q tests/test_cdse_pipeline.py
 python scripts/cdse/check_environment.py
 python scripts/cdse/check_cdse_connection.py
-python scripts/cdse/run_pipeline.py --config config/cdse.yaml $( [[ "$MODE" == "test" ]] && printf '%s' '--test' )
+PIPELINE_ARGS=(--config config/cdse.yaml)
+if [[ "$MODE" == "test" ]]; then
+  PIPELINE_ARGS+=(--test)
+fi
+python scripts/cdse/run_pipeline.py "${PIPELINE_ARGS[@]}"
 
 echo
 printf 'CDSE pipeline completed successfully.\nMode: %s\nLog: %s\nResults:\n' "$MODE" "$LOG"
