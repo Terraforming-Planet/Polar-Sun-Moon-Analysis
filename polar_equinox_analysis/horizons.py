@@ -36,7 +36,9 @@ class HorizonsClient:
     """Cached, retrying client for official NASA JPL Horizons ephemerides."""
 
     API_URL = "https://ssd.jpl.nasa.gov/api/horizons.api"
+    APP_URL = "https://ssd.jpl.nasa.gov/horizons/app.html#/"
     BODY_COMMANDS = {"Sun": "10", "Moon": "301"}
+    OBSERVER_QUANTITIES = "1,2,4,7,8,9,13,20,21,23,24,29,42,45,47,49"
     SOLAR_SYSTEM_COMMANDS = {
         "Mercury": "199",
         "Venus": "299",
@@ -64,6 +66,7 @@ class HorizonsClient:
         self.timeout_seconds = timeout_seconds
         self.force_download = force_download
         self.last_metadata: dict[str, object] = {}
+        self.last_text = ""
 
     def fetch_text(self, params: dict[str, Any]) -> str:
         """Return a validated response and record complete request provenance."""
@@ -73,7 +76,13 @@ class HorizonsClient:
         metadata_path = self.cache_dir / f"{cache_key}.json"
         if response_path.exists() and not self.force_download:
             text = response_path.read_text(encoding="utf-8")
-            self.last_metadata = self._metadata(text, params, cache_key, True, None)
+            self._validate_raw_response(text)
+            self.last_text = text
+            if metadata_path.exists():
+                self.last_metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+                self.last_metadata["cached"] = True
+            else:
+                self.last_metadata = self._metadata(text, params, cache_key, True, None)
             return text
 
         last_error: Exception | None = None
@@ -86,6 +95,7 @@ class HorizonsClient:
                 self._validate_raw_response(text)
                 elapsed = time.perf_counter() - started
                 response_path.write_text(text, encoding="utf-8")
+                self.last_text = text
                 self.last_metadata = self._metadata(
                     text, params, cache_key, False, elapsed, response.url
                 )
@@ -145,8 +155,8 @@ class HorizonsClient:
 
     def observer_ephemerides(
         self, body: str, observer: Observatory, timestamps: list[datetime]
-    ) -> list[dict[str, float]]:
-        """Fetch topocentric apparent declination and elevation at exact times."""
+    ) -> list[dict[str, object]]:
+        """Fetch a rich topocentric observer dataset at exact UTC times."""
         if not timestamps:
             return []
         tlist = " ".join(_quoted(self._format_time(value, seconds=True)) for value in timestamps)
@@ -157,26 +167,76 @@ class HorizonsClient:
             "TLIST": tlist,
             "TLIST_TYPE": _quoted("CAL"),
             "TIME_DIGITS": _quoted("SECONDS"),
-            "QUANTITIES": _quoted("2,4"),
+            "CAL_FORMAT": _quoted("BOTH"),
+            "EXTRA_PREC": _quoted("YES"),
+            "QUANTITIES": _quoted(self.OBSERVER_QUANTITIES),
         }
         rows = self._parse_csv_rows(self.fetch_text(params))
         if len(rows) != len(timestamps):
             raise HorizonsResponseError(
                 f"Expected {len(timestamps)} observer rows, received {len(rows)}"
             )
-        return [
-            {
-                "declination_deg": self._required_float(row, ["DEC_(a-app)", "DEC"]),
-                "apparent_altitude_deg": self._required_float(
-                    row, ["Elev_(a-app)", "Elev", "Elevation", "EL"]
-                ),
-            }
-            for row in rows
-        ]
+        return [self._observer_record(row) for row in rows]
+
+    def parse_observer_response(self, text: str) -> list[dict[str, object]]:
+        """Parse a manually downloaded Horizons observer-table response.
+
+        This supports verification through the interactive Horizons web application while using
+        the same validation and field mapping as automatic API downloads.
+        """
+        self._validate_raw_response(text)
+        return [self._observer_record(row) for row in self._parse_csv_rows(text)]
+
+    def _observer_record(self, row: dict[str, str]) -> dict[str, object]:
+        record: dict[str, object] = {
+            "timestamp_utc": self._row_time(row),
+            "julian_date": self._optional_float(row, ["JDTDB", "JDUT", "JD"]),
+            "astrometric_ra_deg": self._optional_float(row, ["R.A._(ICRF)", "R.A.___(ICRF)"]),
+            "astrometric_declination_deg": self._optional_float(
+                row, ["DEC_(ICRF)", "DEC"]
+            ),
+            "apparent_ra_deg": self._optional_float(row, ["R.A._(a-app)", "R.A._(a-appar)"]),
+            "declination_deg": self._required_float(row, ["DEC_(a-app)", "DEC"]),
+            "azimuth_deg": self._optional_float(row, ["Azi_(a-app)", "Azi____(a-app)", "AZ"]),
+            "apparent_altitude_deg": self._required_float(
+                row, ["Elev_(a-app)", "Elev", "Elevation", "EL"]
+            ),
+            "local_apparent_sidereal_time": self._optional_text(
+                row, ["L_Ap_Sid_Time", "Local_App_Sid_Time"]
+            ),
+            "airmass": self._optional_float(row, ["a-mass", "airmass"]),
+            "extinction_magnitude": self._optional_float(row, ["mag_ex", "extinction"]),
+            "visual_magnitude": self._optional_float(row, ["APmag", "V", "visual_magnitude"]),
+            "surface_brightness": self._optional_float(row, ["S-brt", "surface_brightness"]),
+            "angular_diameter_arcsec": self._optional_float(row, ["Ang-diam", "ang_diam"]),
+            "observer_range_au": self._optional_float(row, ["delta", "range"]),
+            "range_rate_km_s": self._optional_float(row, ["deldot", "range_rate"]),
+            "light_time_minutes": self._optional_float(row, ["1-way_down_LT", "light_time"]),
+            "solar_elongation_deg": self._optional_float(row, ["S-O-T", "elong"]),
+            "elongation_direction": self._optional_text(row, ["/r", "elong_flag"]),
+            "phase_angle_deg": self._optional_float(row, ["S-T-O", "phase"]),
+            "constellation": self._optional_text(row, ["Cnst", "constellation"]),
+            "local_hour_angle_hours": self._optional_float(row, ["L_Ap_Hour_Ang", "hour_angle"]),
+            "inertial_apparent_ra_deg": self._optional_float(
+                row, ["RA_(ICRF-a-app)", "RA_(ICRF-a-apparnt)"]
+            ),
+            "inertial_apparent_declination_deg": self._optional_float(
+                row, ["DEC_(ICRF-a-app)", "DEC"]
+            ),
+            "sky_motion_arcsec_min": self._optional_float(row, ["Sky_motion", "sky_motion"]),
+            "sky_motion_position_angle_deg": self._optional_float(
+                row, ["Sky_mot_PA", "sky_motion_pa"]
+            ),
+            "relative_velocity_angle_deg": self._optional_float(
+                row, ["RelVel-ANG", "relative_velocity_angle"]
+            ),
+            "dut1_seconds": self._optional_float(row, ["DUT1", "UT1-UTC"]),
+        }
+        return record
 
     def observer_ephemeris(
         self, body: str, observer: Observatory, timestamp: datetime
-    ) -> dict[str, float]:
+    ) -> dict[str, object]:
         """Compatibility wrapper for one observation."""
         return self.observer_ephemerides(body, observer, [timestamp])[0]
 
@@ -277,19 +337,43 @@ class HorizonsClient:
         return re.sub(r"[^a-z0-9]", "", name.lower())
 
     @classmethod
-    def _required_float(cls, row: dict[str, str], candidates: list[str]) -> float:
+    def _matching_values(cls, row: dict[str, str], candidates: list[str]) -> list[str]:
         normalized = {cls._normalize(key): value for key, value in row.items()}
+        values: list[str] = []
         for candidate in candidates:
             wanted = cls._normalize(candidate)
-            matches = [key for key in normalized if key == wanted or key.startswith(wanted)]
-            for key in matches:
-                value = normalized[key]
-                if value not in {"", "n.a."}:
-                    try:
-                        return float(value)
-                    except ValueError as exc:
-                        raise HorizonsResponseError(f"Non-numeric {candidate}: {value}") from exc
+            for key, value in normalized.items():
+                if key == wanted or key.startswith(wanted):
+                    values.append(value)
+        return values
+
+    @classmethod
+    def _required_float(cls, row: dict[str, str], candidates: list[str]) -> float:
+        for value in cls._matching_values(row, candidates):
+            if value not in {"", "n.a."}:
+                try:
+                    return float(value)
+                except ValueError as exc:
+                    raise HorizonsResponseError(f"Non-numeric {candidates[0]}: {value}") from exc
         raise HorizonsResponseError(f"Required quantity unavailable: {candidates}; row={row}")
+
+    @classmethod
+    def _optional_float(cls, row: dict[str, str], candidates: list[str]) -> float | None:
+        for value in cls._matching_values(row, candidates):
+            if value in {"", "n.a."}:
+                continue
+            try:
+                return float(value)
+            except ValueError:
+                continue
+        return None
+
+    @classmethod
+    def _optional_text(cls, row: dict[str, str], candidates: list[str]) -> str | None:
+        for value in cls._matching_values(row, candidates):
+            if value not in {"", "n.a."}:
+                return value
+        return None
 
     @classmethod
     def _row_time(cls, row: dict[str, str]) -> datetime:
@@ -300,7 +384,7 @@ class HorizonsClient:
         if value is None:
             raise HorizonsResponseError(f"Timestamp unavailable in row: {row}")
         value = value.strip()
-        for pattern in ("%Y-%b-%d %H:%M:%S.%f", "%Y-%b-%d %H:%M"):
+        for pattern in ("%Y-%b-%d %H:%M:%S.%f", "%Y-%b-%d %H:%M:%S", "%Y-%b-%d %H:%M"):
             try:
                 return datetime.strptime(value, pattern).replace(tzinfo=UTC)
             except ValueError:
