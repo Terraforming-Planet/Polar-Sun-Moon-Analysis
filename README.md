@@ -25,23 +25,73 @@ The previous implementation could not retrieve live observations. It sent unquot
 parameters and requested `QUANTITIES='4'` while trying to read declination. In Horizons observer
 tables:
 
+- quantity `1` is astrometric right ascension and declination;
 - quantity `2` is apparent right ascension and declination;
 - quantity `4` is apparent azimuth and elevation;
-- quantity `20` is observer range and range rate.
+- quantity `7` is local apparent sidereal time;
+- quantities `8` and `9` provide airmass/extinction and visual magnitude/surface brightness;
+- quantity `13` is angular diameter;
+- quantities `20` and `21` provide observer range/range-rate and one-way light-time;
+- quantities `23` and `24` provide elongation and phase angle;
+- quantity `29` is constellation;
+- quantity `42` is local apparent hour angle;
+- quantity `45` is inertial apparent RA/DEC;
+- quantity `47` is sky motion;
+- quantity `49` is DUT1.
 
-The corrected pipeline uses `QUANTITIES='2'` for the geocentric Sun zero crossing and
-`QUANTITIES='2,4'` for polar declination and elevation. All string and time parameters are quoted
-as required by the Horizons batch interface. CSV parsing uses Python's `csv` module and tests
-contain a small response excerpt captured from the real API.
+The equinox finder still uses `QUANTITIES='2'` for the geocentric Sun zero crossing. Polar
+observations use the expanded set
+`1,2,4,7,8,9,13,20,21,23,24,29,42,45,47,49`, decimal-degree angles, calendar and Julian dates,
+extra precision and airless topocentric coordinates. Optional values returned by Horizons as
+`n.a.` are stored as null; required altitude and declination values are never fabricated.
+
+All string and time parameters are quoted as required by the Horizons batch interface. CSV
+parsing uses Python's `csv` module and tests contain a small response excerpt captured from the
+real API.
 
 Official documentation:
 
 - <https://ssd-api.jpl.nasa.gov/doc/horizons.html>
 - <https://ssd.jpl.nasa.gov/horizons/manual.html>
+- manual verification interface: <https://ssd.jpl.nasa.gov/horizons/app.html#/>
 
 Exact geodetic latitudes `+90°` and `-90°` were verified against the live API and are accepted.
 The pipeline uses airless apparent coordinates, so it does not invent local polar weather for an
 atmospheric-refraction correction.
+
+## Automatic and manual verification
+
+Automatic collection uses the official GET API. A response downloaded manually from the Horizons
+web application can be parsed with `HorizonsClient.parse_observer_response(text)`. Both paths use
+the same response validation and field mapping, making individual observations easy to verify
+without maintaining two scientific pipelines.
+
+## Reproducible archive
+
+Every run keeps both the untouched NASA response and normalized observations:
+
+```text
+outputs/archive/
+├── raw/
+│   ├── north-pole/
+│   │   ├── sun.txt
+│   │   ├── sun.metadata.json
+│   │   ├── moon.txt
+│   │   └── moon.metadata.json
+│   └── south-pole/
+└── processed/
+    └── 2006/
+        ├── spring/
+        │   ├── north-pole/sun.json
+        │   ├── north-pole/moon.json
+        │   ├── south-pole/sun.json
+        │   └── south-pole/moon.json
+        └── autumn/
+```
+
+Raw metadata contains the exact request parameters, retrieval time, cache key, response SHA-256,
+API version, execution time and source URL. Processed records retain those provenance fields plus
+observer coordinates, reference-frame notes and quality flags.
 
 ## Verified archive
 
