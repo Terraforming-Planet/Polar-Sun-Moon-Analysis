@@ -1,0 +1,31 @@
+stac_url: https://stac.dataspace.copernicus.eu/v1
+start_date: '2024-06-01'
+end_date: '2024-06-30'
+limit_per_query: 20
+cloud_cover_max: 60
+
+# Collections are validated dynamically against the official STAC /collections endpoint.
+collections:
+  - sentinel-1-grd
+  - sentinel-2-l2a
+
+# First operational tiles. More tiles can be added without changing Python code.
+regions:
+  europe_flood_watch:
+    name: Central Europe flood watch
+    bbox: [5.0, 45.0, 25.0, 55.0]
+    hazards: [flood, soil_moisture, land_change]
+  mediterranean_fire_watch:
+    name: Mediterranean wildfire watch
+    bbox: [-10.0, 30.0, 40.0, 46.0]
+    hazards: [wildfire, drought, vegetation]
+  svalbard_ice_watch:
+    name: Svalbard ice and snow watch
+    bbox: [14.0, 77.0, 25.0, 80.5]
+    hazards: [ice, snow, water]
+  antarctic_peninsula_watch:
+    name: Antarctic Peninsula watch
+    bbox: [-64.5, -65.5, -57.0, -61.0]
+    hazards: [ice, snow, water]
+
+output_path: docs/data/copernicus/global_catalog_summary.json

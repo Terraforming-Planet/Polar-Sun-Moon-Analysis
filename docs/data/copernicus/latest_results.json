@@ -1,0 +1,76 @@
+{
+  "metadata": {
+    "run_at_utc": "2026-07-24T17:03:40.494748+00:00",
+    "source": "Copernicus Data Space Ecosystem STAC API",
+    "stac_url": "https://stac.dataspace.copernicus.eu/v1",
+    "collection": "sentinel-2-l2a",
+    "start_date": "2024-06-01",
+    "end_date": "2024-06-30",
+    "cloud_cover_max": 40,
+    "scene_count": 3,
+    "test_mode": false,
+    "git_commit": "b1d57c2b55c84094f5c4bc7d318c9d411c953f70",
+    "regions": {
+      "north": {
+        "name": "Svalbard test region",
+        "bbox": [
+          14.0,
+          77.0,
+          25.0,
+          80.5
+        ],
+        "scene_count": 3
+      },
+      "south": {
+        "name": "Antarctic Peninsula test region",
+        "bbox": [
+          -64.5,
+          -65.5,
+          -57.0,
+          -61.0
+        ],
+        "scene_count": 0
+      }
+    },
+    "limitations": [
+      "Configured regions are representative polar study areas, not exact 90-degree pole points.",
+      "This stage analyses catalogue metadata and scene availability, not pixel-level environmental change."
+    ],
+    "records_sha256": "0e066193c8c8d8a4e61268a1a890e5c7ac6b8c49e3e45ead05a04e49355a3669"
+  },
+  "observations": [
+    {
+      "region": "north",
+      "id": "S2B_MSIL2A_20240601T114629_N0510_R023_T35XMH_20240601T130056",
+      "datetime": "2024-06-01T11:46:29.024000Z",
+      "cloud_cover": 38.9,
+      "platform": "sentinel-2b",
+      "constellation": "sentinel-2",
+      "collection": "sentinel-2-l2a",
+      "preview_url": "https://datahub.creodias.eu/odata/v1/Assets(96f07f40-9d20-4c56-b77c-f2089db47f99)/$value",
+      "self_url": "https://stac.dataspace.copernicus.eu/v1/collections/sentinel-2-l2a/items/S2B_MSIL2A_20240601T114629_N0510_R023_T35XMH_20240601T130056"
+    },
+    {
+      "region": "north",
+      "id": "S2B_MSIL2A_20240601T114629_N0510_R023_T35XMG_20240601T130056",
+      "datetime": "2024-06-01T11:46:29.024000Z",
+      "cloud_cover": 19.64,
+      "platform": "sentinel-2b",
+      "constellation": "sentinel-2",
+      "collection": "sentinel-2-l2a",
+      "preview_url": "https://datahub.creodias.eu/odata/v1/Assets(97c78ae2-65e7-482a-9433-b9d5f32cbbe6)/$value",
+      "self_url": "https://stac.dataspace.copernicus.eu/v1/collections/sentinel-2-l2a/items/S2B_MSIL2A_20240601T114629_N0510_R023_T35XMG_20240601T130056"
+    },
+    {
+      "region": "north",
+      "id": "S2B_MSIL2A_20240601T114629_N0510_R023_T35XMF_20240601T130056",
+      "datetime": "2024-06-01T11:46:29.024000Z",
+      "cloud_cover": 39.78,
+      "platform": "sentinel-2b",
+      "constellation": "sentinel-2",
+      "collection": "sentinel-2-l2a",
+      "preview_url": "https://datahub.creodias.eu/odata/v1/Assets(45647b21-8eb0-4a78-ac75-31db6c1c3d7c)/$value",
+      "self_url": "https://stac.dataspace.copernicus.eu/v1/collections/sentinel-2-l2a/items/S2B_MSIL2A_20240601T114629_N0510_R023_T35XMF_20240601T130056"
+    }
+  ]
+}

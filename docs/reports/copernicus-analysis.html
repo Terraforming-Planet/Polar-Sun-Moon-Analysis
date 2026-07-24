@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Copernicus CDSE analysis</title>
+<style>
+body {
+  font-family: system-ui, sans-serif;
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  line-height: 1.5;
+}
+table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+th, td { border: 1px solid #ccc; padding: .45rem; text-align: left; }
+code { background: #eee; padding: .1rem .25rem; }
+img { max-width: 100%; }
+</style>
+</head>
+<body>
+<h1>Copernicus CDSE polar-region catalogue analysis</h1>
+<p>
+<strong>Evidence class:</strong>
+OBSERVATION metadata returned by the official CDSE STAC catalogue.
+</p>
+<ul>
+<li>Run: 2026-07-24T17:03:40.494748+00:00</li>
+<li>Collection: <code>sentinel-2-l2a</code></li>
+<li>Date range: 2024-06-01 – 2024-06-30</li>
+<li>Scenes: 3</li>
+<li>Mode: full</li>
+</ul>
+<img
+  src="../charts/copernicus/observation_timeline.png"
+  alt="Observation timeline"
+>
+<h2>Observations</h2>
+<table>
+<thead>
+<tr><th>Region</th><th>Date</th><th>Cloud %</th><th>ID</th></tr>
+</thead>
+<tbody>
+
+<tr>
+<td>north</td>
+<td>2024-06-01T11:46:29.024000Z</td>
+<td>38.9</td>
+<td>S2B_MSIL2A_20240601T114629_N0510_R023_T35XMH_20240601T130056</td>
+</tr>
+
+<tr>
+<td>north</td>
+<td>2024-06-01T11:46:29.024000Z</td>
+<td>19.64</td>
+<td>S2B_MSIL2A_20240601T114629_N0510_R023_T35XMG_20240601T130056</td>
+</tr>
+
+<tr>
+<td>north</td>
+<td>2024-06-01T11:46:29.024000Z</td>
+<td>39.78</td>
+<td>S2B_MSIL2A_20240601T114629_N0510_R023_T35XMF_20240601T130056</td>
+</tr>
+
+</tbody>
+</table>
+<p>
+This report describes catalogue availability, not emergency alerts or direct
+measurements at the exact geographic poles.
+</p>
+</body>
+</html>
