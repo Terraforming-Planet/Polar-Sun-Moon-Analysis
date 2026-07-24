@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Copernicus — panel wyników</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, system-ui, sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #040914; color: #edf8ff; }
+    header { padding: 1.2rem; border-bottom: 1px solid #24435f; background: #081525; }
+    header a { color: #70d9ff; text-decoration: none; }
+    h1 { margin: .45rem 0; font-size: clamp(1.6rem,5vw,2.6rem); }
+    header p { max-width: 850px; color: #b7cad9; line-height: 1.55; }
+    main { width: min(1180px,94vw); margin: 1.2rem auto 3rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 1rem; }
+    .card { display: block; padding: 1rem; border: 1px solid #244866; border-radius: 14px; background: #0a1929; color: inherit; text-decoration: none; }
+    .card:hover { border-color: #41ceff; transform: translateY(-1px); }
+    .card span { color: #5ed8ff; font-size: .78rem; font-weight: 800; letter-spacing: .08em; }
+    .card h2 { margin: .45rem 0; font-size: 1.18rem; }
+    .card p { margin: 0; color: #aebfce; line-height: 1.45; }
+    .preview { margin-top: 1rem; padding: 1rem; border: 1px solid #244866; border-radius: 14px; background: #071321; }
+    .preview img { width: 100%; max-height: 520px; object-fit: contain; border-radius: 8px; background: #02060b; }
+    .warning { margin-top: 1rem; padding: .9rem 1rem; border-left: 4px solid #f4ba4b; background: #2c220f; color: #ffe1a1; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../">← Terra Observation</a>
+  <h1>Panel wyników Copernicus</h1>
+  <p>Publiczne wyniki przetwarzania danych CDSE: monitoring katalogu, raport analizy oraz kandydacka warstwa zmian radarowych Sentinel-1. Linki prowadzą do plików faktycznie publikowanych razem z aplikacją.</p>
+</header>
+<main>
+  <section class="grid">
+    <a class="card" href="../flood-map/"><span>SENTINEL-1 SAR</span><h2>Interaktywna mapa zmian</h2><p>Porównanie mediany sygnału radarowego przed i po badanym okresie oraz warstwa różnicowa.</p></a>
+    <a class="card" href="../reports/copernicus-analysis.html"><span>RAPORT HTML</span><h2>Analiza Copernicus</h2><p>Podsumowanie wykonania, dostępności obserwacji i wygenerowanych wyników.</p></a>
+    <a class="card" href="../charts/copernicus/observation_timeline.png"><span>WYKRES</span><h2>Oś czasu obserwacji</h2><p>Graficzne zestawienie obserwacji zwróconych przez katalog CDSE.</p></a>
+    <a class="card" href="../data/copernicus/latest_results.json"><span>OPEN DATA</span><h2>Najnowsze wyniki JSON</h2><p>Dane maszynowe do dalszej analizy, integracji i kontroli pochodzenia.</p></a>
+    <a class="card" href="../data/copernicus/global_catalog_summary.json"><span>GLOBAL MONITOR</span><h2>Podsumowanie katalogu</h2><p>Dostępność scen Sentinel dla skonfigurowanych regionów monitorowania.</p></a>
+    <a class="card" href="../data/copernicus/observations.csv"><span>CSV</span><h2>Obserwacje katalogowe</h2><p>Tabela obserwacji gotowa do pobrania i analizy w arkuszu lub Pythonie.</p></a>
+  </section>
+  <section class="preview">
+    <h2>Podgląd osi obserwacji</h2>
+    <img src="../charts/copernicus/observation_timeline.png" alt="Oś czasu obserwacji Copernicus">
+  </section>
+  <div class="warning"><strong>Ograniczenie naukowe:</strong> warstwa radarowa pokazuje zmianę odbicia, a nie automatycznie potwierdzony zasięg powodzi. Wymaga progowania, maski stałych wód i walidacji referencyjnej.</div>
+</main>
+</body>
+</html>
