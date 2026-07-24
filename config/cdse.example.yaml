@@ -1,0 +1,14 @@
+stac_url: https://stac.dataspace.copernicus.eu/v1
+collection: sentinel-2-l2a
+start_date: '2024-06-01'
+end_date: '2024-06-30'
+cloud_cover_max: 40
+limit_per_region: 100
+regions:
+  north:
+    name: Svalbard test region
+    bbox: [14.0, 77.0, 25.0, 80.5]
+  south:
+    name: Antarctic Peninsula test region
+    bbox: [-64.5, -65.5, -57.0, -61.0]
+output_root: docs
