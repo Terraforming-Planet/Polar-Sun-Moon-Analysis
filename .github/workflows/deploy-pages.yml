@@ -43,6 +43,13 @@ jobs:
         working-directory: web
       - run: npm run build
         working-directory: web
+      - name: Add Copernicus result pages to the deployment
+        run: |
+          mkdir -p web/dist/flood-map web/dist/reports web/dist/charts/copernicus web/dist/data/copernicus
+          cp -R docs/flood-map/. web/dist/flood-map/
+          cp -R docs/reports/. web/dist/reports/
+          cp -R docs/charts/copernicus/. web/dist/charts/copernicus/
+          cp -R docs/data/copernicus/. web/dist/data/copernicus/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
