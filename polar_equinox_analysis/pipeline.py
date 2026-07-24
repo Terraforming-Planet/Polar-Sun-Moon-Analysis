@@ -7,6 +7,7 @@ import logging
 from dataclasses import asdict
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 from .analysis import scientific_summary, summarize_statistics
 from .equinox import EquinoxFinder
@@ -18,7 +19,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class PolarEquinoxPipeline:
-    """Download, validate, analyze, and export JPL-derived observations."""
+    """Download, validate, archive, analyze, and export JPL-derived observations."""
 
     def __init__(
         self,
@@ -41,6 +42,7 @@ class PolarEquinoxPipeline:
         include_future: bool = False,
     ) -> dict[str, Path]:
         self.output_dir.mkdir(parents=True, exist_ok=True)
+        archive_dir = self.output_dir / "archive"
         events = self.finder.events(start_year, end_year, include_future)
         records: list[dict[str, object]] = []
         timestamps = [event.timestamp_utc for event in events]
@@ -48,23 +50,37 @@ class PolarEquinoxPipeline:
             for body in ("Sun", "Moon"):
                 values = self.client.observer_ephemerides(body, observer, timestamps)
                 provenance = dict(self.client.last_metadata)
+                self._archive_raw_response(archive_dir, observer, body, provenance)
                 for event, observation in zip(events, values, strict=True):
-                    records.append(
+                    record = (
                         asdict(event)
                         | {
                             "pole": observer.name,
                             "requested_latitude": observer.latitude,
                             "effective_latitude": observer.latitude,
+                            "longitude_deg": observer.longitude,
+                            "elevation_km": observer.elevation_km,
+                            "reference_frame": "ICRF / true equator and equinox of date",
+                            "apparent_correction": "AIRLESS",
                             "body": body,
                             **observation,
                             "source_url": self.client.API_URL,
+                            "manual_verification_url": self.client.APP_URL,
                             "response_sha256": provenance.get("response_sha256"),
                             "api_version": provenance.get("api_version"),
+                            "retrieved_at_utc": provenance.get("retrieved_at_utc"),
+                            "cache_key": provenance.get("cache_key"),
                             "record_kind": "ephemeris",
                             "future_event": event.timestamp_utc > datetime.now(UTC),
-                            "quality_flags": "validated_horizons_response",
-                        },
+                            "quality_flags": [
+                                "validated_horizons_response",
+                                "official_nasa_jpl_horizons",
+                                "airless_topocentric_coordinates",
+                            ],
+                        }
                     )
+                    records.append(record)
+                    self._archive_processed_record(archive_dir, record)
         observations = observations_to_dataframe(records).sort_values(
             ["timestamp_utc", "pole", "body"]
         )
@@ -81,8 +97,52 @@ class PolarEquinoxPipeline:
             "include_future": include_future,
             "records": len(observations),
             "source": self.client.API_URL,
+            "manual_verification": self.client.APP_URL,
+            "observer_quantities": self.client.OBSERVER_QUANTITIES,
+            "archive_layout": {
+                "raw": "archive/raw/<pole>/<body>.txt and .metadata.json",
+                "processed": "archive/processed/<year>/<season>/<pole>/<body>.json",
+            },
         }
         (self.output_dir / "manifest.json").write_text(
             json.dumps(manifest, indent=2), encoding="utf-8"
         )
-        return {"pdf_report": pdf, "output_dir": self.output_dir}
+        return {"pdf_report": pdf, "output_dir": self.output_dir, "archive_dir": archive_dir}
+
+    def _archive_raw_response(
+        self,
+        archive_dir: Path,
+        observer: Observatory,
+        body: str,
+        provenance: dict[str, object],
+    ) -> None:
+        slug = observer.name.lower().replace(" ", "-")
+        target = archive_dir / "raw" / slug
+        target.mkdir(parents=True, exist_ok=True)
+        (target / f"{body.lower()}.txt").write_text(self.client.last_text, encoding="utf-8")
+        (target / f"{body.lower()}.metadata.json").write_text(
+            json.dumps(provenance, indent=2, sort_keys=True, default=self._json_default),
+            encoding="utf-8",
+        )
+
+    def _archive_processed_record(self, archive_dir: Path, record: dict[str, object]) -> None:
+        pole = str(record["pole"]).lower().replace(" ", "-")
+        body = str(record["body"]).lower()
+        target = (
+            archive_dir
+            / "processed"
+            / str(record["year"])
+            / str(record["season"])
+            / pole
+        )
+        target.mkdir(parents=True, exist_ok=True)
+        (target / f"{body}.json").write_text(
+            json.dumps(record, indent=2, sort_keys=True, default=self._json_default),
+            encoding="utf-8",
+        )
+
+    @staticmethod
+    def _json_default(value: Any) -> str:
+        if isinstance(value, datetime):
+            return value.astimezone(UTC).isoformat()
+        return str(value)
