@@ -6,8 +6,42 @@
     <meta name="theme-color" content="#040914" />
     <meta name="description" content="3D Earth and polar observation platform using NASA and ESA data" />
     <title>Terra Observation System</title>
+    <style>
+      .result-nav {
+        position: relative;
+        z-index: 50;
+        display: flex;
+        gap: .55rem;
+        align-items: center;
+        overflow-x: auto;
+        padding: .7rem 1rem;
+        background: #07111f;
+        border-bottom: 1px solid #1d3854;
+        font-family: Inter, system-ui, sans-serif;
+      }
+      .result-nav strong { color: #8ddcff; white-space: nowrap; margin-right: .25rem; }
+      .result-nav a {
+        color: #e8f5ff;
+        text-decoration: none;
+        white-space: nowrap;
+        padding: .48rem .72rem;
+        border: 1px solid #2a4d6b;
+        border-radius: .5rem;
+        background: #0d2135;
+      }
+      .result-nav a:hover, .result-nav a:focus { border-color: #42c9ff; background: #12314d; }
+      .result-nav a.primary-link { background: #0d5f7c; border-color: #34cfff; font-weight: 700; }
+    </style>
   </head>
   <body>
+    <nav class="result-nav" aria-label="Wyniki Copernicus">
+      <strong>Copernicus:</strong>
+      <a class="primary-link" href="./copernicus/">Panel wyników</a>
+      <a href="./flood-map/">Mapa Sentinel-1</a>
+      <a href="./reports/copernicus-analysis.html">Raport analizy</a>
+      <a href="./charts/copernicus/observation_timeline.png">Oś obserwacji</a>
+      <a href="./data/copernicus/latest_results.json">Dane JSON</a>
+    </nav>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
