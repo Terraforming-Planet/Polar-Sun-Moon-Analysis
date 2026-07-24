@@ -23,23 +23,40 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
+          cache-dependency-path: |
+            requirements.txt
+            requirements-cdse.txt
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
+          python -m pip install -r requirements.txt -r requirements-cdse.txt
+          python -m pip install "PyYAML>=6.0" "types-PyYAML>=6.0" "Jinja2>=3.1"
+          python -m pip check
+          python -c "import jinja2, matplotlib, requests, yaml; print('CDSE runtime imports OK')"
+          python -c "import importlib.metadata as m; print('types-PyYAML', m.version('types-PyYAML'))"
 
       - name: Ruff lint
         run: python -m ruff check .
 
       - name: Mypy type check
-        run: python -m mypy polar_equinox_analysis terra_hazards tests
+        run: python -m mypy polar_equinox_analysis terra_hazards
+
+      - name: Validate CDSE Python modules
+        run: |
+          python -m compileall scripts/cdse
+          python -c "from scripts.cdse.run_pipeline import load_config, validate_bbox; validate_bbox([14.0, 77.0, 25.0, 80.5]); print('CDSE modules OK')"
 
       - name: Pytest
         run: python -m pytest -q
 
       - name: Compile Python modules
-        run: python -m compileall polar_equinox_analysis terra_hazards tests
+        run: |
+          python -m compileall \
+            polar_equinox_analysis \
+            terra_hazards \
+            scripts/cdse \
+            tests
 
       - uses: actions/setup-node@v4
         with:
