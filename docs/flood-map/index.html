@@ -38,17 +38,23 @@
   const data = await response.json();
   const change = data.layers.change;
   const map = L.map('map').fitBounds(change.bounds);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  const streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
 
-  const before = L.imageOverlay('./assets/before.png', data.layers.before.bounds, { opacity: 0.78 });
-  const after = L.imageOverlay('./assets/after.png', data.layers.after.bounds, { opacity: 0.78 });
-  const changeLayer = L.imageOverlay('./assets/change.png', change.bounds, { opacity: 0.82 }).addTo(map);
+  const before = L.imageOverlay('./assets/before.png', data.layers.before.bounds, {
+    opacity: 0.78
+  });
+  const after = L.imageOverlay('./assets/after.png', data.layers.after.bounds, {
+    opacity: 0.78
+  });
+  const changeLayer = L.imageOverlay('./assets/change.png', change.bounds, {
+    opacity: 0.82
+  }).addTo(map);
 
   L.control.layers(
-    { 'OpenStreetMap': map._layers[Object.keys(map._layers)[0]] },
+    { 'OpenStreetMap': streets },
     {
       'Before — median radar image': before,
       'After — median radar image': after,
