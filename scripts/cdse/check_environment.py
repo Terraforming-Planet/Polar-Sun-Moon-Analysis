@@ -19,8 +19,6 @@ def main() -> int:
         "disk_free_gib": round(usage.free / 1024**3, 2),
     }
     print(json.dumps(report, indent=2))
-    if sys.version_info < (3, 10):
-        raise SystemExit("Python 3.10 or newer is required")
     if usage.free < 512 * 1024**2:
         raise SystemExit("Less than 512 MiB of free disk space")
     return 0
