@@ -31,16 +31,17 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt -r requirements-cdse.txt
+          python -m pip install "PyYAML>=6.0" "types-PyYAML>=6.0" "Jinja2>=3.1" "matplotlib-stubs>=0.2"
           python -m pip check
-          python -c "import jinja2, matplotlib, requests, yaml; print('CDSE imports OK')"
-          python -c "import importlib.metadata as m; print('types-PyYAML', m.version('types-PyYAML'))"
+          python -c "import jinja2, matplotlib, requests, yaml; print('CDSE runtime imports OK')"
+          python -c "import importlib.metadata as m; print('types-PyYAML', m.version('types-PyYAML')); print('matplotlib-stubs', m.version('matplotlib-stubs'))"
 
       - name: Ruff lint
         run: python -m ruff check .
 
       - name: Mypy type check
         run: |
-          python -m mypy \
+          python -m mypy --config-file mypy.ini \
             polar_equinox_analysis \
             terra_hazards \
             scripts/cdse \
