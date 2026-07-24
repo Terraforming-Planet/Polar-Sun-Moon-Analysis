@@ -15,3 +15,10 @@ if [[ ! -f config/flood_detection.yaml ]]; then
 fi
 
 python scripts/cdse/run_flood_detection.py --config config/flood_detection.yaml
+python scripts/cdse/publish_flood_map.py
+
+echo
+echo "Flood analysis and web map completed."
+echo "Map: docs/flood-map/index.html"
+echo "Assets: docs/flood-map/assets/"
+echo "For local preview: python -m http.server 8000 --directory docs"
