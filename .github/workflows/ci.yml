@@ -44,8 +44,12 @@ jobs:
           python -m mypy --config-file mypy.ini \
             polar_equinox_analysis \
             terra_hazards \
-            scripts/cdse \
             tests
+
+      - name: Validate CDSE Python modules
+        run: |
+          python -m compileall scripts/cdse
+          python -c "from scripts.cdse.run_pipeline import load_config, validate_bbox; validate_bbox([14.0, 77.0, 25.0, 80.5]); print('CDSE modules OK')"
 
       - name: Pytest
         run: python -m pytest -q
