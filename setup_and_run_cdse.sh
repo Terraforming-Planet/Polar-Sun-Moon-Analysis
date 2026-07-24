@@ -45,8 +45,22 @@ PIPELINE_ARGS=(--config config/cdse.yaml)
 if [[ "$MODE" == "test" ]]; then
   PIPELINE_ARGS+=(--test)
 fi
-python scripts/cdse/run_pipeline.py "${PIPELINE_ARGS[@]}"
+
+MAX_ATTEMPTS=5
+attempt=1
+until python scripts/cdse/run_pipeline.py "${PIPELINE_ARGS[@]}"; do
+  if (( attempt >= MAX_ATTEMPTS )); then
+    echo "CDSE STAC pipeline failed after $MAX_ATTEMPTS attempts." >&2
+    echo "The service returned repeated transient gateway/server errors." >&2
+    exit 1
+  fi
+  delay=$((attempt * 20))
+  echo "CDSE STAC request failed on attempt $attempt/$MAX_ATTEMPTS."
+  echo "Retrying automatically in ${delay}s..."
+  sleep "$delay"
+  attempt=$((attempt + 1))
+done
 
 echo
-printf 'CDSE pipeline completed successfully.\nMode: %s\nLog: %s\nResults:\n' "$MODE" "$LOG"
+printf 'CDSE pipeline completed successfully.\nMode: %s\nAttempts: %s\nLog: %s\nResults:\n' "$MODE" "$attempt" "$LOG"
 find docs/data/copernicus docs/charts/copernicus docs/reports -maxdepth 2 -type f -print | sort
