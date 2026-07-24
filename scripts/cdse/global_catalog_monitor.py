@@ -6,6 +6,7 @@ import time
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote
 
 import requests
 import yaml
@@ -65,16 +66,19 @@ def request_json(
     raise RuntimeError(f"Request failed after {attempts} attempts: {url}") from last_error
 
 
-def available_collections(stac_url: str) -> set[str]:
-    body = request_json("GET", f"{stac_url.rstrip('/')}/collections")
-    collections = body.get("collections", [])
-    if not isinstance(collections, list):
-        raise RuntimeError("STAC collections response is malformed")
-    return {
-        str(item["id"])
-        for item in collections
-        if isinstance(item, dict) and item.get("id")
-    }
+def collection_exists(stac_url: str, collection_id: str) -> bool:
+    """Verify a collection directly instead of trusting one paginated listing page."""
+    url = f"{stac_url.rstrip('/')}/collections/{quote(collection_id, safe='')}"
+    try:
+        body = request_json("GET", url)
+    except RuntimeError as exc:
+        cause = exc.__cause__
+        if isinstance(cause, requests.HTTPError):
+            response = cause.response
+            if response is not None and response.status_code == 404:
+                return False
+        raise
+    return body.get("id") == collection_id
 
 
 def search_count(
@@ -92,13 +96,21 @@ def search_count(
         "bbox": bbox,
         "datetime": f"{start_date}T00:00:00Z/{end_date}T23:59:59Z",
         "limit": limit,
+        "fields": {
+            "include": [
+                "id",
+                "collection",
+                "properties.datetime",
+                "properties.eo:cloud_cover",
+            ]
+        },
     }
     body = request_json("POST", f"{stac_url.rstrip('/')}/search", payload=payload)
     features = body.get("features", [])
     if not isinstance(features, list):
         raise RuntimeError("STAC search response is malformed")
 
-    accepted = []
+    accepted: list[dict[str, Any]] = []
     for feature in features:
         if not isinstance(feature, dict):
             continue
@@ -126,9 +138,14 @@ def run(config_path: Path) -> dict[str, Any]:
     config = load_config(config_path)
     stac_url = str(config["stac_url"])
     configured = [str(value) for value in config["collections"]]
-    available = available_collections(stac_url)
-    enabled = [value for value in configured if value in available]
-    unavailable = [value for value in configured if value not in available]
+
+    enabled: list[str] = []
+    unavailable: list[str] = []
+    for collection_id in configured:
+        if collection_exists(stac_url, collection_id):
+            enabled.append(collection_id)
+        else:
+            unavailable.append(collection_id)
 
     results: dict[str, Any] = {}
     for region_id, region in config["regions"].items():
