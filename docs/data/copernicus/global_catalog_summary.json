@@ -1,0 +1,148 @@
+{
+  "run_at_utc": "2026-07-24T17:46:07.151270+00:00",
+  "source": "Copernicus Data Space Ecosystem STAC API",
+  "scope": "catalogue availability foundation",
+  "start_date": "2024-06-01",
+  "end_date": "2024-06-30",
+  "enabled_collections": [
+    "sentinel-1-grd",
+    "sentinel-2-l2a"
+  ],
+  "unavailable_configured_collections": [],
+  "regions": {
+    "europe_flood_watch": {
+      "name": "Central Europe flood watch",
+      "bbox": [
+        5.0,
+        45.0,
+        25.0,
+        55.0
+      ],
+      "hazards": [
+        "flood",
+        "soil_moisture",
+        "land_change"
+      ],
+      "collections": {
+        "sentinel-1-grd": {
+          "returned_scene_count": 20,
+          "observation_dates": [
+            "2024-06-29",
+            "2024-06-30"
+          ],
+          "truncated": true
+        },
+        "sentinel-2-l2a": {
+          "returned_scene_count": 0,
+          "observation_dates": [],
+          "truncated": true
+        }
+      }
+    },
+    "mediterranean_fire_watch": {
+      "name": "Mediterranean wildfire watch",
+      "bbox": [
+        -10.0,
+        30.0,
+        40.0,
+        46.0
+      ],
+      "hazards": [
+        "wildfire",
+        "drought",
+        "vegetation"
+      ],
+      "collections": {
+        "sentinel-1-grd": {
+          "returned_scene_count": 20,
+          "observation_dates": [
+            "2024-06-30"
+          ],
+          "truncated": true
+        },
+        "sentinel-2-l2a": {
+          "returned_scene_count": 11,
+          "observation_dates": [
+            "2024-06-30"
+          ],
+          "truncated": true
+        }
+      }
+    },
+    "svalbard_ice_watch": {
+      "name": "Svalbard ice and snow watch",
+      "bbox": [
+        14.0,
+        77.0,
+        25.0,
+        80.5
+      ],
+      "hazards": [
+        "ice",
+        "snow",
+        "water"
+      ],
+      "collections": {
+        "sentinel-1-grd": {
+          "returned_scene_count": 20,
+          "observation_dates": [
+            "2024-06-24",
+            "2024-06-25",
+            "2024-06-26",
+            "2024-06-27",
+            "2024-06-29",
+            "2024-06-30"
+          ],
+          "truncated": true
+        },
+        "sentinel-2-l2a": {
+          "returned_scene_count": 19,
+          "observation_dates": [
+            "2024-06-30"
+          ],
+          "truncated": true
+        }
+      }
+    },
+    "antarctic_peninsula_watch": {
+      "name": "Antarctic Peninsula watch",
+      "bbox": [
+        -64.5,
+        -65.5,
+        -57.0,
+        -61.0
+      ],
+      "hazards": [
+        "ice",
+        "snow",
+        "water"
+      ],
+      "collections": {
+        "sentinel-1-grd": {
+          "returned_scene_count": 20,
+          "observation_dates": [
+            "2024-06-17",
+            "2024-06-20",
+            "2024-06-22",
+            "2024-06-23",
+            "2024-06-25",
+            "2024-06-27",
+            "2024-06-28",
+            "2024-06-29"
+          ],
+          "truncated": true
+        },
+        "sentinel-2-l2a": {
+          "returned_scene_count": 0,
+          "observation_dates": [],
+          "truncated": false
+        }
+      }
+    }
+  },
+  "limitations": [
+    "This stage measures scene availability, not confirmed hazards.",
+    "Hazard detection requires later pixel-level processing and validation.",
+    "A regional tiled workflow is used instead of one oversized global query."
+  ]
+}

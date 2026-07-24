@@ -1,0 +1,27 @@
+{
+  "run_at_utc": "2026-07-24T18:28:04.770615+00:00",
+  "source": "Copernicus Data Space Ecosystem openEO",
+  "collection": "SENTINEL1_GRD",
+  "band": "VV",
+  "coefficient": "sigma0-ellipsoid",
+  "spatial_extent": {
+    "west": 16.7,
+    "south": 50.08,
+    "east": 18.0,
+    "north": 50.5
+  },
+  "before_period": [
+    "2024-08-25",
+    "2024-09-09"
+  ],
+  "after_period": [
+    "2024-09-14",
+    "2024-09-22"
+  ],
+  "outputs": [
+    "docs/data/copernicus/flood_detection/before_median.tif",
+    "docs/data/copernicus/flood_detection/after_median.tif",
+    "docs/data/copernicus/flood_detection/backscatter_change.tif"
+  ],
+  "interpretation": "The change raster is a before/after radar-backscatter difference. It is a candidate flood-change layer, not a validated emergency alert."
+}

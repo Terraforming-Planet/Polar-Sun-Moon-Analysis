@@ -1,0 +1,39 @@
+{
+  "run_at_utc": "2026-07-24T17:03:40.494748+00:00",
+  "source": "Copernicus Data Space Ecosystem STAC API",
+  "stac_url": "https://stac.dataspace.copernicus.eu/v1",
+  "collection": "sentinel-2-l2a",
+  "start_date": "2024-06-01",
+  "end_date": "2024-06-30",
+  "cloud_cover_max": 40,
+  "scene_count": 3,
+  "test_mode": false,
+  "git_commit": "b1d57c2b55c84094f5c4bc7d318c9d411c953f70",
+  "regions": {
+    "north": {
+      "name": "Svalbard test region",
+      "bbox": [
+        14.0,
+        77.0,
+        25.0,
+        80.5
+      ],
+      "scene_count": 3
+    },
+    "south": {
+      "name": "Antarctic Peninsula test region",
+      "bbox": [
+        -64.5,
+        -65.5,
+        -57.0,
+        -61.0
+      ],
+      "scene_count": 0
+    }
+  },
+  "limitations": [
+    "Configured regions are representative polar study areas, not exact 90-degree pole points.",
+    "This stage analyses catalogue metadata and scene availability, not pixel-level environmental change."
+  ],
+  "records_sha256": "0e066193c8c8d8a4e61268a1a890e5c7ac6b8c49e3e45ead05a04e49355a3669"
+}
