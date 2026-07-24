@@ -6,6 +6,8 @@
     "collection": "sentinel-2-l2a",
     "start_date": "2024-06-01",
     "end_date": "2024-06-30",
+    "data_poczatkowa": "2024-06-01",
+    "data_koncowa": "2024-06-30",
     "cloud_cover_max": 40,
     "scene_count": 3,
     "test_mode": false,
@@ -13,22 +15,12 @@
     "regions": {
       "north": {
         "name": "Svalbard test region",
-        "bbox": [
-          14.0,
-          77.0,
-          25.0,
-          80.5
-        ],
+        "bbox": [14.0, 77.0, 25.0, 80.5],
         "scene_count": 3
       },
       "south": {
         "name": "Antarctic Peninsula test region",
-        "bbox": [
-          -64.5,
-          -65.5,
-          -57.0,
-          -61.0
-        ],
+        "bbox": [-64.5, -65.5, -57.0, -61.0],
         "scene_count": 0
       }
     },

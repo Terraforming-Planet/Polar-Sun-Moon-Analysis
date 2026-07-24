@@ -2,6 +2,8 @@
   "generated_at_utc": "2026-07-24T18:40:09.177601+00:00",
   "evidence_class": "candidate radar-change visualization",
   "warning": "The red and blue overlay shows radar backscatter change. It is not a validated emergency alert or confirmed flood extent.",
+  "before_period": ["2024-08-25", "2024-09-09"],
+  "after_period": ["2024-09-14", "2024-09-22"],
   "run_metadata": {
     "run_at_utc": "2026-07-24T18:28:04.770615+00:00",
     "source": "Copernicus Data Space Ecosystem openEO",
@@ -14,14 +16,8 @@
       "east": 18.0,
       "north": 50.5
     },
-    "before_period": [
-      "2024-08-25",
-      "2024-09-09"
-    ],
-    "after_period": [
-      "2024-09-14",
-      "2024-09-22"
-    ],
+    "before_period": ["2024-08-25", "2024-09-09"],
+    "after_period": ["2024-09-14", "2024-09-22"],
     "outputs": [
       "docs/data/copernicus/flood_detection/before_median.tif",
       "docs/data/copernicus/flood_detection/after_median.tif",
@@ -33,16 +29,7 @@
     "before": {
       "source": "before_median.tif",
       "image": "before.png",
-      "bounds": [
-        [
-          50.05362245690354,
-          16.685067932495347
-        ],
-        [
-          50.52628796642774,
-          18.026549017506145
-        ]
-      ],
+      "bounds": [[50.05362245690354, 16.685067932495347], [50.52628796642774, 18.026549017506145]],
       "width": 9407,
       "height": 4963,
       "minimum": 5.70098393382068e-07,
@@ -52,16 +39,7 @@
     "after": {
       "source": "after_median.tif",
       "image": "after.png",
-      "bounds": [
-        [
-          50.05362245690354,
-          16.685067932495347
-        ],
-        [
-          50.52628796642774,
-          18.026549017506145
-        ]
-      ],
+      "bounds": [[50.05362245690354, 16.685067932495347], [50.52628796642774, 18.026549017506145]],
       "width": 9407,
       "height": 4963,
       "minimum": 0.0001809275709092617,
@@ -71,16 +49,7 @@
     "change": {
       "source": "backscatter_change.tif",
       "image": "change.png",
-      "bounds": [
-        [
-          50.05362245690354,
-          16.685067932495347
-        ],
-        [
-          50.52628796642774,
-          18.026549017506145
-        ]
-      ],
+      "bounds": [[50.05362245690354, 16.685067932495347], [50.52628796642774, 18.026549017506145]],
       "width": 9407,
       "height": 4963,
       "minimum": -734.021240234375,
