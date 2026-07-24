@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sentinel-1 Flood Change Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    :root { color-scheme: dark; font-family: Inter, system-ui, sans-serif; }
+    body { margin: 0; background: #071018; color: #eef7ff; }
+    header { padding: 1rem 1.2rem; background: #0d1b26; border-bottom: 1px solid #284155; }
+    h1 { margin: 0 0 .35rem; font-size: 1.35rem; }
+    p { margin: .35rem 0; line-height: 1.45; }
+    .warning { color: #ffd58a; }
+    #map { height: calc(100vh - 180px); min-height: 520px; }
+    .legend { background: rgba(7, 16, 24, .92); padding: .7rem; border-radius: .5rem; line-height: 1.4; }
+    .swatch { display: inline-block; width: 1.1rem; height: .65rem; margin-right: .35rem; }
+    .blue { background: #1577ff; }
+    .red { background: #ff2f2f; }
+    .gray { background: linear-gradient(90deg, #111, #eee); }
+    footer { padding: .55rem 1rem; font-size: .85rem; background: #0d1b26; }
+    code { color: #b9e5ff; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Sentinel-1 radar change — flood candidate layer</h1>
+  <p>Compare radar backscatter before and after the selected event period.</p>
+  <p class="warning" id="warning">Loading scientific warning and metadata…</p>
+</header>
+<div id="map" aria-label="Interactive Sentinel-1 flood change map"></div>
+<footer id="metadata">Loading map metadata…</footer>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(async () => {
+  const response = await fetch('./assets/map-data.json', { cache: 'no-store' });
+  if (!response.ok) throw new Error(`Map metadata request failed: ${response.status}`);
+  const data = await response.json();
+  const change = data.layers.change;
+  const map = L.map('map').fitBounds(change.bounds);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  const before = L.imageOverlay('./assets/before.png', data.layers.before.bounds, { opacity: 0.78 });
+  const after = L.imageOverlay('./assets/after.png', data.layers.after.bounds, { opacity: 0.78 });
+  const changeLayer = L.imageOverlay('./assets/change.png', change.bounds, { opacity: 0.82 }).addTo(map);
+
+  L.control.layers(
+    { 'OpenStreetMap': map._layers[Object.keys(map._layers)[0]] },
+    {
+      'Before — median radar image': before,
+      'After — median radar image': after,
+      'Radar backscatter change': changeLayer
+    },
+    { collapsed: false }
+  ).addTo(map);
+
+  const legend = L.control({ position: 'bottomright' });
+  legend.onAdd = () => {
+    const div = L.DomUtil.create('div', 'legend');
+    div.innerHTML = `
+      <strong>Change layer</strong><br>
+      <span class="swatch blue"></span>lower backscatter<br>
+      <span class="swatch red"></span>higher backscatter<br>
+      <span class="swatch gray"></span>before / after grayscale<br>
+      <small>Interpretation requires validation.</small>`;
+    return div;
+  };
+  legend.addTo(map);
+
+  document.getElementById('warning').textContent = data.warning;
+  const run = data.run_metadata || {};
+  document.getElementById('metadata').innerHTML =
+    `Generated: <code>${data.generated_at_utc}</code> · ` +
+    `Collection: <code>${run.collection || 'SENTINEL1_GRD'}</code> · ` +
+    `Evidence: <code>${data.evidence_class}</code>`;
+})().catch(error => {
+  document.getElementById('warning').textContent = error.message;
+  console.error(error);
+});
+</script>
+</body>
+</html>
