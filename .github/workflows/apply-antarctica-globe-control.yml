@@ -1,0 +1,43 @@
+name: Apply Antarctica globe control
+
+on:
+  push:
+    branches:
+      - feature/antarctica-globe-view
+
+permissions:
+  contents: write
+
+concurrency:
+  group: antarctica-globe-control
+  cancel-in-progress: false
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/antarctica-globe-view
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Apply Antarctica control patch
+        run: python scripts/add_antarctica_globe_control.py
+
+      - name: Commit patched globe
+        run: |
+          if git diff --quiet -- web/src/RealisticEarthGlobe.tsx; then
+            echo "Antarctica control already applied"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add web/src/RealisticEarthGlobe.tsx
+          git commit -m "feat: add Antarctica globe preset"
+          git push origin HEAD:feature/antarctica-globe-view
