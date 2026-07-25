@@ -33,7 +33,7 @@ def test_required_float_reports_missing_quantity() -> None:
         HorizonsClient._required_float({"DEC": "n.a."}, ["DEC"])
 
 
-def test_observer_request_uses_declination_and_elevation_codes(
+def test_observer_request_uses_expanded_quantity_set(
     monkeypatch: MonkeyPatch, tmp_path: Path
 ) -> None:
     captured: dict[str, object] = {}
@@ -52,11 +52,25 @@ def test_observer_request_uses_declination_and_elevation_codes(
         Observatory(name="North Pole", latitude=90.0),
         datetime(2024, 3, 20, 3, 5, tzinfo=UTC),
     )
-    assert value == {"declination_deg": 23.32862, "apparent_altitude_deg": 23.328618}
-    assert captured["QUANTITIES"] == "'2,4'"
+    assert value["declination_deg"] == 23.32862
+    assert value["apparent_altitude_deg"] == 23.328618
+    assert value["apparent_ra_deg"] == 127.40849
+    assert value["azimuth_deg"] == 3.569396
+    assert value["airmass"] is None
+    assert captured["QUANTITIES"] == f"'{client.OBSERVER_QUANTITIES}'"
     assert captured["CENTER"] == "'coord@399'"
     assert captured["SITE_COORD"] == "'0.0,90.0,0.0'"
     assert captured["ANG_FORMAT"] == "'DEG'"
+    assert captured["CAL_FORMAT"] == "'BOTH'"
+    assert captured["EXTRA_PREC"] == "'YES'"
+
+
+def test_manual_response_uses_same_parser(tmp_path: Path) -> None:
+    client = HorizonsClient(cache_dir=tmp_path)
+    records = client.parse_observer_response(REAL_HORIZONS_RESPONSE)
+    assert len(records) == 2
+    assert records[0]["timestamp_utc"] == datetime(2024, 3, 20, 3, 5, tzinfo=UTC)
+    assert records[0]["apparent_altitude_deg"] == 23.328618
 
 
 def test_sun_declination_request_never_regresses_to_azimuth_only(
