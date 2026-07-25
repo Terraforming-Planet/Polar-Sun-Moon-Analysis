@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { RealisticEarthGlobe } from './RealisticEarthGlobe'
 import './styles.css'
 import './control-center.css'
 
@@ -101,32 +102,29 @@ function featurePoint(feature: HazardFeature): [number, number] | null {
 }
 
 function EarthGlobe({ data, selectedTime }: { data: HazardData; selectedTime: string }) {
-  const host = useRef<HTMLDivElement>(null)
-  useEffect(() => {
-    if (!host.current) return
-    const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100); camera.position.set(0, 0, 8.2)
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); host.current.appendChild(renderer.domElement)
-    const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.minDistance = 4.3; controls.maxDistance = 14
-    const globe = new THREE.Group(); scene.add(globe)
-    globe.add(new THREE.Mesh(new THREE.SphereGeometry(2.65, 64, 64), new THREE.MeshStandardMaterial({ color: 0x08375c, roughness: .85 })))
-    globe.add(new THREE.Mesh(new THREE.SphereGeometry(2.69, 36, 24), new THREE.MeshBasicMaterial({ color: 0x3fa9e8, wireframe: true, transparent: true, opacity: .15 })))
-    scene.add(new THREE.AmbientLight(0x8ac8ff, 1.7)); const light = new THREE.DirectionalLight(0xffffff, 2.2); light.position.set(5, 3, 5); scene.add(light)
+  const markers = useMemo(() => {
     const selectedMs = new Date(selectedTime).getTime()
-    data.features.filter(feature => {
-      const time = feature.properties.observation_time
-      return !time || new Date(time).getTime() <= selectedMs
-    }).slice(0, 300).forEach(feature => {
-      const point = featurePoint(feature); if (!point) return
-      const [lon, lat] = point; const phi = (90 - lat) * Math.PI / 180; const theta = (lon + 180) * Math.PI / 180; const r = 2.72
-      const marker = new THREE.Mesh(new THREE.SphereGeometry(.04, 10, 10), new THREE.MeshBasicMaterial({ color: 0xff744f }))
-      marker.position.set(-r * Math.sin(phi) * Math.cos(theta), r * Math.cos(phi), r * Math.sin(phi) * Math.sin(theta)); globe.add(marker)
-    })
-    let frame = 0; const resize = () => { if (!host.current) return; renderer.setSize(host.current.clientWidth, host.current.clientHeight, false); camera.aspect = host.current.clientWidth / host.current.clientHeight; camera.updateProjectionMatrix() }
-    const animate = () => { frame = requestAnimationFrame(animate); globe.rotation.y += .0007; controls.update(); renderer.render(scene, camera) }
-    const observer = new ResizeObserver(resize); observer.observe(host.current); resize(); animate()
-    return () => { cancelAnimationFrame(frame); observer.disconnect(); controls.dispose(); renderer.dispose(); host.current?.replaceChildren() }
+    return data.features
+      .filter(feature => {
+        const time = feature.properties.observation_time
+        return !time || new Date(time).getTime() <= selectedMs
+      })
+      .map(feature => {
+        const point = featurePoint(feature)
+        if (!point) return null
+        const [longitude, latitude] = point
+        return { longitude, latitude, color: 0xff674f, radius: 1 }
+      })
+      .filter((value): value is NonNullable<typeof value> => value !== null)
   }, [data, selectedTime])
-  return <div className="globe-canvas" ref={host} aria-label="Interaktywny globus 3D zdarzeń NASA EONET według wybranego czasu"/>
+
+  return (
+    <RealisticEarthGlobe
+      selectedTime={selectedTime}
+      markers={markers}
+      autoRotate
+    />
+  )
 }
 
 function PolarObservatory({ rows, pole, requested }: { rows: PolarRow[]; pole: 'North Pole' | 'South Pole'; requested: string }) {
