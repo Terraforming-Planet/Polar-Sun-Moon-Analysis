@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import './location-globe.css'
+import './tiled-earth.css'
 
 type Marker = {
   longitude: number
@@ -14,7 +13,6 @@ type UserLocation = {
   latitude: number
   longitude: number
   accuracy: number
-  heading: number | null
   timestamp: number
 }
 
@@ -25,50 +23,61 @@ type Props = {
   autoRotate?: boolean
 }
 
-const DEFAULT_TEXTURE =
-  'https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?' +
-  new URLSearchParams({
-    SERVICE: 'WMS',
-    VERSION: '1.3.0',
-    REQUEST: 'GetMap',
-    FORMAT: 'image/jpeg',
-    TRANSPARENT: 'FALSE',
-    LAYERS: 'VIIRS_SNPP_CorrectedReflectance_TrueColor',
-    CRS: 'EPSG:4326',
-    STYLES: '',
-    WIDTH: '2048',
-    HEIGHT: '1024',
-    BBOX: '-90,-180,90,180',
-    TIME: new Date(Date.now() - 48 * 60 * 60 * 1000)
-      .toISOString()
-      .slice(0, 10),
-  }).toString()
-
-function pointOnSphere(longitude: number, latitude: number, radius: number) {
-  const phi = THREE.MathUtils.degToRad(90 - latitude)
-  const theta = THREE.MathUtils.degToRad(longitude + 180)
-  return new THREE.Vector3(
-    -radius * Math.sin(phi) * Math.cos(theta),
-    radius * Math.cos(phi),
-    radius * Math.sin(phi) * Math.sin(theta),
-  )
+type CesiumApi = {
+  Viewer: new (element: HTMLElement, options: Record<string, unknown>) => any
+  UrlTemplateImageryProvider: new (options: Record<string, unknown>) => any
+  WebMapTileServiceImageryProvider: new (options: Record<string, unknown>) => any
+  Cartesian3: { fromDegrees: (longitude: number, latitude: number, height?: number) => any }
+  Color: { fromCssColorString: (value: string) => any; WHITE: any; BLACK: any }
+  VerticalOrigin: { BOTTOM: any }
+  HeightReference: { CLAMP_TO_GROUND: any }
+  Math: { toRadians: (value: number) => number }
+  JulianDate: { fromIso8601: (value: string) => any }
 }
 
-function sunDirection(timestamp: string) {
-  const date = new Date(timestamp)
-  const day =
-    (date.getTime() - Date.UTC(date.getUTCFullYear(), 0, 0)) / 86_400_000
-  const declination = THREE.MathUtils.degToRad(
-    -23.44 * Math.cos((2 * Math.PI * (day + 10)) / 365.25),
-  )
-  const utcHours =
-    date.getUTCHours() + date.getUTCMinutes() / 60 + date.getUTCSeconds() / 3600
-  const longitude = THREE.MathUtils.degToRad((12 - utcHours) * 15)
-  return new THREE.Vector3(
-    Math.cos(declination) * Math.cos(longitude),
-    Math.sin(declination),
-    Math.cos(declination) * Math.sin(longitude),
-  ).normalize()
+declare global {
+  interface Window {
+    Cesium?: CesiumApi
+    CESIUM_BASE_URL?: string
+  }
+}
+
+const CESIUM_VERSION = '1.126'
+const CESIUM_SCRIPT = `https://cdn.jsdelivr.net/npm/cesium@${CESIUM_VERSION}/Build/Cesium/Cesium.js`
+const CESIUM_CSS = `https://cdn.jsdelivr.net/npm/cesium@${CESIUM_VERSION}/Build/Cesium/Widgets/widgets.css`
+const CESIUM_BASE = `https://cdn.jsdelivr.net/npm/cesium@${CESIUM_VERSION}/Build/Cesium/`
+
+const ESRI_WORLD_IMAGERY =
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+const ESRI_BOUNDARIES =
+  'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'
+const NASA_GIBS_WMTS = 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/wmts.cgi'
+
+function loadCesium(): Promise<CesiumApi> {
+  if (window.Cesium) return Promise.resolve(window.Cesium)
+
+  window.CESIUM_BASE_URL = CESIUM_BASE
+  if (!document.querySelector(`link[href="${CESIUM_CSS}"]`)) {
+    const link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.href = CESIUM_CSS
+    document.head.appendChild(link)
+  }
+
+  return new Promise((resolve, reject) => {
+    const existing = document.querySelector<HTMLScriptElement>(`script[src="${CESIUM_SCRIPT}"]`)
+    if (existing) {
+      existing.addEventListener('load', () => window.Cesium ? resolve(window.Cesium) : reject(new Error('Cesium unavailable')))
+      existing.addEventListener('error', () => reject(new Error('Nie udało się załadować CesiumJS.')))
+      return
+    }
+    const script = document.createElement('script')
+    script.src = CESIUM_SCRIPT
+    script.async = true
+    script.onload = () => window.Cesium ? resolve(window.Cesium) : reject(new Error('Cesium unavailable'))
+    script.onerror = () => reject(new Error('Nie udało się załadować CesiumJS.'))
+    document.head.appendChild(script)
+  })
 }
 
 function geolocationErrorMessage(error: GeolocationPositionError) {
@@ -78,20 +87,17 @@ function geolocationErrorMessage(error: GeolocationPositionError) {
   return 'Nie udało się odczytać lokalizacji.'
 }
 
-export function RealisticEarthGlobe({
-  textureUrl,
-  selectedTime,
-  markers = [],
-  autoRotate = true,
-}: Props) {
+export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   const host = useRef<HTMLDivElement>(null)
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null)
-  const controlsRef = useRef<OrbitControls | null>(null)
-  const userMarkerRef = useRef<THREE.Mesh | null>(null)
+  const viewerRef = useRef<any>(null)
+  const cesiumRef = useRef<CesiumApi | null>(null)
   const watchIdRef = useRef<number | null>(null)
+  const userEntityRef = useRef<any>(null)
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null)
   const [locationError, setLocationError] = useState<string | null>(null)
+  const [loadError, setLoadError] = useState<string | null>(null)
   const [locating, setLocating] = useState(false)
+  const [layer, setLayer] = useState<'satellite' | 'nasa'>('satellite')
 
   const stopTracking = () => {
     if (watchIdRef.current !== null) {
@@ -115,7 +121,6 @@ export function RealisticEarthGlobe({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
           accuracy: position.coords.accuracy,
-          heading: position.coords.heading,
           timestamp: position.timestamp,
         })
         setLocationError(null)
@@ -124,200 +129,198 @@ export function RealisticEarthGlobe({
         setLocationError(geolocationErrorMessage(error))
         setLocating(false)
       },
-      {
-        enableHighAccuracy: true,
-        maximumAge: 1_000,
-        timeout: 15_000,
-      },
+      { enableHighAccuracy: true, maximumAge: 1_000, timeout: 15_000 },
     )
   }
 
-  const focusUser = () => {
-    const camera = cameraRef.current
-    const controls = controlsRef.current
-    if (!camera || !controls || !userLocation) return
-    const direction = pointOnSphere(userLocation.longitude, userLocation.latitude, 1).normalize()
-    camera.position.copy(direction.multiplyScalar(4.25))
-    camera.lookAt(0, 0, 0)
-    controls.target.set(0, 0, 0)
-    controls.autoRotate = false
-    controls.update()
+  const flyTo = (longitude: number, latitude: number, height: number) => {
+    const viewer = viewerRef.current
+    const Cesium = cesiumRef.current
+    if (!viewer || !Cesium) return
+    viewer.camera.flyTo({
+      destination: Cesium.Cartesian3.fromDegrees(longitude, latitude, height),
+      duration: 1.4,
+    })
   }
 
-
-  const focusCoordinates = (longitude: number, latitude: number, distance = 5.2) => {
-    const camera = cameraRef.current
-    const controls = controlsRef.current
-    if (!camera || !controls) return
-    const direction = pointOnSphere(longitude, latitude, 1).normalize()
-    camera.position.copy(direction.multiplyScalar(distance))
-    camera.lookAt(0, 0, 0)
-    controls.target.set(0, 0, 0)
-    controls.autoRotate = false
-    controls.update()
+  const zoom = (factor: number) => {
+    const viewer = viewerRef.current
+    if (!viewer) return
+    const height = viewer.camera.positionCartographic.height
+    viewer.camera.zoomIn(Math.max(500, height * factor))
   }
-
-  const focusAntarctica = () => focusCoordinates(0, -82, 5.35)
 
   useEffect(() => () => stopTracking(), [])
 
   useEffect(() => {
-    const marker = userMarkerRef.current
-    if (!marker || !userLocation) return
-    marker.position.copy(pointOnSphere(userLocation.longitude, userLocation.latitude, 2.63))
-    marker.visible = true
+    const viewer = viewerRef.current
+    const Cesium = cesiumRef.current
+    if (!viewer || !Cesium || !userLocation) return
+    const position = Cesium.Cartesian3.fromDegrees(userLocation.longitude, userLocation.latitude, 0)
+    if (!userEntityRef.current) {
+      userEntityRef.current = viewer.entities.add({
+        position,
+        point: {
+          pixelSize: 14,
+          color: Cesium.Color.fromCssColorString('#74ffb8'),
+          outlineColor: Cesium.Color.BLACK,
+          outlineWidth: 3,
+          heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+        },
+        label: {
+          text: 'Twoja pozycja',
+          fillColor: Cesium.Color.WHITE,
+          outlineColor: Cesium.Color.BLACK,
+          outlineWidth: 4,
+          style: 2,
+          verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+          pixelOffset: { x: 0, y: -18 },
+        },
+      })
+    } else {
+      userEntityRef.current.position = position
+    }
   }, [userLocation])
+
+  useEffect(() => {
+    const viewer = viewerRef.current
+    const Cesium = cesiumRef.current
+    if (!viewer || !Cesium) return
+    viewer.imageryLayers.removeAll()
+    if (layer === 'nasa') {
+      const date = new Date(selectedTime || Date.now()).toISOString().slice(0, 10)
+      viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({
+        url: NASA_GIBS_WMTS,
+        layer: 'VIIRS_SNPP_CorrectedReflectance_TrueColor',
+        style: 'default',
+        format: 'image/jpeg',
+        tileMatrixSetID: 'GoogleMapsCompatible_Level9',
+        maximumLevel: 9,
+        clock: viewer.clock,
+        times: undefined,
+        dimensions: { Time: date },
+        credit: 'NASA EOSDIS GIBS',
+      }))
+    } else {
+      viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({
+        url: ESRI_WORLD_IMAGERY,
+        maximumLevel: 19,
+        credit: 'Esri World Imagery',
+      }))
+    }
+    viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({
+      url: ESRI_BOUNDARIES,
+      maximumLevel: 12,
+      credit: 'Esri boundaries and places',
+    }))
+  }, [layer, selectedTime])
 
   useEffect(() => {
     const element = host.current
     if (!element) return
+    let cancelled = false
+    let viewer: any
 
-    const scene = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100)
-    camera.position.set(0, 0, 7.4)
-    cameraRef.current = camera
+    loadCesium().then(Cesium => {
+      if (cancelled) return
+      cesiumRef.current = Cesium
+      viewer = new Cesium.Viewer(element, {
+        animation: false,
+        timeline: false,
+        baseLayerPicker: false,
+        geocoder: false,
+        homeButton: false,
+        sceneModePicker: false,
+        navigationHelpButton: false,
+        fullscreenButton: false,
+        infoBox: false,
+        selectionIndicator: false,
+        terrainProvider: undefined,
+        imageryProvider: false,
+      })
+      viewerRef.current = viewer
+      viewer.scene.globe.enableLighting = true
+      viewer.scene.globe.depthTestAgainstTerrain = false
+      viewer.scene.screenSpaceCameraController.minimumZoomDistance = 120
+      viewer.scene.screenSpaceCameraController.maximumZoomDistance = 80_000_000
+      viewer.clock.currentTime = Cesium.JulianDate.fromIso8601(selectedTime || new Date().toISOString())
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
-    renderer.outputColorSpace = THREE.SRGBColorSpace
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-    element.appendChild(renderer.domElement)
+      viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({
+        url: ESRI_WORLD_IMAGERY,
+        maximumLevel: 19,
+        credit: 'Esri World Imagery',
+      }))
+      viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({
+        url: ESRI_BOUNDARIES,
+        maximumLevel: 12,
+        credit: 'Esri boundaries and places',
+      }))
 
-    const controls = new OrbitControls(camera, renderer.domElement)
-    controls.enableDamping = true
-    controls.minDistance = 3.8
-    controls.maxDistance = 14
-    controls.autoRotate = autoRotate
-    controls.autoRotateSpeed = 0.35
-    controlsRef.current = controls
-
-    const earthGroup = new THREE.Group()
-    earthGroup.rotation.z = THREE.MathUtils.degToRad(-23.44)
-    scene.add(earthGroup)
-
-    const textureLoader = new THREE.TextureLoader()
-    textureLoader.setCrossOrigin('anonymous')
-    const earthTexture = textureLoader.load(textureUrl || DEFAULT_TEXTURE)
-    earthTexture.colorSpace = THREE.SRGBColorSpace
-    earthTexture.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 8)
-
-    const earthGeometry = new THREE.SphereGeometry(2.55, 128, 96)
-    const earthMaterial = new THREE.MeshStandardMaterial({
-      map: earthTexture,
-      roughness: 0.92,
-      metalness: 0,
+      for (const marker of markers.slice(0, 1000)) {
+        viewer.entities.add({
+          position: Cesium.Cartesian3.fromDegrees(marker.longitude, marker.latitude, 0),
+          point: {
+            pixelSize: Math.max(6, 8 * (marker.radius ?? 1)),
+            color: Cesium.Color.fromCssColorString('#ff674f'),
+            outlineColor: Cesium.Color.BLACK,
+            outlineWidth: 1,
+            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+          },
+        })
+      }
+      flyTo(15, 20, 20_000_000)
+    }).catch(error => {
+      if (!cancelled) setLoadError(String(error instanceof Error ? error.message : error))
     })
-    const earth = new THREE.Mesh(earthGeometry, earthMaterial)
-    earthGroup.add(earth)
-
-    const atmosphereGeometry = new THREE.SphereGeometry(2.62, 96, 72)
-    const atmosphereMaterial = new THREE.MeshPhongMaterial({
-      color: 0x78c8ff,
-      transparent: true,
-      opacity: 0.12,
-      side: THREE.BackSide,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-    })
-    earthGroup.add(new THREE.Mesh(atmosphereGeometry, atmosphereMaterial))
-
-    const markerGeometry = new THREE.SphereGeometry(0.045, 12, 12)
-    const markerMaterials: THREE.MeshBasicMaterial[] = []
-    for (const marker of markers.slice(0, 1000)) {
-      const material = new THREE.MeshBasicMaterial({ color: marker.color ?? 0xff674f })
-      markerMaterials.push(material)
-      const mesh = new THREE.Mesh(markerGeometry, material)
-      mesh.position.copy(pointOnSphere(marker.longitude, marker.latitude, 2.59))
-      mesh.scale.setScalar(marker.radius ?? 1)
-      earthGroup.add(mesh)
-    }
-
-    const userMarkerMaterial = new THREE.MeshBasicMaterial({ color: 0x74ffb8 })
-    const userMarker = new THREE.Mesh(new THREE.SphereGeometry(0.075, 18, 18), userMarkerMaterial)
-    userMarker.visible = false
-    earthGroup.add(userMarker)
-    userMarkerRef.current = userMarker
-
-    scene.add(new THREE.AmbientLight(0x7da5c7, 0.38))
-    const sun = new THREE.DirectionalLight(0xffffff, 3.1)
-    sun.position.copy(sunDirection(selectedTime).multiplyScalar(8))
-    scene.add(sun)
-
-    const rim = new THREE.DirectionalLight(0x4ca6ff, 0.42)
-    rim.position.set(-5, 2, -5)
-    scene.add(rim)
-
-    const resize = () => {
-      const width = Math.max(element.clientWidth, 1)
-      const height = Math.max(element.clientHeight, 1)
-      renderer.setSize(width, height, false)
-      camera.aspect = width / height
-      camera.updateProjectionMatrix()
-    }
-
-    const observer = new ResizeObserver(resize)
-    observer.observe(element)
-    resize()
-
-    let animationFrame = 0
-    const animate = () => {
-      animationFrame = window.requestAnimationFrame(animate)
-      controls.update()
-      renderer.render(scene, camera)
-    }
-    animate()
 
     return () => {
-      window.cancelAnimationFrame(animationFrame)
-      observer.disconnect()
-      controls.dispose()
-      earthTexture.dispose()
-      earthGeometry.dispose()
-      earthMaterial.dispose()
-      atmosphereGeometry.dispose()
-      atmosphereMaterial.dispose()
-      markerGeometry.dispose()
-      markerMaterials.forEach(material => material.dispose())
-      userMarker.geometry.dispose()
-      userMarkerMaterial.dispose()
-      renderer.dispose()
-      cameraRef.current = null
-      controlsRef.current = null
-      userMarkerRef.current = null
+      cancelled = true
+      if (viewer && !viewer.isDestroyed()) viewer.destroy()
+      viewerRef.current = null
+      cesiumRef.current = null
+      userEntityRef.current = null
       element.replaceChildren()
     }
-  }, [autoRotate, markers, selectedTime, textureUrl])
+  }, [markers])
 
   return (
-    <div className="location-globe-shell">
-      <div className="location-globe-toolbar">
+    <div className="tiled-earth-shell">
+      <div className="tiled-earth-toolbar">
         <button type="button" onClick={locating ? stopTracking : startTracking}>
           {locating ? 'Zatrzymaj lokalizację' : 'Znajdź mnie'}
         </button>
-        <button type="button" onClick={focusUser} disabled={!userLocation}>
+        <button type="button" onClick={() => userLocation && flyTo(userLocation.longitude, userLocation.latitude, 25_000)} disabled={!userLocation}>
           Przybliż do mojej pozycji
         </button>
-        <button type="button" onClick={focusAntarctica}>
-          Antarktyda
-        </button>
-        {(userLocation || locationError) && (
+        <button type="button" onClick={() => flyTo(0, -90, 5_500_000)}>Antarktyda</button>
+        <button type="button" onClick={() => flyTo(20, 52, 5_500_000)}>Europa</button>
+        <label>
+          Warstwa
+          <select value={layer} onChange={event => setLayer(event.target.value as 'satellite' | 'nasa')}>
+            <option value="satellite">Satelita szczegółowa</option>
+            <option value="nasa">NASA — najnowsza obserwacja</option>
+          </select>
+        </label>
+        {(userLocation || locationError || loadError) && (
           <div className="location-globe-status" role="status" aria-live="polite">
             {userLocation && (
               <>
-                <strong>Pozycja urządzenia aktualizowana na żywo</strong>
+                <strong>Pozycja urządzenia</strong>
                 <span>{userLocation.latitude.toFixed(6)}, {userLocation.longitude.toFixed(6)}</span>
                 <span>Dokładność GPS: ±{Math.round(userLocation.accuracy)} m</span>
-                <span>Aktualizacja: {new Date(userLocation.timestamp).toLocaleTimeString('pl-PL')}</span>
               </>
             )}
             {locationError && <span className="location-globe-error">{locationError}</span>}
+            {loadError && <span className="location-globe-error">{loadError}</span>}
           </div>
         )}
       </div>
-      <div
-        className="globe-canvas realistic-earth-globe"
-        ref={host}
-        aria-label="Realistyczny glob 3D z najnowszą dostępną teksturą satelitarną i lokalizacją urządzenia"
-      />
+      <div className="tiled-earth-zoom" aria-label="Sterowanie przybliżeniem">
+        <button type="button" aria-label="Przybliż" onClick={() => zoom(0.45)}>+</button>
+        <button type="button" aria-label="Oddal" onClick={() => zoom(-0.85)}>−</button>
+      </div>
+      <div className="tiled-earth-attribution">Kafelki doczytują się wraz z zoomem. Zdjęcia nie są transmisją na żywo.</div>
+      <div ref={host} className="tiled-earth-canvas" aria-label="Kafelkowy glob 3D z dokładnym zoomem do kontynentów, państw i regionów" />
     </div>
   )
 }
