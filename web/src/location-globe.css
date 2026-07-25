@@ -1,0 +1,75 @@
+.location-globe-shell {
+  position: relative;
+  min-height: 420px;
+}
+
+.location-globe-toolbar {
+  position: absolute;
+  z-index: 5;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  pointer-events: none;
+}
+
+.location-globe-toolbar button,
+.location-globe-status {
+  pointer-events: auto;
+}
+
+.location-globe-toolbar button {
+  min-height: 44px;
+  border: 1px solid rgba(121, 214, 255, 0.55);
+  border-radius: 10px;
+  padding: 0 14px;
+  background: rgba(4, 25, 43, 0.9);
+  color: #ecfaff;
+  font-weight: 700;
+  backdrop-filter: blur(10px);
+}
+
+.location-globe-toolbar button:disabled {
+  opacity: 0.6;
+}
+
+.location-globe-status {
+  display: grid;
+  gap: 2px;
+  max-width: min(100%, 520px);
+  padding: 8px 12px;
+  border: 1px solid rgba(121, 214, 255, 0.35);
+  border-radius: 10px;
+  background: rgba(4, 25, 43, 0.84);
+  color: #ecfaff;
+  font-size: 0.82rem;
+  backdrop-filter: blur(10px);
+}
+
+.location-globe-status strong {
+  color: #74ffb8;
+}
+
+.location-globe-error {
+  color: #ffb2a8;
+}
+
+@media (max-width: 600px) {
+  .location-globe-shell {
+    min-height: 520px;
+  }
+
+  .location-globe-toolbar {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+  }
+
+  .location-globe-toolbar button,
+  .location-globe-status {
+    width: 100%;
+  }
+}
