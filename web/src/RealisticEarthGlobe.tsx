@@ -144,6 +144,21 @@ export function RealisticEarthGlobe({
     controls.update()
   }
 
+
+  const focusCoordinates = (longitude: number, latitude: number, distance = 5.2) => {
+    const camera = cameraRef.current
+    const controls = controlsRef.current
+    if (!camera || !controls) return
+    const direction = pointOnSphere(longitude, latitude, 1).normalize()
+    camera.position.copy(direction.multiplyScalar(distance))
+    camera.lookAt(0, 0, 0)
+    controls.target.set(0, 0, 0)
+    controls.autoRotate = false
+    controls.update()
+  }
+
+  const focusAntarctica = () => focusCoordinates(0, -82, 5.35)
+
   useEffect(() => () => stopTracking(), [])
 
   useEffect(() => {
@@ -280,6 +295,9 @@ export function RealisticEarthGlobe({
         </button>
         <button type="button" onClick={focusUser} disabled={!userLocation}>
           Przybliż do mojej pozycji
+        </button>
+        <button type="button" onClick={focusAntarctica}>
+          Antarktyda
         </button>
         {(userLocation || locationError) && (
           <div className="location-globe-status" role="status" aria-live="polite">
