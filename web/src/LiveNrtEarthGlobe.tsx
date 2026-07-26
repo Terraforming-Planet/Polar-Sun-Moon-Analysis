@@ -12,13 +12,15 @@ type CesiumApi = {
   WebMapServiceImageryProvider: new (options: Record<string, unknown>) => any
   WebMapTileServiceImageryProvider: new (options: Record<string, unknown>) => any
   Cartesian3: { fromDegrees: (longitude: number, latitude: number, height?: number) => any }
-  Rectangle: { fromDegrees: (west: number, south: number, east: number, north: number) => any }
   Color: { fromCssColorString: (value: string) => any; BLACK: any }
   HeightReference: { CLAMP_TO_GROUND: any }
   JulianDate: { fromIso8601: (value: string) => any }
 }
 
-declare global { interface Window { Cesium?: CesiumApi; CESIUM_BASE_URL?: string } }
+type CesiumWindow = Window & typeof globalThis & {
+  Cesium?: CesiumApi
+  CESIUM_BASE_URL?: string
+}
 
 const CESIUM_VERSION = '1.126'
 const CESIUM_BASE = `https://cdn.jsdelivr.net/npm/cesium@${CESIUM_VERSION}/Build/Cesium/`
@@ -31,9 +33,14 @@ function floorTenMinutes(date: Date) {
   return new Date(Math.floor(date.getTime() / TEN_MINUTES) * TEN_MINUTES)
 }
 
+function cesiumWindow(): CesiumWindow {
+  return window as CesiumWindow
+}
+
 function loadCesium(): Promise<CesiumApi> {
-  if (window.Cesium) return Promise.resolve(window.Cesium)
-  window.CESIUM_BASE_URL = CESIUM_BASE
+  const browser = cesiumWindow()
+  if (browser.Cesium) return Promise.resolve(browser.Cesium)
+  browser.CESIUM_BASE_URL = CESIUM_BASE
   if (!document.querySelector(`link[href="${CESIUM_BASE}Widgets/widgets.css"]`)) {
     const link = document.createElement('link')
     link.rel = 'stylesheet'
@@ -41,10 +48,24 @@ function loadCesium(): Promise<CesiumApi> {
     document.head.append(link)
   }
   return new Promise((resolve, reject) => {
+    const existing = document.querySelector<HTMLScriptElement>(`script[src="${CESIUM_BASE}Cesium.js"]`)
+    if (existing) {
+      existing.addEventListener('load', () => {
+        const Cesium = cesiumWindow().Cesium
+        if (Cesium) resolve(Cesium)
+        else reject(new Error('Cesium unavailable'))
+      }, { once: true })
+      existing.addEventListener('error', () => reject(new Error('Nie udało się załadować Cesium')), { once: true })
+      return
+    }
     const script = document.createElement('script')
     script.src = `${CESIUM_BASE}Cesium.js`
     script.async = true
-    script.onload = () => window.Cesium ? resolve(window.Cesium) : reject(new Error('Cesium unavailable'))
+    script.onload = () => {
+      const Cesium = cesiumWindow().Cesium
+      if (Cesium) resolve(Cesium)
+      else reject(new Error('Cesium unavailable'))
+    }
     script.onerror = () => reject(new Error('Nie udało się załadować Cesium'))
     document.head.append(script)
   })
