@@ -6,6 +6,7 @@
     <meta name="theme-color" content="#040914" />
     <meta name="description" content="3D Earth and polar observation platform using global Earth observation data" />
     <title>Terra Observation System</title>
+    <link rel="stylesheet" href="./place-fire-search.css" />
     <style>
       html,body{max-width:100%;overflow-x:hidden}
       .result-nav{position:relative;z-index:50;display:grid;grid-template-columns:max-content repeat(5,minmax(118px,1fr));gap:.45rem;align-items:stretch;padding:.65rem 1rem;background:#07111f;border-bottom:1px solid #1d3854;font-family:Inter,system-ui,sans-serif}
@@ -20,6 +21,6 @@
     <nav class="result-nav" aria-label="Nawigacja Terra Observation">
       <strong>Terraforming Planet:</strong><a class="primary-link" href="./copernicus/">Panel wyników</a><a href="./flood-map/">Mapa Sentinel-1</a><a href="./reports/copernicus-analysis.html">Raport analizy</a><a href="./charts/copernicus/observation_timeline.png">Oś obserwacji</a><a href="./data/copernicus/latest_results.json">Dane JSON</a><a class="constellation-link" href="./constellation/">TP-26 konstelacja</a><a class="multi-link" href="./multi-angle/">Obserwacja wielokątowa</a><a class="investigation-link" href="./investigation/">Investigation Support</a><a class="forum-link" href="./forum/">Forum</a>
     </nav>
-    <div id="root"></div><script type="module" src="/src/main.tsx"></script><script src="./globe-zoom-controls.js" defer></script>
+    <div id="root"></div><script src="./place-fire-search.js"></script><script type="module" src="/src/main.tsx"></script><script src="./globe-zoom-controls.js" defer></script>
   </body>
 </html>
