@@ -3,23 +3,25 @@ name: Refresh hazard data
 on:
   workflow_dispatch:
   schedule:
-    - cron: "17 */3 * * *"
+    - cron: "*/15 * * * *"
 
 permissions:
   contents: write
 
 concurrency:
-  group: refresh-hazard-data
-  cancel-in-progress: false
+  group: refresh-hazard-data-main
+  cancel-in-progress: true
 
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - name: Checkout
+      - name: Checkout current main branch
         uses: actions/checkout@v4
         with:
-          ref: feature/automatic-hazard-monitoring
+          ref: main
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -39,7 +41,7 @@ jobs:
           python -m json.tool web/public/data/earthquakes.geojson >/dev/null
           python -m json.tool web/public/data/eonet-events.json >/dev/null
 
-      - name: Commit changed data
+      - name: Commit changed data to main
         run: |
           if git diff --quiet -- web/public/data; then
             echo "No feed changes"
@@ -51,4 +53,5 @@ jobs:
             web/public/data/earthquakes.geojson \
             web/public/data/eonet-events.json
           git commit -m "data: refresh official hazard feeds"
-          git push origin HEAD:feature/automatic-hazard-monitoring
+          git pull --rebase origin main
+          git push origin HEAD:main
