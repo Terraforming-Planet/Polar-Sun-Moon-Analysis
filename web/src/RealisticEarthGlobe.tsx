@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import './location-globe.css'
 import './tiled-earth.css'
 
@@ -31,7 +31,6 @@ type CesiumApi = {
   Color: { fromCssColorString: (value: string) => any; WHITE: any; BLACK: any }
   VerticalOrigin: { BOTTOM: any }
   HeightReference: { CLAMP_TO_GROUND: any }
-  Math: { toRadians: (value: number) => number }
   JulianDate: { fromIso8601: (value: string) => any }
 }
 
@@ -46,16 +45,16 @@ const CESIUM_VERSION = '1.126'
 const CESIUM_SCRIPT = `https://cdn.jsdelivr.net/npm/cesium@${CESIUM_VERSION}/Build/Cesium/Cesium.js`
 const CESIUM_CSS = `https://cdn.jsdelivr.net/npm/cesium@${CESIUM_VERSION}/Build/Cesium/Widgets/widgets.css`
 const CESIUM_BASE = `https://cdn.jsdelivr.net/npm/cesium@${CESIUM_VERSION}/Build/Cesium/`
-
 const ESRI_WORLD_IMAGERY =
   'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
 const ESRI_BOUNDARIES =
   'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'
 const NASA_GIBS_WMTS = 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/wmts.cgi'
+const LIVE_WINDOW_MS = 2 * 60 * 1000
+const LIVE_REFRESH_MS = 5_000
 
 function loadCesium(): Promise<CesiumApi> {
   if (window.Cesium) return Promise.resolve(window.Cesium)
-
   window.CESIUM_BASE_URL = CESIUM_BASE
   if (!document.querySelector(`link[href="${CESIUM_CSS}"]`)) {
     const link = document.createElement('link')
@@ -63,7 +62,6 @@ function loadCesium(): Promise<CesiumApi> {
     link.href = CESIUM_CSS
     document.head.appendChild(link)
   }
-
   return new Promise((resolve, reject) => {
     const existing = document.querySelector<HTMLScriptElement>(`script[src="${CESIUM_SCRIPT}"]`)
     if (existing) {
@@ -87,6 +85,17 @@ function geolocationErrorMessage(error: GeolocationPositionError) {
   return 'Nie udało się odczytać lokalizacji.'
 }
 
+function clampToNow(value: string, now: Date) {
+  const parsed = new Date(value)
+  if (Number.isNaN(parsed.getTime())) return now
+  return parsed.getTime() > now.getTime() ? now : parsed
+}
+
+function isUtcNight(date: Date) {
+  const hour = date.getUTCHours()
+  return hour < 6 || hour >= 18
+}
+
 export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   const host = useRef<HTMLDivElement>(null)
   const viewerRef = useRef<any>(null)
@@ -97,7 +106,20 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   const [locationError, setLocationError] = useState<string | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [locating, setLocating] = useState(false)
-  const [layer, setLayer] = useState<'satellite' | 'nasa'>('satellite')
+  const [layer, setLayer] = useState<'satellite' | 'nasa-auto' | 'nasa-day' | 'nasa-night'>('nasa-auto')
+  const [liveNow, setLiveNow] = useState(() => new Date())
+
+  const selectedDate = useMemo(() => clampToNow(selectedTime, liveNow), [selectedTime, liveNow])
+  const liveMode = Math.abs(new Date(selectedTime).getTime() - liveNow.getTime()) <= LIVE_WINDOW_MS
+  const effectiveDate = liveMode ? liveNow : selectedDate
+  const nightMode = layer === 'nasa-night' || (layer === 'nasa-auto' && isUtcNight(effectiveDate))
+  const futureWasClamped = new Date(selectedTime).getTime() > liveNow.getTime()
+
+  useEffect(() => {
+    if (!liveMode) return
+    const timer = window.setInterval(() => setLiveNow(new Date()), LIVE_REFRESH_MS)
+    return () => window.clearInterval(timer)
+  }, [liveMode])
 
   const stopTracking = () => {
     if (watchIdRef.current !== null) {
@@ -186,34 +208,40 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
     const viewer = viewerRef.current
     const Cesium = cesiumRef.current
     if (!viewer || !Cesium) return
+
+    viewer.clock.currentTime = Cesium.JulianDate.fromIso8601(effectiveDate.toISOString())
+    viewer.scene.globe.enableLighting = true
     viewer.imageryLayers.removeAll()
-    if (layer === 'nasa') {
-      const date = new Date(selectedTime || Date.now()).toISOString().slice(0, 10)
-      viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({
-        url: NASA_GIBS_WMTS,
-        layer: 'VIIRS_SNPP_CorrectedReflectance_TrueColor',
-        style: 'default',
-        format: 'image/jpeg',
-        tileMatrixSetID: 'GoogleMapsCompatible_Level9',
-        maximumLevel: 9,
-        clock: viewer.clock,
-        times: undefined,
-        dimensions: { Time: date },
-        credit: 'NASA EOSDIS GIBS',
-      }))
-    } else {
+
+    if (layer === 'satellite') {
       viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({
         url: ESRI_WORLD_IMAGERY,
         maximumLevel: 19,
-        credit: 'Esri World Imagery',
+        credit: 'Esri World Imagery — mozaika referencyjna, nie obraz z wybranej godziny',
+      }))
+    } else {
+      const date = effectiveDate.toISOString().slice(0, 10)
+      const nasaLayer = nightMode
+        ? 'VIIRS_SNPP_DayNightBand_ENCC'
+        : 'VIIRS_SNPP_CorrectedReflectance_TrueColor'
+      viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({
+        url: NASA_GIBS_WMTS,
+        layer: nasaLayer,
+        style: 'default',
+        format: nightMode ? 'image/png' : 'image/jpeg',
+        tileMatrixSetID: 'GoogleMapsCompatible_Level9',
+        maximumLevel: 9,
+        dimensions: { Time: date },
+        credit: nightMode ? 'NASA EOSDIS GIBS — VIIRS Day/Night Band' : 'NASA EOSDIS GIBS — VIIRS True Color',
       }))
     }
+
     viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({
       url: ESRI_BOUNDARIES,
       maximumLevel: 12,
       credit: 'Esri boundaries and places',
     }))
-  }, [layer, selectedTime])
+  }, [layer, effectiveDate.getTime(), nightMode])
 
   useEffect(() => {
     const element = host.current
@@ -243,18 +271,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
       viewer.scene.globe.depthTestAgainstTerrain = false
       viewer.scene.screenSpaceCameraController.minimumZoomDistance = 120
       viewer.scene.screenSpaceCameraController.maximumZoomDistance = 80_000_000
-      viewer.clock.currentTime = Cesium.JulianDate.fromIso8601(selectedTime || new Date().toISOString())
-
-      viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({
-        url: ESRI_WORLD_IMAGERY,
-        maximumLevel: 19,
-        credit: 'Esri World Imagery',
-      }))
-      viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({
-        url: ESRI_BOUNDARIES,
-        maximumLevel: 12,
-        credit: 'Esri boundaries and places',
-      }))
+      viewer.clock.currentTime = Cesium.JulianDate.fromIso8601(effectiveDate.toISOString())
 
       for (const marker of markers.slice(0, 1000)) {
         viewer.entities.add({
@@ -269,6 +286,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
         })
       }
       flyTo(15, 20, 20_000_000)
+      setLiveNow(new Date())
     }).catch(error => {
       if (!cancelled) setLoadError(String(error instanceof Error ? error.message : error))
     })
@@ -296,31 +314,37 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
         <button type="button" onClick={() => flyTo(20, 52, 5_500_000)}>Europa</button>
         <label>
           Warstwa
-          <select value={layer} onChange={event => setLayer(event.target.value as 'satellite' | 'nasa')}>
-            <option value="satellite">Satelita szczegółowa</option>
-            <option value="nasa">NASA — najnowsza obserwacja</option>
+          <select value={layer} onChange={event => setLayer(event.target.value as typeof layer)}>
+            <option value="nasa-auto">NASA — automatycznie dzień/noc</option>
+            <option value="nasa-day">NASA — zdjęcie dzienne</option>
+            <option value="nasa-night">NASA — zdjęcie nocne VIIRS DNB</option>
+            <option value="satellite">Satelita szczegółowa — mozaika referencyjna</option>
           </select>
         </label>
-        {(userLocation || locationError || loadError) && (
-          <div className="location-globe-status" role="status" aria-live="polite">
-            {userLocation && (
-              <>
-                <strong>Pozycja urządzenia</strong>
-                <span>{userLocation.latitude.toFixed(6)}, {userLocation.longitude.toFixed(6)}</span>
-                <span>Dokładność GPS: ±{Math.round(userLocation.accuracy)} m</span>
-              </>
-            )}
-            {locationError && <span className="location-globe-error">{locationError}</span>}
-            {loadError && <span className="location-globe-error">{loadError}</span>}
-          </div>
-        )}
+        <div className="location-globe-status" role="status" aria-live="polite">
+          <strong>{liveMode ? 'TRYB TERAZ — kontrola co 5 sekund' : 'TRYB HISTORYCZNY'}</strong>
+          <span>Wyświetlany czas: {effectiveDate.toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span>
+          <span>Warstwa: {layer === 'satellite' ? 'mozaika szczegółowa bez zgodności godzinowej' : nightMode ? 'nocna VIIRS DNB' : 'dzienna VIIRS True Color'}</span>
+          {futureWasClamped && <span className="location-globe-error">Data przyszła została cofnięta do aktualnego czasu.</span>}
+          {liveMode && <span>Sprawdzamy czas i dostępność co 5 s; nowy obraz pojawi się dopiero po publikacji przez źródło.</span>}
+          {userLocation && (
+            <>
+              <span>{userLocation.latitude.toFixed(6)}, {userLocation.longitude.toFixed(6)}</span>
+              <span>Dokładność GPS: ±{Math.round(userLocation.accuracy)} m</span>
+            </>
+          )}
+          {locationError && <span className="location-globe-error">{locationError}</span>}
+          {loadError && <span className="location-globe-error">{loadError}</span>}
+        </div>
       </div>
       <div className="tiled-earth-zoom" aria-label="Sterowanie przybliżeniem">
         <button type="button" aria-label="Przybliż" onClick={() => zoom(0.45)}>+</button>
         <button type="button" aria-label="Oddal" onClick={() => zoom(-0.85)}>−</button>
       </div>
-      <div className="tiled-earth-attribution">Kafelki doczytują się wraz z zoomem. Zdjęcia nie są transmisją na żywo.</div>
-      <div ref={host} className="tiled-earth-canvas" aria-label="Kafelkowy glob 3D z dokładnym zoomem do kontynentów, państw i regionów" />
+      <div className="tiled-earth-attribution">
+        Obraz NASA odpowiada wybranej dacie. Noc korzysta z pasma VIIRS Day/Night Band; nie jest to kamera na żywo.
+      </div>
+      <div ref={host} className="tiled-earth-canvas" aria-label="Kafelkowy glob 3D z dokładnym zoomem, historycznym czasem oraz dziennymi i nocnymi warstwami NASA" />
     </div>
   )
 }
