@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Geospatial investigation support based on authentic Earth observation products." />
+  <title>Investigation Support · Terraforming Planet</title>
+  <link rel="stylesheet" href="../multi-angle/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a href="../">← Terra Observation</a>
+    <nav><a href="../multi-angle/">Multi-angle</a><a class="active" href="./">Investigation Support</a></nav>
+  </header>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">GEOFORENSICS · CHANGE DETECTION · ORIGINAL EVIDENCE</p>
+      <h1>Investigation Support</h1>
+      <p>Moduł wspiera analizę zmian widocznych w danych satelitarnych: nielegalne wycinki, górnictwo, pożary, wycieki, nielegalną zabudowę, szkody powodziowe i inne zdarzenia terenowe.</p>
+      <p class="warning"><strong>Granica systemu:</strong> platforma nie identyfikuje ludzi, nie rozpoznaje twarzy, nie śledzi osób i nie orzeka, że ktoś popełnił przestępstwo. Zabójstwa i kradzieże nie mogą być wiarygodnie wykrywane z typowych publicznych zdjęć satelitarnych. Wyniki są jedynie materiałem geograficznym wymagającym weryfikacji przez uprawnione służby.</p>
+    </section>
+
+    <section class="panel">
+      <form id="case-form">
+        <label>Rodzaj analizy<select id="case-type"><option>Nielegalna wycinka</option><option>Nielegalne górnictwo</option><option>Pożar i miejsce początku</option><option>Wyciek ropy lub substancji</option><option>Nielegalna zabudowa</option><option>Zmiana terenu</option><option>Szkody powodziowe</option><option>Inne zdarzenie środowiskowe</option></select></label>
+        <label>Szerokość<input id="lat" type="number" step="0.0001" min="-90" max="90" value="52.2297" required /></label>
+        <label>Długość<input id="lon" type="number" step="0.0001" min="-180" max="180" value="21.0122" required /></label>
+        <label>Okres „przed” — od<input id="before-from" type="date" value="2024-03-01" required /></label>
+        <label>Okres „przed” — do<input id="before-to" type="date" value="2024-04-30" required /></label>
+        <label>Okres „po” — od<input id="after-from" type="date" value="2024-05-01" required /></label>
+        <label>Okres „po” — do<input id="after-to" type="date" value="2024-06-30" required /></label>
+        <label>Promień obszaru (km)<input id="radius" type="number" min="0.1" max="50" step="0.1" value="2" required /></label>
+        <button type="submit">Utwórz pakiet porównawczy</button>
+      </form>
+    </section>
+
+    <section class="status" id="status" aria-live="polite">Wybierz lokalizację i dwa okresy.</section>
+    <section id="case-summary" class="summary"></section>
+    <section id="results" class="results"></section>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
