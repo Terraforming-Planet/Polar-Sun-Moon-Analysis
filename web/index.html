@@ -31,16 +31,18 @@
       }
       .result-nav a:hover, .result-nav a:focus { border-color: #42c9ff; background: #12314d; }
       .result-nav a.primary-link { background: #0d5f7c; border-color: #34cfff; font-weight: 700; }
+      .result-nav a.forum-link { background: #173f35; border-color: #55d9ad; font-weight: 700; }
     </style>
   </head>
   <body>
-    <nav class="result-nav" aria-label="Wyniki Copernicus">
+    <nav class="result-nav" aria-label="Wyniki Copernicus i forum">
       <strong>Copernicus:</strong>
       <a class="primary-link" href="./copernicus/">Panel wyników</a>
       <a href="./flood-map/">Mapa Sentinel-1</a>
       <a href="./reports/copernicus-analysis.html">Raport analizy</a>
       <a href="./charts/copernicus/observation_timeline.png">Oś obserwacji</a>
       <a href="./data/copernicus/latest_results.json">Dane JSON</a>
+      <a class="forum-link" href="./forum/">Forum</a>
     </nav>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
