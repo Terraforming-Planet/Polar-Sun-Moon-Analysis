@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#040914" />
+  <meta name="description" content="Forum naukowe Terraforming Planet" />
+  <title>Forum · Terraforming Planet</title>
+  <link rel="stylesheet" href="./forum.css" />
+</head>
+<body>
+  <header class="forum-header">
+    <a class="brand" href="../"><span class="brand-mark">T</span><span><strong>TERRAFORMING PLANET</strong><small>Forum naukowe i społeczność projektu</small></span></a>
+    <nav><a href="../">Centrum obserwacji</a><a href="../copernicus/">Copernicus</a><a class="active" href="./">Forum</a></nav>
+  </header>
+
+  <main class="forum-shell">
+    <section class="forum-hero">
+      <div><small>OPEN SCIENCE · EARTH OBSERVATION · TP-26</small><h1>Forum Terraforming Planet</h1><p>Rozmowy o obserwacji Ziemi, geometrii, klimacie, wodzie, energii i odpowiedzialnym projektowaniu przyszłych systemów ochrony planety.</p></div>
+      <div id="session-card" class="session-card"></div>
+    </section>
+
+    <section id="setup-warning" class="setup-warning" hidden>
+      <strong>Forum działa obecnie w trybie podglądu.</strong>
+      <span>Aby uruchomić wspólne logowanie, posty i komentarze dla wszystkich użytkowników, skonfiguruj Supabase zgodnie z plikiem <code>docs/forum-setup.md</code>.</span>
+    </section>
+
+    <section class="forum-grid">
+      <aside class="forum-sidebar">
+        <button id="new-post-button" class="primary" type="button">+ Nowy post</button>
+        <button id="refresh-button" type="button">Odśwież forum</button>
+        <div class="forum-rules"><h2>Zasady</h2><p>Szanuj innych. Oddzielaj obserwacje od hipotez. Podawaj źródła. Nie publikuj danych osobowych ani instrukcji mogących powodować szkody.</p></div>
+      </aside>
+
+      <section class="forum-content">
+        <div id="composer" class="composer" hidden>
+          <h2>Dodaj post</h2>
+          <label>Tytuł<input id="post-title" maxlength="180" /></label>
+          <label>Kategoria<select id="post-category"><option>Obserwacja Ziemi</option><option>TP-26 i satelity</option><option>Woda i klimat</option><option>Słońce i Księżyc</option><option>Energia i fotowoltaika</option><option>Pomysły społeczności</option></select></label>
+          <label>Treść<textarea id="post-body" rows="10" maxlength="20000"></textarea></label>
+          <div class="composer-actions"><button id="cancel-post" type="button">Anuluj</button><button id="publish-post" class="primary" type="button">Opublikuj</button></div>
+        </div>
+        <div id="forum-status" class="forum-status" role="status" aria-live="polite"></div>
+        <div id="posts" class="posts"></div>
+      </section>
+    </section>
+  </main>
+
+  <dialog id="auth-dialog">
+    <form method="dialog" class="auth-form">
+      <button class="dialog-close" value="cancel" aria-label="Zamknij">×</button>
+      <h2>Logowanie do forum</h2>
+      <label>Nazwa wyświetlana<input id="auth-name" autocomplete="name" maxlength="60" /></label>
+      <label>E-mail<input id="auth-email" type="email" autocomplete="email" /></label>
+      <label>Hasło<input id="auth-password" type="password" autocomplete="current-password" minlength="8" /></label>
+      <div class="auth-actions"><button id="sign-in" type="button" class="primary">Zaloguj</button><button id="sign-up" type="button">Utwórz konto</button></div>
+      <p id="auth-status" class="auth-status"></p>
+    </form>
+  </dialog>
+
+  <script src="./config.js"></script>
+  <script src="./forum.js" defer></script>
+</body>
+</html>
