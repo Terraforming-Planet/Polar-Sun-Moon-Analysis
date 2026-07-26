@@ -12,6 +12,7 @@ type CesiumApi = {
   WebMapServiceImageryProvider: new (options: Record<string, unknown>) => any
   WebMapTileServiceImageryProvider: new (options: Record<string, unknown>) => any
   Cartesian3: { fromDegrees: (longitude: number, latitude: number, height?: number) => any }
+  Rectangle: { fromDegrees: (west: number, south: number, east: number, north: number) => any }
   Color: { fromCssColorString: (value: string) => any; BLACK: any }
   HeightReference: { CLAMP_TO_GROUND: any }
   JulianDate: { fromIso8601: (value: string) => any }
