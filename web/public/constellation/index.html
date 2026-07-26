@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#04101d" />
+  <title>TP-26 Global Virtual Constellation</title>
+  <link rel="stylesheet" href="./constellation.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a href="../">← Terra Observation</a>
+    <strong>TP-26 GLOBAL VIRTUAL CONSTELLATION</strong>
+    <a href="../forum/">Forum</a>
+  </header>
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">26 KIERUNKÓW · WIELE PAŃSTW · ORYGINALNE PRODUKTY</p>
+        <h1>Światowa wirtualna konstelacja obserwacji Ziemi</h1>
+        <p>Rejestr łączy oficjalne katalogi wielu agencji. Nie udaje jednej fotografii wykonanej jednocześnie. Każdy produkt musi zachować własny identyfikator, czas rejestracji, footprint, rozdzielczość i warunki dostępu.</p>
+      </div>
+      <div class="numbers">
+        <article><b id="providerCount">0</b><span>dostawców i federacji</span></article>
+        <article><b>26</b><span>kierunków geometrycznych</span></article>
+        <article><b>676</b><span>docelowych kanałów obserwacji</span></article>
+        <article><b>17 576</b><span>skalowalna warstwa końcowa</span></article>
+      </div>
+    </section>
+
+    <section class="architecture">
+      <h2>Jak synchronizujemy dane</h2>
+      <div class="steps">
+        <article><b>1. Discovery</b><span>Wyszukiwanie produktu w oficjalnym katalogu.</span></article>
+        <article><b>2. Verification</b><span>Kontrola ID, czasu, footprintu, sensora i licencji.</span></article>
+        <article><b>3. Assignment</b><span>Przypisanie produktu do jednego lub kilku z 26 sektorów.</span></article>
+        <article><b>4. Frame</b><span>Budowa klatki UTC z informacją o wieku każdego fragmentu.</span></article>
+        <article><b>5. Scientific view</b><span>Braki pozostają brakami; nie są generowane.</span></article>
+      </div>
+    </section>
+
+    <section class="filters">
+      <label>Szukaj<input id="search" type="search" placeholder="kraj, agencja, misja…" /></label>
+      <label>Status<select id="status"><option value="">Wszystkie</option><option value="active-adapter">Aktywny adapter</option><option value="ready-for-adapter">Gotowe do adaptera</option><option value="planned-adapter">Planowany adapter</option><option value="registered-source">Zarejestrowane źródło</option><option value="discovery-backbone">Federacja katalogów</option><option value="licence-gated">Dostęp licencjonowany</option></select></label>
+      <label>Dostęp<select id="access"><option value="">Każdy rodzaj</option><option value="public">Publiczny</option><option value="account">Konto / token</option><option value="commercial">Komercyjny / ograniczony</option></select></label>
+    </section>
+
+    <section id="providers" class="provider-grid" aria-live="polite"></section>
+
+    <section class="rules">
+      <h2>Zasady integralności naukowej</h2>
+      <p>Tryb naukowy nie wygładza różnic czasowych i nie zasłania NoData. Tryb wizualny może prezentować ciągłą mozaikę, ale musi być opisany jako rekonstrukcja wieloczasowa. Dodanie źródła do rejestru nie oznacza automatycznie prawa do pobierania danych — adapter jest aktywowany dopiero po potwierdzeniu API, licencji i autoryzacji.</p>
+    </section>
+  </main>
+  <script type="module" src="./constellation.js"></script>
+</body>
+</html>
