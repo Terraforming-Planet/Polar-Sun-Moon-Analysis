@@ -7,6 +7,17 @@ type UserLocation = { latitude: number; longitude: number; accuracy: number; tim
 type Props = { textureUrl?: string; selectedTime: string; markers?: Marker[]; autoRotate?: boolean }
 type Layer = 'copernicus' | 'satellite' | 'nasa-auto' | 'nasa-day' | 'nasa-night'
 type ViewMode = 'globe' | 'north-pole' | 'south-pole'
+type Sensor = 'sentinel-2-l2a' | 'sentinel-1-grd' | 'sentinel-3-olci-l1b'
+
+type StacAsset = { href?: string; type?: string; title?: string; roles?: string[] }
+type StacItem = {
+  id: string
+  bbox?: number[]
+  geometry?: { type?: string; coordinates?: unknown }
+  properties?: Record<string, unknown>
+  assets?: Record<string, StacAsset>
+  links?: Array<{ rel?: string; href?: string; title?: string }>
+}
 
 type CesiumApi = {
   Viewer: new (element: HTMLElement, options: Record<string, unknown>) => any
@@ -34,6 +45,7 @@ const NASA_GIBS_WMTS = 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/wmts.
 const CDSE_INSTANCE_ID = import.meta.env.VITE_CDSE_INSTANCE_ID || 'd708f736-b553-4328-9b5e-39bdb444790c'
 const CDSE_LAYER = import.meta.env.VITE_CDSE_LAYER || 'NATURAL-COLOR'
 const CDSE_WMS = `https://sh.dataspace.copernicus.eu/ogc/wms/${CDSE_INSTANCE_ID}`
+const STAC_SEARCH = 'https://stac.dataspace.copernicus.eu/v1/search'
 const LIVE_WINDOW_MS = 2 * 60 * 1000
 const LIVE_REFRESH_MS = 5_000
 
@@ -75,16 +87,210 @@ function geolocationErrorMessage(error: GeolocationPositionError) {
   return 'Nie udało się odczytać lokalizacji.'
 }
 
-function polarWmsUrl(mode: 'north-pole' | 'south-pole', date: string, size: number) {
-  const north = mode === 'north-pole'
-  const crs = north ? 'EPSG:3413' : 'EPSG:3031'
-  const extent = north ? 4200000 : 3500000
-  const params = new URLSearchParams({
-    SERVICE: 'WMS', REQUEST: 'GetMap', VERSION: '1.3.0', LAYERS: CDSE_LAYER, STYLES: '', CRS: crs,
-    BBOX: `${-extent},${-extent},${extent},${extent}`, WIDTH: String(size), HEIGHT: String(size),
-    FORMAT: 'image/jpeg', TRANSPARENT: 'false', TIME: `${date}/${date}`, MAXCC: '100', SHOWLOGO: 'false',
-  })
-  return `${CDSE_WMS}?${params.toString()}`
+function dayRange(date: Date) {
+  const day = date.toISOString().slice(0, 10)
+  return `${day}T00:00:00.000Z/${day}T23:59:59.999Z`
+}
+
+function assetPriority(item: StacItem) {
+  const assets = item.assets ?? {}
+  const preferred = ['visual', 'rendered_preview', 'thumbnail', 'overview', 'preview', 'quicklook']
+  for (const key of preferred) {
+    const asset = assets[key]
+    if (asset?.href && (asset.type?.startsWith('image/') || key !== 'visual')) return asset.href
+  }
+  const imageAsset = Object.values(assets).find(asset => asset.href && asset.type?.startsWith('image/'))
+  return imageAsset?.href ?? ''
+}
+
+function productLink(item: StacItem) {
+  return item.links?.find(link => link.rel === 'self')?.href
+    ?? item.links?.find(link => link.rel === 'alternate')?.href
+    ?? 'https://browser.dataspace.copernicus.eu/'
+}
+
+function propertyNumber(item: StacItem, keys: string[]) {
+  for (const key of keys) {
+    const value = item.properties?.[key]
+    if (typeof value === 'number' && Number.isFinite(value)) return value
+  }
+  return null
+}
+
+function propertyText(item: StacItem, keys: string[]) {
+  for (const key of keys) {
+    const value = item.properties?.[key]
+    if (typeof value === 'string' && value.trim()) return value
+    if (Array.isArray(value) && value.length) return value.join(', ')
+  }
+  return 'brak danych'
+}
+
+function sensorLabel(sensor: Sensor) {
+  if (sensor === 'sentinel-2-l2a') return 'Sentinel-2 L2A True Color'
+  if (sensor === 'sentinel-1-grd') return 'Sentinel-1 GRD radar'
+  return 'Sentinel-3 OLCI'
+}
+
+function resolutionLabel(sensor: Sensor) {
+  if (sensor === 'sentinel-2-l2a') return 'do 10 m/piksel dla pasm RGB produktu źródłowego'
+  if (sensor === 'sentinel-1-grd') return 'zależna od trybu akwizycji produktu GRD'
+  return 'około 300 m/piksel dla OLCI'
+}
+
+function PolarSceneViewer({ mode, date }: { mode: Exclude<ViewMode, 'globe'>; date: Date }) {
+  const [sensor, setSensor] = useState<Sensor>('sentinel-1-grd')
+  const [items, setItems] = useState<StacItem[]>([])
+  const [selectedId, setSelectedId] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [imageError, setImageError] = useState(false)
+  const [zoom, setZoom] = useState(1)
+  const [offset, setOffset] = useState({ x: 0, y: 0 })
+  const [showFootprint, setShowFootprint] = useState(true)
+  const dragRef = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null)
+
+  const selected = items.find(item => item.id === selectedId) ?? items[0]
+  const imageUrl = selected ? assetPriority(selected) : ''
+  const projection = mode === 'north-pole' ? 'EPSG:3413' : 'EPSG:3031'
+  const poleName = mode === 'north-pole' ? 'Arktyka' : 'Antarktyda'
+
+  useEffect(() => {
+    const controller = new AbortController()
+    setLoading(true)
+    setError('')
+    setItems([])
+    setSelectedId('')
+    setImageError(false)
+
+    const bbox = mode === 'north-pole' ? [-180, 78, 180, 90] : [-180, -90, 180, -78]
+    const body: Record<string, unknown> = {
+      collections: [sensor],
+      bbox,
+      datetime: dayRange(date),
+      limit: 40,
+      sortby: [{ field: 'datetime', direction: 'desc' }],
+    }
+    if (sensor === 'sentinel-2-l2a') body.filter = 'eo:cloud_cover <= 80'
+
+    fetch(STAC_SEARCH, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    })
+      .then(async response => {
+        if (!response.ok) throw new Error(`STAC HTTP ${response.status}`)
+        return response.json()
+      })
+      .then(data => {
+        const features = Array.isArray(data?.features) ? data.features as StacItem[] : []
+        const sorted = features.sort((a, b) => Number(Boolean(assetPriority(b))) - Number(Boolean(assetPriority(a))))
+        setItems(sorted)
+        if (sorted[0]) setSelectedId(sorted[0].id)
+        if (!sorted.length) setError('Brak pojedynczej oryginalnej sceny dla wybranej daty i obszaru. Wybierz inną datę, satelitę lub sprawdź katalog produktu.')
+      })
+      .catch(reason => {
+        if (reason instanceof DOMException && reason.name === 'AbortError') return
+        setError(`Nie udało się przeszukać katalogu Copernicus: ${String(reason instanceof Error ? reason.message : reason)}`)
+      })
+      .finally(() => setLoading(false))
+
+    return () => controller.abort()
+  }, [mode, sensor, date.getTime()])
+
+  useEffect(() => {
+    setImageError(false)
+    setZoom(1)
+    setOffset({ x: 0, y: 0 })
+  }, [selectedId])
+
+  const startDrag = (event: React.PointerEvent<HTMLDivElement>) => {
+    dragRef.current = { x: event.clientX, y: event.clientY, ox: offset.x, oy: offset.y }
+    event.currentTarget.setPointerCapture(event.pointerId)
+  }
+
+  const moveDrag = (event: React.PointerEvent<HTMLDivElement>) => {
+    const drag = dragRef.current
+    if (!drag) return
+    setOffset({ x: drag.ox + event.clientX - drag.x, y: drag.oy + event.clientY - drag.y })
+  }
+
+  const stopDrag = () => { dragRef.current = null }
+  const cloud = selected ? propertyNumber(selected, ['eo:cloud_cover', 'cloudCover']) : null
+  const acquired = selected ? propertyText(selected, ['datetime', 'start_datetime']) : 'brak danych'
+  const platform = selected ? propertyText(selected, ['platform', 'constellation']) : 'brak danych'
+  const instrument = selected ? propertyText(selected, ['instruments', 'instrument']) : 'brak danych'
+
+  return (
+    <div className="original-scene-module">
+      <div className="scene-controls">
+        <label>Źródło
+          <select value={sensor} onChange={event => setSensor(event.target.value as Sensor)}>
+            <option value="sentinel-1-grd">Sentinel-1 GRD — radar, najlepszy przy biegunach i nocą</option>
+            <option value="sentinel-2-l2a">Sentinel-2 L2A — oryginalna scena optyczna</option>
+            <option value="sentinel-3-olci-l1b">Sentinel-3 OLCI — szerszy pas, niższa rozdzielczość</option>
+          </select>
+        </label>
+        <label>Produkt
+          <select value={selected?.id ?? ''} onChange={event => setSelectedId(event.target.value)} disabled={!items.length}>
+            {!items.length && <option value="">Brak produktów</option>}
+            {items.map(item => <option key={item.id} value={item.id}>{propertyText(item, ['datetime', 'start_datetime'])} — {item.id}</option>)}
+          </select>
+        </label>
+        <button type="button" onClick={() => setZoom(value => Math.min(8, value * 1.4))}>+</button>
+        <button type="button" onClick={() => setZoom(value => Math.max(0.5, value / 1.4))}>−</button>
+        <button type="button" onClick={() => { setZoom(1); setOffset({ x: 0, y: 0 }) }}>Reset</button>
+        <button type="button" className={showFootprint ? 'is-active' : ''} onClick={() => setShowFootprint(value => !value)}>Footprint</button>
+      </div>
+
+      <div className="scene-status">
+        <strong>{poleName} — pojedynczy produkt, bez mozaiki</strong>
+        <span>Układ analizy: {projection}. Obraz nie jest rozciągany do punktu 90° i nie jest sklejany z sąsiednimi scenami.</span>
+        <span>{sensorLabel(sensor)} · {resolutionLabel(sensor)}</span>
+      </div>
+
+      <div className="scene-layout">
+        <div className="scene-canvas" onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={stopDrag} onPointerCancel={stopDrag}>
+          {loading && <div className="scene-message">Wyszukiwanie oryginalnych produktów w katalogu CDSE…</div>}
+          {!loading && error && <div className="scene-message scene-error">{error}</div>}
+          {!loading && selected && imageUrl && !imageError && (
+            <div className="scene-image-frame" style={{ transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})` }}>
+              <img src={imageUrl} alt={`Oryginalny podgląd produktu ${selected.id}`} draggable={false} onError={() => setImageError(true)} />
+              {showFootprint && <div className="scene-footprint" aria-label="Granica pojedynczego produktu">Pojedynczy footprint produktu</div>}
+            </div>
+          )}
+          {!loading && selected && (!imageUrl || imageError) && (
+            <div className="scene-message scene-error">
+              <strong>Produkt istnieje, ale katalog nie udostępnił publicznego podglądu obrazu.</strong>
+              <span>Nie generujemy zastępczej mozaiki. Otwórz produkt w Copernicus, aby pobrać oryginalne dane źródłowe.</span>
+            </div>
+          )}
+          <div className="pole-marker" title="Dokładny biegun geograficzny — może znajdować się poza footprintem wybranego produktu"><span /><span /></div>
+          <div className="scene-scale">Skala podglądu zależy od produktu; zoom interfejsu: {zoom.toFixed(2)}×</div>
+        </div>
+
+        <aside className="scene-metadata">
+          <h3>Metadane oryginalnego produktu</h3>
+          {selected ? <>
+            <dl>
+              <dt>ID produktu</dt><dd>{selected.id}</dd>
+              <dt>Data i czas rejestracji</dt><dd>{acquired}</dd>
+              <dt>Platforma</dt><dd>{platform}</dd>
+              <dt>Instrument</dt><dd>{instrument}</dd>
+              <dt>Kolekcja</dt><dd>{sensor}</dd>
+              <dt>Rozdzielczość</dt><dd>{resolutionLabel(sensor)}</dd>
+              <dt>Zachmurzenie</dt><dd>{cloud === null ? 'nie dotyczy / brak danych' : `${cloud.toFixed(1)}%`}</dd>
+              <dt>Układ analizy</dt><dd>{projection}</dd>
+              <dt>BBOX produktu</dt><dd>{selected.bbox?.join(', ') ?? 'brak danych'}</dd>
+            </dl>
+            <a className="scene-product-link" href={productLink(selected)} target="_blank" rel="noreferrer">Otwórz rekord produktu / pobierz dane</a>
+          </> : <p>Wybierz datę lub inne źródło, aby znaleźć produkt.</p>}
+          <p className="scene-science-note">Pojedyncze zdjęcie całego bieguna może nie istnieć. Satelita wykonuje sceny lub pasy podczas przelotu. Brak obrazu w dokładnym punkcie 90° jest wynikiem pokrycia orbitalnego, a nie błędem do sztucznego uzupełnienia.</p>
+        </aside>
+      </div>
+    </div>
+  )
 }
 
 export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
@@ -98,7 +304,6 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null)
   const [locationError, setLocationError] = useState<string | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
-  const [polarError, setPolarError] = useState(false)
   const [locating, setLocating] = useState(false)
   const [layer, setLayer] = useState<Layer>('copernicus')
   const [liveNow, setLiveNow] = useState(() => new Date())
@@ -109,15 +314,12 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   const effectiveDate = liveMode ? liveNow : selectedDate
   const date = effectiveDate.toISOString().slice(0, 10)
   const futureWasClamped = Number.isFinite(selectedMs) && selectedMs > liveNow.getTime()
-  const polarImageUrl = viewMode === 'globe' ? '' : polarWmsUrl(viewMode, date, 1600)
 
   useEffect(() => {
     if (!liveMode) return
     const timer = window.setInterval(() => setLiveNow(new Date()), LIVE_REFRESH_MS)
     return () => window.clearInterval(timer)
   }, [liveMode])
-
-  useEffect(() => setPolarError(false), [polarImageUrl])
 
   const stopTracking = () => {
     if (watchIdRef.current !== null) navigator.geolocation.clearWatch(watchIdRef.current)
@@ -150,7 +352,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
     viewer.camera.flyTo({ destination: Cesium.Cartesian3.fromDegrees(longitude, latitude, height), duration: 1.4 })
   }
 
-  const zoom = (factor: number) => {
+  const zoomGlobe = (factor: number) => {
     const viewer = viewerRef.current
     if (!viewer) return
     const height = viewer.camera.positionCartographic.height
@@ -252,14 +454,13 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   }, [markers, viewMode])
 
   const layerLabel = layer === 'copernicus' ? `Copernicus Sentinel-2 Natural Color — ${date}` : layer === 'satellite' ? 'szczegółowa mozaika referencyjna' : layer === 'nasa-day' ? 'NASA VIIRS True Color' : layer === 'nasa-night' ? 'NASA VIIRS DNB' : 'NASA dzień i noc'
-  const polarTitle = viewMode === 'north-pole' ? 'Biegun północny — EPSG:3413' : 'Biegun południowy — EPSG:3031'
 
   return (
-    <div className="tiled-earth-shell">
+    <div className={`tiled-earth-shell ${viewMode !== 'globe' ? 'is-polar-scene' : ''}`}>
       <div className="tiled-earth-toolbar">
         <button type="button" className={viewMode === 'globe' ? 'is-active' : ''} onClick={() => setViewMode('globe')}>Globus 3D</button>
-        <button type="button" className={viewMode === 'north-pole' ? 'is-active' : ''} onClick={() => setViewMode('north-pole')}>Biegun północny</button>
-        <button type="button" className={viewMode === 'south-pole' ? 'is-active' : ''} onClick={() => setViewMode('south-pole')}>Biegun południowy</button>
+        <button type="button" className={viewMode === 'north-pole' ? 'is-active' : ''} onClick={() => setViewMode('north-pole')}>Arktyka — pojedyncza scena</button>
+        <button type="button" className={viewMode === 'south-pole' ? 'is-active' : ''} onClick={() => setViewMode('south-pole')}>Antarktyda — pojedyncza scena</button>
 
         {viewMode === 'globe' && <>
           <button type="button" onClick={locating ? stopTracking : startTracking}>{locating ? 'Zatrzymaj lokalizację' : 'Znajdź mnie'}</button>
@@ -269,10 +470,9 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
         </>}
 
         <div className="location-globe-status" role="status" aria-live="polite">
-          <strong>{viewMode === 'globe' ? (liveMode ? 'TRYB TERAZ — kontrola co 5 sekund' : 'TRYB HISTORYCZNY') : polarTitle}</strong>
+          <strong>{viewMode === 'globe' ? (liveMode ? 'TRYB TERAZ — kontrola co 5 sekund' : 'TRYB HISTORYCZNY') : 'TRYB NAUKOWY — JEDEN PRODUKT'}</strong>
           <span>Wyświetlany czas: {effectiveDate.toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span>
-          <span>{viewMode === 'globe' ? `Warstwa: ${layerLabel}` : 'Rzut polarny bez deformacji Web Mercator i bez sztucznego wypełniania środka.'}</span>
-          {viewMode !== 'globe' && <span>Brak danych pozostaje pusty. Aplikacja nie rysuje fałszywego koła ani nie rozciąga pikseli do 90°.</span>}
+          <span>{viewMode === 'globe' ? `Warstwa: ${layerLabel}` : 'Bez WMS-mozaiki, bez promienistych linii łączenia i bez sztucznego wypełniania środka bieguna.'}</span>
           {!viewerReady && viewMode === 'globe' && <span>Ładowanie globu i kafelków…</span>}
           {futureWasClamped && <span className="location-globe-error">Data przyszła została cofnięta do aktualnego czasu.</span>}
           {locationError && <span className="location-globe-error">{locationError}</span>}
@@ -281,14 +481,10 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
       </div>
 
       {viewMode === 'globe' ? <>
-        <div className="tiled-earth-zoom" aria-label="Sterowanie przybliżeniem"><button type="button" aria-label="Przybliż" onClick={() => zoom(0.45)}>+</button><button type="button" aria-label="Oddal" onClick={() => zoom(-0.85)}>−</button></div>
-        <div className="tiled-earth-attribution">Globus służy do nawigacji globalnej. Dokładną analizę środka biegunów wykonuj w osobnych rzutach polarnych.</div>
+        <div className="tiled-earth-zoom" aria-label="Sterowanie przybliżeniem"><button type="button" aria-label="Przybliż" onClick={() => zoomGlobe(0.45)}>+</button><button type="button" aria-label="Oddal" onClick={() => zoomGlobe(-0.85)}>−</button></div>
+        <div className="tiled-earth-attribution">Globus służy do nawigacji globalnej. Obserwacje biegunów korzystają z osobnej listy pojedynczych produktów CDSE.</div>
         <div ref={host} className="tiled-earth-canvas" aria-label="Kafelkowy glob 3D z obrazami Copernicus Sentinel-2 i warstwami NASA" />
-      </> : <div className="polar-view">
-        {!polarError ? <img key={polarImageUrl} src={polarImageUrl} alt={`${polarTitle}, obraz Copernicus z dnia ${date}`} onError={() => setPolarError(true)} /> : <div className="polar-view-error"><strong>Źródło nie zwróciło obrazu dla tego rzutu i dnia.</strong><span>To jest uczciwy brak danych, a nie sztucznie wygenerowane koło. Wybierz inną datę albo sprawdź nazwę warstwy w konfiguracji Copernicus.</span></div>}
-        <div className="polar-crosshair" aria-hidden="true"><span /><span /></div>
-        <div className="polar-view-caption"><strong>{polarTitle}</strong><span>Centrum obrazu = geograficzny biegun 90°. Źródło: Copernicus WMS, data {date}.</span><span>Sentinel-2 nie obserwuje dokładnie samego punktu 90°; ewentualny pusty obszar oznacza realny brak pokrycia, a nie błąd renderowania.</span></div>
-      </div>}
+      </> : <PolarSceneViewer mode={viewMode} date={effectiveDate} />}
     </div>
   )
 }
