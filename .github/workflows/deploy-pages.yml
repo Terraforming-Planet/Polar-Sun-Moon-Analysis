@@ -23,26 +23,43 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: pip
-      - run: python -m pip install -r requirements.txt
+
+      - name: Install Python dependencies
+        run: python -m pip install -r requirements.txt
+
       - name: Refresh lightweight public observations
         run: |
           python -m terra_hazards sources --output web/public/data/sources.json
           python -m terra_hazards update --output web/public/data/hazards.json --limit 200
           python -m polar_equinox_analysis solar-system --output web/public/data/solar-system.json
-      - uses: actions/setup-node@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
           cache-dependency-path: web/package-lock.json
-      - run: npm ci
+
+      - name: Install web dependencies
+        run: npm ci
         working-directory: web
-      - run: npm run build
+
+      - name: Test web application
+        run: npm test
         working-directory: web
+
+      - name: Build Vite application
+        run: npm run build
+        working-directory: web
+
       - name: Add Copernicus result pages to the deployment
         run: |
           mkdir -p web/dist/flood-map web/dist/reports web/dist/charts/copernicus web/dist/data/copernicus
@@ -50,10 +67,23 @@ jobs:
           cp -R docs/reports/. web/dist/reports/
           cp -R docs/charts/copernicus/. web/dist/charts/copernicus/
           cp -R docs/data/copernicus/. web/dist/data/copernicus/
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+
+      - name: Verify and harden Pages artifact
+        run: |
+          test -s web/dist/index.html
+          cp web/dist/index.html web/dist/404.html
+          touch web/dist/.nojekyll
+          echo "Artifact root:"
+          ls -la web/dist
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload built website
+        uses: actions/upload-pages-artifact@v3
         with:
           path: web/dist
-      - name: Deploy
+
+      - name: Deploy website
         id: deployment
         uses: actions/deploy-pages@v5
