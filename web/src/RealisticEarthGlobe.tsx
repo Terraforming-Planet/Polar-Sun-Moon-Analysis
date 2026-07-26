@@ -91,11 +91,6 @@ function clampToNow(value: string, now: Date) {
   return parsed.getTime() > now.getTime() ? now : parsed
 }
 
-function isUtcNight(date: Date) {
-  const hour = date.getUTCHours()
-  return hour < 6 || hour >= 18
-}
-
 export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   const host = useRef<HTMLDivElement>(null)
   const viewerRef = useRef<any>(null)
@@ -112,7 +107,6 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   const selectedDate = useMemo(() => clampToNow(selectedTime, liveNow), [selectedTime, liveNow])
   const liveMode = Math.abs(new Date(selectedTime).getTime() - liveNow.getTime()) <= LIVE_WINDOW_MS
   const effectiveDate = liveMode ? liveNow : selectedDate
-  const nightMode = layer === 'nasa-night' || (layer === 'nasa-auto' && isUtcNight(effectiveDate))
   const futureWasClamped = new Date(selectedTime).getTime() > liveNow.getTime()
 
   useEffect(() => {
@@ -213,27 +207,41 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
     viewer.scene.globe.enableLighting = true
     viewer.imageryLayers.removeAll()
 
-    if (layer === 'satellite') {
-      viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({
-        url: ESRI_WORLD_IMAGERY,
-        maximumLevel: 19,
-        credit: 'Esri World Imagery — mozaika referencyjna, nie obraz z wybranej godziny',
-      }))
-    } else {
+    const referenceBase = viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({
+      url: ESRI_WORLD_IMAGERY,
+      maximumLevel: 19,
+      credit: 'Esri World Imagery — warstwa geometrii i szczegółów terenu',
+    }))
+    referenceBase.brightness = layer === 'nasa-night' ? 0.42 : 0.72
+    referenceBase.contrast = 1.08
+    referenceBase.saturation = layer === 'nasa-night' ? 0.45 : 0.85
+
+    if (layer !== 'satellite') {
       const date = effectiveDate.toISOString().slice(0, 10)
-      const nasaLayer = nightMode
-        ? 'VIIRS_SNPP_DayNightBand_ENCC'
-        : 'VIIRS_SNPP_CorrectedReflectance_TrueColor'
-      viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({
-        url: NASA_GIBS_WMTS,
-        layer: nasaLayer,
-        style: 'default',
-        format: nightMode ? 'image/png' : 'image/jpeg',
-        tileMatrixSetID: 'GoogleMapsCompatible_Level9',
-        maximumLevel: 9,
-        dimensions: { Time: date },
-        credit: nightMode ? 'NASA EOSDIS GIBS — VIIRS Day/Night Band' : 'NASA EOSDIS GIBS — VIIRS True Color',
-      }))
+      const addNasaLayer = (nasaLayer: string, format: string, alpha: number, credit: string) => {
+        const imagery = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({
+          url: NASA_GIBS_WMTS,
+          layer: nasaLayer,
+          style: 'default',
+          format,
+          tileMatrixSetID: 'GoogleMapsCompatible_Level9',
+          maximumLevel: 9,
+          dimensions: { Time: date },
+          credit,
+        }))
+        imagery.alpha = alpha
+        imagery.brightness = 1.12
+        imagery.contrast = 1.08
+      }
+
+      if (layer === 'nasa-day') {
+        addNasaLayer('VIIRS_SNPP_CorrectedReflectance_TrueColor', 'image/jpeg', 0.9, 'NASA EOSDIS GIBS — VIIRS True Color')
+      } else if (layer === 'nasa-night') {
+        addNasaLayer('VIIRS_SNPP_DayNightBand_ENCC', 'image/png', 0.78, 'NASA EOSDIS GIBS — VIIRS Day/Night Band')
+      } else {
+        addNasaLayer('VIIRS_SNPP_CorrectedReflectance_TrueColor', 'image/jpeg', 0.68, 'NASA EOSDIS GIBS — VIIRS True Color')
+        addNasaLayer('VIIRS_SNPP_DayNightBand_ENCC', 'image/png', 0.42, 'NASA EOSDIS GIBS — VIIRS Day/Night Band')
+      }
     }
 
     viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({
@@ -241,7 +249,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
       maximumLevel: 12,
       credit: 'Esri boundaries and places',
     }))
-  }, [layer, effectiveDate.getTime(), nightMode])
+  }, [layer, effectiveDate.getTime()])
 
   useEffect(() => {
     const element = host.current
@@ -301,6 +309,14 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
     }
   }, [markers])
 
+  const layerLabel = layer === 'satellite'
+    ? 'szczegółowa mozaika referencyjna'
+    : layer === 'nasa-day'
+      ? 'NASA VIIRS True Color na warstwie geometrii'
+      : layer === 'nasa-night'
+        ? 'NASA VIIRS DNB na przyciemnionej warstwie geometrii'
+        : 'NASA dzień i noc z zachowaną geometrią terenu'
+
   return (
     <div className="tiled-earth-shell">
       <div className="tiled-earth-toolbar">
@@ -324,9 +340,9 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
         <div className="location-globe-status" role="status" aria-live="polite">
           <strong>{liveMode ? 'TRYB TERAZ — kontrola co 5 sekund' : 'TRYB HISTORYCZNY'}</strong>
           <span>Wyświetlany czas: {effectiveDate.toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span>
-          <span>Warstwa: {layer === 'satellite' ? 'mozaika szczegółowa bez zgodności godzinowej' : nightMode ? 'nocna VIIRS DNB' : 'dzienna VIIRS True Color'}</span>
+          <span>Warstwa: {layerLabel}</span>
           {futureWasClamped && <span className="location-globe-error">Data przyszła została cofnięta do aktualnego czasu.</span>}
-          {liveMode && <span>Sprawdzamy czas i dostępność co 5 s; nowy obraz pojawi się dopiero po publikacji przez źródło.</span>}
+          {liveMode && <span>Sprawdzamy czas co 5 s; nowy obraz pojawi się dopiero po publikacji przez źródło.</span>}
           {userLocation && (
             <>
               <span>{userLocation.latitude.toFixed(6)}, {userLocation.longitude.toFixed(6)}</span>
@@ -342,9 +358,9 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
         <button type="button" aria-label="Oddal" onClick={() => zoom(-0.85)}>−</button>
       </div>
       <div className="tiled-earth-attribution">
-        Obraz NASA odpowiada wybranej dacie. Noc korzysta z pasma VIIRS Day/Night Band; nie jest to kamera na żywo.
+        Geometria Ziemi pozostaje widoczna także nocą. VIIRS DNB jest nakładką nocną, a nie niebieskim zastępstwem całej powierzchni.
       </div>
-      <div ref={host} className="tiled-earth-canvas" aria-label="Kafelkowy glob 3D z dokładnym zoomem, historycznym czasem oraz dziennymi i nocnymi warstwami NASA" />
+      <div ref={host} className="tiled-earth-canvas" aria-label="Kafelkowy glob 3D z widoczną geometrią Ziemi, historycznym czasem oraz warstwami dziennymi i nocnymi NASA" />
     </div>
   )
 }
