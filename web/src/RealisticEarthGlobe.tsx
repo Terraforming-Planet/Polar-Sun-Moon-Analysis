@@ -27,6 +27,7 @@ type CesiumApi = {
   Viewer: new (element: HTMLElement, options: Record<string, unknown>) => any
   UrlTemplateImageryProvider: new (options: Record<string, unknown>) => any
   WebMapTileServiceImageryProvider: new (options: Record<string, unknown>) => any
+  WebMapServiceImageryProvider: new (options: Record<string, unknown>) => any
   Cartesian3: { fromDegrees: (longitude: number, latitude: number, height?: number) => any }
   Color: { fromCssColorString: (value: string) => any; WHITE: any; BLACK: any }
   VerticalOrigin: { BOTTOM: any }
@@ -50,6 +51,9 @@ const ESRI_WORLD_IMAGERY =
 const ESRI_BOUNDARIES =
   'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'
 const NASA_GIBS_WMTS = 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/wmts.cgi'
+const CDSE_INSTANCE_ID = import.meta.env.VITE_CDSE_INSTANCE_ID || 'd708f736-b553-4328-9b5e-39bdb444790c'
+const CDSE_LAYER = import.meta.env.VITE_CDSE_LAYER || 'NATURAL-COLOR'
+const CDSE_WMS = `https://sh.dataspace.copernicus.eu/ogc/wms/${CDSE_INSTANCE_ID}`
 const LIVE_WINDOW_MS = 2 * 60 * 1000
 const LIVE_REFRESH_MS = 5_000
 
@@ -101,7 +105,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   const [locationError, setLocationError] = useState<string | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [locating, setLocating] = useState(false)
-  const [layer, setLayer] = useState<'satellite' | 'nasa-auto' | 'nasa-day' | 'nasa-night'>('nasa-auto')
+  const [layer, setLayer] = useState<'copernicus' | 'satellite' | 'nasa-auto' | 'nasa-day' | 'nasa-night'>('copernicus')
   const [liveNow, setLiveNow] = useState(() => new Date())
 
   const selectedDate = useMemo(() => clampToNow(selectedTime, liveNow), [selectedTime, liveNow])
@@ -210,14 +214,38 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
     const referenceBase = viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({
       url: ESRI_WORLD_IMAGERY,
       maximumLevel: 19,
-      credit: 'Esri World Imagery — warstwa geometrii i szczegółów terenu',
+      credit: 'Esri World Imagery — warstwa awaryjna i szczegóły terenu',
     }))
     referenceBase.brightness = layer === 'nasa-night' ? 0.42 : 0.72
     referenceBase.contrast = 1.08
     referenceBase.saturation = layer === 'nasa-night' ? 0.45 : 0.85
+    referenceBase.alpha = layer === 'copernicus' ? 0.28 : 1
 
-    if (layer !== 'satellite') {
-      const date = effectiveDate.toISOString().slice(0, 10)
+    const date = effectiveDate.toISOString().slice(0, 10)
+
+    if (layer === 'copernicus') {
+      const sentinel = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapServiceImageryProvider({
+        url: CDSE_WMS,
+        layers: CDSE_LAYER,
+        parameters: {
+          transparent: false,
+          format: 'image/jpeg',
+          time: `${date}/${date}`,
+          maxcc: 20,
+          quality: 95,
+          showlogo: false,
+        },
+        getFeatureInfoParameters: {
+          time: `${date}/${date}`,
+          maxcc: 20,
+        },
+        credit: 'Copernicus Data Space Ecosystem — Sentinel-2 L2A Natural Color',
+      }))
+      sentinel.alpha = 1
+      sentinel.brightness = 1.04
+      sentinel.contrast = 1.08
+      sentinel.saturation = 1.05
+    } else if (layer !== 'satellite') {
       const addNasaLayer = (nasaLayer: string, format: string, alpha: number, credit: string) => {
         const imagery = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({
           url: NASA_GIBS_WMTS,
@@ -309,13 +337,15 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
     }
   }, [markers])
 
-  const layerLabel = layer === 'satellite'
-    ? 'szczegółowa mozaika referencyjna'
-    : layer === 'nasa-day'
-      ? 'NASA VIIRS True Color na warstwie geometrii'
-      : layer === 'nasa-night'
-        ? 'NASA VIIRS DNB na przyciemnionej warstwie geometrii'
-        : 'NASA dzień i noc z zachowaną geometrią terenu'
+  const layerLabel = layer === 'copernicus'
+    ? `Copernicus Sentinel-2 Natural Color — ${dateLabel(effectiveDate)}`
+    : layer === 'satellite'
+      ? 'szczegółowa mozaika referencyjna'
+      : layer === 'nasa-day'
+        ? 'NASA VIIRS True Color na warstwie geometrii'
+        : layer === 'nasa-night'
+          ? 'NASA VIIRS DNB na przyciemnionej warstwie geometrii'
+          : 'NASA dzień i noc z zachowaną geometrią terenu'
 
   return (
     <div className="tiled-earth-shell">
@@ -331,6 +361,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
         <label>
           Warstwa
           <select value={layer} onChange={event => setLayer(event.target.value as typeof layer)}>
+            <option value="copernicus">Copernicus Sentinel-2 — wysoka jakość</option>
             <option value="nasa-auto">NASA — automatycznie dzień/noc</option>
             <option value="nasa-day">NASA — zdjęcie dzienne</option>
             <option value="nasa-night">NASA — zdjęcie nocne VIIRS DNB</option>
@@ -341,6 +372,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
           <strong>{liveMode ? 'TRYB TERAZ — kontrola co 5 sekund' : 'TRYB HISTORYCZNY'}</strong>
           <span>Wyświetlany czas: {effectiveDate.toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span>
           <span>Warstwa: {layerLabel}</span>
+          {layer === 'copernicus' && <span>Sentinel-2: do 10 m/piksel; wybierana jest najlepsza scena z dnia przy zachmurzeniu do 20%.</span>}
           {futureWasClamped && <span className="location-globe-error">Data przyszła została cofnięta do aktualnego czasu.</span>}
           {liveMode && <span>Sprawdzamy czas co 5 s; nowy obraz pojawi się dopiero po publikacji przez źródło.</span>}
           {userLocation && (
@@ -358,9 +390,13 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
         <button type="button" aria-label="Oddal" onClick={() => zoom(-0.85)}>−</button>
       </div>
       <div className="tiled-earth-attribution">
-        Geometria Ziemi pozostaje widoczna także nocą. VIIRS DNB jest nakładką nocną, a nie niebieskim zastępstwem całej powierzchni.
+        Copernicus Sentinel-2 dostarcza obrazy wysokiej jakości z wybranego dnia. Brak sceny lub duże zachmurzenie może odsłonić warstwę awaryjną.
       </div>
-      <div ref={host} className="tiled-earth-canvas" aria-label="Kafelkowy glob 3D z widoczną geometrią Ziemi, historycznym czasem oraz warstwami dziennymi i nocnymi NASA" />
+      <div ref={host} className="tiled-earth-canvas" aria-label="Kafelkowy glob 3D z obrazami Copernicus Sentinel-2, historycznym czasem oraz warstwami NASA" />
     </div>
   )
+}
+
+function dateLabel(date: Date) {
+  return date.toISOString().slice(0, 10)
 }
