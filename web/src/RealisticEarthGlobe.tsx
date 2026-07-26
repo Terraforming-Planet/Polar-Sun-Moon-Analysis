@@ -6,6 +6,7 @@ type Marker = { longitude: number; latitude: number; color?: number; radius?: nu
 type UserLocation = { latitude: number; longitude: number; accuracy: number; timestamp: number }
 type Props = { textureUrl?: string; selectedTime: string; markers?: Marker[]; autoRotate?: boolean }
 type Layer = 'copernicus' | 'satellite' | 'nasa-auto' | 'nasa-day' | 'nasa-night'
+type ViewMode = 'globe' | 'north-pole' | 'south-pole'
 
 type CesiumApi = {
   Viewer: new (element: HTMLElement, options: Record<string, unknown>) => any
@@ -74,6 +75,18 @@ function geolocationErrorMessage(error: GeolocationPositionError) {
   return 'Nie udało się odczytać lokalizacji.'
 }
 
+function polarWmsUrl(mode: 'north-pole' | 'south-pole', date: string, size: number) {
+  const north = mode === 'north-pole'
+  const crs = north ? 'EPSG:3413' : 'EPSG:3031'
+  const extent = north ? 4200000 : 3500000
+  const params = new URLSearchParams({
+    SERVICE: 'WMS', REQUEST: 'GetMap', VERSION: '1.3.0', LAYERS: CDSE_LAYER, STYLES: '', CRS: crs,
+    BBOX: `${-extent},${-extent},${extent},${extent}`, WIDTH: String(size), HEIGHT: String(size),
+    FORMAT: 'image/jpeg', TRANSPARENT: 'false', TIME: `${date}/${date}`, MAXCC: '100', SHOWLOGO: 'false',
+  })
+  return `${CDSE_WMS}?${params.toString()}`
+}
+
 export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   const host = useRef<HTMLDivElement>(null)
   const viewerRef = useRef<any>(null)
@@ -81,9 +94,11 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   const watchIdRef = useRef<number | null>(null)
   const userEntityRef = useRef<any>(null)
   const [viewerReady, setViewerReady] = useState(false)
+  const [viewMode, setViewMode] = useState<ViewMode>('globe')
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null)
   const [locationError, setLocationError] = useState<string | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
+  const [polarError, setPolarError] = useState(false)
   const [locating, setLocating] = useState(false)
   const [layer, setLayer] = useState<Layer>('copernicus')
   const [liveNow, setLiveNow] = useState(() => new Date())
@@ -92,13 +107,17 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   const selectedMs = new Date(selectedTime).getTime()
   const liveMode = Number.isFinite(selectedMs) && Math.abs(selectedMs - liveNow.getTime()) <= LIVE_WINDOW_MS
   const effectiveDate = liveMode ? liveNow : selectedDate
+  const date = effectiveDate.toISOString().slice(0, 10)
   const futureWasClamped = Number.isFinite(selectedMs) && selectedMs > liveNow.getTime()
+  const polarImageUrl = viewMode === 'globe' ? '' : polarWmsUrl(viewMode, date, 1600)
 
   useEffect(() => {
     if (!liveMode) return
     const timer = window.setInterval(() => setLiveNow(new Date()), LIVE_REFRESH_MS)
     return () => window.clearInterval(timer)
   }, [liveMode])
+
+  useEffect(() => setPolarError(false), [polarImageUrl])
 
   const stopTracking = () => {
     if (watchIdRef.current !== null) navigator.geolocation.clearWatch(watchIdRef.current)
@@ -116,18 +135,10 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
     setLocating(true)
     watchIdRef.current = navigator.geolocation.watchPosition(
       position => {
-        setUserLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          accuracy: position.coords.accuracy,
-          timestamp: position.timestamp,
-        })
+        setUserLocation({ latitude: position.coords.latitude, longitude: position.coords.longitude, accuracy: position.coords.accuracy, timestamp: position.timestamp })
         setLocationError(null)
       },
-      error => {
-        setLocationError(geolocationErrorMessage(error))
-        setLocating(false)
-      },
+      error => { setLocationError(geolocationErrorMessage(error)); setLocating(false) },
       { enableHighAccuracy: true, maximumAge: 1000, timeout: 15000 },
     )
   }
@@ -156,22 +167,8 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
     if (!userEntityRef.current) {
       userEntityRef.current = viewer.entities.add({
         position,
-        point: {
-          pixelSize: 14,
-          color: Cesium.Color.fromCssColorString('#74ffb8'),
-          outlineColor: Cesium.Color.BLACK,
-          outlineWidth: 3,
-          heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
-        },
-        label: {
-          text: 'Twoja pozycja',
-          fillColor: Cesium.Color.WHITE,
-          outlineColor: Cesium.Color.BLACK,
-          outlineWidth: 4,
-          style: 2,
-          verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-          pixelOffset: { x: 0, y: -18 },
-        },
+        point: { pixelSize: 14, color: Cesium.Color.fromCssColorString('#74ffb8'), outlineColor: Cesium.Color.BLACK, outlineWidth: 3, heightReference: Cesium.HeightReference.CLAMP_TO_GROUND },
+        label: { text: 'Twoja pozycja', fillColor: Cesium.Color.WHITE, outlineColor: Cesium.Color.BLACK, outlineWidth: 4, style: 2, verticalOrigin: Cesium.VerticalOrigin.BOTTOM, pixelOffset: { x: 0, y: -18 } },
       })
     } else userEntityRef.current.position = position
   }, [userLocation, viewerReady])
@@ -179,55 +176,30 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   useEffect(() => {
     const viewer = viewerRef.current
     const Cesium = cesiumRef.current
-    if (!viewerReady || !viewer || !Cesium) return
+    if (!viewerReady || !viewer || !Cesium || viewMode !== 'globe') return
 
     viewer.clock.currentTime = Cesium.JulianDate.fromIso8601(effectiveDate.toISOString())
     viewer.scene.globe.enableLighting = layer === 'nasa-night' || layer === 'nasa-auto'
     viewer.scene.globe.baseColor = Cesium.Color.fromCssColorString('#18222d')
     viewer.imageryLayers.removeAll()
 
-    const referenceBase = viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({
-      url: ESRI_WORLD_IMAGERY,
-      maximumLevel: 19,
-      credit: 'Esri World Imagery — warstwa bazowa i awaryjna',
-    }))
+    const referenceBase = viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({ url: ESRI_WORLD_IMAGERY, maximumLevel: 19, credit: 'Esri World Imagery — warstwa bazowa i awaryjna' }))
     referenceBase.alpha = 1
     referenceBase.brightness = layer === 'nasa-night' ? 0.48 : 1
     referenceBase.contrast = 1.05
     referenceBase.saturation = layer === 'nasa-night' ? 0.55 : 1
 
-    const date = effectiveDate.toISOString().slice(0, 10)
-
     if (layer === 'copernicus') {
       const sentinel = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapServiceImageryProvider({
-        url: CDSE_WMS,
-        layers: CDSE_LAYER,
-        parameters: {
-          transparent: true,
-          format: 'image/png',
-          time: `${date}/${date}`,
-          maxcc: 20,
-          showlogo: false,
-        },
+        url: CDSE_WMS, layers: CDSE_LAYER,
+        parameters: { transparent: true, format: 'image/png', time: `${date}/${date}`, maxcc: 20, showlogo: false },
         getFeatureInfoParameters: { time: `${date}/${date}`, maxcc: 20 },
         credit: 'Copernicus Data Space Ecosystem — Sentinel-2 L2A Natural Color',
       }))
       sentinel.alpha = 1
-      sentinel.brightness = 1.03
-      sentinel.contrast = 1.06
-      sentinel.saturation = 1.04
     } else if (layer !== 'satellite') {
       const addNasaLayer = (name: string, format: string, alpha: number, credit: string) => {
-        const imagery = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({
-          url: NASA_GIBS_WMTS,
-          layer: name,
-          style: 'default',
-          format,
-          tileMatrixSetID: 'GoogleMapsCompatible_Level9',
-          maximumLevel: 9,
-          dimensions: { Time: date },
-          credit,
-        }))
+        const imagery = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({ url: NASA_GIBS_WMTS, layer: name, style: 'default', format, tileMatrixSetID: 'GoogleMapsCompatible_Level9', maximumLevel: 9, dimensions: { Time: date }, credit }))
         imagery.alpha = alpha
       }
       if (layer === 'nasa-day') addNasaLayer('VIIRS_SNPP_CorrectedReflectance_TrueColor', 'image/jpeg', 0.92, 'NASA EOSDIS GIBS — VIIRS True Color')
@@ -238,15 +210,12 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
       }
     }
 
-    viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({
-      url: ESRI_BOUNDARIES,
-      maximumLevel: 12,
-      credit: 'Esri boundaries and places',
-    }))
+    viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({ url: ESRI_BOUNDARIES, maximumLevel: 12, credit: 'Esri boundaries and places' }))
     viewer.scene.requestRender()
-  }, [viewerReady, layer, effectiveDate.getTime()])
+  }, [viewerReady, layer, date, effectiveDate, viewMode])
 
   useEffect(() => {
+    if (viewMode !== 'globe') return
     const element = host.current
     if (!element) return
     let cancelled = false
@@ -255,20 +224,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
     loadCesium().then(Cesium => {
       if (cancelled) return
       cesiumRef.current = Cesium
-      viewer = new Cesium.Viewer(element, {
-        animation: false,
-        timeline: false,
-        baseLayerPicker: false,
-        geocoder: false,
-        homeButton: false,
-        sceneModePicker: false,
-        navigationHelpButton: false,
-        fullscreenButton: false,
-        infoBox: false,
-        selectionIndicator: false,
-        terrainProvider: undefined,
-        imageryProvider: false,
-      })
+      viewer = new Cesium.Viewer(element, { animation: false, timeline: false, baseLayerPicker: false, geocoder: false, homeButton: false, sceneModePicker: false, navigationHelpButton: false, fullscreenButton: false, infoBox: false, selectionIndicator: false, terrainProvider: undefined, imageryProvider: false })
       viewerRef.current = viewer
       viewer.scene.globe.enableLighting = false
       viewer.scene.globe.baseColor = Cesium.Color.fromCssColorString('#18222d')
@@ -278,22 +234,11 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
       viewer.clock.currentTime = Cesium.JulianDate.fromIso8601(effectiveDate.toISOString())
 
       for (const marker of markers.slice(0, 1000)) {
-        viewer.entities.add({
-          position: Cesium.Cartesian3.fromDegrees(marker.longitude, marker.latitude, 0),
-          point: {
-            pixelSize: Math.max(6, 8 * (marker.radius ?? 1)),
-            color: Cesium.Color.fromCssColorString('#ff674f'),
-            outlineColor: Cesium.Color.BLACK,
-            outlineWidth: 1,
-            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
-          },
-        })
+        viewer.entities.add({ position: Cesium.Cartesian3.fromDegrees(marker.longitude, marker.latitude, 0), point: { pixelSize: Math.max(6, 8 * (marker.radius ?? 1)), color: Cesium.Color.fromCssColorString('#ff674f'), outlineColor: Cesium.Color.BLACK, outlineWidth: 1, heightReference: Cesium.HeightReference.CLAMP_TO_GROUND } })
       }
       setViewerReady(true)
       viewer.camera.setView({ destination: Cesium.Cartesian3.fromDegrees(15, 20, 20000000) })
-    }).catch(error => {
-      if (!cancelled) setLoadError(String(error instanceof Error ? error.message : error))
-    })
+    }).catch(error => { if (!cancelled) setLoadError(String(error instanceof Error ? error.message : error)) })
 
     return () => {
       cancelled = true
@@ -304,50 +249,46 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
       userEntityRef.current = null
       element.replaceChildren()
     }
-  }, [markers])
+  }, [markers, viewMode])
 
-  const layerLabel = layer === 'copernicus'
-    ? `Copernicus Sentinel-2 Natural Color — ${effectiveDate.toISOString().slice(0, 10)}`
-    : layer === 'satellite' ? 'szczegółowa mozaika referencyjna'
-      : layer === 'nasa-day' ? 'NASA VIIRS True Color'
-        : layer === 'nasa-night' ? 'NASA VIIRS DNB'
-          : 'NASA dzień i noc'
+  const layerLabel = layer === 'copernicus' ? `Copernicus Sentinel-2 Natural Color — ${date}` : layer === 'satellite' ? 'szczegółowa mozaika referencyjna' : layer === 'nasa-day' ? 'NASA VIIRS True Color' : layer === 'nasa-night' ? 'NASA VIIRS DNB' : 'NASA dzień i noc'
+  const polarTitle = viewMode === 'north-pole' ? 'Biegun północny — EPSG:3413' : 'Biegun południowy — EPSG:3031'
 
   return (
     <div className="tiled-earth-shell">
       <div className="tiled-earth-toolbar">
-        <button type="button" onClick={locating ? stopTracking : startTracking}>{locating ? 'Zatrzymaj lokalizację' : 'Znajdź mnie'}</button>
-        <button type="button" onClick={() => userLocation && flyTo(userLocation.longitude, userLocation.latitude, 25000)} disabled={!userLocation}>Przybliż do mojej pozycji</button>
-        <button type="button" onClick={() => flyTo(0, -90, 5500000)}>Antarktyda</button>
-        <button type="button" onClick={() => flyTo(20, 52, 5500000)}>Europa</button>
-        <label>
-          Warstwa
-          <select value={layer} onChange={event => setLayer(event.target.value as Layer)}>
-            <option value="copernicus">Copernicus Sentinel-2 — wysoka jakość</option>
-            <option value="nasa-auto">NASA — automatycznie dzień/noc</option>
-            <option value="nasa-day">NASA — zdjęcie dzienne</option>
-            <option value="nasa-night">NASA — zdjęcie nocne VIIRS DNB</option>
-            <option value="satellite">Satelita szczegółowa — mozaika referencyjna</option>
-          </select>
-        </label>
+        <button type="button" className={viewMode === 'globe' ? 'is-active' : ''} onClick={() => setViewMode('globe')}>Globus 3D</button>
+        <button type="button" className={viewMode === 'north-pole' ? 'is-active' : ''} onClick={() => setViewMode('north-pole')}>Biegun północny</button>
+        <button type="button" className={viewMode === 'south-pole' ? 'is-active' : ''} onClick={() => setViewMode('south-pole')}>Biegun południowy</button>
+
+        {viewMode === 'globe' && <>
+          <button type="button" onClick={locating ? stopTracking : startTracking}>{locating ? 'Zatrzymaj lokalizację' : 'Znajdź mnie'}</button>
+          <button type="button" onClick={() => userLocation && flyTo(userLocation.longitude, userLocation.latitude, 25000)} disabled={!userLocation}>Przybliż do mojej pozycji</button>
+          <button type="button" onClick={() => flyTo(20, 52, 5500000)}>Europa</button>
+          <label>Warstwa<select value={layer} onChange={event => setLayer(event.target.value as Layer)}><option value="copernicus">Copernicus Sentinel-2 — wysoka jakość</option><option value="nasa-auto">NASA — automatycznie dzień/noc</option><option value="nasa-day">NASA — zdjęcie dzienne</option><option value="nasa-night">NASA — zdjęcie nocne VIIRS DNB</option><option value="satellite">Satelita szczegółowa — mozaika referencyjna</option></select></label>
+        </>}
+
         <div className="location-globe-status" role="status" aria-live="polite">
-          <strong>{liveMode ? 'TRYB TERAZ — kontrola co 5 sekund' : 'TRYB HISTORYCZNY'}</strong>
+          <strong>{viewMode === 'globe' ? (liveMode ? 'TRYB TERAZ — kontrola co 5 sekund' : 'TRYB HISTORYCZNY') : polarTitle}</strong>
           <span>Wyświetlany czas: {effectiveDate.toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span>
-          <span>Warstwa: {layerLabel}</span>
-          {!viewerReady && <span>Ładowanie globu i kafelków…</span>}
+          <span>{viewMode === 'globe' ? `Warstwa: ${layerLabel}` : 'Rzut polarny bez deformacji Web Mercator i bez sztucznego wypełniania środka.'}</span>
+          {viewMode !== 'globe' && <span>Brak danych pozostaje pusty. Aplikacja nie rysuje fałszywego koła ani nie rozciąga pikseli do 90°.</span>}
+          {!viewerReady && viewMode === 'globe' && <span>Ładowanie globu i kafelków…</span>}
           {futureWasClamped && <span className="location-globe-error">Data przyszła została cofnięta do aktualnego czasu.</span>}
-          {liveMode && <span>Sprawdzamy czas co 5 s; nowy obraz pojawi się po publikacji przez źródło.</span>}
-          {userLocation && <><span>{userLocation.latitude.toFixed(6)}, {userLocation.longitude.toFixed(6)}</span><span>Dokładność GPS: ±{Math.round(userLocation.accuracy)} m</span></>}
           {locationError && <span className="location-globe-error">{locationError}</span>}
           {loadError && <span className="location-globe-error">{loadError}</span>}
         </div>
       </div>
-      <div className="tiled-earth-zoom" aria-label="Sterowanie przybliżeniem">
-        <button type="button" aria-label="Przybliż" onClick={() => zoom(0.45)}>+</button>
-        <button type="button" aria-label="Oddal" onClick={() => zoom(-0.85)}>−</button>
-      </div>
-      <div className="tiled-earth-attribution">Warstwa bazowa pozostaje widoczna nawet wtedy, gdy Copernicus lub NASA nie zwrócą obrazu dla wybranej daty.</div>
-      <div ref={host} className="tiled-earth-canvas" aria-label="Kafelkowy glob 3D z obrazami Copernicus Sentinel-2 i warstwami NASA" />
+
+      {viewMode === 'globe' ? <>
+        <div className="tiled-earth-zoom" aria-label="Sterowanie przybliżeniem"><button type="button" aria-label="Przybliż" onClick={() => zoom(0.45)}>+</button><button type="button" aria-label="Oddal" onClick={() => zoom(-0.85)}>−</button></div>
+        <div className="tiled-earth-attribution">Globus służy do nawigacji globalnej. Dokładną analizę środka biegunów wykonuj w osobnych rzutach polarnych.</div>
+        <div ref={host} className="tiled-earth-canvas" aria-label="Kafelkowy glob 3D z obrazami Copernicus Sentinel-2 i warstwami NASA" />
+      </> : <div className="polar-view">
+        {!polarError ? <img key={polarImageUrl} src={polarImageUrl} alt={`${polarTitle}, obraz Copernicus z dnia ${date}`} onError={() => setPolarError(true)} /> : <div className="polar-view-error"><strong>Źródło nie zwróciło obrazu dla tego rzutu i dnia.</strong><span>To jest uczciwy brak danych, a nie sztucznie wygenerowane koło. Wybierz inną datę albo sprawdź nazwę warstwy w konfiguracji Copernicus.</span></div>}
+        <div className="polar-crosshair" aria-hidden="true"><span /><span /></div>
+        <div className="polar-view-caption"><strong>{polarTitle}</strong><span>Centrum obrazu = geograficzny biegun 90°. Źródło: Copernicus WMS, data {date}.</span><span>Sentinel-2 nie obserwuje dokładnie samego punktu 90°; ewentualny pusty obszar oznacza realny brak pokrycia, a nie błąd renderowania.</span></div>
+      </div>}
     </div>
   )
 }
