@@ -45,6 +45,12 @@
   backdrop-filter: blur(12px);
 }
 
+.tiled-earth-toolbar button.is-active {
+  background: #117b9d;
+  border-color: #75ddff;
+  box-shadow: 0 0 0 2px rgba(117, 221, 255, 0.18);
+}
+
 .tiled-earth-toolbar label {
   display: flex;
   align-items: center;
@@ -99,6 +105,83 @@
   pointer-events: none;
 }
 
+.polar-view {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  padding: 190px 18px 96px;
+  background:
+    linear-gradient(45deg, rgba(255,255,255,.035) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.035) 75%),
+    linear-gradient(45deg, rgba(255,255,255,.035) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.035) 75%),
+    #050a11;
+  background-position: 0 0, 16px 16px;
+  background-size: 32px 32px;
+}
+
+.polar-view img {
+  display: block;
+  width: min(100%, 980px);
+  height: auto;
+  max-width: none;
+  border: 1px solid rgba(121, 214, 255, 0.38);
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.55);
+  image-rendering: auto;
+}
+
+.polar-crosshair {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 42px;
+  height: 42px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.polar-crosshair span {
+  position: absolute;
+  background: rgba(255, 75, 75, 0.9);
+  box-shadow: 0 0 5px #000;
+}
+
+.polar-crosshair span:first-child {
+  width: 42px;
+  height: 2px;
+  left: 0;
+  top: 20px;
+}
+
+.polar-crosshair span:last-child {
+  width: 2px;
+  height: 42px;
+  left: 20px;
+  top: 0;
+}
+
+.polar-view-caption,
+.polar-view-error {
+  position: absolute;
+  z-index: 10;
+  left: 12px;
+  right: 12px;
+  bottom: 16px;
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid rgba(121, 214, 255, 0.28);
+  border-radius: 10px;
+  background: rgba(2, 10, 20, 0.9);
+  color: #d8edfa;
+  font-size: 0.78rem;
+}
+
+.polar-view-error {
+  position: static;
+  max-width: 620px;
+  color: #ffe1e1;
+}
+
 .tiled-earth-shell .cesium-viewer-bottom,
 .tiled-earth-shell .cesium-widget-credits {
   z-index: 15;
@@ -114,15 +197,15 @@
     top: 8px;
     left: 8px;
     right: 72px;
-    max-height: 178px;
+    max-height: 188px;
     overflow-y: auto;
   }
 
   .tiled-earth-toolbar button,
   .tiled-earth-toolbar label {
-    min-height: 44px;
-    padding: 0 10px;
-    font-size: 0.78rem;
+    min-height: 42px;
+    padding: 0 9px;
+    font-size: 0.76rem;
   }
 
   .tiled-earth-zoom {
@@ -139,5 +222,20 @@
     left: 8px;
     bottom: 24px;
     max-width: 72%;
+  }
+
+  .polar-view {
+    padding: 200px 8px 118px;
+    justify-content: start;
+  }
+
+  .polar-view img {
+    width: 980px;
+  }
+
+  .polar-crosshair {
+    position: fixed;
+    top: 50vh;
+    left: 50vw;
   }
 }
