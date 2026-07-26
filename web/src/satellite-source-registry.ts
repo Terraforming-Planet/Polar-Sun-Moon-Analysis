@@ -1,3 +1,5 @@
+import './satellite-source-registry.css'
+
 export type SatelliteSource = {
   id: string
   agency: string
