@@ -1,0 +1,48 @@
+.satellite-source-registry {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid rgba(91, 176, 225, 0.28);
+  border-radius: 14px;
+  background: #06111f;
+  color: #eaf8ff;
+}
+
+.satellite-source-registry h3 {
+  margin: 0 0 8px;
+}
+
+.satellite-source-registry > p {
+  margin: 0 0 14px;
+  color: #b8d6e8;
+}
+
+.satellite-source-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 10px;
+}
+
+.satellite-source-grid article {
+  display: grid;
+  gap: 7px;
+  padding: 12px;
+  border: 1px solid rgba(121, 214, 255, 0.22);
+  border-radius: 10px;
+  background: rgba(3, 18, 32, 0.9);
+}
+
+.satellite-source-grid article.is-enabled {
+  border-color: rgba(78, 225, 164, 0.7);
+  box-shadow: inset 0 0 0 1px rgba(78, 225, 164, 0.18);
+}
+
+.satellite-source-grid span,
+.satellite-source-grid small {
+  color: #bdd7e7;
+}
+
+.satellite-source-grid a {
+  width: fit-content;
+  color: #72dcff;
+  font-weight: 700;
+}
