@@ -2,26 +2,10 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import './location-globe.css'
 import './tiled-earth.css'
 
-type Marker = {
-  longitude: number
-  latitude: number
-  color?: number
-  radius?: number
-}
-
-type UserLocation = {
-  latitude: number
-  longitude: number
-  accuracy: number
-  timestamp: number
-}
-
-type Props = {
-  textureUrl?: string
-  selectedTime: string
-  markers?: Marker[]
-  autoRotate?: boolean
-}
+type Marker = { longitude: number; latitude: number; color?: number; radius?: number }
+type UserLocation = { latitude: number; longitude: number; accuracy: number; timestamp: number }
+type Props = { textureUrl?: string; selectedTime: string; markers?: Marker[]; autoRotate?: boolean }
+type Layer = 'copernicus' | 'satellite' | 'nasa-auto' | 'nasa-day' | 'nasa-night'
 
 type CesiumApi = {
   Viewer: new (element: HTMLElement, options: Record<string, unknown>) => any
@@ -36,20 +20,15 @@ type CesiumApi = {
 }
 
 declare global {
-  interface Window {
-    Cesium?: CesiumApi
-    CESIUM_BASE_URL?: string
-  }
+  interface Window { Cesium?: CesiumApi; CESIUM_BASE_URL?: string }
 }
 
 const CESIUM_VERSION = '1.126'
 const CESIUM_SCRIPT = `https://cdn.jsdelivr.net/npm/cesium@${CESIUM_VERSION}/Build/Cesium/Cesium.js`
 const CESIUM_CSS = `https://cdn.jsdelivr.net/npm/cesium@${CESIUM_VERSION}/Build/Cesium/Widgets/widgets.css`
 const CESIUM_BASE = `https://cdn.jsdelivr.net/npm/cesium@${CESIUM_VERSION}/Build/Cesium/`
-const ESRI_WORLD_IMAGERY =
-  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-const ESRI_BOUNDARIES =
-  'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'
+const ESRI_WORLD_IMAGERY = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+const ESRI_BOUNDARIES = 'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'
 const NASA_GIBS_WMTS = 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/wmts.cgi'
 const CDSE_INSTANCE_ID = import.meta.env.VITE_CDSE_INSTANCE_ID || 'd708f736-b553-4328-9b5e-39bdb444790c'
 const CDSE_LAYER = import.meta.env.VITE_CDSE_LAYER || 'NATURAL-COLOR'
@@ -82,17 +61,17 @@ function loadCesium(): Promise<CesiumApi> {
   })
 }
 
+function clampToNow(value: string, now: Date) {
+  const parsed = new Date(value)
+  if (Number.isNaN(parsed.getTime())) return now
+  return parsed.getTime() > now.getTime() ? now : parsed
+}
+
 function geolocationErrorMessage(error: GeolocationPositionError) {
   if (error.code === error.PERMISSION_DENIED) return 'Dostęp do lokalizacji został odrzucony.'
   if (error.code === error.POSITION_UNAVAILABLE) return 'Pozycja jest obecnie niedostępna.'
   if (error.code === error.TIMEOUT) return 'Upłynął czas oczekiwania na pozycję GPS.'
   return 'Nie udało się odczytać lokalizacji.'
-}
-
-function clampToNow(value: string, now: Date) {
-  const parsed = new Date(value)
-  if (Number.isNaN(parsed.getTime())) return now
-  return parsed.getTime() > now.getTime() ? now : parsed
 }
 
 export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
@@ -101,17 +80,19 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   const cesiumRef = useRef<CesiumApi | null>(null)
   const watchIdRef = useRef<number | null>(null)
   const userEntityRef = useRef<any>(null)
+  const [viewerReady, setViewerReady] = useState(false)
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null)
   const [locationError, setLocationError] = useState<string | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [locating, setLocating] = useState(false)
-  const [layer, setLayer] = useState<'copernicus' | 'satellite' | 'nasa-auto' | 'nasa-day' | 'nasa-night'>('copernicus')
+  const [layer, setLayer] = useState<Layer>('copernicus')
   const [liveNow, setLiveNow] = useState(() => new Date())
 
   const selectedDate = useMemo(() => clampToNow(selectedTime, liveNow), [selectedTime, liveNow])
-  const liveMode = Math.abs(new Date(selectedTime).getTime() - liveNow.getTime()) <= LIVE_WINDOW_MS
+  const selectedMs = new Date(selectedTime).getTime()
+  const liveMode = Number.isFinite(selectedMs) && Math.abs(selectedMs - liveNow.getTime()) <= LIVE_WINDOW_MS
   const effectiveDate = liveMode ? liveNow : selectedDate
-  const futureWasClamped = new Date(selectedTime).getTime() > liveNow.getTime()
+  const futureWasClamped = Number.isFinite(selectedMs) && selectedMs > liveNow.getTime()
 
   useEffect(() => {
     if (!liveMode) return
@@ -120,10 +101,8 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   }, [liveMode])
 
   const stopTracking = () => {
-    if (watchIdRef.current !== null) {
-      navigator.geolocation.clearWatch(watchIdRef.current)
-      watchIdRef.current = null
-    }
+    if (watchIdRef.current !== null) navigator.geolocation.clearWatch(watchIdRef.current)
+    watchIdRef.current = null
     setLocating(false)
   }
 
@@ -149,7 +128,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
         setLocationError(geolocationErrorMessage(error))
         setLocating(false)
       },
-      { enableHighAccuracy: true, maximumAge: 1_000, timeout: 15_000 },
+      { enableHighAccuracy: true, maximumAge: 1000, timeout: 15000 },
     )
   }
 
@@ -157,10 +136,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
     const viewer = viewerRef.current
     const Cesium = cesiumRef.current
     if (!viewer || !Cesium) return
-    viewer.camera.flyTo({
-      destination: Cesium.Cartesian3.fromDegrees(longitude, latitude, height),
-      duration: 1.4,
-    })
+    viewer.camera.flyTo({ destination: Cesium.Cartesian3.fromDegrees(longitude, latitude, height), duration: 1.4 })
   }
 
   const zoom = (factor: number) => {
@@ -197,29 +173,28 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
           pixelOffset: { x: 0, y: -18 },
         },
       })
-    } else {
-      userEntityRef.current.position = position
-    }
-  }, [userLocation])
+    } else userEntityRef.current.position = position
+  }, [userLocation, viewerReady])
 
   useEffect(() => {
     const viewer = viewerRef.current
     const Cesium = cesiumRef.current
-    if (!viewer || !Cesium) return
+    if (!viewerReady || !viewer || !Cesium) return
 
     viewer.clock.currentTime = Cesium.JulianDate.fromIso8601(effectiveDate.toISOString())
-    viewer.scene.globe.enableLighting = true
+    viewer.scene.globe.enableLighting = layer === 'nasa-night' || layer === 'nasa-auto'
+    viewer.scene.globe.baseColor = Cesium.Color.fromCssColorString('#18222d')
     viewer.imageryLayers.removeAll()
 
     const referenceBase = viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({
       url: ESRI_WORLD_IMAGERY,
       maximumLevel: 19,
-      credit: 'Esri World Imagery — warstwa awaryjna i szczegóły terenu',
+      credit: 'Esri World Imagery — warstwa bazowa i awaryjna',
     }))
-    referenceBase.brightness = layer === 'nasa-night' ? 0.42 : 0.72
-    referenceBase.contrast = 1.08
-    referenceBase.saturation = layer === 'nasa-night' ? 0.45 : 0.85
-    referenceBase.alpha = layer === 'copernicus' ? 0.28 : 1
+    referenceBase.alpha = 1
+    referenceBase.brightness = layer === 'nasa-night' ? 0.48 : 1
+    referenceBase.contrast = 1.05
+    referenceBase.saturation = layer === 'nasa-night' ? 0.55 : 1
 
     const date = effectiveDate.toISOString().slice(0, 10)
 
@@ -228,28 +203,24 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
         url: CDSE_WMS,
         layers: CDSE_LAYER,
         parameters: {
-          transparent: false,
-          format: 'image/jpeg',
+          transparent: true,
+          format: 'image/png',
           time: `${date}/${date}`,
           maxcc: 20,
-          quality: 95,
           showlogo: false,
         },
-        getFeatureInfoParameters: {
-          time: `${date}/${date}`,
-          maxcc: 20,
-        },
+        getFeatureInfoParameters: { time: `${date}/${date}`, maxcc: 20 },
         credit: 'Copernicus Data Space Ecosystem — Sentinel-2 L2A Natural Color',
       }))
       sentinel.alpha = 1
-      sentinel.brightness = 1.04
-      sentinel.contrast = 1.08
-      sentinel.saturation = 1.05
+      sentinel.brightness = 1.03
+      sentinel.contrast = 1.06
+      sentinel.saturation = 1.04
     } else if (layer !== 'satellite') {
-      const addNasaLayer = (nasaLayer: string, format: string, alpha: number, credit: string) => {
+      const addNasaLayer = (name: string, format: string, alpha: number, credit: string) => {
         const imagery = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({
           url: NASA_GIBS_WMTS,
-          layer: nasaLayer,
+          layer: name,
           style: 'default',
           format,
           tileMatrixSetID: 'GoogleMapsCompatible_Level9',
@@ -258,17 +229,12 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
           credit,
         }))
         imagery.alpha = alpha
-        imagery.brightness = 1.12
-        imagery.contrast = 1.08
       }
-
-      if (layer === 'nasa-day') {
-        addNasaLayer('VIIRS_SNPP_CorrectedReflectance_TrueColor', 'image/jpeg', 0.9, 'NASA EOSDIS GIBS — VIIRS True Color')
-      } else if (layer === 'nasa-night') {
-        addNasaLayer('VIIRS_SNPP_DayNightBand_ENCC', 'image/png', 0.78, 'NASA EOSDIS GIBS — VIIRS Day/Night Band')
-      } else {
-        addNasaLayer('VIIRS_SNPP_CorrectedReflectance_TrueColor', 'image/jpeg', 0.68, 'NASA EOSDIS GIBS — VIIRS True Color')
-        addNasaLayer('VIIRS_SNPP_DayNightBand_ENCC', 'image/png', 0.42, 'NASA EOSDIS GIBS — VIIRS Day/Night Band')
+      if (layer === 'nasa-day') addNasaLayer('VIIRS_SNPP_CorrectedReflectance_TrueColor', 'image/jpeg', 0.92, 'NASA EOSDIS GIBS — VIIRS True Color')
+      else if (layer === 'nasa-night') addNasaLayer('VIIRS_SNPP_DayNightBand_ENCC', 'image/png', 0.72, 'NASA EOSDIS GIBS — VIIRS Day/Night Band')
+      else {
+        addNasaLayer('VIIRS_SNPP_CorrectedReflectance_TrueColor', 'image/jpeg', 0.58, 'NASA EOSDIS GIBS — VIIRS True Color')
+        addNasaLayer('VIIRS_SNPP_DayNightBand_ENCC', 'image/png', 0.34, 'NASA EOSDIS GIBS — VIIRS Day/Night Band')
       }
     }
 
@@ -277,7 +243,8 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
       maximumLevel: 12,
       credit: 'Esri boundaries and places',
     }))
-  }, [layer, effectiveDate.getTime()])
+    viewer.scene.requestRender()
+  }, [viewerReady, layer, effectiveDate.getTime()])
 
   useEffect(() => {
     const element = host.current
@@ -303,10 +270,11 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
         imageryProvider: false,
       })
       viewerRef.current = viewer
-      viewer.scene.globe.enableLighting = true
+      viewer.scene.globe.enableLighting = false
+      viewer.scene.globe.baseColor = Cesium.Color.fromCssColorString('#18222d')
       viewer.scene.globe.depthTestAgainstTerrain = false
       viewer.scene.screenSpaceCameraController.minimumZoomDistance = 120
-      viewer.scene.screenSpaceCameraController.maximumZoomDistance = 80_000_000
+      viewer.scene.screenSpaceCameraController.maximumZoomDistance = 80000000
       viewer.clock.currentTime = Cesium.JulianDate.fromIso8601(effectiveDate.toISOString())
 
       for (const marker of markers.slice(0, 1000)) {
@@ -321,14 +289,15 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
           },
         })
       }
-      flyTo(15, 20, 20_000_000)
-      setLiveNow(new Date())
+      setViewerReady(true)
+      viewer.camera.setView({ destination: Cesium.Cartesian3.fromDegrees(15, 20, 20000000) })
     }).catch(error => {
       if (!cancelled) setLoadError(String(error instanceof Error ? error.message : error))
     })
 
     return () => {
       cancelled = true
+      setViewerReady(false)
       if (viewer && !viewer.isDestroyed()) viewer.destroy()
       viewerRef.current = null
       cesiumRef.current = null
@@ -338,29 +307,22 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   }, [markers])
 
   const layerLabel = layer === 'copernicus'
-    ? `Copernicus Sentinel-2 Natural Color — ${dateLabel(effectiveDate)}`
-    : layer === 'satellite'
-      ? 'szczegółowa mozaika referencyjna'
-      : layer === 'nasa-day'
-        ? 'NASA VIIRS True Color na warstwie geometrii'
-        : layer === 'nasa-night'
-          ? 'NASA VIIRS DNB na przyciemnionej warstwie geometrii'
-          : 'NASA dzień i noc z zachowaną geometrią terenu'
+    ? `Copernicus Sentinel-2 Natural Color — ${effectiveDate.toISOString().slice(0, 10)}`
+    : layer === 'satellite' ? 'szczegółowa mozaika referencyjna'
+      : layer === 'nasa-day' ? 'NASA VIIRS True Color'
+        : layer === 'nasa-night' ? 'NASA VIIRS DNB'
+          : 'NASA dzień i noc'
 
   return (
     <div className="tiled-earth-shell">
       <div className="tiled-earth-toolbar">
-        <button type="button" onClick={locating ? stopTracking : startTracking}>
-          {locating ? 'Zatrzymaj lokalizację' : 'Znajdź mnie'}
-        </button>
-        <button type="button" onClick={() => userLocation && flyTo(userLocation.longitude, userLocation.latitude, 25_000)} disabled={!userLocation}>
-          Przybliż do mojej pozycji
-        </button>
-        <button type="button" onClick={() => flyTo(0, -90, 5_500_000)}>Antarktyda</button>
-        <button type="button" onClick={() => flyTo(20, 52, 5_500_000)}>Europa</button>
+        <button type="button" onClick={locating ? stopTracking : startTracking}>{locating ? 'Zatrzymaj lokalizację' : 'Znajdź mnie'}</button>
+        <button type="button" onClick={() => userLocation && flyTo(userLocation.longitude, userLocation.latitude, 25000)} disabled={!userLocation}>Przybliż do mojej pozycji</button>
+        <button type="button" onClick={() => flyTo(0, -90, 5500000)}>Antarktyda</button>
+        <button type="button" onClick={() => flyTo(20, 52, 5500000)}>Europa</button>
         <label>
           Warstwa
-          <select value={layer} onChange={event => setLayer(event.target.value as typeof layer)}>
+          <select value={layer} onChange={event => setLayer(event.target.value as Layer)}>
             <option value="copernicus">Copernicus Sentinel-2 — wysoka jakość</option>
             <option value="nasa-auto">NASA — automatycznie dzień/noc</option>
             <option value="nasa-day">NASA — zdjęcie dzienne</option>
@@ -372,15 +334,10 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
           <strong>{liveMode ? 'TRYB TERAZ — kontrola co 5 sekund' : 'TRYB HISTORYCZNY'}</strong>
           <span>Wyświetlany czas: {effectiveDate.toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span>
           <span>Warstwa: {layerLabel}</span>
-          {layer === 'copernicus' && <span>Sentinel-2: do 10 m/piksel; wybierana jest najlepsza scena z dnia przy zachmurzeniu do 20%.</span>}
+          {!viewerReady && <span>Ładowanie globu i kafelków…</span>}
           {futureWasClamped && <span className="location-globe-error">Data przyszła została cofnięta do aktualnego czasu.</span>}
-          {liveMode && <span>Sprawdzamy czas co 5 s; nowy obraz pojawi się dopiero po publikacji przez źródło.</span>}
-          {userLocation && (
-            <>
-              <span>{userLocation.latitude.toFixed(6)}, {userLocation.longitude.toFixed(6)}</span>
-              <span>Dokładność GPS: ±{Math.round(userLocation.accuracy)} m</span>
-            </>
-          )}
+          {liveMode && <span>Sprawdzamy czas co 5 s; nowy obraz pojawi się po publikacji przez źródło.</span>}
+          {userLocation && <><span>{userLocation.latitude.toFixed(6)}, {userLocation.longitude.toFixed(6)}</span><span>Dokładność GPS: ±{Math.round(userLocation.accuracy)} m</span></>}
           {locationError && <span className="location-globe-error">{locationError}</span>}
           {loadError && <span className="location-globe-error">{loadError}</span>}
         </div>
@@ -389,14 +346,8 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
         <button type="button" aria-label="Przybliż" onClick={() => zoom(0.45)}>+</button>
         <button type="button" aria-label="Oddal" onClick={() => zoom(-0.85)}>−</button>
       </div>
-      <div className="tiled-earth-attribution">
-        Copernicus Sentinel-2 dostarcza obrazy wysokiej jakości z wybranego dnia. Brak sceny lub duże zachmurzenie może odsłonić warstwę awaryjną.
-      </div>
-      <div ref={host} className="tiled-earth-canvas" aria-label="Kafelkowy glob 3D z obrazami Copernicus Sentinel-2, historycznym czasem oraz warstwami NASA" />
+      <div className="tiled-earth-attribution">Warstwa bazowa pozostaje widoczna nawet wtedy, gdy Copernicus lub NASA nie zwrócą obrazu dla wybranej daty.</div>
+      <div ref={host} className="tiled-earth-canvas" aria-label="Kafelkowy glob 3D z obrazami Copernicus Sentinel-2 i warstwami NASA" />
     </div>
   )
-}
-
-function dateLabel(date: Date) {
-  return date.toISOString().slice(0, 10)
 }
