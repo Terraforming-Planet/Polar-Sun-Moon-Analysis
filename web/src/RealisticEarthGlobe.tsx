@@ -1,4 +1,4 @@
-import { LiveNrtEarthGlobe } from './LiveNrtEarthGlobe'
+import { RealisticEarthGlobe as CleanEarthViewer } from './CleanRealisticEarthGlobe'
 import { SatelliteSourceRegistry } from './satellite-source-registry'
 
 type Marker = { longitude: number; latitude: number; color?: number; radius?: number }
@@ -7,7 +7,7 @@ type Props = { textureUrl?: string; selectedTime: string; markers?: Marker[]; au
 export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   return (
     <>
-      <LiveNrtEarthGlobe selectedTime={selectedTime} markers={markers} />
+      <CleanEarthViewer selectedTime={selectedTime} markers={markers} />
       <SatelliteSourceRegistry />
     </>
   )
