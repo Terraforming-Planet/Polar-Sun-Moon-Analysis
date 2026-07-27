@@ -1,7 +1,34 @@
 {
-  "generatedUtc": "2026-07-27T15:38:14.993325Z",
+  "generatedUtc": "2026-07-27T17:21:49.889944Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
+    {
+      "id": "EONET_21776",
+      "title": "Tropical Storm Dolphin",
+      "categories": [
+        "Severe Storms"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 45.0,
+        "magnitudeUnit": "kts",
+        "date": "2026-07-27T12:00:00Z",
+        "type": "Point",
+        "coordinates": [
+          175.2,
+          13.6
+        ]
+      },
+      "sources": [
+        {
+          "id": "JTWC",
+          "url": "https://www.metoc.navy.mil/jtwc/products/wp1226.tcw"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21776",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
     {
       "id": "EONET_21712",
       "title": "Hurricane Genevieve",
@@ -10,13 +37,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 140.0,
+        "magnitudeValue": 135.0,
         "magnitudeUnit": "kts",
-        "date": "2026-07-27T06:00:00Z",
+        "date": "2026-07-27T12:00:00Z",
         "type": "Point",
         "coordinates": [
-          -111.7,
-          15.1
+          -112.7,
+          15.7
         ]
       },
       "sources": [
@@ -419,13 +446,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 75.0,
+        "magnitudeValue": 70.0,
         "magnitudeUnit": "kts",
-        "date": "2026-07-27T06:00:00Z",
+        "date": "2026-07-27T12:00:00Z",
         "type": "Point",
         "coordinates": [
-          -144.2,
-          20.2
+          -145.5,
+          20.5
         ]
       },
       "sources": [
@@ -5376,33 +5403,6 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21113",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_20566",
-      "title": "Rock Canyon Wildfire, Coconino, Arizona",
-      "categories": [
-        "Wildfires"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 1165.0,
-        "magnitudeUnit": "acres",
-        "date": "2026-06-15T17:00:00Z",
-        "type": "Point",
-        "coordinates": [
-          -112.2032,
-          36.9157
-        ]
-      },
-      "sources": [
-        {
-          "id": "IRWIN",
-          "url": "https://irwin.doi.gov/observer/incidents/132c618c-7786-4fbc-852a-23493bf028f9"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20566",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
