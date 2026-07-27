@@ -76,14 +76,13 @@
     const response = await fetch('https://eonet.gsfc.nasa.gov/api/v3/events?category=wildfires&status=open&days=30&limit=300')
     if (!response.ok) throw new Error(`NASA EONET HTTP ${response.status}`)
     const data = await response.json()
-    const events = (data.events || []).map(event => {
+    return (data.events || []).map(event => {
       const geometries = event.geometry || []
       const latest = geometries.at(-1)
       if (!latest || latest.type !== 'Point') return null
       const [longitude, latitude] = latest.coordinates
       return { event, longitude, latitude, distance: distanceKm(place.latitude, place.longitude, latitude, longitude) }
     }).filter(Boolean).filter(item => item.distance <= radiusKm).sort((a, b) => a.distance - b.distance)
-    return events
   }
 
   function clearFireEntities() {
@@ -95,7 +94,7 @@
   function addFireEntities(events) {
     const viewer = state.viewer
     const Cesium = window.Cesium
-    if (!viewer || !Cesium) return
+    if (!viewer || !Cesium) return false
     clearFireEntities()
     events.forEach((item, index) => {
       const id = `terra-live-fire-${item.event.id || index}`
@@ -114,25 +113,70 @@
       }
     })
     viewer.scene.requestRender()
+    return true
+  }
+
+  function findButton(text) {
+    return [...document.querySelectorAll('button')].find(button => button.textContent?.trim().includes(text))
+  }
+
+  async function waitForViewer(timeout = 30000) {
+    if (state.viewer && !state.viewer.isDestroyed?.()) return state.viewer
+    return new Promise((resolve, reject) => {
+      const started = Date.now()
+      const onReady = () => {
+        if (state.viewer && !state.viewer.isDestroyed?.()) finish(state.viewer)
+      }
+      const timer = window.setInterval(() => {
+        if (state.viewer && !state.viewer.isDestroyed?.()) finish(state.viewer)
+        else if (Date.now() - started >= timeout) finish(null)
+      }, 100)
+      function finish(viewer) {
+        window.clearInterval(timer)
+        window.removeEventListener('terra:viewer-ready', onReady)
+        viewer ? resolve(viewer) : reject(new Error('Model Ziemi 3D nie uruchomił się. Odśwież stronę i spróbuj ponownie.'))
+      }
+      window.addEventListener('terra:viewer-ready', onReady)
+    })
+  }
+
+  async function ensureFreshViewer() {
+    captureCesiumViewer()
+    if (state.viewer && !state.viewer.isDestroyed?.()) return state.viewer
+
+    const earthTab = findButton('Ziemia 3D')
+    if (earthTab) earthTab.click()
+
+    await new Promise(resolve => setTimeout(resolve, 400))
+    if (state.viewer && !state.viewer.isDestroyed?.()) return state.viewer
+
+    // Jeśli glob został utworzony przed założeniem przechwycenia, wymuszamy jego bezpieczne
+    // ponowne zamontowanie przez zmianę zakładki i powrót do Ziemi 3D.
+    const controlTab = findButton('Centrum sterowania')
+    if (controlTab && earthTab) {
+      controlTab.click()
+      await new Promise(resolve => setTimeout(resolve, 250))
+      earthTab.click()
+    }
+    return waitForViewer()
   }
 
   async function focusPlace(place) {
-    const openEarth = [...document.querySelectorAll('button')].find(button => button.textContent?.includes('Otwórz Ziemię 3D'))
-    if (openEarth) openEarth.click()
-    for (let i = 0; i < 80 && !state.viewer; i++) await new Promise(resolve => setTimeout(resolve, 100))
-    if (!state.viewer || !window.Cesium) throw new Error('Model Ziemi 3D nie jest jeszcze gotowy.')
-    state.viewer.camera.flyTo({ destination: window.Cesium.Cartesian3.fromDegrees(place.longitude, place.latitude, 550000), duration: 2 })
-    state.viewer.scene.requestRender()
+    const viewer = await ensureFreshViewer()
+    if (!window.Cesium) throw new Error('Biblioteka Cesium nie jest dostępna.')
+    viewer.camera.flyTo({ destination: window.Cesium.Cartesian3.fromDegrees(place.longitude, place.latitude, 550000), duration: 2 })
+    viewer.scene.requestRender()
   }
 
-  function renderResults(container, place, events, radiusKm) {
+  function renderResults(container, place, events, radiusKm, mapReady) {
     const list = events.slice(0, 8).map(item => {
       const last = item.event.geometry?.at(-1)
       const date = last?.date ? new Date(last.date).toLocaleString('pl-PL', { timeZone: 'UTC' }) + ' UTC' : 'czas niepodany'
       return `<li><strong>${item.event.title}</strong><span>${item.distance.toFixed(0)} km od wybranego miejsca · ${date}</span></li>`
     }).join('')
+    const mapNote = mapReady ? ' Miejsce i punkty zostały naniesione na glob 3D.' : ' Lista została pobrana, ale glob nie był jeszcze gotowy do naniesienia punktów.'
     container.innerHTML = events.length
-      ? `<strong>Znaleziono ${events.length} otwartych zdarzeń pożarowych NASA EONET w promieniu ${radiusKm} km.</strong><ul>${list}</ul><small>Linia pokazuje kolejne położenia opublikowane dla zdarzenia, a nie dokładną granicę ognia.</small>`
+      ? `<strong>Znaleziono ${events.length} otwartych zdarzeń pożarowych NASA EONET w promieniu ${radiusKm} km.${mapNote}</strong><ul>${list}</ul><small>Linia pokazuje kolejne położenia opublikowane dla zdarzenia, a nie dokładną granicę ognia.</small>`
       : `<strong>Brak otwartych zdarzeń pożarowych NASA EONET w promieniu ${radiusKm} km od ${place.name}.</strong><small>Zwiększ promień albo sprawdź inne miejsce.</small>`
   }
 
@@ -154,18 +198,24 @@
     const status = section.querySelector('.place-fire-status')
     form.addEventListener('submit', async event => {
       event.preventDefault()
-      const query = new FormData(form).get('place').toString().trim()
-      const radiusKm = Number(new FormData(form).get('radius'))
+      const data = new FormData(form)
+      const query = data.get('place').toString().trim()
+      const radiusKm = Number(data.get('radius'))
       if (!query) return
-      status.textContent = 'Wyszukiwanie miejsca…'
+      status.textContent = 'Wyszukiwanie miejsca i pobieranie danych NASA EONET…'
       try {
         const place = await geocode(query)
         state.place = place
-        status.textContent = `Znaleziono ${place.name}. Otwieranie Ziemi 3D i pobieranie otwartych pożarów…`
-        await focusPlace(place)
         const events = await loadWildfires(place, radiusKm)
-        addFireEntities(events)
-        renderResults(status, place, events, radiusKm)
+        status.textContent = `Znaleziono ${place.name}. Uruchamianie Ziemi 3D…`
+        let mapReady = false
+        try {
+          await focusPlace(place)
+          mapReady = addFireEntities(events)
+        } catch (viewerError) {
+          console.warn(viewerError)
+        }
+        renderResults(status, place, events, radiusKm, mapReady)
       } catch (error) {
         status.textContent = `Nie udało się wykonać wyszukiwania: ${error.message}`
       }
