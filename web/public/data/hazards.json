@@ -1,7 +1,26 @@
 {
   "schemaVersion": 1,
-  "generatedUtc": "2026-07-27T20:15:32.914367Z",
+  "generatedUtc": "2026-07-27T21:35:42.260266Z",
   "alerts": [
+    {
+      "id": "usgs-us6000tg75",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-27T20:10:01.634000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5,
+        "depthKm": 10,
+        "coordinates": [
+          168.0332,
+          -14.5194
+        ]
+      },
+      "title": "M 5.0 - 88 km SE of Sola, Vanuatu",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tg75"
+    },
     {
       "id": "usgs-us7000t3p2",
       "kind": "earthquake",
@@ -160,18 +179,18 @@
       "id": "usgs-earthquakes-day",
       "agency": "USGS",
       "availability": "available",
-      "retrievalUtc": "2026-07-27T20:15:30.560027Z",
+      "retrievalUtc": "2026-07-27T21:35:40.365243Z",
       "officialSourceUrl": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
-      "checksumSha256": "2eac4ce3828d6dcc662b4474c84c47c054a416bbcc8ab29476fa589fd60d0c43",
+      "checksumSha256": "d886ba5c4ee291ca0195934ad6b3187b8ff186e1b01a1f2a0898bec3a7a8e06c",
       "lastError": null
     },
     {
       "id": "nasa-eonet-open-events",
       "agency": "NASA EONET",
       "availability": "available",
-      "retrievalUtc": "2026-07-27T20:15:30.560027Z",
+      "retrievalUtc": "2026-07-27T21:35:40.365243Z",
       "officialSourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
-      "checksumSha256": "98c5c1ff7150cd3ada8061710f0258433686b821d640b282316cce1b37efdb24",
+      "checksumSha256": "f35ce73786cb844c3a0aa288ee51e041b6c2b4be63e8ad3bf59e561e2c56b4d4",
       "lastError": null
     }
   ],
