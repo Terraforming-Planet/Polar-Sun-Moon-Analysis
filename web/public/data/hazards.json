@@ -1,7 +1,45 @@
 {
   "schemaVersion": 1,
-  "generatedUtc": "2026-07-27T22:40:25.537509Z",
+  "generatedUtc": "2026-07-27T23:43:23.491079Z",
   "alerts": [
+    {
+      "id": "usgs-us6000tg94",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-27T23:06:34.085000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.3,
+        "depthKm": 71.061,
+        "coordinates": [
+          126.7653,
+          7.6738
+        ]
+      },
+      "title": "M 5.3 - 23 km E of Kinablangan, Philippines",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tg94"
+    },
+    {
+      "id": "usgs-us6000tg8z",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-27T22:32:02.648000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5,
+        "depthKm": 10,
+        "coordinates": [
+          -13.4844,
+          -7.5058
+        ]
+      },
+      "title": "M 5.0 - 112 km ENE of Georgetown, Saint Helena",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tg8z"
+    },
     {
       "id": "usgs-us6000tg75",
       "kind": "earthquake",
@@ -160,18 +198,18 @@
       "id": "usgs-earthquakes-day",
       "agency": "USGS",
       "availability": "available",
-      "retrievalUtc": "2026-07-27T22:40:24.871705Z",
+      "retrievalUtc": "2026-07-27T23:43:23.125561Z",
       "officialSourceUrl": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
-      "checksumSha256": "da299f06670e1d0d79367d667200ab7da97c57a267c5f71c2a7a848354a74e1a",
+      "checksumSha256": "bb1fb2cbed7ee1bfe38204158cd9d25a2de7e91208d8bc8b8121d47c6c39b366",
       "lastError": null
     },
     {
       "id": "nasa-eonet-open-events",
       "agency": "NASA EONET",
       "availability": "available",
-      "retrievalUtc": "2026-07-27T22:40:24.871705Z",
+      "retrievalUtc": "2026-07-27T23:43:23.125561Z",
       "officialSourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
-      "checksumSha256": "f35ce73786cb844c3a0aa288ee51e041b6c2b4be63e8ad3bf59e561e2c56b4d4",
+      "checksumSha256": "143809613365515b6699498925f463237c17e6ddc1747392231a4429062f4c9f",
       "lastError": null
     }
   ],
