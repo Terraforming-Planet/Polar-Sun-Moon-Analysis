@@ -1,7 +1,64 @@
 {
   "schemaVersion": 1,
-  "generatedUtc": "2026-07-27T05:59:26.817044Z",
+  "generatedUtc": "2026-07-27T09:57:34.397884Z",
   "alerts": [
+    {
+      "id": "usgs-us7000t3m7",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-27T08:57:43.758000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.4,
+        "depthKm": 106.991,
+        "coordinates": [
+          -68.633,
+          -23.5454
+        ]
+      },
+      "title": "M 5.4 - 82 km SSW of San Pedro de Atacama, Chile",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t3m7"
+    },
+    {
+      "id": "usgs-us7000t3m6",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-27T08:47:18.681000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.2,
+        "depthKm": 10,
+        "coordinates": [
+          -175.3545,
+          -24.7345
+        ]
+      },
+      "title": "M 5.2 - south of Tonga",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t3m6"
+    },
+    {
+      "id": "usgs-us7000t3m5",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-27T08:44:08.090000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.2,
+        "depthKm": 10,
+        "coordinates": [
+          -175.244,
+          -24.6958
+        ]
+      },
+      "title": "M 5.2 - south of Tonga",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t3m5"
+    },
     {
       "id": "usgs-us7000t3l3",
       "kind": "earthquake",
@@ -115,25 +172,6 @@
       },
       "title": "M 5.3 - 25 km NW of Kupang, Indonesia",
       "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t3g4"
-    },
-    {
-      "id": "usgs-us7000t3fm",
-      "kind": "earthquake",
-      "status": "automatic-rule-match",
-      "evidenceType": "measured-detection",
-      "source": "USGS",
-      "observationUtc": "2026-07-26T08:35:18.849000Z",
-      "rule": "magnitude >= 5.0",
-      "inputs": {
-        "magnitude": 5.8,
-        "depthKm": 10,
-        "coordinates": [
-          -173.306,
-          51.4994
-        ]
-      },
-      "title": "M 5.8 - 99 km SE of Atka, Alaska",
-      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t3fm"
     }
   ],
   "sources": [
@@ -141,16 +179,16 @@
       "id": "usgs-earthquakes-day",
       "agency": "USGS",
       "availability": "available",
-      "retrievalUtc": "2026-07-27T05:59:26.090769Z",
+      "retrievalUtc": "2026-07-27T09:57:31.922838Z",
       "officialSourceUrl": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
-      "checksumSha256": "ffecda0f2d85f01f27b7f6efbf065cf093dee0e2a4f23a510e0c6f056edd86e0",
+      "checksumSha256": "eb17e383b58e9c7211bea566ace24858ac60e98021d0cbbd501c5ee6f7910b65",
       "lastError": null
     },
     {
       "id": "nasa-eonet-open-events",
       "agency": "NASA EONET",
       "availability": "available",
-      "retrievalUtc": "2026-07-27T05:59:26.090769Z",
+      "retrievalUtc": "2026-07-27T09:57:31.922838Z",
       "officialSourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
       "checksumSha256": "f3b4668ab7ece4a4b9e1f7eaeb0f1c5f16137b74c72bd6bd073f88f6b5d40adc",
       "lastError": null
