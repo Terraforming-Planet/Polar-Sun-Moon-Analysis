@@ -1,7 +1,26 @@
 {
   "schemaVersion": 1,
-  "generatedUtc": "2026-07-27T12:54:32.723156Z",
+  "generatedUtc": "2026-07-27T15:38:14.999306Z",
   "alerts": [
+    {
+      "id": "usgs-us7000t3p2",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-27T14:33:36.219000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.1,
+        "depthKm": 91.011,
+        "coordinates": [
+          151.462,
+          -5.4518
+        ]
+      },
+      "title": "M 5.1 - 147 km E of Kimbe, Papua New Guinea",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t3p2"
+    },
     {
       "id": "usgs-us7000t3m7",
       "kind": "earthquake",
@@ -160,16 +179,16 @@
       "id": "usgs-earthquakes-day",
       "agency": "USGS",
       "availability": "available",
-      "retrievalUtc": "2026-07-27T12:54:32.266352Z",
+      "retrievalUtc": "2026-07-27T15:38:14.641306Z",
       "officialSourceUrl": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
-      "checksumSha256": "e5bd82b9af5a5ac1d23d35fee683333db8974ee1dd379024ec1e92fd59071fef",
+      "checksumSha256": "b186605bee944387d8b0b10bdce1f2983acf8a4113a17e34c3f4f323543bc1e6",
       "lastError": null
     },
     {
       "id": "nasa-eonet-open-events",
       "agency": "NASA EONET",
       "availability": "available",
-      "retrievalUtc": "2026-07-27T12:54:32.266352Z",
+      "retrievalUtc": "2026-07-27T15:38:14.641306Z",
       "officialSourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
       "checksumSha256": "7a475187ddf485f801ff32a7dc9ec5d7de1922db77619a5cd4d83063c30c27cb",
       "lastError": null
