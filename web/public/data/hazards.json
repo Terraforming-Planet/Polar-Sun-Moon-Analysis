@@ -1,7 +1,26 @@
 {
   "schemaVersion": 1,
-  "generatedUtc": "2026-07-27T23:43:23.491079Z",
+  "generatedUtc": "2026-07-28T01:04:36.760760Z",
   "alerts": [
+    {
+      "id": "usgs-us6000tg95",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-27T23:12:12.908000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.1,
+        "depthKm": 10,
+        "coordinates": [
+          -175.2557,
+          -24.7784
+        ]
+      },
+      "title": "M 5.1 - south of Tonga",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tg95"
+    },
     {
       "id": "usgs-us6000tg94",
       "kind": "earthquake",
@@ -198,16 +217,16 @@
       "id": "usgs-earthquakes-day",
       "agency": "USGS",
       "availability": "available",
-      "retrievalUtc": "2026-07-27T23:43:23.125561Z",
+      "retrievalUtc": "2026-07-28T01:04:36.384740Z",
       "officialSourceUrl": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
-      "checksumSha256": "bb1fb2cbed7ee1bfe38204158cd9d25a2de7e91208d8bc8b8121d47c6c39b366",
+      "checksumSha256": "0d8e494bcffae3707a93c1edbf5d8086ab441c40b7f2ad299d10e160870e1f01",
       "lastError": null
     },
     {
       "id": "nasa-eonet-open-events",
       "agency": "NASA EONET",
       "availability": "available",
-      "retrievalUtc": "2026-07-27T23:43:23.125561Z",
+      "retrievalUtc": "2026-07-28T01:04:36.384740Z",
       "officialSourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
       "checksumSha256": "143809613365515b6699498925f463237c17e6ddc1747392231a4429062f4c9f",
       "lastError": null
