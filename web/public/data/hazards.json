@@ -1,7 +1,64 @@
 {
   "schemaVersion": 1,
-  "generatedUtc": "2026-07-28T01:04:36.760760Z",
+  "generatedUtc": "2026-07-28T04:25:38.680544Z",
   "alerts": [
+    {
+      "id": "usgs-us6000tga9",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-28T03:34:05.779000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.8,
+        "depthKm": 10,
+        "coordinates": [
+          99.5513,
+          35.3866
+        ]
+      },
+      "title": "M 5.8 - 191 km NW of Oula Xiuma, China",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tga9"
+    },
+    {
+      "id": "usgs-us6000tga6",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-28T03:16:08.857000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.7,
+        "depthKm": 10,
+        "coordinates": [
+          99.5198,
+          35.3685
+        ]
+      },
+      "title": "M 5.7 - 192 km NW of Oula Xiuma, China",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tga6"
+    },
+    {
+      "id": "usgs-us6000tg9n",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-28T01:27:51.735000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.3,
+        "depthKm": 10,
+        "coordinates": [
+          -14.5098,
+          -12.7784
+        ]
+      },
+      "title": "M 5.3 - southern Mid-Atlantic Ridge",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tg9n"
+    },
     {
       "id": "usgs-us6000tg95",
       "kind": "earthquake",
@@ -153,63 +210,6 @@
       },
       "title": "M 5.2 - south of Tonga",
       "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t3m5"
-    },
-    {
-      "id": "usgs-us7000t3l3",
-      "kind": "earthquake",
-      "status": "automatic-rule-match",
-      "evidenceType": "measured-detection",
-      "source": "USGS",
-      "observationUtc": "2026-07-27T03:36:43.273000Z",
-      "rule": "magnitude >= 5.0",
-      "inputs": {
-        "magnitude": 5.2,
-        "depthKm": 10,
-        "coordinates": [
-          -175.1714,
-          -24.5001
-        ]
-      },
-      "title": "M 5.2 - south of Tonga",
-      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t3l3"
-    },
-    {
-      "id": "usgs-us7000t3kz",
-      "kind": "earthquake",
-      "status": "automatic-rule-match",
-      "evidenceType": "measured-detection",
-      "source": "USGS",
-      "observationUtc": "2026-07-27T03:12:04.308000Z",
-      "rule": "magnitude >= 5.0",
-      "inputs": {
-        "magnitude": 5,
-        "depthKm": 10,
-        "coordinates": [
-          -175.0899,
-          -24.4378
-        ]
-      },
-      "title": "M 5.0 - south of Tonga",
-      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t3kz"
-    },
-    {
-      "id": "usgs-us7000t3km",
-      "kind": "earthquake",
-      "status": "automatic-rule-match",
-      "evidenceType": "measured-detection",
-      "source": "USGS",
-      "observationUtc": "2026-07-27T01:54:14.139000Z",
-      "rule": "magnitude >= 5.0",
-      "inputs": {
-        "magnitude": 5.1,
-        "depthKm": 10,
-        "coordinates": [
-          -175.1465,
-          -24.5442
-        ]
-      },
-      "title": "M 5.1 - south of Tonga",
-      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t3km"
     }
   ],
   "sources": [
@@ -217,16 +217,16 @@
       "id": "usgs-earthquakes-day",
       "agency": "USGS",
       "availability": "available",
-      "retrievalUtc": "2026-07-28T01:04:36.384740Z",
+      "retrievalUtc": "2026-07-28T04:25:38.314533Z",
       "officialSourceUrl": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
-      "checksumSha256": "0d8e494bcffae3707a93c1edbf5d8086ab441c40b7f2ad299d10e160870e1f01",
+      "checksumSha256": "5b1668ac7397d5ed025bd188ced5ac61d5d27afb80b7948ec23d5498abf71473",
       "lastError": null
     },
     {
       "id": "nasa-eonet-open-events",
       "agency": "NASA EONET",
       "availability": "available",
-      "retrievalUtc": "2026-07-28T01:04:36.384740Z",
+      "retrievalUtc": "2026-07-28T04:25:38.314533Z",
       "officialSourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
       "checksumSha256": "143809613365515b6699498925f463237c17e6ddc1747392231a4429062f4c9f",
       "lastError": null
