@@ -1,7 +1,64 @@
 {
   "schemaVersion": 1,
-  "generatedUtc": "2026-07-28T04:25:38.680544Z",
+  "generatedUtc": "2026-07-28T07:09:38.766405Z",
   "alerts": [
+    {
+      "id": "usgs-us6000tgaw",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-28T05:36:39.419000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.4,
+        "depthKm": 10,
+        "coordinates": [
+          -17.7103,
+          64.7107
+        ]
+      },
+      "title": "M 5.4 - 109 km S of Akureyri, Iceland",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgaw"
+    },
+    {
+      "id": "usgs-us6000tgau",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-28T05:35:18.079000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.9,
+        "depthKm": 35,
+        "coordinates": [
+          -92.6223,
+          14.296
+        ]
+      },
+      "title": "M 5.9 - 50 km WSW of Brisas Barra de Suchiate, Mexico",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgau"
+    },
+    {
+      "id": "usgs-us6000tgae",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-28T04:42:18.739000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.8,
+        "depthKm": 10,
+        "coordinates": [
+          165.0432,
+          56.064
+        ]
+      },
+      "title": "M 5.8 - 160 km E of Ust’-Kamchatsk Staryy, Russia",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgae"
+    },
     {
       "id": "usgs-us6000tga9",
       "kind": "earthquake",
@@ -217,18 +274,18 @@
       "id": "usgs-earthquakes-day",
       "agency": "USGS",
       "availability": "available",
-      "retrievalUtc": "2026-07-28T04:25:38.314533Z",
+      "retrievalUtc": "2026-07-28T07:09:38.399740Z",
       "officialSourceUrl": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
-      "checksumSha256": "5b1668ac7397d5ed025bd188ced5ac61d5d27afb80b7948ec23d5498abf71473",
+      "checksumSha256": "58b81f8bd094ab5d7d20107be16374b5430a87583fb8b53b7efeb6b5e521e239",
       "lastError": null
     },
     {
       "id": "nasa-eonet-open-events",
       "agency": "NASA EONET",
       "availability": "available",
-      "retrievalUtc": "2026-07-28T04:25:38.314533Z",
+      "retrievalUtc": "2026-07-28T07:09:38.399740Z",
       "officialSourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
-      "checksumSha256": "143809613365515b6699498925f463237c17e6ddc1747392231a4429062f4c9f",
+      "checksumSha256": "59c0a531e1e67cfb2656b82164649e59d738ff0ef7a45bb36afbeb5aaf9a901e",
       "lastError": null
     }
   ],
