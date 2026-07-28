@@ -1,7 +1,64 @@
 {
   "schemaVersion": 1,
-  "generatedUtc": "2026-07-28T07:09:38.766405Z",
+  "generatedUtc": "2026-07-28T09:46:06.370087Z",
   "alerts": [
+    {
+      "id": "usgs-us6000tgbm",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-28T08:08:35.421000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.6,
+        "depthKm": 10,
+        "coordinates": [
+          130.5868,
+          32.3529
+        ]
+      },
+      "title": "M 5.6 - 16 km NE of Tsunagi, Japan",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgbm"
+    },
+    {
+      "id": "usgs-us6000tgbk",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-28T08:04:10.636000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.1,
+        "depthKm": 10,
+        "coordinates": [
+          99.493,
+          35.4249
+        ]
+      },
+      "title": "M 5.1 - 198 km NW of Oula Xiuma, China",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgbk"
+    },
+    {
+      "id": "usgs-us6000tgb9",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-28T07:27:15.512000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 6.8,
+        "depthKm": 10,
+        "coordinates": [
+          130.7217,
+          32.6817
+        ]
+      },
+      "title": "M 6.8 - 5 km E of Uto, Japan",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgb9"
+    },
     {
       "id": "usgs-us6000tgaw",
       "kind": "earthquake",
@@ -210,63 +267,6 @@
       },
       "title": "M 5.1 - 147 km E of Kimbe, Papua New Guinea",
       "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t3p2"
-    },
-    {
-      "id": "usgs-us7000t3m7",
-      "kind": "earthquake",
-      "status": "automatic-rule-match",
-      "evidenceType": "measured-detection",
-      "source": "USGS",
-      "observationUtc": "2026-07-27T08:57:43.758000Z",
-      "rule": "magnitude >= 5.0",
-      "inputs": {
-        "magnitude": 5.4,
-        "depthKm": 106.991,
-        "coordinates": [
-          -68.633,
-          -23.5454
-        ]
-      },
-      "title": "M 5.4 - 82 km SSW of San Pedro de Atacama, Chile",
-      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t3m7"
-    },
-    {
-      "id": "usgs-us7000t3m6",
-      "kind": "earthquake",
-      "status": "automatic-rule-match",
-      "evidenceType": "measured-detection",
-      "source": "USGS",
-      "observationUtc": "2026-07-27T08:47:18.681000Z",
-      "rule": "magnitude >= 5.0",
-      "inputs": {
-        "magnitude": 5.2,
-        "depthKm": 10,
-        "coordinates": [
-          -175.3545,
-          -24.7345
-        ]
-      },
-      "title": "M 5.2 - south of Tonga",
-      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t3m6"
-    },
-    {
-      "id": "usgs-us7000t3m5",
-      "kind": "earthquake",
-      "status": "automatic-rule-match",
-      "evidenceType": "measured-detection",
-      "source": "USGS",
-      "observationUtc": "2026-07-27T08:44:08.090000Z",
-      "rule": "magnitude >= 5.0",
-      "inputs": {
-        "magnitude": 5.2,
-        "depthKm": 10,
-        "coordinates": [
-          -175.244,
-          -24.6958
-        ]
-      },
-      "title": "M 5.2 - south of Tonga",
-      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t3m5"
     }
   ],
   "sources": [
@@ -274,16 +274,16 @@
       "id": "usgs-earthquakes-day",
       "agency": "USGS",
       "availability": "available",
-      "retrievalUtc": "2026-07-28T07:09:38.399740Z",
+      "retrievalUtc": "2026-07-28T09:46:05.729278Z",
       "officialSourceUrl": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
-      "checksumSha256": "58b81f8bd094ab5d7d20107be16374b5430a87583fb8b53b7efeb6b5e521e239",
+      "checksumSha256": "2fd894a36ff51400bd81b602e35c7ca51f43d98679f4e6fbf238d2a75fe6fed1",
       "lastError": null
     },
     {
       "id": "nasa-eonet-open-events",
       "agency": "NASA EONET",
       "availability": "available",
-      "retrievalUtc": "2026-07-28T07:09:38.399740Z",
+      "retrievalUtc": "2026-07-28T09:46:05.729278Z",
       "officialSourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
       "checksumSha256": "59c0a531e1e67cfb2656b82164649e59d738ff0ef7a45bb36afbeb5aaf9a901e",
       "lastError": null
