@@ -1,7 +1,26 @@
 {
   "schemaVersion": 1,
-  "generatedUtc": "2026-07-28T18:52:59.050085Z",
+  "generatedUtc": "2026-07-28T20:11:21.236706Z",
   "alerts": [
+    {
+      "id": "usgs-us6000tgg2",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-28T19:28:08.993000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5,
+        "depthKm": 10,
+        "coordinates": [
+          161.3309,
+          -10.9261
+        ]
+      },
+      "title": "M 5.0 - 82 km SW of Kirakira, Solomon Islands",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgg2"
+    },
     {
       "id": "usgs-us6000tgcx",
       "kind": "earthquake",
@@ -248,25 +267,6 @@
       },
       "title": "M 5.0 - 112 km ENE of Georgetown, Saint Helena",
       "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tg8z"
-    },
-    {
-      "id": "usgs-us6000tg75",
-      "kind": "earthquake",
-      "status": "automatic-rule-match",
-      "evidenceType": "measured-detection",
-      "source": "USGS",
-      "observationUtc": "2026-07-27T20:10:01.634000Z",
-      "rule": "magnitude >= 5.0",
-      "inputs": {
-        "magnitude": 5,
-        "depthKm": 10,
-        "coordinates": [
-          168.0332,
-          -14.5194
-        ]
-      },
-      "title": "M 5.0 - 88 km SE of Sola, Vanuatu",
-      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tg75"
     }
   ],
   "sources": [
@@ -274,16 +274,16 @@
       "id": "usgs-earthquakes-day",
       "agency": "USGS",
       "availability": "available",
-      "retrievalUtc": "2026-07-28T18:52:58.357944Z",
+      "retrievalUtc": "2026-07-28T20:11:20.899923Z",
       "officialSourceUrl": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
-      "checksumSha256": "f2e1810729fe6fd21987db0ced727987cdde4cf6626533e18b9f7e553584778d",
+      "checksumSha256": "d445639a536b76e8928b5db3f555615c674488b514b36eff79c503d4726c4fc7",
       "lastError": null
     },
     {
       "id": "nasa-eonet-open-events",
       "agency": "NASA EONET",
       "availability": "available",
-      "retrievalUtc": "2026-07-28T18:52:58.357944Z",
+      "retrievalUtc": "2026-07-28T20:11:20.899923Z",
       "officialSourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
       "checksumSha256": "369d9d7c9ee10fbc9c476d1e771e9969e90bfca2718bee58c3e73d434309894c",
       "lastError": null
