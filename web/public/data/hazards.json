@@ -1,7 +1,26 @@
 {
   "schemaVersion": 1,
-  "generatedUtc": "2026-07-28T13:44:54.106951Z",
+  "generatedUtc": "2026-07-28T15:54:26.575810Z",
   "alerts": [
+    {
+      "id": "usgs-us6000tgcx",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-28T13:24:33.090000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.2,
+        "depthKm": 9.709,
+        "coordinates": [
+          -79.8368,
+          -9.6737
+        ]
+      },
+      "title": "M 5.2 - 151 km WSW of Puerto Santa, Peru",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgcx"
+    },
     {
       "id": "usgs-us6000tgbm",
       "kind": "earthquake",
@@ -248,25 +267,6 @@
       },
       "title": "M 5.0 - 88 km SE of Sola, Vanuatu",
       "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tg75"
-    },
-    {
-      "id": "usgs-us7000t3p2",
-      "kind": "earthquake",
-      "status": "automatic-rule-match",
-      "evidenceType": "measured-detection",
-      "source": "USGS",
-      "observationUtc": "2026-07-27T14:33:36.219000Z",
-      "rule": "magnitude >= 5.0",
-      "inputs": {
-        "magnitude": 5.1,
-        "depthKm": 91.011,
-        "coordinates": [
-          151.462,
-          -5.4518
-        ]
-      },
-      "title": "M 5.1 - 147 km E of Kimbe, Papua New Guinea",
-      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t3p2"
     }
   ],
   "sources": [
@@ -274,16 +274,16 @@
       "id": "usgs-earthquakes-day",
       "agency": "USGS",
       "availability": "available",
-      "retrievalUtc": "2026-07-28T13:44:53.289382Z",
+      "retrievalUtc": "2026-07-28T15:54:26.189371Z",
       "officialSourceUrl": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
-      "checksumSha256": "a555f923709b1943a91f52039a2a366df6dc439f2321edbb291c4c139a8da048",
+      "checksumSha256": "73e3e97fe6619a266e9a9af1d709ee873c0a6199e3346ac91332941187a8e387",
       "lastError": null
     },
     {
       "id": "nasa-eonet-open-events",
       "agency": "NASA EONET",
       "availability": "available",
-      "retrievalUtc": "2026-07-28T13:44:53.289382Z",
+      "retrievalUtc": "2026-07-28T15:54:26.189371Z",
       "officialSourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
       "checksumSha256": "e12d2eee63cc7eb081d3873803aca120455c709a14103bc0cf2e9675469d6249",
       "lastError": null
