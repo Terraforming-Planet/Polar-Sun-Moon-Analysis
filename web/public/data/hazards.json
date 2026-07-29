@@ -1,7 +1,26 @@
 {
   "schemaVersion": 1,
-  "generatedUtc": "2026-07-29T14:38:51.498448Z",
+  "generatedUtc": "2026-07-29T16:08:36.495924Z",
   "alerts": [
+    {
+      "id": "usgs-us6000tgpr",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-29T15:10:02.995000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.4,
+        "depthKm": 46.281,
+        "coordinates": [
+          124.6138,
+          13.1384
+        ]
+      },
+      "title": "M 5.4 - 53 km E of Rapu-Rapu, Philippines",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgpr"
+    },
     {
       "id": "usgs-us6000tgnu",
       "kind": "earthquake",
@@ -236,16 +255,16 @@
       "id": "usgs-earthquakes-day",
       "agency": "USGS",
       "availability": "available",
-      "retrievalUtc": "2026-07-29T14:38:50.808937Z",
+      "retrievalUtc": "2026-07-29T16:08:35.689410Z",
       "officialSourceUrl": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
-      "checksumSha256": "2c20f6c3b22c3090b2fe36f285eea5d1dd8523f92c3b7d3f67cc3b11ebc8dd08",
+      "checksumSha256": "9091c5655e1eaefedeae4324650d26bf5f2a5d350d31bcd5b9f3bdbe09a06f73",
       "lastError": null
     },
     {
       "id": "nasa-eonet-open-events",
       "agency": "NASA EONET",
       "availability": "available",
-      "retrievalUtc": "2026-07-29T14:38:50.808937Z",
+      "retrievalUtc": "2026-07-29T16:08:35.689410Z",
       "officialSourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
       "checksumSha256": "718c3f89ba652ce7a350202cb1b1cc754ffc511f7e00210e1926210555c6ed64",
       "lastError": null
