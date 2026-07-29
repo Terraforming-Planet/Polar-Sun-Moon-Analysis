@@ -1,7 +1,64 @@
 {
   "schemaVersion": 1,
-  "generatedUtc": "2026-07-29T22:00:27.651265Z",
+  "generatedUtc": "2026-07-29T23:12:33.851272Z",
   "alerts": [
+    {
+      "id": "usgs-us6000tguj",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-29T22:42:25.141000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.2,
+        "depthKm": 10,
+        "coordinates": [
+          -176.6372,
+          -28.5591
+        ]
+      },
+      "title": "M 5.2 - Kermadec Islands region",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tguj"
+    },
+    {
+      "id": "usgs-us6000tguf",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-29T22:27:57.690000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.9,
+        "depthKm": 10,
+        "coordinates": [
+          -176.5171,
+          -28.4982
+        ]
+      },
+      "title": "M 5.9 - Kermadec Islands region",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tguf"
+    },
+    {
+      "id": "usgs-us6000tgud",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-29T22:08:07.628000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.6,
+        "depthKm": 10,
+        "coordinates": [
+          -179.1239,
+          -65.0558
+        ]
+      },
+      "title": "M 5.6 - Pacific-Antarctic Ridge",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgud"
+    },
     {
       "id": "usgs-us6000tgtc",
       "kind": "earthquake",
@@ -217,18 +274,18 @@
       "id": "usgs-earthquakes-day",
       "agency": "USGS",
       "availability": "available",
-      "retrievalUtc": "2026-07-29T22:00:26.853088Z",
+      "retrievalUtc": "2026-07-29T23:12:33.222314Z",
       "officialSourceUrl": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
-      "checksumSha256": "4fdbf32b3389e4503eb999f8a5e29a29616cfd4918f5e65b33c0d4f0b9541c71",
+      "checksumSha256": "164c80b6463733a85d1723a53fb3be2846f4eab2003418e5ec6ede4e8c1764ff",
       "lastError": null
     },
     {
       "id": "nasa-eonet-open-events",
       "agency": "NASA EONET",
       "availability": "available",
-      "retrievalUtc": "2026-07-29T22:00:26.853088Z",
+      "retrievalUtc": "2026-07-29T23:12:33.222314Z",
       "officialSourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
-      "checksumSha256": "90052eb10331c5d4e2953557eaaf8e1264211d7fa69d7f10c27e09e384b8c3db",
+      "checksumSha256": "b61ebd161238ae1ea46dbf691e2f472fa54fce208956de7475a393a2ac4b1c94",
       "lastError": null
     }
   ],
