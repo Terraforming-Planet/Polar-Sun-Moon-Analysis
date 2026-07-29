@@ -1,7 +1,26 @@
 {
   "schemaVersion": 1,
-  "generatedUtc": "2026-07-29T10:04:28.607592Z",
+  "generatedUtc": "2026-07-29T12:18:06.711023Z",
   "alerts": [
+    {
+      "id": "usgs-us6000tgm6",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-29T10:30:59.826000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5,
+        "depthKm": 60.675,
+        "coordinates": [
+          -27.3636,
+          -55.8769
+        ]
+      },
+      "title": "M 5.0 - South Sandwich Islands region",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgm6"
+    },
     {
       "id": "usgs-us6000tgkd",
       "kind": "earthquake",
@@ -160,18 +179,18 @@
       "id": "usgs-earthquakes-day",
       "agency": "USGS",
       "availability": "available",
-      "retrievalUtc": "2026-07-29T10:04:28.294490Z",
+      "retrievalUtc": "2026-07-29T12:18:06.377844Z",
       "officialSourceUrl": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
-      "checksumSha256": "4d5a968308e960e4d244af9e304c98c000bb582941f2d43851569c0981a24286",
+      "checksumSha256": "ab5961816f4221d9622ae95e9a4d3bbba7e2c2ef0c468322c41a7efd536da647",
       "lastError": null
     },
     {
       "id": "nasa-eonet-open-events",
       "agency": "NASA EONET",
       "availability": "available",
-      "retrievalUtc": "2026-07-29T10:04:28.294490Z",
+      "retrievalUtc": "2026-07-29T12:18:06.377844Z",
       "officialSourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
-      "checksumSha256": "609dc7c4f5ba3ad29fda9042866951e6981d2d4c0bdd1114c22dc9616237f7e5",
+      "checksumSha256": "98fca69b004b98304b236d0dfc5b791075a84087f0d12f7592f1fdb9d0454940",
       "lastError": null
     }
   ],
