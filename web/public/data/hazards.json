@@ -1,7 +1,83 @@
 {
   "schemaVersion": 1,
-  "generatedUtc": "2026-07-29T12:18:06.711023Z",
+  "generatedUtc": "2026-07-29T14:38:51.498448Z",
   "alerts": [
+    {
+      "id": "usgs-us6000tgnu",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-29T14:11:03.513000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.1,
+        "depthKm": 10,
+        "coordinates": [
+          122.8525,
+          15.2694
+        ]
+      },
+      "title": "M 5.1 - 79 km NE of Casuguran, Philippines",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgnu"
+    },
+    {
+      "id": "usgs-us6000tgn0",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-29T13:23:56.014000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5,
+        "depthKm": 63.992,
+        "coordinates": [
+          124.9945,
+          5.3176
+        ]
+      },
+      "title": "M 5.0 - 48 km SW of Balangonan, Philippines",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgn0"
+    },
+    {
+      "id": "usgs-us6000tgmx",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-29T13:19:36.661000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.4,
+        "depthKm": 10,
+        "coordinates": [
+          130.4881,
+          32.34
+        ]
+      },
+      "title": "M 5.4 - 11 km N of Tsunagi, Japan",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgmx"
+    },
+    {
+      "id": "usgs-us6000tgmy",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-29T13:16:59.109000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5,
+        "depthKm": 54.238,
+        "coordinates": [
+          125.3648,
+          5.6157
+        ]
+      },
+      "title": "M 5.0 - 4 km NNE of Balangonan, Philippines",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgmy"
+    },
     {
       "id": "usgs-us6000tgm6",
       "kind": "earthquake",
@@ -153,25 +229,6 @@
       },
       "title": "M 5.0 - 82 km SW of Kirakira, Solomon Islands",
       "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgg2"
-    },
-    {
-      "id": "usgs-us6000tgcx",
-      "kind": "earthquake",
-      "status": "automatic-rule-match",
-      "evidenceType": "measured-detection",
-      "source": "USGS",
-      "observationUtc": "2026-07-28T13:24:33.090000Z",
-      "rule": "magnitude >= 5.0",
-      "inputs": {
-        "magnitude": 5.2,
-        "depthKm": 9.709,
-        "coordinates": [
-          -79.8368,
-          -9.6737
-        ]
-      },
-      "title": "M 5.2 - 151 km WSW of Puerto Santa, Peru",
-      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgcx"
     }
   ],
   "sources": [
@@ -179,18 +236,18 @@
       "id": "usgs-earthquakes-day",
       "agency": "USGS",
       "availability": "available",
-      "retrievalUtc": "2026-07-29T12:18:06.377844Z",
+      "retrievalUtc": "2026-07-29T14:38:50.808937Z",
       "officialSourceUrl": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
-      "checksumSha256": "ab5961816f4221d9622ae95e9a4d3bbba7e2c2ef0c468322c41a7efd536da647",
+      "checksumSha256": "2c20f6c3b22c3090b2fe36f285eea5d1dd8523f92c3b7d3f67cc3b11ebc8dd08",
       "lastError": null
     },
     {
       "id": "nasa-eonet-open-events",
       "agency": "NASA EONET",
       "availability": "available",
-      "retrievalUtc": "2026-07-29T12:18:06.377844Z",
+      "retrievalUtc": "2026-07-29T14:38:50.808937Z",
       "officialSourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
-      "checksumSha256": "98fca69b004b98304b236d0dfc5b791075a84087f0d12f7592f1fdb9d0454940",
+      "checksumSha256": "718c3f89ba652ce7a350202cb1b1cc754ffc511f7e00210e1926210555c6ed64",
       "lastError": null
     }
   ],
