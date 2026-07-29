@@ -1,7 +1,64 @@
 {
   "schemaVersion": 1,
-  "generatedUtc": "2026-07-29T01:07:26.549761Z",
+  "generatedUtc": "2026-07-29T04:29:06.208980Z",
   "alerts": [
+    {
+      "id": "usgs-us6000tgkd",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-29T03:52:22.131000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5,
+        "depthKm": 10,
+        "coordinates": [
+          -174.924,
+          -24.6364
+        ]
+      },
+      "title": "M 5.0 - south of Tonga",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgkd"
+    },
+    {
+      "id": "usgs-us6000tgk8",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-29T03:30:50.783000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.1,
+        "depthKm": 35,
+        "coordinates": [
+          -176.7131,
+          -28.6804
+        ]
+      },
+      "title": "M 5.1 - Kermadec Islands region",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgk8"
+    },
+    {
+      "id": "usgs-us6000tgje",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-29T00:47:59.660000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.4,
+        "depthKm": 10,
+        "coordinates": [
+          -172.8179,
+          -17.8256
+        ]
+      },
+      "title": "M 5.4 - 153 km NE of Neiafu, Tonga",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgje"
+    },
     {
       "id": "usgs-aka2026ovufno",
       "kind": "earthquake",
@@ -210,63 +267,6 @@
       },
       "title": "M 5.8 - 160 km E of Ust’-Kamchatsk Staryy, Russia",
       "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgae"
-    },
-    {
-      "id": "usgs-us6000tga9",
-      "kind": "earthquake",
-      "status": "automatic-rule-match",
-      "evidenceType": "measured-detection",
-      "source": "USGS",
-      "observationUtc": "2026-07-28T03:34:05.779000Z",
-      "rule": "magnitude >= 5.0",
-      "inputs": {
-        "magnitude": 5.8,
-        "depthKm": 10,
-        "coordinates": [
-          99.5513,
-          35.3866
-        ]
-      },
-      "title": "M 5.8 - 191 km NW of Oula Xiuma, China",
-      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tga9"
-    },
-    {
-      "id": "usgs-us6000tga6",
-      "kind": "earthquake",
-      "status": "automatic-rule-match",
-      "evidenceType": "measured-detection",
-      "source": "USGS",
-      "observationUtc": "2026-07-28T03:16:08.857000Z",
-      "rule": "magnitude >= 5.0",
-      "inputs": {
-        "magnitude": 5.7,
-        "depthKm": 10,
-        "coordinates": [
-          99.5198,
-          35.3685
-        ]
-      },
-      "title": "M 5.7 - 192 km NW of Oula Xiuma, China",
-      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tga6"
-    },
-    {
-      "id": "usgs-us6000tg9n",
-      "kind": "earthquake",
-      "status": "automatic-rule-match",
-      "evidenceType": "measured-detection",
-      "source": "USGS",
-      "observationUtc": "2026-07-28T01:27:51.735000Z",
-      "rule": "magnitude >= 5.0",
-      "inputs": {
-        "magnitude": 5.3,
-        "depthKm": 10,
-        "coordinates": [
-          -14.5098,
-          -12.7784
-        ]
-      },
-      "title": "M 5.3 - southern Mid-Atlantic Ridge",
-      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tg9n"
     }
   ],
   "sources": [
@@ -274,16 +274,16 @@
       "id": "usgs-earthquakes-day",
       "agency": "USGS",
       "availability": "available",
-      "retrievalUtc": "2026-07-29T01:07:25.815769Z",
+      "retrievalUtc": "2026-07-29T04:29:05.550757Z",
       "officialSourceUrl": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
-      "checksumSha256": "84d70dd63e7187edefbf002d6085ee2a286609d2130db082911adbd7a7e697d0",
+      "checksumSha256": "3fcf0f03d98349f7c6dd15533b196bc211698cc7a367d012586c2236839d7f93",
       "lastError": null
     },
     {
       "id": "nasa-eonet-open-events",
       "agency": "NASA EONET",
       "availability": "available",
-      "retrievalUtc": "2026-07-29T01:07:25.815769Z",
+      "retrievalUtc": "2026-07-29T04:29:05.550757Z",
       "officialSourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
       "checksumSha256": "aa590e03c176ae66b40dd896becd52608648e9df6b55d0ddb3219511a2144eb4",
       "lastError": null
