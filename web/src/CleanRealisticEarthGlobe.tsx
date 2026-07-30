@@ -48,8 +48,9 @@ function loadCesium(): Promise<CesiumApi> {
   return new Promise((resolve, reject) => {
     const existing = document.querySelector<HTMLScriptElement>(`script[src="${CESIUM_BASE}Cesium.js"]`)
     if (existing) {
-      existing.addEventListener('load', () => window.Cesium ? resolve(window.Cesium) : reject(new Error('Cesium unavailable')))
-      existing.addEventListener('error', () => reject(new Error('Nie udało się załadować Cesium')))
+      if (window.Cesium) { resolve(window.Cesium); return }
+      existing.addEventListener('load', () => window.Cesium ? resolve(window.Cesium) : reject(new Error('Cesium unavailable')), { once: true })
+      existing.addEventListener('error', () => reject(new Error('Nie udało się załadować Cesium')), { once: true })
       return
     }
     const script = document.createElement('script')
@@ -114,6 +115,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   const host = useRef<HTMLDivElement>(null)
   const viewerRef = useRef<any>(null)
   const cesiumRef = useRef<CesiumApi | null>(null)
+  const resizeObserverRef = useRef<ResizeObserver | null>(null)
   const [ready, setReady] = useState(false)
   const [view, setView] = useState<ViewMode>('globe')
   const [layer, setLayer] = useState<Layer>('full-live-earth')
@@ -143,62 +145,89 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
     if (view !== 'globe' || !host.current) return
     let viewer: any
     let cancelled = false
+    setError('')
     loadCesium().then(Cesium => {
       if (cancelled || !host.current) return
+      host.current.replaceChildren()
       cesiumRef.current = Cesium
       viewer = new Cesium.Viewer(host.current, { animation: false, timeline: false, baseLayerPicker: false, geocoder: false, homeButton: false, sceneModePicker: false, navigationHelpButton: false, fullscreenButton: false, infoBox: false, selectionIndicator: false, imageryProvider: false, requestRenderMode: true, maximumRenderTimeChange: Infinity })
       viewerRef.current = viewer
       viewer.scene.globe.baseColor = Cesium.Color.fromCssColorString('#02060a')
-      viewer.scene.globe.maximumScreenSpaceError = .28
-      viewer.scene.globe.tileCacheSize = 1800
+      viewer.scene.globe.maximumScreenSpaceError = 1.2
+      viewer.scene.globe.tileCacheSize = 500
       viewer.scene.skyAtmosphere.show = true
       viewer.scene.globe.showGroundAtmosphere = true
       viewer.scene.fog.enabled = true
-      viewer.scene.screenSpaceCameraController.minimumZoomDistance = 1
+      viewer.scene.screenSpaceCameraController.minimumZoomDistance = 10
       viewer.scene.screenSpaceCameraController.maximumZoomDistance = 80000000
       viewer.scene.screenSpaceCameraController.enableCollisionDetection = true
       viewer.camera.setView({ destination: Cesium.Cartesian3.fromDegrees(15, 15, 21000000) })
-      for (const marker of markers.slice(0, 500)) viewer.entities.add({ position: Cesium.Cartesian3.fromDegrees(marker.longitude, marker.latitude, 0), point: { pixelSize: 7, color: Cesium.Color.fromCssColorString('#ff674f'), outlineColor: Cesium.Color.BLACK, outlineWidth: 1, heightReference: Cesium.HeightReference.CLAMP_TO_GROUND } })
+      resizeObserverRef.current = new ResizeObserver(() => {
+        if (!viewer || viewer.isDestroyed()) return
+        viewer.resize()
+        viewer.scene.requestRender()
+      })
+      resizeObserverRef.current.observe(host.current)
+      viewer.resize()
       setReady(true)
-    }).catch(reason => setError(String(reason)))
-    return () => { cancelled = true; setReady(false); if (viewer && !viewer.isDestroyed()) viewer.destroy(); viewerRef.current = null; cesiumRef.current = null; host.current?.replaceChildren() }
-  }, [view, markers])
+    }).catch(reason => setError(`Model 3D nie został załadowany: ${String(reason)}`))
+    return () => {
+      cancelled = true
+      setReady(false)
+      resizeObserverRef.current?.disconnect()
+      resizeObserverRef.current = null
+      if (viewer && !viewer.isDestroyed()) viewer.destroy()
+      if (viewerRef.current === viewer) viewerRef.current = null
+      cesiumRef.current = null
+    }
+  }, [view])
 
   useEffect(() => {
     const viewer = viewerRef.current
     const Cesium = cesiumRef.current
     if (!ready || !viewer || !Cesium || view !== 'globe') return
-    viewer.imageryLayers.removeAll()
-    viewer.clock.currentTime = Cesium.JulianDate.fromIso8601(date.toISOString())
-    const base = viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({ url: HIGH_RESOLUTION_WORLD, minimumLevel: 0, maximumLevel: 23, credit: 'Esri World Imagery' }))
-    base.alpha = 1
-    base.contrast = 1.04
-    if (layer === 'full-live-earth' || layer === 'nasa-day') {
-      const trueColor = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({ url: NASA_WMTS, layer: 'VIIRS_SNPP_CorrectedReflectance_TrueColor', style: 'default', format: 'image/jpeg', tileMatrixSetID: 'GoogleMapsCompatible_Level9', maximumLevel: 9, dimensions: { Time: day }, credit: 'NASA VIIRS true color' }))
-      trueColor.alpha = layer === 'full-live-earth' ? .72 : .86
-    }
-    if (layer === 'full-live-earth' || layer === 'realtime-clouds') {
-      for (const [name, credit] of [['GOES-East_ABI_GeoColor', 'GOES-East'], ['GOES-West_ABI_GeoColor', 'GOES-West'], ['Himawari_AHI_Band13_Clean_Infrared', 'Himawari']] as const) {
-        const clouds = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({ url: NASA_WMTS, layer: name, style: 'default', format: 'image/png', tileMatrixSetID: 'GoogleMapsCompatible_Level7', maximumLevel: 7, dimensions: { Time: subdailyTime }, credit: `NASA GIBS · ${credit}` }))
-        clouds.alpha = cloudOpacity
-      }
-    }
-    if (layer === 'full-live-earth' || layer === 'ocean-waves') {
-      const waves = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapServiceImageryProvider({ url: WAVEWATCH_WMS, layers: 'WaveWatch_2026:Thgt', parameters: { transparent: true, format: 'image/png', time: date.toISOString(), colorscalerange: '0,12' }, credit: 'NOAA/PacIOOS WaveWatch III · significant wave height' }))
-      waves.alpha = waveOpacity
-    }
-    if (layer === 'nasa-night') {
-      const night = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({ url: NASA_WMTS, layer: 'VIIRS_SNPP_DayNightBand_ENCC', style: 'default', format: 'image/png', tileMatrixSetID: 'GoogleMapsCompatible_Level9', maximumLevel: 9, dimensions: { Time: day }, credit: 'NASA VIIRS night lights' }))
-      night.alpha = .78
-    }
-    if (layer === 'copernicus-safe') {
-      const copernicus = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapServiceImageryProvider({ url: CDSE_WMS, layers: import.meta.env.VITE_CDSE_LAYER || 'NATURAL-COLOR', rectangle: Cesium.Rectangle.fromDegrees(-180, -78, 180, 78), parameters: { transparent: true, format: 'image/png', time: `${day}/${day}`, maxcc: 100, showlogo: false }, credit: 'Copernicus Data Space' }))
-      copernicus.alpha = .9
-    }
-    viewer.scene.globe.enableLighting = solarLighting
-    viewer.scene.highDynamicRange = true
-    viewer.scene.postProcessStages.fxaa.enabled = true
+    viewer.entities.removeAll()
+    for (const marker of markers.slice(0, 500)) viewer.entities.add({ position: Cesium.Cartesian3.fromDegrees(marker.longitude, marker.latitude, 0), point: { pixelSize: 7, color: Cesium.Color.fromCssColorString('#ff674f'), outlineColor: Cesium.Color.BLACK, outlineWidth: 1, heightReference: Cesium.HeightReference.CLAMP_TO_GROUND } })
     viewer.scene.requestRender()
+  }, [ready, view, markers])
+
+  useEffect(() => {
+    const viewer = viewerRef.current
+    const Cesium = cesiumRef.current
+    if (!ready || !viewer || !Cesium || view !== 'globe') return
+    setError('')
+    try {
+      viewer.imageryLayers.removeAll()
+      viewer.clock.currentTime = Cesium.JulianDate.fromIso8601(date.toISOString())
+      const base = viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({ url: HIGH_RESOLUTION_WORLD, minimumLevel: 0, maximumLevel: 19, credit: 'Esri World Imagery' }))
+      base.alpha = 1
+      base.contrast = 1.04
+      const safeAdd = (name: string, providerFactory: () => any, alpha: number) => {
+        try {
+          const imageryLayer = viewer.imageryLayers.addImageryProvider(providerFactory())
+          imageryLayer.alpha = alpha
+          const provider = imageryLayer.imageryProvider
+          provider?.errorEvent?.addEventListener?.(() => setError(previous => previous || `${name}: część kafelków jest chwilowo niedostępna; pozostawiono mapę bazową.`))
+        } catch (reason) {
+          setError(previous => previous || `${name}: ${String(reason)}. Pozostawiono mapę bazową.`)
+        }
+      }
+      if (layer === 'full-live-earth' || layer === 'nasa-day') safeAdd('NASA VIIRS', () => new Cesium.WebMapTileServiceImageryProvider({ url: NASA_WMTS, layer: 'VIIRS_SNPP_CorrectedReflectance_TrueColor', style: 'default', format: 'image/jpeg', tileMatrixSetID: 'GoogleMapsCompatible_Level9', maximumLevel: 9, dimensions: { Time: day }, credit: 'NASA VIIRS true color' }), layer === 'full-live-earth' ? .72 : .86)
+      if (layer === 'full-live-earth' || layer === 'realtime-clouds') {
+        for (const [name, credit] of [['GOES-East_ABI_GeoColor', 'GOES-East'], ['GOES-West_ABI_GeoColor', 'GOES-West'], ['Himawari_AHI_Band13_Clean_Infrared', 'Himawari']] as const) safeAdd(credit, () => new Cesium.WebMapTileServiceImageryProvider({ url: NASA_WMTS, layer: name, style: 'default', format: 'image/png', tileMatrixSetID: 'GoogleMapsCompatible_Level7', maximumLevel: 7, dimensions: { Time: subdailyTime }, credit: `NASA GIBS · ${credit}` }), cloudOpacity)
+      }
+      if (layer === 'full-live-earth' || layer === 'ocean-waves') safeAdd('NOAA WaveWatch', () => new Cesium.WebMapServiceImageryProvider({ url: WAVEWATCH_WMS, layers: 'WaveWatch_2026:Thgt', parameters: { transparent: true, format: 'image/png', time: date.toISOString(), colorscalerange: '0,12' }, credit: 'NOAA/PacIOOS WaveWatch III · significant wave height' }), waveOpacity)
+      if (layer === 'nasa-night') safeAdd('NASA VIIRS noc', () => new Cesium.WebMapTileServiceImageryProvider({ url: NASA_WMTS, layer: 'VIIRS_SNPP_DayNightBand_ENCC', style: 'default', format: 'image/png', tileMatrixSetID: 'GoogleMapsCompatible_Level9', maximumLevel: 9, dimensions: { Time: day }, credit: 'NASA VIIRS night lights' }), .78)
+      if (layer === 'copernicus-safe') safeAdd('Copernicus Data Space', () => new Cesium.WebMapServiceImageryProvider({ url: CDSE_WMS, layers: import.meta.env.VITE_CDSE_LAYER || 'NATURAL-COLOR', rectangle: Cesium.Rectangle.fromDegrees(-180, -78, 180, 78), parameters: { transparent: true, format: 'image/png', time: `${day}/${day}`, maxcc: 100, showlogo: false }, credit: 'Copernicus Data Space' }), .9)
+      viewer.scene.globe.enableLighting = solarLighting
+      viewer.scene.highDynamicRange = true
+      viewer.scene.postProcessStages.fxaa.enabled = true
+      viewer.resize()
+      viewer.scene.requestRender()
+    } catch (reason) {
+      setError(`Nie udało się przełączyć warstwy: ${String(reason)}`)
+      viewer.scene.requestRender()
+    }
   }, [ready, layer, day, subdailyTime, view, date, solarLighting, cloudOpacity, waveOpacity])
 
   const zoom = (factor: number) => {
@@ -214,7 +243,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
     const viewer = viewerRef.current
     if (!viewer) return
     const height = viewer.camera.positionCartographic.height
-    if (height > 1.5) viewer.camera.zoomIn(height - 1.5)
+    if (height > 10) viewer.camera.zoomIn(height - 10)
     viewer.scene.requestRender()
   }
 
@@ -231,16 +260,17 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
       <button type="button" className={view === 'north' ? 'is-active' : ''} onClick={() => setView('north')}>Arktyka — zdjęcie</button>
       <button type="button" className={view === 'south' ? 'is-active' : ''} onClick={() => setView('south')}>Antarktyda — zdjęcie</button>
       {view === 'globe' && <>
-        <label>Obraz<select value={layer} onChange={event => { setLayer(event.target.value as Layer); setPlaying(false) }}><option value="full-live-earth">ORYGINALNA PLANETA LIVE — ląd + oceany + chmury + fale</option><option value="realtime-clouds">Chmury — klatka co 10 minut</option><option value="ocean-waves">Fale oceaniczne — wysokość znacząca</option><option value="high-resolution">Szczegółowa mapa satelitarna — maksymalny zoom</option><option value="nasa-day">NASA VIIRS — prawdziwy kolor</option><option value="nasa-night">NASA VIIRS — nocne światła</option><option value="copernicus-safe">Copernicus — aktualna obserwacja</option></select></label>
-        <label><input type="checkbox" checked={live} onChange={event => setLive(event.target.checked)} /> czas rzeczywisty</label>
+        <label>Obraz<select value={layer} onChange={event => { setLayer(event.target.value as Layer); setPlaying(false) }}><option value="full-live-earth">ZIEMIA — mapa bazowa + najnowsze dostępne nakładki</option><option value="realtime-clouds">Chmury — dostępne klatki satelitarne</option><option value="ocean-waves">Fale oceaniczne — model wysokości znaczącej</option><option value="high-resolution">Szczegółowa mapa satelitarna</option><option value="nasa-day">NASA VIIRS — dzienny prawdziwy kolor</option><option value="nasa-night">NASA VIIRS — nocne światła</option><option value="copernicus-safe">Copernicus — dostępna obserwacja</option></select></label>
+        <label><input type="checkbox" checked={live} onChange={event => setLive(event.target.checked)} /> najnowszy dostępny czas</label>
         <label><input type="checkbox" checked={solarLighting} onChange={event => setSolarLighting(event.target.checked)} /> dzień/noc</label>
         <label><input type="checkbox" checked={nightVision} onChange={event => setNightVision(event.target.checked)} /> noktowizor</label>
       </>}
-      <div className="location-globe-status"><strong>{layer === 'full-live-earth' ? 'PEŁNA ZIEMIA LIVE · PRAWDZIWY KOLOR · CHMURY · FALOWANIE OCEANU' : animatedMode ? 'ANIMACJA 7 DNI · KROK 10 MINUT' : 'PEŁNA ZIEMIA · MAKSYMALNY ZOOM DO OK. 1,5 M NAD POWIERZCHNIĄ'}</strong><span>{date.toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span><span>Przycisk MAX zbliża kamerę niemal do powierzchni. Szczegółowość końcowa zależy od dostępnej rozdzielczości zdjęć dla danego miejsca.</span>{error && <span>{error}</span>}</div>
+      <div className="location-globe-status"><strong>{ready ? 'MODEL 3D AKTYWNY · MAPA BAZOWA ZABEZPIECZONA' : 'ŁADOWANIE MODELU 3D…'}</strong><span>{date.toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span><span>Nakładki zewnętrzne mogą mieć opóźnienie lub ograniczony zasięg. Awaria nakładki nie powinna już usuwać planety.</span>{error && <span>{error}</span>}</div>
     </div>
     {view === 'globe' ? <>
-      {animatedMode && <div className="scene-controls"><button type="button" onClick={() => setPlaying(value => !value)}>{playing ? 'Ⅱ Pauza' : '▶ Odtwarzaj 7 dni'}</button><button type="button" onClick={() => { setPlaying(false); setFrameIndex(LAST_FRAME); setLive(true) }}>TERAZ</button><label>Prędkość<select value={speed} onChange={event => setSpeed(Number(event.target.value))}><option value={1}>1 kl./s</option><option value={2}>2 kl./s</option><option value={4}>4 kl./s</option></select></label>{layer !== 'ocean-waves' && <label>Chmury {Math.round(cloudOpacity * 100)}%<input type="range" min="10" max="100" value={Math.round(cloudOpacity * 100)} onChange={event => setCloudOpacity(Number(event.target.value) / 100)} /></label>}{layer !== 'realtime-clouds' && <label>Fale {Math.round(waveOpacity * 100)}%<input type="range" min="10" max="90" value={Math.round(waveOpacity * 100)} onChange={event => setWaveOpacity(Number(event.target.value) / 100)} /></label>}<label>Klatka {frameIndex + 1}/1009<input type="range" min="0" max={LAST_FRAME} step="1" value={frameIndex} onChange={event => { setPlaying(false); setLive(false); setFrameIndex(Number(event.target.value)) }} /></label></div>}
+      {animatedMode && <div className="scene-controls"><button type="button" onClick={() => setPlaying(value => !value)}>{playing ? 'Ⅱ Pauza' : '▶ Odtwarzaj 7 dni'}</button><button type="button" onClick={() => { setPlaying(false); setFrameIndex(LAST_FRAME); setLive(true) }}>NAJNOWSZE</button><label>Prędkość<select value={speed} onChange={event => setSpeed(Number(event.target.value))}><option value={1}>1 kl./s</option><option value={2}>2 kl./s</option><option value={4}>4 kl./s</option></select></label>{layer !== 'ocean-waves' && <label>Chmury {Math.round(cloudOpacity * 100)}%<input type="range" min="10" max="100" value={Math.round(cloudOpacity * 100)} onChange={event => setCloudOpacity(Number(event.target.value) / 100)} /></label>}{layer !== 'realtime-clouds' && <label>Fale {Math.round(waveOpacity * 100)}%<input type="range" min="10" max="90" value={Math.round(waveOpacity * 100)} onChange={event => setWaveOpacity(Number(event.target.value) / 100)} /></label>}<label>Klatka {frameIndex + 1}/1009<input type="range" min="0" max={LAST_FRAME} step="1" value={frameIndex} onChange={event => { setPlaying(false); setLive(false); setFrameIndex(Number(event.target.value)) }} /></label></div>}
       <div className="tiled-earth-zoom"><button type="button" aria-label="Przybliż" onClick={() => zoom(.55)}>+</button><button type="button" aria-label="Maksymalne przybliżenie" onClick={maximumZoom}>MAX</button><button type="button" aria-label="Widok całej planety" onClick={globalView}>🌍</button><button type="button" aria-label="Oddal" onClick={() => zoom(-.7)}>−</button></div>
+      {!ready && <div className="tiled-earth-fallback" role="status"><div className="fallback-globe"/><strong>{error || 'Uruchamianie silnika Ziemi 3D…'}</strong><span>Interfejs pozostaje widoczny, a model spróbuje załadować się ponownie po powrocie do zakładki.</span></div>}
       <div ref={host} className="tiled-earth-canvas" />
     </> : <PolarScene mode={view} date={date} />}
   </div>
