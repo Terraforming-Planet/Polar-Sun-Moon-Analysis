@@ -76,11 +76,15 @@ def normalize_earthquakes(payload: dict[str, Any]) -> dict[str, Any]:
                 "magnitude": magnitude,
                 "depthKm": coordinates[2],
                 "observationUtc": observation_utc,
+                "observation_time": observation_utc,
                 "place": properties.get("place"),
+                "title": properties.get("title"),
                 "status": properties.get("status"),
                 "eventUrl": properties.get("url"),
+                "source_url": properties.get("url"),
                 "detailUrl": properties.get("detail"),
                 "tsunami": bool(properties.get("tsunami")),
+                "categories": ["Earthquakes"],
             },
         }
         features.append(normalized)
@@ -156,12 +160,14 @@ def main() -> None:
     retrieved_utc = utc_now()
     source_status: list[dict[str, Any]] = []
     alerts: list[dict[str, Any]] = []
+    features: list[dict[str, Any]] = []
 
     try:
         usgs_raw = fetch_json(USGS_URL)
         earthquakes = normalize_earthquakes(usgs_raw)
         write_json(OUT / "earthquakes.geojson", earthquakes["geojson"])
         alerts.extend(earthquakes["alerts"])
+        features.extend(earthquakes["geojson"]["features"])
         source_status.append(
             {
                 "id": "usgs-earthquakes-day",
@@ -212,11 +218,19 @@ def main() -> None:
             }
         )
 
+    generated_utc = utc_now()
     write_json(
         OUT / "hazards.json",
         {
-            "schemaVersion": 1,
-            "generatedUtc": utc_now(),
+            "schemaVersion": 2,
+            "type": "FeatureCollection",
+            "generatedUtc": generated_utc,
+            "generated_at_utc": generated_utc,
+            "notice": (
+                "Geometries are official measured or catalogue locations. "
+                "They are not automatic severity or danger estimates."
+            ),
+            "features": features,
             "alerts": alerts,
             "sources": source_status,
             "limitations": [
