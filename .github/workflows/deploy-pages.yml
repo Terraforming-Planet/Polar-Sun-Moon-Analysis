@@ -1,17 +1,6 @@
-name: Build and deploy Terra Observation
+name: Legacy Pages deployment (manual fallback only)
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'web/src/**'
-      - 'web/index.html'
-      - 'web/package.json'
-      - 'web/package-lock.json'
-      - 'web/tsconfig*.json'
-      - 'web/vite.config.*'
-      - 'docs/**'
-      - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:
 
 permissions:
@@ -20,13 +9,16 @@ permissions:
   id-token: write
 
 concurrency:
-  group: github-pages
+  group: github-pages-production
   cancel-in-progress: false
 
 jobs:
-  build:
+  fallback:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -38,76 +30,39 @@ jobs:
           cache: npm
           cache-dependency-path: web/package-lock.json
 
-      - name: Install web dependencies
-        run: npm ci
+      - name: Install, test and build
         working-directory: web
-
-      - name: Run tests
-        run: npm test
-        working-directory: web
-
-      - name: Build Vite application
-        run: npm run build
-        working-directory: web
-
-      - name: Add optional static result pages
-        shell: bash
+        env:
+          VITE_BASE_PATH: /Polar-Sun-Moon-Analysis/
         run: |
-          set -euo pipefail
-          copy_if_present() {
-            source_dir="$1"
-            target_dir="$2"
-            if [ -d "$source_dir" ]; then
-              mkdir -p "$target_dir"
-              cp -R "$source_dir"/. "$target_dir"/
-              echo "Copied $source_dir"
-            else
-              echo "Skipping missing optional directory: $source_dir"
-            fi
-          }
-          copy_if_present docs/flood-map web/dist/flood-map
-          copy_if_present docs/reports web/dist/reports
-          copy_if_present docs/charts/copernicus web/dist/charts/copernicus
-          copy_if_present docs/data/copernicus web/dist/data/copernicus
+          npm ci
+          npm test
+          npm run build
 
-      - name: Verify Pages artifact
-        shell: bash
+      - name: Prepare Pages artifact
         run: |
           set -euo pipefail
           test -s web/dist/index.html
           test -d web/dist/assets
           cp web/dist/index.html web/dist/404.html
           touch web/dist/.nojekyll
-          echo 'Artifact root:'
-          find web/dist -maxdepth 2 -type f | sort | head -200
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: web/dist
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    timeout-minutes: 10
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
       - name: Deploy website
         id: deployment
         uses: actions/deploy-pages@v4
 
-      - name: Publish deployment URL
-        shell: bash
+      - name: Show deployment URL
         run: |
-          echo '## GitHub Pages deployment' >> "$GITHUB_STEP_SUMMARY"
+          echo '## Manual fallback deployment' >> "$GITHUB_STEP_SUMMARY"
           echo '' >> "$GITHUB_STEP_SUMMARY"
-          echo "Deployed URL: ${{ steps.deployment.outputs.page_url }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "Repository URL: https://terraforming-planet.github.io/Polar-Sun-Moon-Analysis/" >> "$GITHUB_STEP_SUMMARY"
+          echo "${{ steps.deployment.outputs.page_url }}" >> "$GITHUB_STEP_SUMMARY"
