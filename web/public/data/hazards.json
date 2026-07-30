@@ -1,7 +1,45 @@
 {
   "schemaVersion": 1,
-  "generatedUtc": "2026-07-30T03:24:57.018183Z",
+  "generatedUtc": "2026-07-30T06:04:28.024697Z",
   "alerts": [
+    {
+      "id": "usgs-us6000tgvz",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-30T05:08:31.888000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.8,
+        "depthKm": 10,
+        "coordinates": [
+          -176.5759,
+          -28.6242
+        ]
+      },
+      "title": "M 5.8 - Kermadec Islands region",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgvz"
+    },
+    {
+      "id": "usgs-us6000tgvu",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-30T04:42:12.667000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.4,
+        "depthKm": 35,
+        "coordinates": [
+          138.8205,
+          -2.6018
+        ]
+      },
+      "title": "M 5.4 - 201 km W of Abepura, Indonesia",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgvu"
+    },
     {
       "id": "usgs-us6000tgva",
       "kind": "earthquake",
@@ -229,44 +267,6 @@
       },
       "title": "M 5.0 - South Sandwich Islands region",
       "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgm6"
-    },
-    {
-      "id": "usgs-us6000tgkd",
-      "kind": "earthquake",
-      "status": "automatic-rule-match",
-      "evidenceType": "measured-detection",
-      "source": "USGS",
-      "observationUtc": "2026-07-29T03:52:22.131000Z",
-      "rule": "magnitude >= 5.0",
-      "inputs": {
-        "magnitude": 5,
-        "depthKm": 10,
-        "coordinates": [
-          -174.924,
-          -24.6364
-        ]
-      },
-      "title": "M 5.0 - south of Tonga",
-      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgkd"
-    },
-    {
-      "id": "usgs-us6000tgk8",
-      "kind": "earthquake",
-      "status": "automatic-rule-match",
-      "evidenceType": "measured-detection",
-      "source": "USGS",
-      "observationUtc": "2026-07-29T03:30:50.783000Z",
-      "rule": "magnitude >= 5.0",
-      "inputs": {
-        "magnitude": 5.1,
-        "depthKm": 35,
-        "coordinates": [
-          -176.7131,
-          -28.6804
-        ]
-      },
-      "title": "M 5.1 - Kermadec Islands region",
-      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgk8"
     }
   ],
   "sources": [
@@ -274,18 +274,18 @@
       "id": "usgs-earthquakes-day",
       "agency": "USGS",
       "availability": "available",
-      "retrievalUtc": "2026-07-30T03:24:56.292645Z",
+      "retrievalUtc": "2026-07-30T06:04:27.249151Z",
       "officialSourceUrl": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
-      "checksumSha256": "5b23ee244ecd87782d5c0d0255f30e93f7a3a3e0279b81e2b746a1668ba7aed2",
+      "checksumSha256": "f77f5d67a7aef91bcfbd0c1e78c228bcec1d43573e5b703a2405f195a710257f",
       "lastError": null
     },
     {
       "id": "nasa-eonet-open-events",
       "agency": "NASA EONET",
       "availability": "available",
-      "retrievalUtc": "2026-07-30T03:24:56.292645Z",
+      "retrievalUtc": "2026-07-30T06:04:27.249151Z",
       "officialSourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
-      "checksumSha256": "b61ebd161238ae1ea46dbf691e2f472fa54fce208956de7475a393a2ac4b1c94",
+      "checksumSha256": "da26ef0fe82614fff7b0b23afbee952237903fc8691dff8c466c01803f5a4f70",
       "lastError": null
     }
   ],
