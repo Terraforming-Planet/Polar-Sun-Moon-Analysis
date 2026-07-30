@@ -1,9 +1,5 @@
-import { readFileSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-
-const sourcePath = fileURLToPath(new URL('./CleanRealisticEarthGlobe.tsx', import.meta.url))
-const source = readFileSync(sourcePath, 'utf8')
+import source from './CleanRealisticEarthGlobe.tsx?raw'
 
 describe('Cesium globe lifecycle regression guards', () => {
   it('does not recreate the Cesium viewer when markers change', () => {
