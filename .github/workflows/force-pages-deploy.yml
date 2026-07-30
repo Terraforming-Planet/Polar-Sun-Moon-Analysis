@@ -20,7 +20,7 @@ concurrency:
 
 env:
   SITE_URL: https://terraforming-planet.github.io/Polar-Sun-Moon-Analysis/
-  DEPLOYMENT_PROBE: polar-sun-moon-analysis-pages-v71
+  DEPLOYMENT_PROBE: polar-sun-moon-analysis-pages-v72
 
 jobs:
   build:
@@ -67,18 +67,6 @@ jobs:
         uses: actions/configure-pages@v5
         with:
           enablement: true
-
-      - name: Force Pages source to GitHub Actions
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          echo 'Pages configuration before update:'
-          gh api "repos/$GITHUB_REPOSITORY/pages" || true
-          gh api --method PUT "repos/$GITHUB_REPOSITORY/pages" -f build_type=workflow
-          echo 'Pages configuration after update:'
-          gh api "repos/$GITHUB_REPOSITORY/pages"
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
