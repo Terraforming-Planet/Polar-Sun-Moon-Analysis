@@ -1,7 +1,45 @@
 {
   "schemaVersion": 1,
-  "generatedUtc": "2026-07-30T18:10:11.725073Z",
+  "generatedUtc": "2026-07-30T19:50:01.807061Z",
   "alerts": [
+    {
+      "id": "usgs-us6000th1h",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-30T17:55:59.690000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.9,
+        "depthKm": 34.505,
+        "coordinates": [
+          138.9989,
+          11.5807
+        ]
+      },
+      "title": "M 5.9 - 247 km NNE of Colonia, Micronesia",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000th1h"
+    },
+    {
+      "id": "usgs-us6000th1b",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-30T17:48:15.234000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.2,
+        "depthKm": 46.02,
+        "coordinates": [
+          -177.9701,
+          -31.3231
+        ]
+      },
+      "title": "M 5.2 - Kermadec Islands region",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000th1b"
+    },
     {
       "id": "usgs-us6000tgy8",
       "kind": "earthquake",
@@ -179,19 +217,18 @@
       "id": "usgs-earthquakes-day",
       "agency": "USGS",
       "availability": "available",
-      "retrievalUtc": "2026-07-30T18:10:10.972547Z",
+      "retrievalUtc": "2026-07-30T19:49:16.660023Z",
       "officialSourceUrl": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
-      "checksumSha256": "d5667ff7d09b3f94f1a9c56a3444ce22f55b09245b39b907822bec01ab0a16ff",
+      "checksumSha256": "26b7efda485cd77daceabcfbc00489588d330ff98123a33a9561ee3ce58433eb",
       "lastError": null
     },
     {
       "id": "nasa-eonet-open-events",
       "agency": "NASA EONET",
-      "availability": "available",
-      "retrievalUtc": "2026-07-30T18:10:10.972547Z",
+      "availability": "unavailable",
+      "retrievalUtc": "2026-07-30T19:49:16.660023Z",
       "officialSourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
-      "checksumSha256": "2c8572cd03bc851c6ed53c25cd5d7a67ca475e49968837c191d3f88743f76296",
-      "lastError": null
+      "lastError": "HTTPSConnectionPool(host='eonet.gsfc.nasa.gov', port=443): Max retries exceeded with url: /api/v3/events?status=open&limit=200 (Caused by NewConnectionError(\"HTTPSConnection(host='eonet.gsfc.nasa.gov', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable\"))"
     }
   ],
   "limitations": [
