@@ -1,7 +1,26 @@
 {
   "schemaVersion": 1,
-  "generatedUtc": "2026-07-30T00:10:17.424771Z",
+  "generatedUtc": "2026-07-30T03:24:57.018183Z",
   "alerts": [
+    {
+      "id": "usgs-us6000tgva",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-30T02:46:24.341000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5.3,
+        "depthKm": 10,
+        "coordinates": [
+          153.5797,
+          -5.8112
+        ]
+      },
+      "title": "M 5.3 - 217 km SE of Kokopo, Papua New Guinea",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgva"
+    },
     {
       "id": "usgs-us6000tguj",
       "kind": "earthquake",
@@ -248,25 +267,6 @@
       },
       "title": "M 5.1 - Kermadec Islands region",
       "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgk8"
-    },
-    {
-      "id": "usgs-us6000tgje",
-      "kind": "earthquake",
-      "status": "automatic-rule-match",
-      "evidenceType": "measured-detection",
-      "source": "USGS",
-      "observationUtc": "2026-07-29T00:47:59.660000Z",
-      "rule": "magnitude >= 5.0",
-      "inputs": {
-        "magnitude": 5.4,
-        "depthKm": 10,
-        "coordinates": [
-          -172.8179,
-          -17.8256
-        ]
-      },
-      "title": "M 5.4 - 153 km NE of Neiafu, Tonga",
-      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgje"
     }
   ],
   "sources": [
@@ -274,16 +274,16 @@
       "id": "usgs-earthquakes-day",
       "agency": "USGS",
       "availability": "available",
-      "retrievalUtc": "2026-07-30T00:10:16.752413Z",
+      "retrievalUtc": "2026-07-30T03:24:56.292645Z",
       "officialSourceUrl": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
-      "checksumSha256": "c1935d18a8ab28f32ffc20c7ac99e3957b41ad5c6be0f335be125a9cce73c6b9",
+      "checksumSha256": "5b23ee244ecd87782d5c0d0255f30e93f7a3a3e0279b81e2b746a1668ba7aed2",
       "lastError": null
     },
     {
       "id": "nasa-eonet-open-events",
       "agency": "NASA EONET",
       "availability": "available",
-      "retrievalUtc": "2026-07-30T00:10:16.752413Z",
+      "retrievalUtc": "2026-07-30T03:24:56.292645Z",
       "officialSourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
       "checksumSha256": "b61ebd161238ae1ea46dbf691e2f472fa54fce208956de7475a393a2ac4b1c94",
       "lastError": null
