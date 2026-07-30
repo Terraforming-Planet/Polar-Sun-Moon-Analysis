@@ -12,6 +12,7 @@ def replace_once(text: str, old: str, new: str) -> str:
 
 
 def main() -> None:
+    """Patch the live frontend so evolving hazard schemas cannot crash Earth 3D."""
     text = PATH.read_text(encoding="utf-8")
 
     text = replace_once(
