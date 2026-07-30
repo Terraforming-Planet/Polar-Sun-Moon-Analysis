@@ -1,7 +1,26 @@
 {
   "schemaVersion": 1,
-  "generatedUtc": "2026-07-30T19:50:01.807061Z",
+  "generatedUtc": "2026-07-30T20:58:08.024882Z",
   "alerts": [
+    {
+      "id": "usgs-us6000th30",
+      "kind": "earthquake",
+      "status": "automatic-rule-match",
+      "evidenceType": "measured-detection",
+      "source": "USGS",
+      "observationUtc": "2026-07-30T20:26:36.299000Z",
+      "rule": "magnitude >= 5.0",
+      "inputs": {
+        "magnitude": 5,
+        "depthKm": 35,
+        "coordinates": [
+          -176.5707,
+          -28.5478
+        ]
+      },
+      "title": "M 5.0 - Kermadec Islands region",
+      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000th30"
+    },
     {
       "id": "usgs-us6000th1h",
       "kind": "earthquake",
@@ -191,25 +210,6 @@
       },
       "title": "M 5.6 - Pacific-Antarctic Ridge",
       "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgud"
-    },
-    {
-      "id": "usgs-us6000tgtc",
-      "kind": "earthquake",
-      "status": "automatic-rule-match",
-      "evidenceType": "measured-detection",
-      "source": "USGS",
-      "observationUtc": "2026-07-29T20:52:10.337000Z",
-      "rule": "magnitude >= 5.0",
-      "inputs": {
-        "magnitude": 5.1,
-        "depthKm": 10,
-        "coordinates": [
-          -175.2721,
-          -24.6282
-        ]
-      },
-      "title": "M 5.1 - south of Tonga",
-      "officialUrl": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tgtc"
     }
   ],
   "sources": [
@@ -217,18 +217,19 @@
       "id": "usgs-earthquakes-day",
       "agency": "USGS",
       "availability": "available",
-      "retrievalUtc": "2026-07-30T19:49:16.660023Z",
+      "retrievalUtc": "2026-07-30T20:58:06.823527Z",
       "officialSourceUrl": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
-      "checksumSha256": "26b7efda485cd77daceabcfbc00489588d330ff98123a33a9561ee3ce58433eb",
+      "checksumSha256": "975c61b998d82eff5940417acd37084f8fd92a724181e4929e0d3f4203122918",
       "lastError": null
     },
     {
       "id": "nasa-eonet-open-events",
       "agency": "NASA EONET",
-      "availability": "unavailable",
-      "retrievalUtc": "2026-07-30T19:49:16.660023Z",
+      "availability": "available",
+      "retrievalUtc": "2026-07-30T20:58:06.823527Z",
       "officialSourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
-      "lastError": "HTTPSConnectionPool(host='eonet.gsfc.nasa.gov', port=443): Max retries exceeded with url: /api/v3/events?status=open&limit=200 (Caused by NewConnectionError(\"HTTPSConnection(host='eonet.gsfc.nasa.gov', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable\"))"
+      "checksumSha256": "2c8572cd03bc851c6ed53c25cd5d7a67ca475e49968837c191d3f88743f76296",
+      "lastError": null
     }
   ],
   "limitations": [
