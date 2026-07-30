@@ -2,24 +2,17 @@ import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
+import type { EarthModel } from './lib/earthPreferences'
+import { createWgs84EllipsoidScale, latLonToCartesian } from './lib/wgs84'
 import './stable-earth-globe.css'
 
 type Marker = { longitude: number; latitude: number; color?: number; radius?: number }
-type Props = { selectedTime: string; markers?: Marker[]; autoRotate?: boolean }
+type Props = { selectedTime: string; markers?: Marker[]; autoRotate?: boolean; model?: EarthModel }
 
 const EARTH_TEXTURE = 'https://eoimages.gsfc.nasa.gov/images/imagerecords/74000/74393/world.topo.bathy.200412.3x5400x2700.jpg'
+const EARTH_RADIUS = 2
 
-function positionFromLatLon(latitude: number, longitude: number, radius: number) {
-  const phi = (90 - latitude) * Math.PI / 180
-  const theta = (longitude + 180) * Math.PI / 180
-  return new THREE.Vector3(
-    -radius * Math.sin(phi) * Math.cos(theta),
-    radius * Math.cos(phi),
-    radius * Math.sin(phi) * Math.sin(theta),
-  )
-}
-
-export function StableEarthGlobe({ selectedTime, markers = [], autoRotate = true }: Props) {
+export function StableEarthGlobe({ selectedTime, markers = [], autoRotate = true, model = 'scientific' }: Props) {
   const host = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -44,14 +37,17 @@ export function StableEarthGlobe({ selectedTime, markers = [], autoRotate = true
     controls.autoRotateSpeed = 0.35
 
     const earthMaterial = new THREE.MeshStandardMaterial({ color: 0x1e6fa8, roughness: 0.92, metalness: 0 })
-    const earth = new THREE.Mesh(new THREE.SphereGeometry(2, 96, 96), earthMaterial)
+    const earth = new THREE.Mesh(new THREE.SphereGeometry(EARTH_RADIUS, 96, 96), earthMaterial)
+    const earthScale = model === 'scientific' ? createWgs84EllipsoidScale(1) : new THREE.Vector3(1, 1, 1)
+    earth.scale.copy(earthScale)
     earth.rotation.y = -0.35
     scene.add(earth)
 
     const atmosphere = new THREE.Mesh(
-      new THREE.SphereGeometry(2.055, 96, 96),
+      new THREE.SphereGeometry(EARTH_RADIUS * 1.028, 96, 96),
       new THREE.MeshBasicMaterial({ color: 0x56b9ff, transparent: true, opacity: 0.12, side: THREE.BackSide }),
     )
+    atmosphere.scale.copy(earthScale)
     scene.add(atmosphere)
 
     scene.add(new THREE.AmbientLight(0x8fcfff, 1.15))
@@ -67,7 +63,13 @@ export function StableEarthGlobe({ selectedTime, markers = [], autoRotate = true
         new THREE.SphereGeometry(Math.max(0.025, (marker.radius ?? 1) * 0.025), 12, 12),
         new THREE.MeshBasicMaterial({ color: marker.color ?? 0xff674f }),
       )
-      point.position.copy(positionFromLatLon(marker.latitude, marker.longitude, 2.025))
+      point.position.copy(latLonToCartesian(
+        marker.latitude,
+        marker.longitude,
+        model === 'scientific'
+          ? { kind: 'wgs84', scale: (EARTH_RADIUS * 1.0125) / 6_378_137 }
+          : { kind: 'sphere', radius: EARTH_RADIUS * 1.0125 },
+      ))
       earth.add(point)
     }
 
@@ -119,12 +121,12 @@ export function StableEarthGlobe({ selectedTime, markers = [], autoRotate = true
       renderer.dispose()
       element.replaceChildren()
     }
-  }, [markers, autoRotate])
+  }, [markers, autoRotate, model])
 
   return (
     <section className="stable-earth-shell" aria-label="Stabilny model Ziemi 3D">
       <div className="stable-earth-head">
-        <strong>Ziemia 3D — stabilny renderer</strong>
+        <strong>{model === 'scientific' ? 'Scientific Earth — elipsoida WGS84' : 'Legacy Earth — model kulisty'}</strong>
         <span>{new Date(selectedTime).toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span>
         <small>Obracaj palcem lub myszką. Kółkiem i gestem szczypania zmienisz odległość.</small>
       </div>
