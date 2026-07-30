@@ -1,34 +1,33 @@
-name: Force deploy Polar Sun Moon Analysis to GitHub Pages
+name: Build web app into docs for GitHub Pages
 
 on:
   push:
     branches: [main]
     paths:
       - 'web/**'
-      - 'docs/**'
       - '.github/workflows/force-pages-deploy.yml'
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: github-pages-production
+  group: github-pages-docs-production
   cancel-in-progress: false
 
 env:
   SITE_URL: https://terraforming-planet.github.io/Polar-Sun-Moon-Analysis/
-  DEPLOYMENT_PROBE: polar-sun-moon-analysis-pages-v72
 
 jobs:
-  build:
+  build-and-publish:
+    if: github.actor != 'github-actions[bot]' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -41,93 +40,79 @@ jobs:
         working-directory: web
         run: npm ci
 
-      - name: Test application
+      - name: Run unit tests
         working-directory: web
         run: npm test
 
-      - name: Build application for project Pages URL
+      - name: Build Vite application
         working-directory: web
         run: npm run build
 
-      - name: Verify deployment artifact
+      - name: Verify build output
         shell: bash
         run: |
           set -euo pipefail
           test -s web/dist/index.html
           test -d web/dist/assets
-          test -s web/dist/deployment-probe.txt
-          grep -qx "$DEPLOYMENT_PROBE" web/dist/deployment-probe.txt
           grep -q '/Polar-Sun-Moon-Analysis/' web/dist/index.html
-          cp web/dist/index.html web/dist/404.html
-          touch web/dist/.nojekyll
-          echo 'Artifact files:'
-          find web/dist -maxdepth 2 -type f | sort | head -150
 
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: web/dist
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    timeout-minutes: 10
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    outputs:
-      page_url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-
-      - name: Publish deployment URL
+      - name: Publish build into docs
         shell: bash
         run: |
           set -euo pipefail
-          page_url='${{ steps.deployment.outputs.page_url }}'
-          test -n "$page_url"
-          echo '## GitHub Pages deployment' >> "$GITHUB_STEP_SUMMARY"
-          echo '' >> "$GITHUB_STEP_SUMMARY"
-          echo "Action output: $page_url" >> "$GITHUB_STEP_SUMMARY"
-          echo "Expected project URL: $SITE_URL" >> "$GITHUB_STEP_SUMMARY"
+          mkdir -p docs
+          rm -rf docs/assets
+          cp -R web/dist/. docs/
+          cp docs/index.html docs/404.html
+          touch docs/.nojekyll
+          printf '%s\n' "$GITHUB_SHA" > docs/deployment-probe.txt
+          test -s docs/index.html
+          test -d docs/assets
+          test -s docs/deployment-probe.txt
+          echo 'Published docs files:'
+          find docs -maxdepth 2 -type f | sort | head -200
+
+      - name: Commit generated Pages files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs
+          if git diff --cached --quiet; then
+            echo 'No generated changes to commit.'
+          else
+            git commit -m "chore(pages): publish web build for ${GITHUB_SHA::7}"
+            git push origin HEAD:main
+          fi
 
   e2e:
+    needs: build-and-publish
     runs-on: ubuntu-latest
-    needs: deploy
     timeout-minutes: 12
     steps:
-      - name: Verify exact deployed revision
+      - name: Verify branch-based Pages deployment
         shell: bash
         run: |
           set -euo pipefail
-          page_url='${{ needs.deploy.outputs.page_url }}'
-          test -n "$page_url"
-          probe_url="${page_url%/}/deployment-probe.txt?sha=$GITHUB_SHA"
-          index_url="${page_url%/}/?sha=$GITHUB_SHA"
+          expected="$GITHUB_SHA"
+          index_url="${SITE_URL}?sha=$expected"
+          probe_url="${SITE_URL}deployment-probe.txt?sha=$expected"
           echo "Testing index: $index_url"
           echo "Testing probe: $probe_url"
 
-          for attempt in 1 2 3 4 5 6 7 8; do
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
             index_status=$(curl --connect-timeout 15 --max-time 30 -L -sS -D /tmp/index-headers.txt -o /tmp/index.html -w '%{http_code}' "$index_url" || true)
             probe_status=$(curl --connect-timeout 15 --max-time 30 -L -sS -D /tmp/probe-headers.txt -o /tmp/probe.txt -w '%{http_code}' "$probe_url" || true)
             probe_value=$(tr -d '\r\n' < /tmp/probe.txt 2>/dev/null || true)
-
             echo "Attempt $attempt: index=$index_status probe=$probe_status value=$probe_value"
-            if [ "$index_status" = '200' ] && [ "$probe_status" = '200' ] && [ "$probe_value" = "$DEPLOYMENT_PROBE" ]; then
+
+            if [ "$index_status" = '200' ] && [ "$probe_status" = '200' ] && [ "$probe_value" = "$expected" ]; then
               grep -qi '<!doctype html' /tmp/index.html
-              echo '## E2E deployment check' >> "$GITHUB_STEP_SUMMARY"
+              echo '## GitHub Pages E2E' >> "$GITHUB_STEP_SUMMARY"
               echo '' >> "$GITHUB_STEP_SUMMARY"
-              echo "✅ Exact revision is live: $page_url" >> "$GITHUB_STEP_SUMMARY"
+              echo "✅ Live site: $SITE_URL" >> "$GITHUB_STEP_SUMMARY"
+              echo "✅ Exact source revision: $expected" >> "$GITHUB_STEP_SUMMARY"
               exit 0
             fi
 
@@ -138,9 +123,5 @@ jobs:
             sleep 20
           done
 
-          echo 'Deployment failed exact-revision verification.'
-          echo 'Last index response:'
-          cat /tmp/index.html || true
-          echo 'Last probe response:'
-          cat /tmp/probe.txt || true
+          echo 'Branch-based Pages deployment did not publish the expected revision.'
           exit 1
