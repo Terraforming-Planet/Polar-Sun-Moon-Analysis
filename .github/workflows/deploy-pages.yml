@@ -1,24 +1,15 @@
-name: Legacy Pages deployment (manual fallback only)
+name: Manual web build validation
 
 on:
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: github-pages-production
-  cancel-in-progress: false
 
 jobs:
-  fallback:
+  validate:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -30,39 +21,23 @@ jobs:
           cache: npm
           cache-dependency-path: web/package-lock.json
 
-      - name: Install, test and build
+      - name: Install dependencies
         working-directory: web
-        env:
-          VITE_BASE_PATH: /Polar-Sun-Moon-Analysis/
-        run: |
-          npm ci
-          npm test
-          npm run build
+        run: npm ci
 
-      - name: Prepare Pages artifact
+      - name: Run tests
+        working-directory: web
+        run: npm test
+
+      - name: Build application
+        working-directory: web
+        run: npm run build
+
+      - name: Verify build output
+        shell: bash
         run: |
           set -euo pipefail
           test -s web/dist/index.html
           test -d web/dist/assets
-          cp web/dist/index.html web/dist/404.html
-          touch web/dist/.nojekyll
-
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: web/dist
-
-      - name: Deploy website
-        id: deployment
-        uses: actions/deploy-pages@v4
-
-      - name: Show deployment URL
-        run: |
-          echo '## Manual fallback deployment' >> "$GITHUB_STEP_SUMMARY"
-          echo '' >> "$GITHUB_STEP_SUMMARY"
-          echo "${{ steps.deployment.outputs.page_url }}" >> "$GITHUB_STEP_SUMMARY"
+          grep -q '/Polar-Sun-Moon-Analysis/' web/dist/index.html
+          echo 'Build is valid. Production publishing is handled only by force-pages-deploy.yml into main/docs.'
