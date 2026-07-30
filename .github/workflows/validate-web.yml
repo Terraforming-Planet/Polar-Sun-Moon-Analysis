@@ -1,0 +1,46 @@
+name: Validate web application
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'web/**'
+      - '.github/workflows/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: web
+
+      - name: Run tests
+        run: npm test
+        working-directory: web
+
+      - name: Build production site
+        run: npm run build
+        working-directory: web
+
+      - name: Verify Pages artifact
+        run: |
+          test -s web/dist/index.html
+          test -d web/dist/assets
+          cp web/dist/index.html web/dist/404.html
+          touch web/dist/.nojekyll
