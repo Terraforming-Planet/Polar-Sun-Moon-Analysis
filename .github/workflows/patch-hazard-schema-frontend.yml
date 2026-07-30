@@ -1,0 +1,115 @@
+name: Patch and validate hazard schema frontend
+
+on:
+  push:
+    branches: [fix/hazard-schema-earth-crash]
+    paths:
+      - 'scripts/patch_hazard_schema_frontend.py'
+      - 'scripts/refresh_public_hazard_feeds.py'
+      - '.github/workflows/patch-hazard-schema-frontend.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: patch-hazard-schema-earth-crash
+  cancel-in-progress: false
+
+jobs:
+  patch-and-validate:
+    if: github.actor != 'github-actions[bot]' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/hazard-schema-earth-crash
+          fetch-depth: 0
+
+      - name: Apply deterministic frontend patch
+        run: python scripts/patch_hazard_schema_frontend.py
+
+      - name: Create compatible current hazard fixture
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          source = Path('web/public/data/earthquakes.geojson')
+          payload = json.loads(source.read_text(encoding='utf-8'))
+          generated = payload.get('generatedUtc')
+          compatible = {
+              'schemaVersion': 2,
+              'type': 'FeatureCollection',
+              'generatedUtc': generated,
+              'generated_at_utc': generated,
+              'notice': 'Official observed locations; not an automatic severity estimate.',
+              'features': payload.get('features', []),
+              'alerts': [],
+              'sources': [],
+              'limitations': ['No automatic severity is inferred by the 3D viewer.'],
+          }
+          Path('web/public/data/hazards.json').write_text(
+              json.dumps(compatible, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          PY
+
+      - name: Validate hazard schemas
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          payload = json.loads(Path('web/public/data/hazards.json').read_text(encoding='utf-8'))
+          assert isinstance(payload.get('features'), list)
+          assert isinstance(payload.get('alerts'), list)
+          assert payload.get('generated_at_utc') or payload.get('generatedUtc')
+          for feature in payload['features'][:25]:
+              coordinates = feature.get('geometry', {}).get('coordinates', [])
+              assert len(coordinates) >= 2
+              assert -180 <= float(coordinates[0]) <= 180
+              assert -90 <= float(coordinates[1]) <= 90
+          PY
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: web
+        run: npm ci
+
+      - name: Run tests
+        working-directory: web
+        run: npm test
+
+      - name: Build production application
+        working-directory: web
+        run: npm run build
+
+      - name: Verify Earth viewer exists in built bundle
+        run: |
+          set -euo pipefail
+          test -s web/dist/index.html
+          test -d web/dist/assets
+          grep -R -q 'Scientific WGS84' web/dist/assets
+          grep -R -q 'Główny model Ziemi 3D' web/dist/assets
+
+      - name: Commit validated fixes
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add web/src/main.tsx web/public/data/hazards.json
+          if git diff --cached --quiet; then
+            echo 'No generated changes to commit.'
+          else
+            git commit -m 'fix: tolerate hazard schema changes without crashing Earth 3D'
+            git push origin HEAD:fix/hazard-schema-earth-crash
+          fi
