@@ -25,7 +25,10 @@ def post_json(url: str, payload: dict[str, Any]) -> dict[str, Any]:
     request = urllib.request.Request(
         url,
         data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json", "User-Agent": "terraforming-planet/1.0"},
+        headers={
+            "Content-Type": "application/json",
+            "User-Agent": "terraforming-planet/1.0",
+        },
         method="POST",
     )
     with urllib.request.urlopen(request, timeout=90) as response:
@@ -35,23 +38,44 @@ def post_json(url: str, payload: dict[str, Any]) -> dict[str, Any]:
 def feature_to_frame(feature: dict[str, Any]) -> dict[str, Any]:
     properties = feature.get("properties") or {}
     assets = feature.get("assets") or {}
-    preview = assets.get("thumbnail") or assets.get("visual") or assets.get("rendered_preview") or {}
+    preview = (
+        assets.get("thumbnail")
+        or assets.get("visual")
+        or assets.get("rendered_preview")
+        or {}
+    )
     cloud_cover = properties.get("eo:cloud_cover")
+    stac_url = next(
+        (
+            link.get("href")
+            for link in feature.get("links", [])
+            if link.get("rel") == "self"
+        ),
+        None,
+    )
     return {
         "id": feature.get("id"),
         "collection": feature.get("collection"),
-        "timestamp_utc": properties.get("datetime") or properties.get("start_datetime"),
+        "timestamp_utc": properties.get("datetime")
+        or properties.get("start_datetime"),
         "cloud_cover_percent": cloud_cover,
         "bbox": feature.get("bbox"),
         "geometry": feature.get("geometry"),
         "preview_url": preview.get("href"),
-        "stac_url": next((link.get("href") for link in feature.get("links", []) if link.get("rel") == "self"), None),
+        "stac_url": stac_url,
         "source": "Copernicus Data Space Ecosystem STAC",
         "is_live": False,
     }
 
 
-def build_manifest(*, bbox: list[float], start: str, end: str, collections: list[str], limit: int) -> dict[str, Any]:
+def build_manifest(
+    *,
+    bbox: list[float],
+    start: str,
+    end: str,
+    collections: list[str],
+    limit: int,
+) -> dict[str, Any]:
     payload = {
         "collections": collections,
         "bbox": bbox,
@@ -66,29 +90,67 @@ def build_manifest(*, bbox: list[float], start: str, end: str, collections: list
     return {
         "schema_version": 1,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-        "query": {"bbox": bbox, "start": start, "end": end, "collections": collections},
+        "query": {
+            "bbox": bbox,
+            "start": start,
+            "end": end,
+            "collections": collections,
+        },
         "frame_count": len(frames),
         "frames": frames,
-        "notice": "Manifest contains published observations, not a continuous real-time video stream.",
+        "notice": (
+            "Manifest contains published observations, not a continuous "
+            "real-time video stream."
+        ),
     }
 
 
 def write_json(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    temporary.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
     temporary.replace(path)
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--bbox", nargs=4, type=float, metavar=("WEST", "SOUTH", "EAST", "NORTH"), required=True)
-    parser.add_argument("--start", required=True, help="ISO-8601 UTC start, e.g. 2026-07-30T00:00:00Z")
+    parser.add_argument(
+        "--bbox",
+        nargs=4,
+        type=float,
+        metavar=("WEST", "SOUTH", "EAST", "NORTH"),
+        required=True,
+    )
+    parser.add_argument(
+        "--start",
+        required=True,
+        help="ISO-8601 UTC start, e.g. 2026-07-30T00:00:00Z",
+    )
     parser.add_argument("--end", required=True, help="ISO-8601 UTC end")
-    parser.add_argument("--collections", nargs="+", default=DEFAULT_COLLECTIONS)
+    parser.add_argument(
+        "--collections",
+        nargs="+",
+        default=DEFAULT_COLLECTIONS,
+    )
     parser.add_argument("--limit", type=int, default=200)
-    parser.add_argument("--output", default=os.environ.get("CDSE_MANIFEST_PATH", "mystorage/terraforming-planet/frames/latest.json"))
-    parser.add_argument("--public-copy", default="", help="Optional repository path, e.g. web/public/data/copernicus/frames.json")
+    parser.add_argument(
+        "--output",
+        default=os.environ.get(
+            "CDSE_MANIFEST_PATH",
+            "mystorage/terraforming-planet/frames/latest.json",
+        ),
+    )
+    parser.add_argument(
+        "--public-copy",
+        default="",
+        help=(
+            "Optional repository path, e.g. "
+            "web/public/data/copernicus/frames.json"
+        ),
+    )
     return parser.parse_args()
 
 
@@ -105,7 +167,10 @@ def main() -> int:
     write_json(output, manifest)
     if args.public_copy:
         write_json(Path(args.public_copy), manifest)
-    print(f"Wrote {manifest['frame_count']} timestamped observations to {output}")
+    print(
+        f"Wrote {manifest['frame_count']} timestamped observations "
+        f"to {output}"
+    )
     return 0
 
 
