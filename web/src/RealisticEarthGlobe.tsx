@@ -19,6 +19,7 @@ const EARTH_RADIUS = 2
 const POLAR_RATIO = 6_356_752.314245 / 6_378_137
 const DEFAULT_EARTH_TEXTURE = 'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg'
 const DEFAULT_CLOUD_TEXTURE = 'https://threejs.org/examples/textures/planets/earth_clouds_1024.png'
+const SIDEREAL_DAY_SECONDS = 86_164.0905
 
 const viewSettings: Record<ViewPreset, { position: [number, number, number]; fov: number; label: string }> = {
   full: { position: [0, 0.18, 6.1], fov: 42, label: 'Pełna tarcza Ziemi' },
@@ -27,6 +28,13 @@ const viewSettings: Record<ViewPreset, { position: [number, number, number]; fov
   dateline: { position: [0, 0.15, -5.4], fov: 38, label: 'Linia zmiany daty' },
   north: { position: [0, 6.2, 0.01], fov: 38, label: 'Biegun północny' },
   south: { position: [0, -6.2, 0.01], fov: 38, label: 'Biegun południowy' },
+}
+
+function utcEarthAngle(iso: string) {
+  const ms = Date.parse(iso)
+  if (!Number.isFinite(ms)) return 0
+  const seconds = ms / 1000
+  return ((seconds % SIDEREAL_DAY_SECONDS) / SIDEREAL_DAY_SECONDS) * Math.PI * 2
 }
 
 export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, selectedTime, markers = [], autoRotate = true }: Props) {
@@ -55,23 +63,17 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
   }, [])
 
   useEffect(() => {
-    const controls = controlsRef.current
-    if (!controls) return
-    controls.autoRotate = rotationEnabled && view === 'full'
-    controls.update()
-  }, [rotationEnabled, view])
-
-  useEffect(() => {
     const element = host.current
     if (!element) return
 
+    let frame = 0
     let renderer: THREE.WebGLRenderer | null = null
     let controls: OrbitControls | null = null
-    let frame = 0
     let resizeObserver: ResizeObserver | null = null
 
+    element.replaceChildren()
+
     try {
-      element.replaceChildren()
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' })
       renderer.setClearColor(0x01050c, 1)
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
@@ -96,47 +98,41 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
       controls.zoomSpeed = 1.15
       controls.minDistance = 2.05
       controls.maxDistance = 40
-      controls.autoRotate = rotationEnabled && view === 'full'
-      controls.autoRotateSpeed = 0.28
+      controls.autoRotate = false
       controls.target.set(0, 0, 0)
       controls.update()
 
-      const updateLogicalZoom = () => setLogicalZoom(zoomLevelFromDistance(camera.position.distanceTo(controls!.target)))
+      const updateLogicalZoom = () => {
+        const next = zoomLevelFromDistance(camera.position.distanceTo(controls!.target))
+        setLogicalZoom(current => current === next ? current : next)
+      }
       controls.addEventListener('change', updateLogicalZoom)
       updateLogicalZoom()
 
-      const textureLoader = new THREE.TextureLoader()
-      textureLoader.setCrossOrigin('anonymous')
+      const loader = new THREE.TextureLoader()
+      loader.setCrossOrigin('anonymous')
       const earthMaterial = new THREE.MeshStandardMaterial({ color: 0x176aa0, roughness: 0.9, metalness: 0 })
-      textureLoader.load(
-        textureUrl,
-        texture => {
-          texture.colorSpace = THREE.SRGBColorSpace
-          texture.anisotropy = Math.min(16, renderer?.capabilities.getMaxAnisotropy() ?? 1)
-          earthMaterial.map = texture
-          earthMaterial.color.set(0xffffff)
-          earthMaterial.needsUpdate = true
-          setStatus(`${model === 'scientific' ? 'Scientific WGS84' : 'Legacy sphere'} — obraz Ziemi działa · ${preset.label}`)
-        },
-        undefined,
-        () => setStatus('Nie udało się pobrać obrazu Ziemi — działa bezpieczny model lokalny'),
-      )
+      loader.load(textureUrl, texture => {
+        texture.colorSpace = THREE.SRGBColorSpace
+        texture.anisotropy = Math.min(16, renderer?.capabilities.getMaxAnisotropy() ?? 1)
+        earthMaterial.map = texture
+        earthMaterial.color.set(0xffffff)
+        earthMaterial.needsUpdate = true
+        setStatus(`${model === 'scientific' ? 'Scientific WGS84' : 'Legacy sphere'} — zsynchronizowano z wybranym UTC`)
+      }, undefined, () => setStatus('Nie udało się pobrać tekstury bazowej Ziemi'))
 
       const earth = new THREE.Mesh(new THREE.SphereGeometry(EARTH_RADIUS, 128, 96), earthMaterial)
       if (model === 'scientific') earth.scale.y = POLAR_RATIO
-      earth.rotation.set(0, -Math.PI / 2, 0)
-      if (view === 'dateline') earth.rotation.y = Math.PI / 2
       scene.add(earth)
 
       const cloudMaterial = new THREE.MeshPhongMaterial({ transparent: true, opacity: 0.42, depthWrite: false })
-      textureLoader.load(DEFAULT_CLOUD_TEXTURE, texture => {
+      loader.load(DEFAULT_CLOUD_TEXTURE, texture => {
         texture.colorSpace = THREE.SRGBColorSpace
         cloudMaterial.map = texture
         cloudMaterial.needsUpdate = true
       })
       const clouds = new THREE.Mesh(new THREE.SphereGeometry(EARTH_RADIUS * 1.009, 128, 96), cloudMaterial)
       clouds.scale.copy(earth.scale)
-      clouds.rotation.copy(earth.rotation)
       clouds.visible = showClouds
       scene.add(clouds)
 
@@ -145,27 +141,25 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
         new THREE.MeshBasicMaterial({ color: 0x6bdcff, wireframe: true, transparent: true, opacity: 0.17, depthWrite: false }),
       )
       grid.scale.copy(earth.scale)
-      grid.rotation.copy(earth.rotation)
       grid.visible = showGrid
       scene.add(grid)
 
       const atmosphere = new THREE.Group()
-      const innerAtmosphere = new THREE.Mesh(
+      const inner = new THREE.Mesh(
         new THREE.SphereGeometry(EARTH_RADIUS * 1.045, 128, 96),
         new THREE.MeshBasicMaterial({ color: 0x38a9ff, transparent: true, opacity: 0.24, side: THREE.BackSide, depthWrite: false }),
       )
-      const outerAtmosphere = new THREE.Mesh(
+      const outer = new THREE.Mesh(
         new THREE.SphereGeometry(EARTH_RADIUS * 1.075, 96, 64),
         new THREE.MeshBasicMaterial({ color: 0x7bd5ff, transparent: true, opacity: 0.07, side: THREE.BackSide, depthWrite: false }),
       )
-      innerAtmosphere.scale.copy(earth.scale)
-      outerAtmosphere.scale.copy(earth.scale)
-      atmosphere.add(innerAtmosphere, outerAtmosphere)
+      inner.scale.copy(earth.scale)
+      outer.scale.copy(earth.scale)
+      atmosphere.add(inner, outer)
       atmosphere.visible = showAtmosphere
       scene.add(atmosphere)
 
-      const ambient = new THREE.HemisphereLight(0xcfeeff, 0x020711, showDayNight ? 0.34 : 1.35)
-      scene.add(ambient)
+      scene.add(new THREE.HemisphereLight(0xcfeeff, 0x020711, showDayNight ? 0.34 : 1.35))
       const sunlight = new THREE.DirectionalLight(0xffffff, showDayNight ? 3.15 : 1.9)
       sunlight.position.set(5, 2.2, 6)
       scene.add(sunlight)
@@ -199,23 +193,27 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
         camera.aspect = width / height
         camera.updateProjectionMatrix()
       }
-
-      if (typeof ResizeObserver !== 'undefined') {
-        resizeObserver = new ResizeObserver(resize)
-        resizeObserver.observe(element)
-      }
+      resizeObserver = new ResizeObserver(resize)
+      resizeObserver.observe(element)
       window.addEventListener('resize', resize)
-      requestAnimationFrame(resize)
-      setStatus(`${model === 'scientific' ? 'Scientific WGS84' : 'Legacy sphere'} działa — ładowanie obrazu · ${preset.label}`)
+      resize()
 
-      const animate = () => {
+      const initialAngle = utcEarthAngle(selectedTime) - Math.PI / 2
+      let liveAngle = initialAngle
+      let previous = performance.now()
+
+      const animate = (now: number) => {
         frame = requestAnimationFrame(animate)
+        const elapsedSeconds = Math.max(0, (now - previous) / 1000)
+        previous = now
+        if (rotationEnabled) liveAngle += elapsedSeconds * (Math.PI * 2 / SIDEREAL_DAY_SECONDS)
+        earth.rotation.y = liveAngle
+        clouds.rotation.y = liveAngle
+        grid.rotation.y = liveAngle
         controls?.update()
-        if (showClouds) clouds.rotation.y += 0.00012
-        grid.rotation.copy(earth.rotation)
         renderer?.render(scene, camera)
       }
-      animate()
+      frame = requestAnimationFrame(animate)
 
       return () => {
         cancelAnimationFrame(frame)
@@ -230,10 +228,7 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
             object.geometry.dispose()
             const material = object.material
             if (Array.isArray(material)) material.forEach(item => item.dispose())
-            else {
-              for (const value of Object.values(material)) if (value instanceof THREE.Texture) value.dispose()
-              material.dispose()
-            }
+            else material.dispose()
           }
         })
         renderer?.dispose()
@@ -241,7 +236,7 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
       }
     } catch (error) {
       setStatus(`Błąd renderera 3D: ${error instanceof Error ? error.message : String(error)}`)
-      element.innerHTML = '<div class="earth-render-error">Nie udało się uruchomić WebGL. Spróbuj odświeżyć kartę lub zamknąć inne aplikacje.</div>'
+      element.innerHTML = '<div class="earth-render-error">Nie udało się uruchomić WebGL.</div>'
       return () => {
         cancelAnimationFrame(frame)
         resizeObserver?.disconnect()
@@ -249,7 +244,7 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
         renderer?.dispose()
       }
     }
-  }, [model, markers, textureUrl, showClouds, showGrid, showAtmosphere, showDayNight, view])
+  }, [model, markers, textureUrl, selectedTime, showClouds, showGrid, showAtmosphere, showDayNight, view, rotationEnabled])
 
   const selectModel = (next: EarthModel) => {
     setModel(next)
@@ -275,7 +270,7 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
       {(Object.keys(viewSettings) as ViewPreset[]).map(key => <button key={key} type="button" className={view === key ? 'is-active' : ''} onClick={() => setView(key)}>{viewSettings[key].label}</button>)}
     </div>
     <div className="earth-layer-switch" role="group" aria-label="Warstwy modelu Ziemi">
-      <button type="button" className={rotationEnabled ? 'is-active' : ''} onClick={() => setRotationEnabled(value => !value)}>{rotationEnabled ? '⏸ Zatrzymaj Ziemię' : '▶ Wznów obrót'}</button>
+      <button type="button" className={rotationEnabled ? 'is-active' : ''} onClick={() => setRotationEnabled(value => !value)}>{rotationEnabled ? '⏸ Zatrzymaj Ziemię i chmury' : '▶ Wznów synchronizację'}</button>
       <button type="button" className={showClouds ? 'is-active' : ''} onClick={() => setShowClouds(value => !value)}>Chmury</button>
       <button type="button" className={showAtmosphere ? 'is-active' : ''} onClick={() => setShowAtmosphere(value => !value)}>Atmosfera</button>
       <button type="button" className={showGrid ? 'is-active' : ''} onClick={() => setShowGrid(value => !value)}>Siatka</button>
@@ -284,19 +279,19 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
       <button type="button" onClick={() => zoom(1.38)}>－ Oddal</button>
       <button type="button" onClick={() => setView('full')}>Reset kamery</button>
     </div>
-    <div className="earth-model-switch" role="group" aria-label="Automatyczny wybór źródła satelitarnego">
+    <div className="earth-model-switch" role="group" aria-label="Wybór źródła satelitarnego">
       <button type="button" className={sourceMode === 'auto' ? 'is-active' : ''} onClick={() => setSourceMode('auto')}>AUTO — najlepsze dostępne</button>
       {SATELLITE_SOURCES.map(source => <button key={source.id} type="button" className={sourceMode === source.id ? 'is-active' : ''} onClick={() => setSourceMode(source.id)}>{source.label}</button>)}
     </div>
     <p className="earth-model-explainer">
       <strong>{status}</strong><br/>
-      Źródło planowane dla poziomu LOD {logicalZoom}: <strong>{selectedSource.label}</strong> · {selectedSource.product} · około {selectedSource.resolutionMeters} m/piksel. {selectedSource.description}
-      <br/>Ten etap wybiera i pokazuje właściwe źródło. Pobieranie prawdziwych kafli NASA GIBS, Sentinel i ortofotomap jest następnym etapem renderera kafelkowego; obecna kula nadal używa tekstury bazowej 2K.
+      Aktywny wybór LOD {logicalZoom}: <strong>{selectedSource.label}</strong> · {selectedSource.product} · około {selectedSource.resolutionMeters} m/piksel.
+      <br/>Przyciski źródeł zmieniają teraz rzeczywisty stan wyboru i AUTO reaguje na zoom. Obraz nadal pozostaje teksturą bazową 2K do czasu podłączenia prawdziwego renderera kafelkowego; aplikacja nie udaje obrazu na żywo.
     </p>
     <div className="stable-earth-shell">
       <div className="stable-earth-head"><strong>{model === 'scientific' ? 'Ziemia — elipsoida WGS84' : 'Ziemia — kula porównawcza'}</strong><span>{viewSettings[view].label} · {new Date(selectedTime).toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span></div>
       <div ref={host} className="stable-earth-canvas" />
-      <p className="muted earth-imagery-credit">Warstwa bazowa: globalna mozaika Ziemi używana w przykładach Three.js. Widok z okolic Księżyca jest presetem obserwacyjnym pokazującym całą tarczę wyraźnie, a nie symulacją jej rzeczywistego małego rozmiaru kątowego.</p>
+      <p className="muted earth-imagery-credit">Orientacja Ziemi i chmur jest liczona z wybranego czasu UTC i zatrzymuje się wspólnie. To nadal model 3D oparty na teksturze, nie ciągły przekaz satelitarny.</p>
     </div>
   </section>
 }
