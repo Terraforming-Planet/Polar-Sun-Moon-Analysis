@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { EarthSourcePanel } from './EarthSourcePanel'
 import { readEarthModel, writeEarthModel, type EarthModel } from './lib/earthPreferences'
 import { EARTH_VIEW_PRESETS, type EarthViewPreset } from './lib/earthViewPresets'
 import { latLonToCartesian } from './lib/wgs84'
@@ -224,6 +225,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = t
       Model naukowy pokazuje kontynenty na globusie bez zniekształceń powierzchni płaskiej projekcji Mercatora.
       Przełączenie modelu zachowuje pozycję kamery, wybrany czas i markery.
     </p>
+    <EarthSourcePanel />
     <div className="stable-earth-shell">
       <div className="stable-earth-head">
         <strong>{model === 'scientific' ? 'Ziemia — elipsoida WGS84' : 'Ziemia — klasyczna kula 3D'}</strong>
