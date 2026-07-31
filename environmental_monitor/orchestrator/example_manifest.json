@@ -1,0 +1,20 @@
+{
+  "tasks": [
+    {
+      "id": "mini-events",
+      "command": [
+        "python",
+        "-c",
+        "import json; from pathlib import Path; p=Path('tests/fixtures/global_safety/mini_events.json'); d=json.loads(p.read_text()); print(d['event_count'])"
+      ]
+    },
+    {
+      "id": "mini-hazards",
+      "command": [
+        "python",
+        "-c",
+        "import json; from pathlib import Path; p=Path('tests/fixtures/global_safety/mini_hazards.geojson'); d=json.loads(p.read_text()); print(len(d['features']))"
+      ]
+    }
+  ]
+}
