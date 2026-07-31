@@ -13,7 +13,7 @@ import json
 import os
 import sys
 import urllib.request
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -89,7 +89,7 @@ def build_manifest(
     frames.sort(key=lambda frame: frame["timestamp_utc"], reverse=True)
     return {
         "schema_version": 1,
-        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "generated_at_utc": datetime.now(UTC).isoformat(),
         "query": {
             "bbox": bbox,
             "start": start,
