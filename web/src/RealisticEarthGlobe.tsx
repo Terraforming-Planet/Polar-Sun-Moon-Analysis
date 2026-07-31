@@ -20,6 +20,8 @@ const POLAR_RATIO = 6_356_752.314245 / 6_378_137
 const DEFAULT_EARTH_TEXTURE = 'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg'
 const DEFAULT_CLOUD_TEXTURE = 'https://threejs.org/examples/textures/planets/earth_clouds_1024.png'
 const SIDEREAL_DAY_SECONDS = 86_164.0905
+const MOBILE_MARKER_LIMIT = 2_500
+const DESKTOP_MARKER_LIMIT = 10_000
 
 const viewSettings: Record<ViewPreset, { position: [number, number, number]; fov: number; label: string }> = {
   full: { position: [0, 0.18, 6.1], fov: 42, label: 'Pełna tarcza Ziemi' },
@@ -37,6 +39,15 @@ function utcEarthAngle(iso: string) {
   return ((seconds % SIDEREAL_DAY_SECONDS) / SIDEREAL_DAY_SECONDS) * Math.PI * 2
 }
 
+function validMarker(marker: Marker) {
+  return Number.isFinite(marker.latitude)
+    && Number.isFinite(marker.longitude)
+    && marker.latitude >= -90
+    && marker.latitude <= 90
+    && marker.longitude >= -180
+    && marker.longitude <= 180
+}
+
 export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, selectedTime, markers = [], autoRotate = true }: Props) {
   const host = useRef<HTMLDivElement>(null)
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null)
@@ -52,11 +63,18 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
   const [sourceMode, setSourceMode] = useState<SatelliteSourceMode>('auto')
   const [logicalZoom, setLogicalZoom] = useState(4)
 
+  const mobile = typeof navigator !== 'undefined' && /Android|iPhone|iPad/i.test(navigator.userAgent)
+  const markerLimit = mobile ? MOBILE_MARKER_LIMIT : DESKTOP_MARKER_LIMIT
+  const renderedMarkers = useMemo(
+    () => markers.filter(validMarker).slice(0, markerLimit),
+    [markers, markerLimit],
+  )
+
   const selectedSource = useMemo(() => sourceForMode(sourceMode, {
     zoom: logicalZoom,
     hasCoverage: true,
-    mobile: typeof navigator !== 'undefined' && /Android|iPhone|iPad/i.test(navigator.userAgent),
-  }), [sourceMode, logicalZoom])
+    mobile,
+  }), [sourceMode, logicalZoom, mobile])
 
   useEffect(() => {
     try { setModel(readEarthModel()) } catch { setModel('scientific') }
@@ -118,7 +136,7 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
         earthMaterial.map = texture
         earthMaterial.color.set(0xffffff)
         earthMaterial.needsUpdate = true
-        setStatus(`${model === 'scientific' ? 'Scientific WGS84' : 'Legacy sphere'} — zsynchronizowano z wybranym UTC`)
+        setStatus(`${model === 'scientific' ? 'Scientific WGS84' : 'Legacy sphere'} — GPU markers: ${renderedMarkers.length}`)
       }, undefined, () => setStatus('Nie udało się pobrać tekstury bazowej Ziemi'))
 
       const earth = new THREE.Mesh(new THREE.SphereGeometry(EARTH_RADIUS, 128, 96), earthMaterial)
@@ -167,21 +185,37 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
       fill.position.set(-5, -1, -5)
       scene.add(fill)
 
-      for (const marker of markers.slice(0, 600)) {
-        if (!Number.isFinite(marker.latitude) || !Number.isFinite(marker.longitude)) continue
-        if (marker.latitude < -90 || marker.latitude > 90 || marker.longitude < -180 || marker.longitude > 180) continue
-        const point = new THREE.Mesh(
-          new THREE.SphereGeometry(Math.max(0.025, (marker.radius ?? 1) * 0.027), 12, 12),
-          new THREE.MeshBasicMaterial({ color: marker.color ?? 0xff674f }),
+      if (renderedMarkers.length) {
+        const markerGeometry = new THREE.SphereGeometry(1, 8, 8)
+        const markerMaterial = new THREE.MeshBasicMaterial({ vertexColors: true })
+        const markerInstances = new THREE.InstancedMesh(
+          markerGeometry,
+          markerMaterial,
+          renderedMarkers.length,
         )
-        point.position.copy(latLonToCartesian(
-          marker.latitude,
-          marker.longitude,
-          model === 'scientific'
-            ? { kind: 'wgs84', scale: (EARTH_RADIUS * 1.014) / 6_378_137 }
-            : { kind: 'sphere', radius: EARTH_RADIUS * 1.014 },
-        ))
-        earth.add(point)
+        markerInstances.instanceMatrix.setUsage(THREE.StaticDrawUsage)
+        markerInstances.frustumCulled = true
+
+        const transform = new THREE.Object3D()
+        const color = new THREE.Color()
+        renderedMarkers.forEach((marker, index) => {
+          const position = latLonToCartesian(
+            marker.latitude,
+            marker.longitude,
+            model === 'scientific'
+              ? { kind: 'wgs84', scale: (EARTH_RADIUS * 1.014) / 6_378_137 }
+              : { kind: 'sphere', radius: EARTH_RADIUS * 1.014 },
+          )
+          const radius = Math.max(0.025, (marker.radius ?? 1) * 0.027)
+          transform.position.copy(position)
+          transform.scale.setScalar(radius)
+          transform.updateMatrix()
+          markerInstances.setMatrixAt(index, transform.matrix)
+          markerInstances.setColorAt(index, color.setHex(marker.color ?? 0xff674f))
+        })
+        markerInstances.instanceMatrix.needsUpdate = true
+        if (markerInstances.instanceColor) markerInstances.instanceColor.needsUpdate = true
+        earth.add(markerInstances)
       }
 
       const resize = () => {
@@ -244,7 +278,7 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
         renderer?.dispose()
       }
     }
-  }, [model, markers, textureUrl, selectedTime, showClouds, showGrid, showAtmosphere, showDayNight, view, rotationEnabled])
+  }, [model, renderedMarkers, textureUrl, selectedTime, showClouds, showGrid, showAtmosphere, showDayNight, view, rotationEnabled])
 
   const selectModel = (next: EarthModel) => {
     setModel(next)
@@ -285,7 +319,8 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
     </div>
     <p className="earth-model-explainer">
       <strong>{status}</strong><br/>
-      Aktywny wybór LOD {logicalZoom}: <strong>{selectedSource.label}</strong> · {selectedSource.product} · około {selectedSource.resolutionMeters} m/piksel.
+      Markery zagrożeń są renderowane jednym GPU InstancedMesh: <strong>{renderedMarkers.length}</strong> z {markers.length} poprawnych lub dostarczonych rekordów.
+      <br/>Aktywny wybór LOD {logicalZoom}: <strong>{selectedSource.label}</strong> · {selectedSource.product} · około {selectedSource.resolutionMeters} m/piksel.
       <br/>Przyciski źródeł zmieniają teraz rzeczywisty stan wyboru i AUTO reaguje na zoom. Obraz nadal pozostaje teksturą bazową 2K do czasu podłączenia prawdziwego renderera kafelkowego; aplikacja nie udaje obrazu na żywo.
     </p>
     <div className="stable-earth-shell">
