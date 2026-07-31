@@ -1,0 +1,108 @@
+{
+  "type": "FeatureCollection",
+  "generated_at_utc": "2026-07-31T17:30:00Z",
+  "generatedUtc": "2026-07-31T17:30:00Z",
+  "notice": "Synthetic mini dataset for GPU marker and schema tests only.",
+  "feature_count": 6,
+  "summary": {
+    "fire": 1,
+    "flood": 1,
+    "storm": 1,
+    "earthquake": 1,
+    "volcano": 1,
+    "landslide": 1
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "fixture-fire-001",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [19.4, 52.1]
+      },
+      "properties": {
+        "title": "Synthetic active fire",
+        "categories": ["fire"],
+        "severity": "high",
+        "source": "Synthetic test fixture",
+        "event_id": "fixture-fire-001"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fixture-flood-001",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [14.4, 50.1]
+      },
+      "properties": {
+        "title": "Synthetic flood alert",
+        "categories": ["flood"],
+        "severity": "moderate",
+        "source": "Synthetic test fixture",
+        "event_id": "fixture-flood-001"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fixture-storm-001",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.0, 32.0]
+      },
+      "properties": {
+        "title": "Synthetic severe storm",
+        "categories": ["storm"],
+        "severity": "high",
+        "source": "Synthetic test fixture",
+        "event_id": "fixture-storm-001"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fixture-earthquake-001",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [139.7, 35.7]
+      },
+      "properties": {
+        "title": "Synthetic earthquake",
+        "categories": ["earthquake"],
+        "severity": "low",
+        "source": "Synthetic test fixture",
+        "event_id": "fixture-earthquake-001"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fixture-volcano-001",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [115.5, -8.3]
+      },
+      "properties": {
+        "title": "Synthetic volcanic activity",
+        "categories": ["volcano"],
+        "severity": "moderate",
+        "source": "Synthetic test fixture",
+        "event_id": "fixture-volcano-001"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fixture-landslide-001",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [85.3, 27.7]
+      },
+      "properties": {
+        "title": "Synthetic landslide",
+        "categories": ["landslide"],
+        "severity": "moderate",
+        "source": "Synthetic test fixture",
+        "event_id": "fixture-landslide-001"
+      }
+    }
+  ],
+  "alerts": []
+}
