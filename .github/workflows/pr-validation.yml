@@ -1,0 +1,70 @@
+name: PR Validation
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches:
+      - progress/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate collector syntax
+        run: |
+          python -m py_compile scripts/build_global_safety_feed.py
+
+      - name: Validate committed public data when present
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          checks = [
+              (Path("web/public/data/events/latest.json"), "events"),
+              (Path("web/public/data/hazards.json"), "features"),
+          ]
+
+          for path, list_key in checks:
+              if not path.exists():
+                  print(f"SKIP: {path} does not exist yet")
+                  continue
+              data = json.loads(path.read_text(encoding="utf-8"))
+              value = data.get(list_key)
+              assert isinstance(value, list), f"{path}: {list_key} must be a list"
+              print(f"OK: {path} — {len(value)} records")
+          PY
+
+      - name: Configure Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: web
+        run: npm ci
+
+      - name: Build web application
+        working-directory: web
+        run: npm run build
