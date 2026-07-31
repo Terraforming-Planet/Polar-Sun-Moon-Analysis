@@ -1,0 +1,55 @@
+name: Validate Scientific True-Scale Earth branch
+
+on:
+  push:
+    branches:
+      - feature/scientific-true-scale-earth
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-scientific-true-scale-earth
+  cancel-in-progress: true
+
+jobs:
+  validate-web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: web
+        run: npm ci
+
+      - name: Run unit and component tests
+        working-directory: web
+        run: npm test
+
+      - name: Build GitHub Pages application
+        working-directory: web
+        run: npm run build
+
+      - name: Verify Earth controls and Pages assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s web/dist/index.html
+          test -d web/dist/assets
+          grep -R -q 'Naukowy globus' web/dist/assets
+          grep -R -q 'Biegun północny' web/dist/assets
+          grep -q '/Polar-Sun-Moon-Analysis/' web/dist/index.html
+          if grep -R -E 'src=["'"']/textures/|url\(["'"']?/textures/' web/dist; then
+            echo 'Found a root-relative texture path that will break on project GitHub Pages.'
+            exit 1
+          fi
