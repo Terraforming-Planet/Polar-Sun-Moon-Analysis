@@ -7,12 +7,17 @@ import './stable-earth-globe.css'
 
 type Marker = { longitude: number; latitude: number; color?: number; radius?: number }
 type Props = { textureUrl?: string; selectedTime: string; markers?: Marker[]; autoRotate?: boolean }
+type CameraState = { position: THREE.Vector3; target: THREE.Vector3 }
 
 const EARTH_RADIUS = 2
 const POLAR_RATIO = 6_356_752.314245 / 6_378_137
 
 export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = true }: Props) {
   const host = useRef<HTMLDivElement>(null)
+  const cameraState = useRef<CameraState>({
+    position: new THREE.Vector3(0, 0.35, 6.4),
+    target: new THREE.Vector3(0, 0, 0),
+  })
   const [model, setModel] = useState<EarthModel>('scientific')
   const [status, setStatus] = useState('Uruchamianie modelu 3D…')
 
@@ -39,15 +44,17 @@ export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = t
 
       const scene = new THREE.Scene()
       const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100)
-      camera.position.set(0, 0.35, 6.4)
+      camera.position.copy(cameraState.current.position)
 
       controls = new OrbitControls(camera, renderer.domElement)
+      controls.target.copy(cameraState.current.target)
       controls.enableDamping = true
       controls.enablePan = false
       controls.minDistance = 2.8
       controls.maxDistance = 14
       controls.autoRotate = autoRotate
       controls.autoRotateSpeed = 0.35
+      controls.update()
 
       const earth = new THREE.Mesh(
         new THREE.SphereGeometry(EARTH_RADIUS, 40, 40),
@@ -110,7 +117,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = t
       }
       window.addEventListener('resize', resize)
       requestAnimationFrame(resize)
-      setStatus(model === 'scientific' ? 'Scientific WGS84 działa' : 'Legacy sphere działa')
+      setStatus(model === 'scientific' ? 'Naukowy globus działa' : 'Dotychczasowy model działa')
 
       const animate = () => {
         frame = requestAnimationFrame(animate)
@@ -121,6 +128,8 @@ export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = t
       animate()
 
       return () => {
+        cameraState.current.position.copy(camera.position)
+        cameraState.current.target.copy(controls?.target ?? new THREE.Vector3())
         cancelAnimationFrame(frame)
         resizeObserver?.disconnect()
         window.removeEventListener('resize', resize)
@@ -154,13 +163,30 @@ export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = t
   }
 
   return <section className="earth-viewer-stack" aria-label="Główny model Ziemi 3D">
-    <div className="earth-model-switch" role="group" aria-label="Wybór modelu Ziemi">
-      <button type="button" className={model === 'scientific' ? 'is-active' : ''} onClick={() => selectModel('scientific')}>Scientific WGS84</button>
-      <button type="button" className={model === 'legacy' ? 'is-active' : ''} onClick={() => selectModel('legacy')}>Legacy sphere</button>
+    <div className="earth-model-switch" role="group" aria-label="Model Ziemi">
+      <button
+        type="button"
+        aria-pressed={model === 'legacy'}
+        className={model === 'legacy' ? 'is-active' : ''}
+        onClick={() => selectModel('legacy')}
+      >Dotychczasowy model</button>
+      <button
+        type="button"
+        aria-pressed={model === 'scientific'}
+        className={model === 'scientific' ? 'is-active' : ''}
+        onClick={() => selectModel('scientific')}
+      >Naukowy globus — rzeczywiste proporcje</button>
     </div>
-    <p className="earth-model-explainer"><strong>{status}</strong><br/>Model uruchamia się bez oczekiwania na dane pożarów i bez zewnętrznych tekstur. Obracaj palcem; przybliżaj gestem.</p>
+    <p className="earth-model-explainer">
+      <strong>{status}</strong><br/>
+      Model naukowy pokazuje kontynenty na globusie bez zniekształceń powierzchni płaskiej projekcji Mercatora.
+      Przełączenie modelu zachowuje pozycję kamery, wybrany czas i markery.
+    </p>
     <div className="stable-earth-shell">
-      <div className="stable-earth-head"><strong>{model === 'scientific' ? 'Ziemia — elipsoida WGS84' : 'Ziemia — kula porównawcza'}</strong><span>{new Date(selectedTime).toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span></div>
+      <div className="stable-earth-head">
+        <strong>{model === 'scientific' ? 'Ziemia — elipsoida WGS84' : 'Ziemia — klasyczna kula 3D'}</strong>
+        <span>{new Date(selectedTime).toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span>
+      </div>
       <div ref={host} className="stable-earth-canvas" />
     </div>
   </section>
