@@ -1,0 +1,155 @@
+name: Global Safety Monitor
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: global-safety-monitor
+  cancel-in-progress: false
+
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Build global safety feed
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+        run: |
+          python - <<'PY'
+          import csv, hashlib, io, json, os, urllib.request
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          def get(url):
+              req = urllib.request.Request(url, headers={"User-Agent": "Terraforming-Planet-Monitor/5.0"})
+              with urllib.request.urlopen(req, timeout=90) as response:
+                  return response.read()
+
+          events = []
+          sources = []
+
+          try:
+              data = json.loads(get("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"))
+              for feature in data.get("features", []):
+                  p = feature.get("properties") or {}
+                  c = (feature.get("geometry") or {}).get("coordinates") or []
+                  mag = p.get("mag")
+                  severity = "critical" if isinstance(mag, (int, float)) and mag >= 7 else "high" if isinstance(mag, (int, float)) and mag >= 6 else "moderate" if isinstance(mag, (int, float)) and mag >= 4.5 else "low"
+                  t = p.get("time")
+                  observed = datetime.fromtimestamp(t / 1000, tz=timezone.utc).isoformat().replace("+00:00", "Z") if isinstance(t, (int, float)) else None
+                  events.append({"id": f"usgs-{feature.get('id')}", "type": "earthquake", "title": p.get("title") or "Earthquake", "severity": severity, "status": p.get("status") or "detected", "latitude": c[1] if len(c)>1 else None, "longitude": c[0] if c else None, "observed_at": observed, "source": "USGS", "source_url": p.get("url"), "metadata": {"magnitude": mag, "depth_km": c[2] if len(c)>2 else None}})
+              sources.append({"source":"USGS","status":"ok","count":len([e for e in events if e['source']=='USGS'])})
+          except Exception as exc:
+              sources.append({"source":"USGS","status":"error","count":0,"error":str(exc)})
+
+          try:
+              data = json.loads(get("https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=500"))
+              mapping = {"Wildfires":"fire","Severe Storms":"storm","Floods":"flood","Volcanoes":"volcano","Earthquakes":"earthquake","Landslides":"landslide","Drought":"drought","Sea and Lake Ice":"ice","Snow":"snow","Dust and Haze":"air_quality","Temperature Extremes":"temperature"}
+              before = len(events)
+              for item in data.get("events", []):
+                  cats = item.get("categories") or []
+                  category = cats[0].get("title") if cats else "Emergency"
+                  geoms = item.get("geometry") or []
+                  geom = sorted(geoms, key=lambda g: str(g.get("date") or ""))[-1] if geoms else {}
+                  coords = geom.get("coordinates") or []
+                  lat = coords[1] if geom.get("type") == "Point" and len(coords)>1 else None
+                  lon = coords[0] if geom.get("type") == "Point" and coords else None
+                  events.append({"id": f"eonet-{item.get('id')}", "type": mapping.get(category, category.lower().replace(' ','_')), "title": item.get("title") or category, "severity":"moderate", "status":"open", "latitude":lat, "longitude":lon, "observed_at":geom.get("date"), "source":"NASA EONET", "source_url":item.get("link"), "metadata":{"category":category}})
+              sources.append({"source":"NASA EONET","status":"ok","count":len(events)-before})
+          except Exception as exc:
+              sources.append({"source":"NASA EONET","status":"error","count":0,"error":str(exc)})
+
+          key = os.environ.get("FIRMS_MAP_KEY", "").strip()
+          if key:
+              try:
+                  text = get(f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/{key}/VIIRS_SNPP_NRT/world/1").decode("utf-8-sig")
+                  before = len(events)
+                  for row in csv.DictReader(io.StringIO(text)):
+                      try:
+                          lat = float(row.get("latitude")); lon = float(row.get("longitude"))
+                      except (TypeError, ValueError):
+                          continue
+                      raw_time = str(row.get("acq_time") or "").zfill(4)
+                      date = row.get("acq_date")
+                      observed = f"{date}T{raw_time[:2]}:{raw_time[2:]}:00Z" if date and len(raw_time)==4 else None
+                      ident = hashlib.sha256(f"{date}|{raw_time}|{lat:.4f}|{lon:.4f}".encode()).hexdigest()[:20]
+                      frp = float(row.get("frp") or 0)
+                      severity = "high" if frp >= 100 else "moderate" if frp >= 30 else "low"
+                      events.append({"id":f"firms-{ident}","type":"fire","title":"Satellite fire detection","severity":severity,"status":"active_detection","latitude":lat,"longitude":lon,"observed_at":observed,"source":"NASA FIRMS","source_url":"https://firms.modaps.eosdis.nasa.gov/map/","metadata":{"frp":frp,"satellite":row.get("satellite"),"instrument":row.get("instrument")}})
+                  sources.append({"source":"NASA FIRMS","status":"ok","count":len(events)-before})
+              except Exception as exc:
+                  sources.append({"source":"NASA FIRMS","status":"error","count":0,"error":str(exc)})
+          else:
+              sources.append({"source":"NASA FIRMS","status":"disabled","count":0})
+
+          unique = {str(e.get("id")): e for e in events if e.get("id")}
+          events = list(unique.values())
+          summary = {}
+          for event in events:
+              summary[event.get("type","unknown")] = summary.get(event.get("type","unknown"),0)+1
+          payload = {"schema_version":"5.0","project":"Terraforming Planet","generated_at":datetime.now(timezone.utc).isoformat().replace("+00:00","Z"),"event_count":len(events),"summary":summary,"sources":sources,"events":events,"limitations":["Public observations are not continuous global video.","Detections require confirmation before operational response.","The system does not identify or track private individuals."]}
+          path = Path("web/public/data/events/latest.json")
+          path.parent.mkdir(parents=True, exist_ok=True)
+          tmp = path.with_suffix(".tmp")
+          tmp.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+          tmp.replace(path)
+          print("Events:", len(events))
+          print("Summary:", summary)
+          PY
+
+      - name: Commit public data
+        run: |
+          git config user.name "terraforming-planet-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add web/public/data/events/latest.json
+          if git diff --cached --quiet; then
+            echo "No data changes"
+          else
+            git commit -m "chore(data): update global safety feed"
+            git push
+          fi
+
+      - name: Configure Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install and build
+        working-directory: web
+        run: |
+          npm ci
+          npm run build
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
