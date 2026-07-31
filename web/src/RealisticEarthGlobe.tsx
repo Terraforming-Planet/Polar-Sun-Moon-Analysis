@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { EarthSourcePanel } from './EarthSourcePanel'
 import { readEarthModel, writeEarthModel, type EarthModel } from './lib/earthPreferences'
+import { loadEarthTexture } from './lib/earthTextureManagement'
 import { EARTH_VIEW_PRESETS, type EarthViewPreset } from './lib/earthViewPresets'
 import { latLonToCartesian } from './lib/wgs84'
 import './stable-earth-globe.css'
@@ -26,7 +27,12 @@ function presetDistance(heightM: number): number {
   return THREE.MathUtils.lerp(CAMERA_DISTANCE_MIN, CAMERA_DISTANCE_MAX, normalized)
 }
 
-export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = true }: Props) {
+export function RealisticEarthGlobe({
+  textureUrl,
+  selectedTime,
+  markers = [],
+  autoRotate = true,
+}: Props) {
   const host = useRef<HTMLDivElement>(null)
   const runtimeCamera = useRef<RuntimeCamera | null>(null)
   const cameraState = useRef<CameraState>({
@@ -48,6 +54,8 @@ export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = t
     let controls: OrbitControls | null = null
     let frame = 0
     let resizeObserver: ResizeObserver | null = null
+    let surfaceTexture: THREE.Texture | null = null
+    let active = true
 
     try {
       element.replaceChildren()
@@ -72,12 +80,37 @@ export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = t
       controls.update()
       runtimeCamera.current = { camera, controls }
 
+      const earthMaterial = new THREE.MeshStandardMaterial({
+        color: 0x176aa0,
+        roughness: 0.82,
+        metalness: 0,
+      })
       const earth = new THREE.Mesh(
-        new THREE.SphereGeometry(EARTH_RADIUS, 40, 40),
-        new THREE.MeshStandardMaterial({ color: 0x176aa0, roughness: 0.82, metalness: 0 }),
+        new THREE.SphereGeometry(EARTH_RADIUS, 64, 48),
+        earthMaterial,
       )
       if (model === 'scientific') earth.scale.y = POLAR_RATIO
       scene.add(earth)
+
+      void loadEarthTexture(textureUrl, import.meta.env.BASE_URL).then(result => {
+        if (!active) {
+          result.texture?.dispose()
+          return
+        }
+        if (result.texture) {
+          surfaceTexture = result.texture
+          earthMaterial.map = result.texture
+          earthMaterial.color.set(0xffffff)
+          earthMaterial.needsUpdate = true
+          setStatus(model === 'scientific'
+            ? 'Naukowy globus działa z teksturą powierzchni'
+            : 'Dotychczasowy model działa z teksturą powierzchni')
+          return
+        }
+        setStatus(result.error
+          ? `Tekstura niedostępna — użyto bezpiecznego modelu zastępczego: ${result.error}`
+          : model === 'scientific' ? 'Naukowy globus działa' : 'Dotychczasowy model działa')
+      })
 
       const grid = new THREE.Mesh(
         new THREE.SphereGeometry(EARTH_RADIUS * 1.006, 24, 12),
@@ -141,6 +174,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = t
       animate()
 
       return () => {
+        active = false
         cameraState.current.position.copy(camera.position)
         cameraState.current.target.copy(controls?.target ?? new THREE.Vector3())
         runtimeCamera.current = null
@@ -148,6 +182,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = t
         resizeObserver?.disconnect()
         window.removeEventListener('resize', resize)
         controls?.dispose()
+        surfaceTexture?.dispose()
         scene.traverse(object => {
           if (object instanceof THREE.Mesh) {
             object.geometry.dispose()
@@ -160,6 +195,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = t
         element.replaceChildren()
       }
     } catch (error) {
+      active = false
       runtimeCamera.current = null
       setStatus(`Błąd renderera 3D: ${error instanceof Error ? error.message : String(error)}`)
       element.innerHTML = '<div class="earth-render-error">Nie udało się uruchomić WebGL. Spróbuj odświeżyć kartę lub zamknąć inne aplikacje.</div>'
@@ -167,10 +203,11 @@ export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = t
         cancelAnimationFrame(frame)
         resizeObserver?.disconnect()
         controls?.dispose()
+        surfaceTexture?.dispose()
         renderer?.dispose()
       }
     }
-  }, [model, markers, autoRotate])
+  }, [model, markers, autoRotate, textureUrl])
 
   const selectModel = (next: EarthModel) => {
     setModel(next)
