@@ -2,18 +2,32 @@ import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { readEarthModel, writeEarthModel, type EarthModel } from './lib/earthPreferences'
+import { EARTH_VIEW_PRESETS, type EarthViewPreset } from './lib/earthViewPresets'
 import { latLonToCartesian } from './lib/wgs84'
 import './stable-earth-globe.css'
 
 type Marker = { longitude: number; latitude: number; color?: number; radius?: number }
 type Props = { textureUrl?: string; selectedTime: string; markers?: Marker[]; autoRotate?: boolean }
 type CameraState = { position: THREE.Vector3; target: THREE.Vector3 }
+type RuntimeCamera = { camera: THREE.PerspectiveCamera; controls: OrbitControls }
 
 const EARTH_RADIUS = 2
 const POLAR_RATIO = 6_356_752.314245 / 6_378_137
+const CAMERA_DISTANCE_MIN = 4.8
+const CAMERA_DISTANCE_MAX = 8.2
+
+function presetDistance(heightM: number): number {
+  const normalized = THREE.MathUtils.clamp(
+    (heightM - 12_000_000) / 9_000_000,
+    0,
+    1,
+  )
+  return THREE.MathUtils.lerp(CAMERA_DISTANCE_MIN, CAMERA_DISTANCE_MAX, normalized)
+}
 
 export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = true }: Props) {
   const host = useRef<HTMLDivElement>(null)
+  const runtimeCamera = useRef<RuntimeCamera | null>(null)
   const cameraState = useRef<CameraState>({
     position: new THREE.Vector3(0, 0.35, 6.4),
     target: new THREE.Vector3(0, 0, 0),
@@ -55,13 +69,13 @@ export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = t
       controls.autoRotate = autoRotate
       controls.autoRotateSpeed = 0.35
       controls.update()
+      runtimeCamera.current = { camera, controls }
 
       const earth = new THREE.Mesh(
         new THREE.SphereGeometry(EARTH_RADIUS, 40, 40),
         new THREE.MeshStandardMaterial({ color: 0x176aa0, roughness: 0.82, metalness: 0 }),
       )
       if (model === 'scientific') earth.scale.y = POLAR_RATIO
-      earth.rotation.set(0.08, -0.35, -0.08)
       scene.add(earth)
 
       const grid = new THREE.Mesh(
@@ -69,7 +83,6 @@ export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = t
         new THREE.MeshBasicMaterial({ color: 0x62d7ff, wireframe: true, transparent: true, opacity: 0.14 }),
       )
       grid.scale.copy(earth.scale)
-      grid.rotation.copy(earth.rotation)
       scene.add(grid)
 
       const atmosphere = new THREE.Mesh(
@@ -122,7 +135,6 @@ export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = t
       const animate = () => {
         frame = requestAnimationFrame(animate)
         controls?.update()
-        grid.rotation.copy(earth.rotation)
         renderer?.render(scene, camera)
       }
       animate()
@@ -130,6 +142,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = t
       return () => {
         cameraState.current.position.copy(camera.position)
         cameraState.current.target.copy(controls?.target ?? new THREE.Vector3())
+        runtimeCamera.current = null
         cancelAnimationFrame(frame)
         resizeObserver?.disconnect()
         window.removeEventListener('resize', resize)
@@ -146,6 +159,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = t
         element.replaceChildren()
       }
     } catch (error) {
+      runtimeCamera.current = null
       setStatus(`Błąd renderera 3D: ${error instanceof Error ? error.message : String(error)}`)
       element.innerHTML = '<div class="earth-render-error">Nie udało się uruchomić WebGL. Spróbuj odświeżyć kartę lub zamknąć inne aplikacje.</div>'
       return () => {
@@ -162,6 +176,22 @@ export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = t
     try { writeEarthModel(next) } catch { /* localStorage can be blocked */ }
   }
 
+  const selectPreset = (preset: EarthViewPreset) => {
+    const runtime = runtimeCamera.current
+    if (!runtime) return
+    const direction = latLonToCartesian(
+      preset.latitude,
+      preset.longitude,
+      { kind: 'sphere', radius: 1 },
+    ).normalize()
+    const nextPosition = direction.multiplyScalar(presetDistance(preset.heightM))
+    runtime.camera.position.copy(nextPosition)
+    runtime.controls.target.set(0, 0, 0)
+    runtime.controls.update()
+    cameraState.current.position.copy(nextPosition)
+    cameraState.current.target.set(0, 0, 0)
+  }
+
   return <section className="earth-viewer-stack" aria-label="Główny model Ziemi 3D">
     <div className="earth-model-switch" role="group" aria-label="Model Ziemi">
       <button
@@ -176,6 +206,18 @@ export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = t
         className={model === 'scientific' ? 'is-active' : ''}
         onClick={() => selectModel('scientific')}
       >Naukowy globus — rzeczywiste proporcje</button>
+    </div>
+    <div className="earth-camera-presets" role="group" aria-label="Szybkie widoki Ziemi">
+      {EARTH_VIEW_PRESETS.map(preset => (
+        <button
+          key={preset.id}
+          type="button"
+          title={preset.description}
+          onClick={() => selectPreset(preset)}
+        >
+          {preset.label}
+        </button>
+      ))}
     </div>
     <p className="earth-model-explainer">
       <strong>{status}</strong><br/>
