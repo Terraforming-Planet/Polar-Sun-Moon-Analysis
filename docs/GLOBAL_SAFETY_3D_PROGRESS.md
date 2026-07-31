@@ -17,6 +17,18 @@ Implemented:
 - Constellation dashboard with counters, filters, source links and automatic refresh.
 - Existing Three.js Earth model prepared to receive geographic hazard markers.
 - Balanced marker selection so one large category does not hide floods, storms, earthquakes or other events.
+- Small synthetic event and GeoJSON datasets for deterministic pull-request tests.
+
+## Rendering architecture
+
+The 3D rendering pipeline is GPU-driven.
+
+- The GPU renders the Earth, terrain, textures, atmosphere and hazard markers through WebGL/WebGPU.
+- Large marker sets should use GPU instanced rendering or GPU point sprites instead of one mesh and one draw call per event.
+- Vertex and fragment shaders should handle marker appearance, pulsing, visibility and other per-frame visual work where practical.
+- The CPU is responsible for data acquisition, schema validation, filtering, indexing, category balancing and uploading compact buffers to the GPU.
+- The CPU must not be described as the component that renders the 3D scene.
+- Frustum culling, horizon/occlusion filtering and level of detail should reduce GPU work for objects that are not visible or are too small at the current zoom.
 
 ## Current limitations
 
@@ -27,16 +39,29 @@ Implemented:
 - Satellite-source buttons currently select a logical source profile, but a real imagery switch requires a tiled globe and working imagery adapters.
 - Rendering tens of thousands of individual meshes is unsuitable for mobile devices. The 3D view therefore uses a representative, category-balanced subset while the full feed remains available in JSON and the dashboard.
 
+## Mini datasets for pull-request validation
+
+The repository includes small synthetic fixtures under `tests/fixtures/global_safety/`.
+
+- `mini_events.json` contains one event from each important category.
+- `mini_hazards.geojson` contains matching geographic points for GPU marker tests.
+- The fixtures are deterministic, contain no live emergency claims and never require external network access.
+- Automated tests verify category balance, unique IDs, coordinate ranges and agreement between event records and GeoJSON features.
+
+These fixtures let CI test the data-to-GPU preparation path without downloading tens of thousands of live observations.
+
 ## Next implementation stages
 
-### 1. Reliable 3D hazard layer
+### 1. Reliable GPU 3D hazard layer
 
 - Keep the Three.js renderer alive while changing filters and controls.
 - Create a dedicated marker group updated independently of the Earth mesh.
-- Use instanced rendering or GPU points instead of hundreds of separate sphere meshes.
+- Use `THREE.InstancedMesh`, GPU point sprites or an equivalent WebGPU buffer pipeline.
+- Keep one compact instance buffer containing position, category, severity and event ID information.
 - Add distinct colors and symbols for fires, floods, storms, earthquakes and volcanoes.
 - Add click/tap inspection with title, observation time, source and verification link.
 - Add category visibility controls and a visible marker counter.
+- Add frustum and horizon culling without rebuilding the Earth renderer.
 
 ### 2. Better flood coverage
 
@@ -48,16 +73,18 @@ Implemented:
 
 ### 3. Real satellite imagery switching
 
-- Replace the single 2K Earth texture with a tile-based globe using a quadtree and level of detail.
+- Replace the single 2K Earth texture with a GPU tile-based globe using a quadtree and level of detail.
 - Connect NASA GIBS WMTS for global and near-real-time layers.
 - Connect Copernicus Data Space STAC/OGC services for Sentinel products.
 - Use Sentinel-2 for cloud-free optical detail and Sentinel-1 SAR for floods and cloud-covered regions.
+- Decode, cache and upload only the tiles needed for the current camera view.
 - Add cache limits, attribution, acquisition time, resolution and NoData indicators.
 - Only show a satellite option as active when a real imagery adapter successfully supplies imagery.
 
 ### 4. Automation and validation
 
 - Validate generated event and hazard schemas on every pull request.
+- Validate the deterministic mini datasets on every pull request.
 - Build the web application on every pull request.
 - Run the data collector and deploy GitHub Pages automatically from `main`.
 - Preserve the previous valid data file if a provider is temporarily unavailable.
