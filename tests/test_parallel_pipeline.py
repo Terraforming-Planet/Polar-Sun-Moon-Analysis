@@ -42,6 +42,7 @@ def test_load_tasks_and_run_parallel(tmp_path: Path) -> None:
         Task(task_id="two", command=["python", "-c", "print('two')"]),
     ]
 
-    results = run(tasks, workers=2)
+    results, backend_used = run(tasks, workers=2, backend="thread")
+    assert backend_used == "thread"
     assert [result.task_id for result in results] == ["one", "two"]
     assert all(result.return_code == 0 for result in results)
