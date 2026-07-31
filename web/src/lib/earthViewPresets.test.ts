@@ -12,13 +12,22 @@ describe('scientific Earth camera presets', () => {
     }
   })
 
-  it('contains explicit north and south pole views', () => {
+  it('contains exact north and south pole views', () => {
     expect(getEarthViewPreset('north-pole').latitude).toBe(90)
     expect(getEarthViewPreset('south-pole').latitude).toBe(-90)
   })
 
-  it('uses unique identifiers', () => {
+  it('contains all required regional views', () => {
+    const ids = new Set(EARTH_VIEW_PRESETS.map(preset => preset.id))
+    for (const required of ['africa', 'europe', 'asia', 'americas', 'pacific']) {
+      expect(ids.has(required as never)).toBe(true)
+    }
+  })
+
+  it('uses unique identifiers and labels', () => {
     const ids = EARTH_VIEW_PRESETS.map(preset => preset.id)
+    const labels = EARTH_VIEW_PRESETS.map(preset => preset.label)
     expect(new Set(ids).size).toBe(ids.length)
+    expect(new Set(labels).size).toBe(labels.length)
   })
 })
