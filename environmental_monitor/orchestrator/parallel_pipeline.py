@@ -6,12 +6,19 @@ import json
 import os
 import subprocess
 import time
-from concurrent.futures import ProcessPoolExecutor, as_completed
+from concurrent.futures import (
+    Executor,
+    ProcessPoolExecutor,
+    ThreadPoolExecutor,
+    as_completed,
+)
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from environmental_monitor.orchestrator.resource_profile import build_profile
+
+Backend = Literal["auto", "process", "thread", "sequential"]
 
 
 @dataclass(frozen=True)
@@ -80,19 +87,75 @@ def load_tasks(path: Path) -> list[Task]:
     return tasks
 
 
-def run(tasks: list[Task], workers: int) -> list[TaskResult]:
+def _process_backend_looks_available() -> bool:
+    """Return False for containers that do not expose POSIX shared memory.
+
+    ``ProcessPoolExecutor`` relies on multiprocessing semaphores. Some CDSE
+    Jupyter containers do not expose the required shared-memory/semaphore
+    facilities, which raises ``FileNotFoundError`` before any task starts.
+    """
+
+    shm = Path("/dev/shm")
+    return shm.is_dir() and os.access(shm, os.R_OK | os.W_OK | os.X_OK)
+
+
+def choose_backend(requested: Backend) -> Literal["process", "thread", "sequential"]:
+    if requested != "auto":
+        return requested
+    return "process" if _process_backend_looks_available() else "thread"
+
+
+def _run_with_executor(
+    tasks: list[Task],
+    executor: Executor,
+) -> list[TaskResult]:
     results: list[TaskResult] = []
-    with ProcessPoolExecutor(max_workers=workers) as executor:
-        futures = {executor.submit(_execute, task): task.task_id for task in tasks}
-        for future in as_completed(futures):
-            result = future.result()
-            results.append(result)
+    futures = {executor.submit(_execute, task): task.task_id for task in tasks}
+    for future in as_completed(futures):
+        result = future.result()
+        results.append(result)
+        print(
+            f"[{result.return_code}] {result.task_id} "
+            f"({result.duration_seconds:.3f}s)",
+            flush=True,
+        )
+    return sorted(results, key=lambda item: item.task_id)
+
+
+def run(
+    tasks: list[Task],
+    workers: int,
+    backend: Backend = "auto",
+) -> tuple[list[TaskResult], str]:
+    selected = choose_backend(backend)
+
+    if selected == "sequential" or workers == 1:
+        results = [_execute(task) for task in tasks]
+        for result in results:
             print(
                 f"[{result.return_code}] {result.task_id} "
                 f"({result.duration_seconds:.3f}s)",
                 flush=True,
             )
-    return sorted(results, key=lambda item: item.task_id)
+        return sorted(results, key=lambda item: item.task_id), "sequential"
+
+    if selected == "thread":
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            return _run_with_executor(tasks, executor), "thread"
+
+    try:
+        with ProcessPoolExecutor(max_workers=workers) as executor:
+            return _run_with_executor(tasks, executor), "process"
+    except (FileNotFoundError, OSError) as exc:
+        if backend == "process":
+            raise
+        print(
+            "Process backend unavailable; falling back to ThreadPoolExecutor: "
+            f"{exc}",
+            flush=True,
+        )
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            return _run_with_executor(tasks, executor), "thread-fallback"
 
 
 def main() -> int:
@@ -101,6 +164,15 @@ def main() -> int:
     )
     parser.add_argument("manifest", type=Path)
     parser.add_argument("--workers", type=int)
+    parser.add_argument(
+        "--backend",
+        choices=("auto", "process", "thread", "sequential"),
+        default="auto",
+        help=(
+            "Execution backend. Auto uses processes when POSIX shared memory is "
+            "available and otherwise uses threads."
+        ),
+    )
     parser.add_argument("--report", type=Path, default=Path("parallel-pipeline-report.json"))
     args = parser.parse_args()
 
@@ -110,9 +182,11 @@ def main() -> int:
     workers = max(1, min(workers, len(tasks) or 1))
 
     started = time.monotonic()
-    results = run(tasks, workers)
+    results, backend_used = run(tasks, workers, args.backend)
     report: dict[str, Any] = {
         "resource_profile": profile,
+        "backend_requested": args.backend,
+        "backend_used": backend_used,
         "workers": workers,
         "task_count": len(tasks),
         "failed_count": sum(result.return_code != 0 for result in results),
