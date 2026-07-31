@@ -1,0 +1,99 @@
+{
+  "schema_version": "test-1.0",
+  "project": "Terraforming Planet",
+  "generated_at": "2026-07-31T17:30:00Z",
+  "event_count": 6,
+  "summary": {
+    "fire": 1,
+    "flood": 1,
+    "storm": 1,
+    "earthquake": 1,
+    "volcano": 1,
+    "landslide": 1
+  },
+  "sources": [
+    {
+      "source": "Synthetic test fixture",
+      "status": "ok",
+      "count": 6
+    }
+  ],
+  "events": [
+    {
+      "id": "fixture-fire-001",
+      "type": "fire",
+      "title": "Synthetic active fire",
+      "severity": "high",
+      "status": "test",
+      "latitude": 52.1,
+      "longitude": 19.4,
+      "observed_at": "2026-07-31T17:20:00Z",
+      "source": "Synthetic test fixture",
+      "source_url": "https://example.invalid/fire"
+    },
+    {
+      "id": "fixture-flood-001",
+      "type": "flood",
+      "title": "Synthetic flood alert",
+      "severity": "moderate",
+      "status": "test",
+      "latitude": 50.1,
+      "longitude": 14.4,
+      "observed_at": "2026-07-31T17:21:00Z",
+      "source": "Synthetic test fixture",
+      "source_url": "https://example.invalid/flood"
+    },
+    {
+      "id": "fixture-storm-001",
+      "type": "storm",
+      "title": "Synthetic severe storm",
+      "severity": "high",
+      "status": "test",
+      "latitude": 32.0,
+      "longitude": -75.0,
+      "observed_at": "2026-07-31T17:22:00Z",
+      "source": "Synthetic test fixture",
+      "source_url": "https://example.invalid/storm"
+    },
+    {
+      "id": "fixture-earthquake-001",
+      "type": "earthquake",
+      "title": "Synthetic earthquake",
+      "severity": "low",
+      "status": "test",
+      "latitude": 35.7,
+      "longitude": 139.7,
+      "observed_at": "2026-07-31T17:23:00Z",
+      "source": "Synthetic test fixture",
+      "source_url": "https://example.invalid/earthquake"
+    },
+    {
+      "id": "fixture-volcano-001",
+      "type": "volcano",
+      "title": "Synthetic volcanic activity",
+      "severity": "moderate",
+      "status": "test",
+      "latitude": -8.3,
+      "longitude": 115.5,
+      "observed_at": "2026-07-31T17:24:00Z",
+      "source": "Synthetic test fixture",
+      "source_url": "https://example.invalid/volcano"
+    },
+    {
+      "id": "fixture-landslide-001",
+      "type": "landslide",
+      "title": "Synthetic landslide",
+      "severity": "moderate",
+      "status": "test",
+      "latitude": 27.7,
+      "longitude": 85.3,
+      "observed_at": "2026-07-31T17:25:00Z",
+      "source": "Synthetic test fixture",
+      "source_url": "https://example.invalid/landslide"
+    }
+  ],
+  "limitations": [
+    "Synthetic fixture for automated tests only.",
+    "Not an operational hazard feed."
+  ]
+}
