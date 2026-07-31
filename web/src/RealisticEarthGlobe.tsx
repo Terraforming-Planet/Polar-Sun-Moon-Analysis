@@ -1,8 +1,14 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { readEarthModel, writeEarthModel, type EarthModel } from './lib/earthPreferences'
 import { latLonToCartesian } from './lib/wgs84'
+import {
+  SATELLITE_SOURCES,
+  sourceForMode,
+  zoomLevelFromDistance,
+  type SatelliteSourceMode,
+} from './lib/satelliteSources'
 import './stable-earth-globe.css'
 
 type Marker = { longitude: number; latitude: number; color?: number; radius?: number }
@@ -33,11 +39,27 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
   const [showGrid, setShowGrid] = useState(false)
   const [showAtmosphere, setShowAtmosphere] = useState(true)
   const [showDayNight, setShowDayNight] = useState(true)
+  const [rotationEnabled, setRotationEnabled] = useState(autoRotate)
   const [view, setView] = useState<ViewPreset>('full')
+  const [sourceMode, setSourceMode] = useState<SatelliteSourceMode>('auto')
+  const [logicalZoom, setLogicalZoom] = useState(4)
+
+  const selectedSource = useMemo(() => sourceForMode(sourceMode, {
+    zoom: logicalZoom,
+    hasCoverage: true,
+    mobile: typeof navigator !== 'undefined' && /Android|iPhone|iPad/i.test(navigator.userAgent),
+  }), [sourceMode, logicalZoom])
 
   useEffect(() => {
     try { setModel(readEarthModel()) } catch { setModel('scientific') }
   }, [])
+
+  useEffect(() => {
+    const controls = controlsRef.current
+    if (!controls) return
+    controls.autoRotate = rotationEnabled && view === 'full'
+    controls.update()
+  }, [rotationEnabled, view])
 
   useEffect(() => {
     const element = host.current
@@ -72,12 +94,16 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
       controls.panSpeed = 0.35
       controls.rotateSpeed = 0.65
       controls.zoomSpeed = 1.15
-      controls.minDistance = 2.18
+      controls.minDistance = 2.05
       controls.maxDistance = 40
-      controls.autoRotate = autoRotate && view === 'full'
+      controls.autoRotate = rotationEnabled && view === 'full'
       controls.autoRotateSpeed = 0.28
       controls.target.set(0, 0, 0)
       controls.update()
+
+      const updateLogicalZoom = () => setLogicalZoom(zoomLevelFromDistance(camera.position.distanceTo(controls!.target)))
+      controls.addEventListener('change', updateLogicalZoom)
+      updateLogicalZoom()
 
       const textureLoader = new THREE.TextureLoader()
       textureLoader.setCrossOrigin('anonymous')
@@ -123,11 +149,18 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
       grid.visible = showGrid
       scene.add(grid)
 
-      const atmosphere = new THREE.Mesh(
-        new THREE.SphereGeometry(EARTH_RADIUS * 1.045, 96, 64),
-        new THREE.MeshBasicMaterial({ color: 0x54bfff, transparent: true, opacity: 0.13, side: THREE.BackSide, depthWrite: false }),
+      const atmosphere = new THREE.Group()
+      const innerAtmosphere = new THREE.Mesh(
+        new THREE.SphereGeometry(EARTH_RADIUS * 1.045, 128, 96),
+        new THREE.MeshBasicMaterial({ color: 0x38a9ff, transparent: true, opacity: 0.24, side: THREE.BackSide, depthWrite: false }),
       )
-      atmosphere.scale.copy(earth.scale)
+      const outerAtmosphere = new THREE.Mesh(
+        new THREE.SphereGeometry(EARTH_RADIUS * 1.075, 96, 64),
+        new THREE.MeshBasicMaterial({ color: 0x7bd5ff, transparent: true, opacity: 0.07, side: THREE.BackSide, depthWrite: false }),
+      )
+      innerAtmosphere.scale.copy(earth.scale)
+      outerAtmosphere.scale.copy(earth.scale)
+      atmosphere.add(innerAtmosphere, outerAtmosphere)
       atmosphere.visible = showAtmosphere
       scene.add(atmosphere)
 
@@ -140,11 +173,11 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
       fill.position.set(-5, -1, -5)
       scene.add(fill)
 
-      for (const marker of markers.slice(0, 300)) {
+      for (const marker of markers.slice(0, 600)) {
         if (!Number.isFinite(marker.latitude) || !Number.isFinite(marker.longitude)) continue
         if (marker.latitude < -90 || marker.latitude > 90 || marker.longitude < -180 || marker.longitude > 180) continue
         const point = new THREE.Mesh(
-          new THREE.SphereGeometry(Math.max(0.022, (marker.radius ?? 1) * 0.024), 10, 10),
+          new THREE.SphereGeometry(Math.max(0.025, (marker.radius ?? 1) * 0.027), 12, 12),
           new THREE.MeshBasicMaterial({ color: marker.color ?? 0xff674f }),
         )
         point.position.copy(latLonToCartesian(
@@ -188,6 +221,7 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
         cancelAnimationFrame(frame)
         resizeObserver?.disconnect()
         window.removeEventListener('resize', resize)
+        controls?.removeEventListener('change', updateLogicalZoom)
         controls?.dispose()
         controlsRef.current = null
         cameraRef.current = null
@@ -215,7 +249,7 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
         renderer?.dispose()
       }
     }
-  }, [model, markers, autoRotate, textureUrl, showClouds, showGrid, showAtmosphere, showDayNight, view])
+  }, [model, markers, textureUrl, showClouds, showGrid, showAtmosphere, showDayNight, view])
 
   const selectModel = (next: EarthModel) => {
     setModel(next)
@@ -241,15 +275,24 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
       {(Object.keys(viewSettings) as ViewPreset[]).map(key => <button key={key} type="button" className={view === key ? 'is-active' : ''} onClick={() => setView(key)}>{viewSettings[key].label}</button>)}
     </div>
     <div className="earth-layer-switch" role="group" aria-label="Warstwy modelu Ziemi">
+      <button type="button" className={rotationEnabled ? 'is-active' : ''} onClick={() => setRotationEnabled(value => !value)}>{rotationEnabled ? '⏸ Zatrzymaj Ziemię' : '▶ Wznów obrót'}</button>
       <button type="button" className={showClouds ? 'is-active' : ''} onClick={() => setShowClouds(value => !value)}>Chmury</button>
       <button type="button" className={showAtmosphere ? 'is-active' : ''} onClick={() => setShowAtmosphere(value => !value)}>Atmosfera</button>
       <button type="button" className={showGrid ? 'is-active' : ''} onClick={() => setShowGrid(value => !value)}>Siatka</button>
       <button type="button" className={showDayNight ? 'is-active' : ''} onClick={() => setShowDayNight(value => !value)}>Realny dzień / noc</button>
       <button type="button" onClick={() => zoom(0.72)}>＋ Przybliż</button>
       <button type="button" onClick={() => zoom(1.38)}>－ Oddal</button>
-      <button type="button" onClick={() => setView(current => current === 'full' ? 'moon' : 'full')}>Reset kamery</button>
+      <button type="button" onClick={() => setView('full')}>Reset kamery</button>
     </div>
-    <p className="earth-model-explainer"><strong>{status}</strong><br/>Przełączniki przebudowują właściwą warstwę modelu. Obracaj jednym palcem, przybliżaj gestem; przyciski zoomu działają również na telefonie.</p>
+    <div className="earth-model-switch" role="group" aria-label="Automatyczny wybór źródła satelitarnego">
+      <button type="button" className={sourceMode === 'auto' ? 'is-active' : ''} onClick={() => setSourceMode('auto')}>AUTO — najlepsze dostępne</button>
+      {SATELLITE_SOURCES.map(source => <button key={source.id} type="button" className={sourceMode === source.id ? 'is-active' : ''} onClick={() => setSourceMode(source.id)}>{source.label}</button>)}
+    </div>
+    <p className="earth-model-explainer">
+      <strong>{status}</strong><br/>
+      Źródło planowane dla poziomu LOD {logicalZoom}: <strong>{selectedSource.label}</strong> · {selectedSource.product} · około {selectedSource.resolutionMeters} m/piksel. {selectedSource.description}
+      <br/>Ten etap wybiera i pokazuje właściwe źródło. Pobieranie prawdziwych kafli NASA GIBS, Sentinel i ortofotomap jest następnym etapem renderera kafelkowego; obecna kula nadal używa tekstury bazowej 2K.
+    </p>
     <div className="stable-earth-shell">
       <div className="stable-earth-head"><strong>{model === 'scientific' ? 'Ziemia — elipsoida WGS84' : 'Ziemia — kula porównawcza'}</strong><span>{viewSettings[view].label} · {new Date(selectedTime).toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span></div>
       <div ref={host} className="stable-earth-canvas" />
