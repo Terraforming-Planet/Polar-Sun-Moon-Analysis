@@ -20,24 +20,50 @@ type PolarRow = {
   year: number; season: string; pole: string; body: string; timestamp_utc: string
   apparent_altitude_deg: number; declination_deg: number; source_url?: string; quality_flag?: string
 }
-type CopernicusData = { metadata?: { data_poczatkowa?: string; data_koncowa?: string; run_at_utc?: string }; observations?: unknown[] }
+type CopernicusData = {
+  metadata?: {
+    data_poczatkowa?: string
+    data_koncowa?: string
+    run_at_utc?: string
+    status?: string
+    observation_count?: number
+  }
+  observations?: unknown[]
+}
 type FloodMeta = { before_period?: string[]; after_period?: string[]; generated_at_utc?: string; evidence_class?: string; run_metadata?: Record<string, unknown> }
 type Speed = 'hour' | 'day' | 'month' | 'year'
+type HazardCategory = 'all' | 'fire' | 'flood'
 
 const base = import.meta.env.BASE_URL
 const isoInput = (value: string) => value ? new Date(value).toISOString().slice(0, 16) : ''
 const formatUtc = (value?: string) => value ? new Date(value).toLocaleString('pl-PL', { timeZone: 'UTC' }) + ' UTC' : 'brak danych'
 const hoursBetween = (a: string, b: string) => Math.abs(new Date(a).getTime() - new Date(b).getTime()) / 3_600_000
 
-function useJson<T>(path: string): [T | null, string | null] {
+function useJson<T>(path: string, refreshEveryMs = 0): [T | null, string | null] {
   const [value, setValue] = useState<T | null>(null)
   const [error, setError] = useState<string | null>(null)
   useEffect(() => {
-    fetch(`${base}${path}`).then(response => {
-      if (!response.ok) throw new Error(`${response.status} ${path}`)
-      return response.json() as Promise<T>
-    }).then(setValue).catch(reason => setError(String(reason)))
-  }, [path])
+    let cancelled = false
+    const load = () => {
+      const separator = path.includes('?') ? '&' : '?'
+      fetch(`${base}${path}${separator}refresh=${Date.now()}`, { cache: 'no-store' }).then(response => {
+        if (!response.ok) throw new Error(`${response.status} ${path}`)
+        return response.json() as Promise<T>
+      }).then(next => {
+        if (cancelled) return
+        setValue(next)
+        setError(null)
+      }).catch(reason => {
+        if (!cancelled) setError(String(reason))
+      })
+    }
+    load()
+    const timer = refreshEveryMs > 0 ? window.setInterval(load, refreshEveryMs) : undefined
+    return () => {
+      cancelled = true
+      if (timer !== undefined) window.clearInterval(timer)
+    }
+  }, [path, refreshEveryMs])
   return [value, error]
 }
 
@@ -83,7 +109,7 @@ function TimeController({ requested, selected, timestamps, playing, speed, onReq
       <button onClick={() => move(-1)} aria-label="Poprzednia dostępna obserwacja">◀ Poprzednia</button>
       <button className="primary" onClick={() => onPlaying(!playing)} aria-label={playing ? 'Pauza' : 'Odtwarzaj'}>{playing ? 'Ⅱ Pauza' : '▶ Odtwarzaj'}</button>
       <button onClick={() => move(1)} aria-label="Następna dostępna obserwacja">Następna ▶</button>
-      <button onClick={() => sorted.length && onRequested(sorted.at(-1)!)}>TERAZ / najnowsze dane</button>
+      <button onClick={() => onRequested(new Date().toISOString())}>TERAZ / aktualny UTC</button>
       <label>Krok<select value={speed} onChange={event => onSpeed(event.target.value as Speed)}><option value="hour">1 godzina</option><option value="day">1 dzień</option><option value="month">1 miesiąc</option><option value="year">1 rok</option></select></label>
     </div>
     <div className="time-status">
@@ -101,12 +127,20 @@ function featurePoint(feature: HazardFeature): [number, number] | null {
   return [sum[0] / polygon[0].length, sum[1] / polygon[0].length]
 }
 
-function EarthGlobe({ data, selectedTime }: { data?: HazardData | null; selectedTime: string }) {
+function featureMatchesCategory(feature: HazardFeature, category: HazardCategory) {
+  if (category === 'all') return true
+  const categories = (feature.properties.categories ?? []).map(value => value.toLowerCase())
+  if (category === 'fire') return categories.some(value => value.includes('fire') || value.includes('wildfire'))
+  return categories.some(value => value.includes('flood'))
+}
+
+function EarthGlobe({ data, selectedTime, category = 'all' }: { data?: HazardData | null; selectedTime: string; category?: HazardCategory }) {
   const markers = useMemo(() => {
     const features = Array.isArray(data?.features) ? data.features : []
     if (!features.length) return []
     const selectedMs = new Date(selectedTime).getTime()
     return features
+      .filter(feature => featureMatchesCategory(feature, category))
       .filter(feature => {
         const time = feature.properties.observation_time
         return !time || new Date(time).getTime() <= selectedMs
@@ -115,10 +149,15 @@ function EarthGlobe({ data, selectedTime }: { data?: HazardData | null; selected
         const point = featurePoint(feature)
         if (!point) return null
         const [longitude, latitude] = point
-        return { longitude, latitude, color: 0xff674f, radius: 1 }
+        return {
+          longitude,
+          latitude,
+          color: category === 'flood' ? 0x00a8ff : 0xff0000,
+          radius: category === 'flood' ? 1.15 : 1.35,
+        }
       })
       .filter((value): value is NonNullable<typeof value> => value !== null)
-  }, [data, selectedTime])
+  }, [category, data, selectedTime])
 
   return <RealisticEarthGlobe selectedTime={selectedTime} markers={markers} autoRotate />
 }
@@ -156,39 +195,52 @@ function PolarObservatory({ rows, pole, requested }: { rows: PolarRow[]; pole: '
 
 function DataAvailability({ polar, solar, hazards, copernicus, flood }: { polar: PolarRow[]; solar: SolarData | null; hazards: HazardData | null; copernicus: CopernicusData | null; flood: FloodMeta | null }) {
   const years = polar.map(row => row.year)
+  const copernicusStart = copernicus?.metadata?.data_poczatkowa
+  const copernicusEnd = copernicus?.metadata?.data_koncowa
+  const copernicusCount = copernicus?.metadata?.observation_count ?? copernicus?.observations?.length
+  const copernicusLabel = copernicusStart || copernicusEnd
+    ? `${copernicusStart ?? 'brak początku'} — ${copernicusEnd ?? 'brak końca'}`
+    : copernicus?.metadata?.status === 'ok'
+      ? `połączono · ${copernicusCount ?? 0} obserwacji`
+      : 'brak opublikowanego manifestu'
   return <section className="availability"><div className="section-title"><div><small>DATA AVAILABILITY</small><h2>Rzeczywisty zakres opublikowanych danych</h2></div><EvidenceBadge kind="unknown">NIE JEST TO CIĄGŁY OBRAZ NA ŻYWO</EvidenceBadge></div><div className="availability-grid">
     <article><b>NASA JPL — bieguny</b><span>{years.length ? `${Math.min(...years)}–${Math.max(...years)}` : 'brak'}</span><small>historyczne, zapisane obserwacje równonocy</small></article>
     <article><b>Układ Słoneczny 3D</b><span>{formatUtc(solar?.timestamp_utc)}</span><small>pozycje zablokowane do jednej epoki JPL</small></article>
     <article><b>NASA EONET</b><span>{formatUtc(hazards?.generated_at_utc)}</span><small>najnowszy opublikowany katalog zdarzeń</small></article>
-    <article><b>Copernicus STAC</b><span>{copernicus?.metadata?.data_poczatkowa ?? '—'} — {copernicus?.metadata?.data_koncowa ?? '—'}</span><small>zakres zapytania katalogowego</small></article>
+    <article><b>Copernicus STAC</b><span>{copernicusLabel}</span><small>manifest jest odświeżany i publikowany przez cykl CDSE</small></article>
     <article><b>Sentinel-1 powódź</b><span>{flood?.before_period?.join(' → ') ?? 'przed: metadane w mapie'} / {flood?.after_period?.join(' → ') ?? 'po: metadane w mapie'}</span><small>warstwa kandydacka zmian odbicia</small></article>
   </div></section>
 }
 
 function App() {
   const [tab, setTab] = useState<Tab>('control'); const [playing, setPlaying] = useState(false); const [speed, setSpeed] = useState<Speed>('day')
-  const [solar] = useJson<SolarData>('data/solar-system.json'); const [hazards, hazardError] = useJson<HazardData>('data/hazards.json'); const [sources] = useJson<Source[]>('data/sources.json'); const [polar] = useJson<PolarRow[]>('data/observations.json')
-  const [copernicus] = useJson<CopernicusData>('data/copernicus/latest_results.json'); const [flood] = useJson<FloodMeta>('flood-map/assets/map-data.json')
+  const [liveUtc, setLiveUtc] = useState(() => new Date().toISOString())
+  const [solar] = useJson<SolarData>('data/solar-system.json'); const [hazards, hazardError] = useJson<HazardData>('data/hazards.json', 10_000); const [sources] = useJson<Source[]>('data/sources.json'); const [polar] = useJson<PolarRow[]>('data/observations.json')
+  const [copernicus, copernicusError] = useJson<CopernicusData>('data/copernicus/latest.json', 10_000); const [flood] = useJson<FloodMeta>('flood-map/assets/map-data.json')
+  useEffect(() => {
+    const timer = window.setInterval(() => setLiveUtc(new Date().toISOString()), 10_000)
+    return () => window.clearInterval(timer)
+  }, [])
   const timestamps = useMemo(() => {
     const values = (polar ?? []).map(row => row.timestamp_utc)
     if (hazards?.generated_at_utc) values.push(hazards.generated_at_utc)
     if (solar?.timestamp_utc) values.push(solar.timestamp_utc)
     return [...new Set(values)].sort()
   }, [polar, hazards, solar])
-  const [requested, setRequested] = useState('2024-03-20T03:06:00.000Z')
+  const [requested, setRequested] = useState(() => new Date().toISOString())
   const selected = nearestTimestamp(requested, timestamps)
   useEffect(() => { if (!playing) return; const timer = window.setInterval(() => setRequested(current => stepDate(current, speed)), 1200); return () => clearInterval(timer) }, [playing, speed])
   const tabs: [Tab, string][] = [['control','Centrum sterowania'],['earth','Ziemia 3D'],['floods','Powodzie'],['fires','Pożary'],['water','Woda i susza'],['north','Biegun północny'],['south','Biegun południowy'],['solar','Słońce i Księżyc'],['sources','Dane i źródła']]
   return <div className="app-shell control-center-app"><header className="app-header"><a className="brand" href={base}><span className="brand-mark">T</span><span><strong>TERRA OBSERVATION</strong><small>Time-aware environmental intelligence</small></span></a><nav className="main-tabs" aria-label="Główne sekcje">{tabs.map(([id,label]) => <button key={id} className={tab === id ? 'active' : ''} onClick={() => setTab(id)}>{label}</button>)}</nav><div className="live"><i/> OPEN SCIENCE</div></header>
     <main><TimeController requested={requested} selected={selected} timestamps={timestamps} playing={playing} speed={speed} onRequested={setRequested} onPlaying={setPlaying} onSpeed={setSpeed}/>
-      {tab === 'control' && <><section className="hero compact"><div className="eyebrow">EARTH · WATER · FIRE · SUN · MOON · UTC</div><h1>Centrum sterowania<br/><em>czasem i dowodami.</em></h1><p>Każdy widok reaguje na najbliższą rzeczywiście dostępną obserwację. System nie udaje ciągłego filmu satelitarnego ani skali zagrożenia, której nie ma w danych.</p><div className="hero-actions"><button className="primary" onClick={() => setTab('earth')}>Otwórz Ziemię 3D</button><button onClick={() => setTab('north')}>Obserwuj biegun</button><a className="button-link" href={`${base}copernicus/`}>Panel Copernicus</a></div></section><DataAvailability polar={polar ?? []} solar={solar} hazards={hazards} copernicus={copernicus} flood={flood}/></>}
-      {tab === 'earth' && <section className="workspace"><div className="workspace-head"><div><small>NASA EONET · SELECTED UTC</small><h1>Ziemia 3D i geometria zdarzeń</h1></div><EvidenceBadge kind="observation">PUNKTY KATALOGOWE, NIE SKALA ZAGROŻENIA</EvidenceBadge></div><div className="hazard-layout"><EarthGlobe data={hazards} selectedTime={selected}/><aside className="panel"><h2>Warstwy i źródła</h2><div className="fact"><span>Zdarzenia widoczne do</span><b>{formatUtc(selected)}</b></div><div className="fact"><span>Wygenerowano katalog</span><b>{formatUtc(hazards?.generated_at_utc ?? hazards?.generatedUtc)}</b></div>{hazardError && <p className="muted">Katalog zdarzeń chwilowo niedostępny: {hazardError}. Model 3D działa niezależnie.</p>}<a className="button-link block" href={`${base}flood-map/`}>Mapa Sentinel-1</a><a className="button-link block" href={`${base}copernicus/`}>Wyniki Copernicus</a><p className="muted">EONET opisuje geometrię zdarzeń. Nie mierzy automatycznie intensywności, powierzchni szkód ani ryzyka dla ludzi.</p></aside></div></section>}
-      {tab === 'floods' && <section className="workspace"><div className="workspace-head"><div><small>SENTINEL-1 SAR</small><h1>Powodzie — porównanie przed/po</h1></div><EvidenceBadge kind="derived">ZMIANA ODBICIA RADAROWEGO</EvidenceBadge></div><div className="cards"><article><h2>Interaktywna mapa</h2><p>Warstwy przed, po i różnica radarowa dla opublikowanego przebiegu.</p><a className="button-link block" href={`${base}flood-map/`}>Otwórz mapę</a></article><article><h2>Czas obserwacji</h2><p>Wybrany globalny czas: {formatUtc(selected)}. Mapa zawiera tylko epoki zapisane w metadanych przebiegu.</p></article><article><h2>Ograniczenie</h2><p>Zmiana sygnału nie jest sama w sobie potwierdzonym zasięgiem zalania. Potrzebne są progi, maska stałych wód i walidacja.</p></article></div></section>}
-      {tab === 'fires' && <section className="workspace"><div className="workspace-head"><div><small>NASA EONET · FIRMS READY</small><h1>Pożary</h1></div><EvidenceBadge kind="unknown">BRAK FRP W BIEŻĄCYM PLIKU</EvidenceBadge></div><p className="notice">Pokazujemy wyłącznie kategorie i geometrię zdarzeń dostępne w opublikowanym katalogu. Nie wyliczamy niskiej, średniej ani wysokiej skali zagrożenia bez pikseli FIRMS/FRP.</p><EarthGlobe data={hazards} selectedTime={selected}/></section>}
+      {tab === 'control' && <><section className="hero compact"><div className="eyebrow">EARTH · WATER · FIRE · SUN · MOON · UTC</div><h1>Centrum sterowania<br/><em>czasem i dowodami.</em></h1><p>Każdy widok reaguje na najbliższą rzeczywiście dostępną obserwację. System nie udaje ciągłego filmu satelitarnego ani skali zagrożenia, której nie ma w danych.</p><div className="hero-actions"><button className="primary" onClick={() => setTab('earth')}>Otwórz Ziemię 3D</button><button onClick={() => setTab('north')}>Obserwuj biegun</button><a className="button-link" href={`${base}copernicus/`}>Panel Copernicus</a></div></section><DataAvailability polar={polar ?? []} solar={solar} hazards={hazards} copernicus={copernicus} flood={flood}/>{copernicusError && <p className="notice">Copernicus STAC: {copernicusError}</p>}</>}
+      {tab === 'earth' && <section className="workspace"><div className="workspace-head"><div><small>LIVE UTC · CLEAN EARTH MODEL</small><h1>Ziemia 3D bez warstwy alarmowej</h1></div><EvidenceBadge kind="observation">CZYSTY MODEL — MARKERY W ZAKŁADKACH ZAGROŻEŃ</EvidenceBadge></div><div className="hazard-layout"><RealisticEarthGlobe selectedTime={liveUtc} markers={[]} autoRotate/><aside className="panel"><h2>Widok aktualny</h2><div className="fact"><span>Aktualizacja zegara modelu</span><b>co 10 sekund</b></div><div className="fact"><span>Aktualny UTC</span><b>{formatUtc(liveUtc)}</b></div><div className="fact"><span>Wygenerowano katalog</span><b>{formatUtc(hazards?.generated_at_utc ?? hazards?.generatedUtc)}</b></div>{hazardError && <p className="muted">Katalog zdarzeń chwilowo niedostępny: {hazardError}. Model 3D działa niezależnie.</p>}<a className="button-link block" href={`${base}flood-map/`}>Mapa Sentinel-1</a><a className="button-link block" href={`${base}copernicus/`}>Wyniki Copernicus</a><p className="muted">Punkty pożarów i powodzi są celowo ukryte w tym widoku. Otwórz odpowiednią zakładkę zagrożenia.</p></aside></div></section>}
+      {tab === 'floods' && <section className="workspace"><div className="workspace-head"><div><small>SENTINEL-1 SAR · 3D FLOOD LAYER</small><h1>Powodzie — model 3D i porównanie przed/po</h1></div><EvidenceBadge kind="derived">NIEBIESKIE PUNKTY KATALOGOWE</EvidenceBadge></div><EarthGlobe data={hazards} selectedTime={liveUtc} category="flood"/><div className="cards"><article><h2>Interaktywna mapa</h2><p>Warstwy przed, po i różnica radarowa dla opublikowanego przebiegu.</p><a className="button-link block" href={`${base}flood-map/`}>Otwórz mapę</a></article><article><h2>Czas obserwacji</h2><p>Aktualny czas modelu: {formatUtc(liveUtc)}. Mapa zawiera tylko epoki zapisane w metadanych przebiegu.</p></article><article><h2>Ograniczenie</h2><p>Zmiana sygnału nie jest sama w sobie potwierdzonym zasięgiem zalania. Potrzebne są progi, maska stałych wód i walidacja.</p></article></div></section>}
+      {tab === 'fires' && <section className="workspace"><div className="workspace-head"><div><small>NASA EONET · FIRMS READY · LIVE UTC</small><h1>Pożary — czerwone markery 3D</h1></div><EvidenceBadge kind="observation">CZERWONE PUNKTY POŻAROWE</EvidenceBadge></div><p className="notice">Warstwa pokazuje wyłącznie zdarzenia zaklasyfikowane jako pożar. Dane i zegar są sprawdzane co 10 sekund, natomiast nowe obserwacje satelitarne pojawiają się zgodnie z faktycznym czasem publikacji źródła.</p><EarthGlobe data={hazards} selectedTime={liveUtc} category="fire"/></section>}
       {tab === 'water' && <section className="workspace"><div className="workspace-head"><div><small>SURFACE · STORAGE · SUBSURFACE</small><h1>Woda i susza</h1></div></div><div className="water-grid"><article><EvidenceBadge kind="observation"/><h2>Powierzchnia</h2><p>Sentinel-1 i Sentinel-2 mogą wyznaczać zasięg wody w momentach przelotu.</p></article><article><EvidenceBadge kind="estimate"/><h2>Retencja i gleba</h2><p>Wnioski wymagają połączenia wielu źródeł i modeli, a nie pojedynczego obrazu.</p></article><article><EvidenceBadge kind="unknown"/><h2>Woda w skałach</h2><p>Satelity nie pokazują bezpośrednio wody w szczelinach; potrzebne są pomiary terenowe.</p></article></div></section>}
       {tab === 'north' && <PolarObservatory rows={polar ?? []} pole="North Pole" requested={requested}/>} {tab === 'south' && <PolarObservatory rows={polar ?? []} pole="South Pole" requested={requested}/>} 
       {tab === 'solar' && <section className="workspace"><div className="workspace-head"><div><small>NASA JPL HORIZONS · LOCKED EPOCH</small><h1>Słońce i Księżyc</h1></div><EvidenceBadge kind="observation">POZYCJE ZABLOKOWANE DO {formatUtc(solar?.timestamp_utc)}</EvidenceBadge></div><p className="notice"><b>Uczciwe sterowanie czasem:</b> globalny suwak nie przesuwa planet historycznie, ponieważ repozytorium zawiera obecnie jeden snapshot układu. Do obserwacji historycznych użyj danych polarnych 2006–2024 w zakładkach biegunów.</p>{solar && <div className="solar-list">{solar.bodies.map(body => <article key={body.body}><b>{body.body}</b><span>{body.position_au.map(value => value.toFixed(4)).join(', ')} AU</span><small>{body.source}</small></article>)}</div>}</section>}
-      {tab === 'sources' && <section className="workspace"><div className="workspace-head"><div><small>PROVENANCE REGISTRY</small><h1>Dane i źródła</h1></div></div><DataAvailability polar={polar ?? []} solar={solar} hazards={hazards} copernicus={copernicus} flood={flood}/><div className="source-list">{sources?.map(source => <article key={source.id}><div className="source-title"><span>{source.agency}</span><h2>{source.mission} · {source.instrument}</h2></div><p>{source.limitations}</p><a href={source.url} target="_blank" rel="noreferrer">Oficjalna dokumentacja ↗</a></article>)}</div></section>}
+      {tab === 'sources' && <section className="workspace"><div className="workspace-head"><div><small>PROVENANCE REGISTRY</small><h1>Dane i źródła</h1></div></div><DataAvailability polar={polar ?? []} solar={solar} hazards={hazards} copernicus={copernicus} flood={flood}/>{copernicusError && <p className="notice">Copernicus STAC: {copernicusError}</p>}<div className="source-list">{sources?.map(source => <article key={source.id}><div className="source-title"><span>{source.agency}</span><h2>{source.mission} · {source.instrument}</h2></div><p>{source.limitations}</p><a href={source.url} target="_blank" rel="noreferrer">Oficjalna dokumentacja ↗</a></article>)}</div></section>}
     </main><footer><span>Terraforming Planet · Open environmental research</span><span>Evidence before claims · No person tracking</span></footer></div>
 }
 
