@@ -22,6 +22,8 @@ const DEFAULT_EARTH_TEXTURE = 'https://threejs.org/examples/textures/planets/ear
 const DEFAULT_CLOUD_TEXTURE = 'https://threejs.org/examples/textures/planets/earth_clouds_1024.png'
 const SIDEREAL_DAY_SECONDS = 86_164.0905
 const ROTATION_SPEED = Math.PI * 2 / SIDEREAL_DAY_SECONDS
+const HAZARD_MARKER_COLOR = 0xff2d2d
+const HAZARD_MARKER_RADIUS = 0.012
 
 function utcEarthAngle(iso: string) {
   const ms = Date.parse(iso)
@@ -80,9 +82,9 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
   }, [showAtmosphere])
 
   useEffect(() => {
-    if (hemisphereRef.current) hemisphereRef.current.intensity = showDayNight ? 0.34 : 1.35
-    if (sunlightRef.current) sunlightRef.current.intensity = showDayNight ? 3.15 : 1.9
-    if (fillRef.current) fillRef.current.intensity = showDayNight ? 0.08 : 0.52
+    if (hemisphereRef.current) hemisphereRef.current.intensity = showDayNight ? 0.55 : 1.45
+    if (sunlightRef.current) sunlightRef.current.intensity = showDayNight ? 3.35 : 2.05
+    if (fillRef.current) fillRef.current.intensity = showDayNight ? 0.22 : 0.62
   }, [showDayNight])
 
   useEffect(() => {
@@ -114,7 +116,7 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
       renderer.outputColorSpace = THREE.SRGBColorSpace
       renderer.toneMapping = THREE.ACESFilmicToneMapping
-      renderer.toneMappingExposure = 1.18
+      renderer.toneMappingExposure = 1.35
       element.appendChild(renderer.domElement)
 
       const scene = new THREE.Scene()
@@ -197,31 +199,39 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
       atmosphereRef.current = atmosphere
       scene.add(atmosphere)
 
-      const hemisphere = new THREE.HemisphereLight(0xcfeeff, 0x020711, showDayNight ? 0.34 : 1.35)
+      const hemisphere = new THREE.HemisphereLight(0xcfeeff, 0x020711, showDayNight ? 0.55 : 1.45)
       hemisphereRef.current = hemisphere
       scene.add(hemisphere)
-      const sunlight = new THREE.DirectionalLight(0xffffff, showDayNight ? 3.15 : 1.9)
+      const sunlight = new THREE.DirectionalLight(0xffffff, showDayNight ? 3.35 : 2.05)
       sunlight.position.set(5, 2.2, 6)
       sunlightRef.current = sunlight
       scene.add(sunlight)
-      const fill = new THREE.DirectionalLight(0x6ca8ff, showDayNight ? 0.08 : 0.52)
+      const fill = new THREE.DirectionalLight(0x6ca8ff, showDayNight ? 0.22 : 0.62)
       fill.position.set(-5, -1, -5)
       fillRef.current = fill
       scene.add(fill)
 
+      const markerGeometry = new THREE.SphereGeometry(HAZARD_MARKER_RADIUS, 10, 10)
+      const markerMaterial = new THREE.MeshBasicMaterial({
+        color: HAZARD_MARKER_COLOR,
+        toneMapped: false,
+        depthTest: true,
+        depthWrite: true,
+      })
+
       for (const marker of markers.slice(0, 600)) {
         if (!Number.isFinite(marker.latitude) || !Number.isFinite(marker.longitude)) continue
         if (marker.latitude < -90 || marker.latitude > 90 || marker.longitude < -180 || marker.longitude > 180) continue
-        const point = new THREE.Mesh(
-          new THREE.SphereGeometry(Math.max(0.025, (marker.radius ?? 1) * 0.027), 12, 12),
-          new THREE.MeshBasicMaterial({ color: marker.color ?? 0xff674f }),
-        )
+        const point = new THREE.Mesh(markerGeometry, markerMaterial)
+        const markerScale = THREE.MathUtils.clamp(marker.radius ?? 1, 0.7, 1.4)
+        point.scale.setScalar(markerScale)
+        point.renderOrder = 5
         point.position.copy(latLonToCartesian(
           marker.latitude,
           marker.longitude,
           model === 'scientific'
-            ? { kind: 'wgs84', scale: (EARTH_RADIUS * 1.014) / 6_378_137 }
-            : { kind: 'sphere', radius: EARTH_RADIUS * 1.014 },
+            ? { kind: 'wgs84', scale: (EARTH_RADIUS * 1.018) / 6_378_137 }
+            : { kind: 'sphere', radius: EARTH_RADIUS * 1.018 },
         ))
         earth.add(point)
       }
