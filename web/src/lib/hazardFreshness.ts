@@ -19,6 +19,12 @@ export type FireCatalogSummary = {
   status: 'available' | 'empty' | 'missing-timestamp'
 }
 
+export type FireSnapshotStatus = {
+  headline: string
+  detail: string
+  freshness: string
+}
+
 const FIRE_CATEGORY_NAMES = new Set(['wildfires', 'wildfire', 'fires', 'fire'])
 
 function isFiniteCoordinatePair(value: unknown): value is [number, number] {
@@ -63,5 +69,34 @@ export function summarizeFireCatalog(
     generatedAtUtc,
     ageHours,
     status: generatedAtUtc ? (pointCount > 0 ? 'available' : 'empty') : 'missing-timestamp',
+  }
+}
+
+export function formatFireSnapshotStatus(summary: FireCatalogSummary): FireSnapshotStatus {
+  if (summary.status === 'missing-timestamp') {
+    return {
+      headline: `${summary.pointCount} aktywnych punktów pożarowych`,
+      detail: 'Brak czasu wygenerowania pliku — świeżość danych jest nieznana.',
+      freshness: 'wiek danych: nieznany',
+    }
+  }
+
+  const ageHours = summary.ageHours ?? 0
+  const freshness = ageHours < 1
+    ? `wiek danych: ${Math.round(ageHours * 60)} min`
+    : `wiek danych: ${ageHours.toFixed(1)} h`
+
+  if (summary.status === 'empty') {
+    return {
+      headline: '0 aktywnych punktów pożarowych',
+      detail: 'Ostatni opublikowany snapshot nie zawiera punktów pożarowych.',
+      freshness,
+    }
+  }
+
+  return {
+    headline: `${summary.pointCount} aktywnych punktów pożarowych`,
+    detail: 'Ostatni opublikowany snapshot — nie ciągły przekaz na żywo.',
+    freshness,
   }
 }
