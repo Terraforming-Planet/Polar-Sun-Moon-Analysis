@@ -21,4 +21,13 @@ describe('RealisticEarthGlobe scene lifecycle', () => {
     expect(globeSource).toContain('camera.updateProjectionMatrix()')
     expect(globeSource).toContain('}, [view])')
   })
+
+  it('mounts the honest satellite source status for AUTO and manual modes', () => {
+    expect(globeSource).toContain("import { SatelliteSourceStatusPanel } from './SatelliteSourceStatusPanel'")
+    expect(globeSource).toContain('<SatelliteSourceStatusPanel')
+    expect(globeSource).toContain('source={selectedSource}')
+    expect(globeSource).toContain('logicalZoom={logicalZoom}')
+    expect(globeSource).toContain("tilesConnected: false")
+    expect(globeSource).toContain("sourceMode === 'auto' ? 'AUTO — najlepsze dostępne' : 'Ręczny wybór'")
+  })
 })
