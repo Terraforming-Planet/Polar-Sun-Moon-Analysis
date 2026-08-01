@@ -20,7 +20,19 @@ describe('chooseSatelliteSource', () => {
 })
 
 describe('zoomLevelFromDistance', () => {
-  it('increases the logical zoom as the camera approaches Earth', () => {
-    expect(zoomLevelFromDistance(2.3)).toBeGreaterThan(zoomLevelFromDistance(12))
+  it('increases logical zoom as altitude above the surface decreases', () => {
+    expect(zoomLevelFromDistance(2.05)).toBeGreaterThan(zoomLevelFromDistance(8))
+  })
+
+  it('reaches local-detail LOD close to the surface on desktop', () => {
+    expect(zoomLevelFromDistance(2.05)).toBeGreaterThanOrEqual(18)
+  })
+
+  it('keeps a conservative maximum on mobile devices', () => {
+    expect(zoomLevelFromDistance(2.0001, 2, true)).toBe(16)
+  })
+
+  it('does not report high LOD for full-disc views', () => {
+    expect(zoomLevelFromDistance(40)).toBeLessThanOrEqual(2)
   })
 })
