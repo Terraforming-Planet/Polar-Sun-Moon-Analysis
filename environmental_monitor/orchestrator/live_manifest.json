@@ -13,9 +13,9 @@
       "command": [
         "bash",
         "-lc",
-        "python copernicus_pipeline/build_frame_manifest.py --bbox ${TP_BBOX:-14 49 24 55} --start $(date -u -d '2 days ago' +%Y-%m-%dT%H:%M:%SZ) --end $(date -u +%Y-%m-%dT%H:%M:%SZ) --limit ${TP_FRAME_LIMIT:-100}"
+        "python copernicus_pipeline/build_frame_manifest.py --bbox ${TP_BBOX:-14 49 24 55} --start $(date -u -d '2 days ago' +%Y-%m-%dT%H:%M:%SZ) --end $(date -u +%Y-%m-%dT%H:%M:%SZ) --limit ${TP_FRAME_LIMIT:-100} && bash scripts/publish_copernicus_manifest.sh"
       ],
-      "output_path": "/home/jovyan/mystorage/terraforming-planet/frames/latest.json"
+      "output_path": "web/public/data/copernicus/latest.json"
     }
   ]
 }
