@@ -40,12 +40,18 @@ export function isFirePoint(feature: HazardFeatureLike): boolean {
     && isFiniteCoordinatePair(feature.geometry.coordinates)
 }
 
+export function selectFirePoints(
+  catalog: HazardCatalogLike | null | undefined,
+): HazardFeatureLike[] {
+  const features = Array.isArray(catalog?.features) ? catalog.features : []
+  return features.filter(isFirePoint)
+}
+
 export function summarizeFireCatalog(
   catalog: HazardCatalogLike | null | undefined,
   nowMs = Date.now(),
 ): FireCatalogSummary {
-  const features = Array.isArray(catalog?.features) ? catalog.features : []
-  const pointCount = features.filter(isFirePoint).length
+  const pointCount = selectFirePoints(catalog).length
   const generatedAtUtc = catalog?.generated_at_utc ?? catalog?.generatedUtc ?? null
   const generatedMs = generatedAtUtc ? Date.parse(generatedAtUtc) : Number.NaN
   const ageHours = Number.isFinite(generatedMs)
