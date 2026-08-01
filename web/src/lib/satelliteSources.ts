@@ -113,7 +113,17 @@ export function sourceForMode(mode: SatelliteSourceMode, context: SourceContext)
   return SATELLITE_SOURCES.find(source => source.id === mode) ?? chooseSatelliteSource(context)
 }
 
-export function zoomLevelFromDistance(distance: number): number {
-  if (!Number.isFinite(distance) || distance <= 0) return 0
-  return Math.max(0, Math.min(22, Math.round(18 - Math.log2(distance * 32))))
+export function zoomLevelFromDistance(
+  distanceFromCenter: number,
+  earthRadius = 2,
+  mobile = false,
+): number {
+  if (!Number.isFinite(distanceFromCenter) || !Number.isFinite(earthRadius) || earthRadius <= 0) return 0
+
+  const altitude = Math.max(distanceFromCenter - earthRadius, earthRadius / 4096)
+  const normalizedAltitude = altitude / earthRadius
+  const rawZoom = Math.round(8 - 2 * Math.log2(normalizedAltitude))
+  const maximumZoom = mobile ? 16 : 22
+
+  return Math.max(0, Math.min(maximumZoom, rawZoom))
 }
