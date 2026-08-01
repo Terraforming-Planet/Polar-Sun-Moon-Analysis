@@ -24,6 +24,24 @@ export type SourceContext = {
   floodMode?: boolean
 }
 
+export type SourceObservation = {
+  observedAtUtc?: string | null
+  cloudCoverPercent?: number | null
+  hasCoverage?: boolean
+  tilesConnected?: boolean
+}
+
+export type SatelliteSourceStatus = {
+  source: string
+  product: string
+  observationTime: string
+  age: string
+  resolution: string
+  cloudCover: string
+  coverage: string
+  rendering: string
+}
+
 export const SATELLITE_SOURCES: SatelliteSource[] = [
   {
     id: 'nasa-gibs',
@@ -111,6 +129,31 @@ export function chooseSatelliteSource(context: SourceContext): SatelliteSource {
 export function sourceForMode(mode: SatelliteSourceMode, context: SourceContext): SatelliteSource {
   if (mode === 'auto') return chooseSatelliteSource(context)
   return SATELLITE_SOURCES.find(source => source.id === mode) ?? chooseSatelliteSource(context)
+}
+
+export function formatSatelliteSourceStatus(
+  source: SatelliteSource,
+  observation: SourceObservation = {},
+  nowMs = Date.now(),
+): SatelliteSourceStatus {
+  const observedMs = observation.observedAtUtc ? Date.parse(observation.observedAtUtc) : Number.NaN
+  const ageHours = Number.isFinite(observedMs) ? Math.max(0, (nowMs - observedMs) / 3_600_000) : null
+  const cloudCover = observation.cloudCoverPercent
+
+  return {
+    source: `${source.label} · ${source.provider}`,
+    product: source.product,
+    observationTime: Number.isFinite(observedMs) ? new Date(observedMs).toISOString() : 'brak czasu obserwacji',
+    age: ageHours === null ? 'wiek nieznany' : ageHours < 1 ? `${Math.round(ageHours * 60)} min` : `${ageHours.toFixed(1)} h`,
+    resolution: `około ${source.resolutionMeters} m/piksel`,
+    cloudCover: source.cloudIndependent
+      ? 'niezależne od zachmurzenia'
+      : Number.isFinite(cloudCover)
+        ? `${Math.max(0, Math.min(100, cloudCover as number)).toFixed(0)}%`
+        : 'brak metadanych o zachmurzeniu',
+    coverage: observation.hasCoverage === false ? 'brak pokrycia wybranego obszaru' : observation.hasCoverage === true ? 'pokrycie potwierdzone' : 'pokrycie niezweryfikowane',
+    rendering: observation.tilesConnected ? 'kafle źródłowe są podłączone' : 'wybrane źródło — renderer nadal używa tekstury bazowej 2K',
+  }
 }
 
 export function zoomLevelFromDistance(
