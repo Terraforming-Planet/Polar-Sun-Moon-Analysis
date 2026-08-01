@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { SatelliteSourceStatusPanel } from './SatelliteSourceStatusPanel'
 import { readEarthModel, writeEarthModel, type EarthModel } from './lib/earthPreferences'
 import { latLonToCartesian } from './lib/wgs84'
 import {
@@ -372,11 +373,16 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
       <button type="button" className={sourceMode === 'auto' ? 'is-active' : ''} onClick={() => setSourceMode('auto')}>AUTO — najlepsze dostępne</button>
       {SATELLITE_SOURCES.map(source => <button key={source.id} type="button" className={sourceMode === source.id ? 'is-active' : ''} onClick={() => setSourceMode(source.id)}>{source.label}</button>)}
     </div>
+    <SatelliteSourceStatusPanel
+      source={selectedSource}
+      observation={{ observedAtUtc: selectedTime, hasCoverage: true, tilesConnected: false }}
+      logicalZoom={logicalZoom}
+      modeLabel={sourceMode === 'auto' ? 'AUTO — najlepsze dostępne' : 'Ręczny wybór'}
+    />
     <p className="earth-model-explainer">
       <strong>{status}</strong><br/>
       Markery zagrożeń są renderowane jednym GPU InstancedMesh: <strong>{renderedMarkers.length}</strong> z {markers.length} poprawnych lub dostarczonych rekordów.
-      <br/>Aktywny wybór LOD {logicalZoom}: <strong>{selectedSource.label}</strong> · {selectedSource.product} · około {selectedSource.resolutionMeters} m/piksel.
-      <br/>Przełączniki obrotu, chmur, atmosfery, siatki i oświetlenia aktualizują istniejącą scenę WebGL bez niszczenia canvasa. Obraz nadal pozostaje teksturą bazową 2K do czasu podłączenia renderera kafelkowego.
+      <br/>Przełączniki obrotu, chmur, atmosfery, siatki i oświetlenia aktualizują istniejącą scenę WebGL bez niszczenia canvasa.
     </p>
     <div className="stable-earth-shell">
       <div className="stable-earth-head"><strong>{model === 'scientific' ? 'Ziemia — elipsoida WGS84' : 'Ziemia — kula porównawcza'}</strong><span>{viewSettings[view].label} · {new Date(selectedTime).toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span></div>
