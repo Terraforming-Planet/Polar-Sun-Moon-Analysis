@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { cameraPresetFor, EARTH_CAMERA_PRESETS, type EarthViewPreset } from './lib/cameraPresets'
 import { readEarthModel, writeEarthModel, type EarthModel } from './lib/earthPreferences'
+import { createRotationClock, type RotationClock } from './lib/rotationClock'
 import { latLonToCartesian } from './lib/wgs84'
 import {
   SATELLITE_SOURCES,
@@ -13,22 +15,13 @@ import './stable-earth-globe.css'
 
 type Marker = { longitude: number; latitude: number; color?: number; radius?: number }
 type Props = { textureUrl?: string; selectedTime: string; markers?: Marker[]; autoRotate?: boolean }
-type ViewPreset = 'full' | 'moon' | 'greenwich' | 'dateline' | 'north' | 'south'
 
 const EARTH_RADIUS = 2
 const POLAR_RATIO = 6_356_752.314245 / 6_378_137
 const DEFAULT_EARTH_TEXTURE = 'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg'
 const DEFAULT_CLOUD_TEXTURE = 'https://threejs.org/examples/textures/planets/earth_clouds_1024.png'
 const SIDEREAL_DAY_SECONDS = 86_164.0905
-
-const viewSettings: Record<ViewPreset, { position: [number, number, number]; fov: number; label: string }> = {
-  full: { position: [0, 0.18, 6.1], fov: 42, label: 'Pełna tarcza Ziemi' },
-  moon: { position: [0, 0.12, 12.5], fov: 18, label: 'Widok z okolic Księżyca' },
-  greenwich: { position: [0, 0.15, 5.4], fov: 38, label: 'Południk Greenwich' },
-  dateline: { position: [0, 0.15, -5.4], fov: 38, label: 'Linia zmiany daty' },
-  north: { position: [0, 6.2, 0.01], fov: 38, label: 'Biegun północny' },
-  south: { position: [0, -6.2, 0.01], fov: 38, label: 'Biegun południowy' },
-}
+const ROTATION_SPEED = Math.PI * 2 / SIDEREAL_DAY_SECONDS
 
 function utcEarthAngle(iso: string) {
   const ms = Date.parse(iso)
@@ -41,6 +34,14 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
   const host = useRef<HTMLDivElement>(null)
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null)
   const controlsRef = useRef<OrbitControls | null>(null)
+  const rotationClockRef = useRef<RotationClock | null>(null)
+  const cloudsRef = useRef<THREE.Mesh | null>(null)
+  const gridRef = useRef<THREE.Mesh | null>(null)
+  const atmosphereRef = useRef<THREE.Group | null>(null)
+  const hemisphereRef = useRef<THREE.HemisphereLight | null>(null)
+  const sunlightRef = useRef<THREE.DirectionalLight | null>(null)
+  const fillRef = useRef<THREE.DirectionalLight | null>(null)
+
   const [model, setModel] = useState<EarthModel>('scientific')
   const [status, setStatus] = useState('Uruchamianie modelu 3D…')
   const [showClouds, setShowClouds] = useState(true)
@@ -48,7 +49,7 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
   const [showAtmosphere, setShowAtmosphere] = useState(true)
   const [showDayNight, setShowDayNight] = useState(true)
   const [rotationEnabled, setRotationEnabled] = useState(autoRotate)
-  const [view, setView] = useState<ViewPreset>('full')
+  const [view, setView] = useState<EarthViewPreset>('full')
   const [sourceMode, setSourceMode] = useState<SatelliteSourceMode>('auto')
   const [logicalZoom, setLogicalZoom] = useState(4)
 
@@ -61,6 +62,40 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
   useEffect(() => {
     try { setModel(readEarthModel()) } catch { setModel('scientific') }
   }, [])
+
+  useEffect(() => {
+    rotationClockRef.current?.setEnabled(rotationEnabled)
+  }, [rotationEnabled])
+
+  useEffect(() => {
+    if (cloudsRef.current) cloudsRef.current.visible = showClouds
+  }, [showClouds])
+
+  useEffect(() => {
+    if (gridRef.current) gridRef.current.visible = showGrid
+  }, [showGrid])
+
+  useEffect(() => {
+    if (atmosphereRef.current) atmosphereRef.current.visible = showAtmosphere
+  }, [showAtmosphere])
+
+  useEffect(() => {
+    if (hemisphereRef.current) hemisphereRef.current.intensity = showDayNight ? 0.34 : 1.35
+    if (sunlightRef.current) sunlightRef.current.intensity = showDayNight ? 3.15 : 1.9
+    if (fillRef.current) fillRef.current.intensity = showDayNight ? 0.08 : 0.52
+  }, [showDayNight])
+
+  useEffect(() => {
+    const camera = cameraRef.current
+    const controls = controlsRef.current
+    if (!camera || !controls) return
+    const preset = cameraPresetFor(view)
+    camera.position.set(...preset.position)
+    camera.fov = preset.fov
+    camera.updateProjectionMatrix()
+    controls.target.set(...preset.target)
+    controls.update()
+  }, [view])
 
   useEffect(() => {
     const element = host.current
@@ -83,7 +118,7 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
       element.appendChild(renderer.domElement)
 
       const scene = new THREE.Scene()
-      const preset = viewSettings[view]
+      const preset = cameraPresetFor(view)
       const camera = new THREE.PerspectiveCamera(preset.fov, 1, 0.01, 100)
       camera.position.set(...preset.position)
       cameraRef.current = camera
@@ -99,7 +134,7 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
       controls.minDistance = 2.05
       controls.maxDistance = 40
       controls.autoRotate = false
-      controls.target.set(0, 0, 0)
+      controls.target.set(...preset.target)
       controls.update()
 
       const updateLogicalZoom = () => {
@@ -134,6 +169,7 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
       const clouds = new THREE.Mesh(new THREE.SphereGeometry(EARTH_RADIUS * 1.009, 128, 96), cloudMaterial)
       clouds.scale.copy(earth.scale)
       clouds.visible = showClouds
+      cloudsRef.current = clouds
       scene.add(clouds)
 
       const grid = new THREE.Mesh(
@@ -142,29 +178,35 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
       )
       grid.scale.copy(earth.scale)
       grid.visible = showGrid
+      gridRef.current = grid
       scene.add(grid)
 
       const atmosphere = new THREE.Group()
       const inner = new THREE.Mesh(
-        new THREE.SphereGeometry(EARTH_RADIUS * 1.045, 128, 96),
-        new THREE.MeshBasicMaterial({ color: 0x38a9ff, transparent: true, opacity: 0.24, side: THREE.BackSide, depthWrite: false }),
+        new THREE.SphereGeometry(EARTH_RADIUS * 1.055, 128, 96),
+        new THREE.MeshBasicMaterial({ color: 0x38a9ff, transparent: true, opacity: 0.34, side: THREE.BackSide, depthWrite: false }),
       )
       const outer = new THREE.Mesh(
-        new THREE.SphereGeometry(EARTH_RADIUS * 1.075, 96, 64),
-        new THREE.MeshBasicMaterial({ color: 0x7bd5ff, transparent: true, opacity: 0.07, side: THREE.BackSide, depthWrite: false }),
+        new THREE.SphereGeometry(EARTH_RADIUS * 1.095, 96, 64),
+        new THREE.MeshBasicMaterial({ color: 0x7bd5ff, transparent: true, opacity: 0.12, side: THREE.BackSide, depthWrite: false }),
       )
       inner.scale.copy(earth.scale)
       outer.scale.copy(earth.scale)
       atmosphere.add(inner, outer)
       atmosphere.visible = showAtmosphere
+      atmosphereRef.current = atmosphere
       scene.add(atmosphere)
 
-      scene.add(new THREE.HemisphereLight(0xcfeeff, 0x020711, showDayNight ? 0.34 : 1.35))
+      const hemisphere = new THREE.HemisphereLight(0xcfeeff, 0x020711, showDayNight ? 0.34 : 1.35)
+      hemisphereRef.current = hemisphere
+      scene.add(hemisphere)
       const sunlight = new THREE.DirectionalLight(0xffffff, showDayNight ? 3.15 : 1.9)
       sunlight.position.set(5, 2.2, 6)
+      sunlightRef.current = sunlight
       scene.add(sunlight)
       const fill = new THREE.DirectionalLight(0x6ca8ff, showDayNight ? 0.08 : 0.52)
       fill.position.set(-5, -1, -5)
+      fillRef.current = fill
       scene.add(fill)
 
       for (const marker of markers.slice(0, 600)) {
@@ -198,18 +240,18 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
       window.addEventListener('resize', resize)
       resize()
 
-      const initialAngle = utcEarthAngle(selectedTime) - Math.PI / 2
-      let liveAngle = initialAngle
+      const clock = createRotationClock(utcEarthAngle(selectedTime) - Math.PI / 2, ROTATION_SPEED, rotationEnabled)
+      rotationClockRef.current = clock
       let previous = performance.now()
 
       const animate = (now: number) => {
         frame = requestAnimationFrame(animate)
         const elapsedSeconds = Math.max(0, (now - previous) / 1000)
         previous = now
-        if (rotationEnabled) liveAngle += elapsedSeconds * (Math.PI * 2 / SIDEREAL_DAY_SECONDS)
-        earth.rotation.y = liveAngle
-        clouds.rotation.y = liveAngle
-        grid.rotation.y = liveAngle
+        const angle = clock.advance(elapsedSeconds)
+        earth.rotation.y = angle
+        clouds.rotation.y = angle
+        grid.rotation.y = angle
         controls?.update()
         renderer?.render(scene, camera)
       }
@@ -223,6 +265,13 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
         controls?.dispose()
         controlsRef.current = null
         cameraRef.current = null
+        rotationClockRef.current = null
+        cloudsRef.current = null
+        gridRef.current = null
+        atmosphereRef.current = null
+        hemisphereRef.current = null
+        sunlightRef.current = null
+        fillRef.current = null
         scene.traverse(object => {
           if (object instanceof THREE.Mesh) {
             object.geometry.dispose()
@@ -244,7 +293,7 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
         renderer?.dispose()
       }
     }
-  }, [model, markers, textureUrl, selectedTime, showClouds, showGrid, showAtmosphere, showDayNight, view, rotationEnabled])
+  }, [model, markers, textureUrl, selectedTime])
 
   const selectModel = (next: EarthModel) => {
     setModel(next)
@@ -267,10 +316,10 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
       <button type="button" className={model === 'legacy' ? 'is-active' : ''} onClick={() => selectModel('legacy')}>Legacy sphere</button>
     </div>
     <div className="earth-view-presets" role="group" aria-label="Widoki kamery Ziemi">
-      {(Object.keys(viewSettings) as ViewPreset[]).map(key => <button key={key} type="button" className={view === key ? 'is-active' : ''} onClick={() => setView(key)}>{viewSettings[key].label}</button>)}
+      {(Object.keys(EARTH_CAMERA_PRESETS) as EarthViewPreset[]).map(key => <button key={key} type="button" className={view === key ? 'is-active' : ''} onClick={() => setView(key)}>{EARTH_CAMERA_PRESETS[key].label}</button>)}
     </div>
     <div className="earth-layer-switch" role="group" aria-label="Warstwy modelu Ziemi">
-      <button type="button" className={rotationEnabled ? 'is-active' : ''} onClick={() => setRotationEnabled(value => !value)}>{rotationEnabled ? '⏸ Zatrzymaj Ziemię i chmury' : '▶ Wznów synchronizację'}</button>
+      <button type="button" className={rotationEnabled ? 'is-active' : ''} onClick={() => setRotationEnabled(value => !value)}>{rotationEnabled ? '⏸ Zatrzymaj obrót' : '▶ Wznów obrót'}</button>
       <button type="button" className={showClouds ? 'is-active' : ''} onClick={() => setShowClouds(value => !value)}>Chmury</button>
       <button type="button" className={showAtmosphere ? 'is-active' : ''} onClick={() => setShowAtmosphere(value => !value)}>Atmosfera</button>
       <button type="button" className={showGrid ? 'is-active' : ''} onClick={() => setShowGrid(value => !value)}>Siatka</button>
@@ -286,12 +335,12 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
     <p className="earth-model-explainer">
       <strong>{status}</strong><br/>
       Aktywny wybór LOD {logicalZoom}: <strong>{selectedSource.label}</strong> · {selectedSource.product} · około {selectedSource.resolutionMeters} m/piksel.
-      <br/>Przyciski źródeł zmieniają teraz rzeczywisty stan wyboru i AUTO reaguje na zoom. Obraz nadal pozostaje teksturą bazową 2K do czasu podłączenia prawdziwego renderera kafelkowego; aplikacja nie udaje obrazu na żywo.
+      <br/>Przyciski źródeł zmieniają rzeczywisty stan wyboru i AUTO reaguje na zoom. Obraz nadal pozostaje teksturą bazową 2K do czasu podłączenia prawdziwego renderera kafelkowego; aplikacja nie udaje obrazu na żywo.
     </p>
     <div className="stable-earth-shell">
-      <div className="stable-earth-head"><strong>{model === 'scientific' ? 'Ziemia — elipsoida WGS84' : 'Ziemia — kula porównawcza'}</strong><span>{viewSettings[view].label} · {new Date(selectedTime).toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span></div>
+      <div className="stable-earth-head"><strong>{model === 'scientific' ? 'Ziemia — elipsoida WGS84' : 'Ziemia — kula porównawcza'}</strong><span>{EARTH_CAMERA_PRESETS[view].label} · {new Date(selectedTime).toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span></div>
       <div ref={host} className="stable-earth-canvas" />
-      <p className="muted earth-imagery-credit">Orientacja Ziemi i chmur jest liczona z wybranego czasu UTC i zatrzymuje się wspólnie. To nadal model 3D oparty na teksturze, nie ciągły przekaz satelitarny.</p>
+      <p className="muted earth-imagery-credit">Orientacja Ziemi i chmur jest liczona z wybranego czasu UTC. Pauza zatrzymuje zegar obrotu bez niszczenia sceny WebGL.</p>
     </div>
   </section>
 }
