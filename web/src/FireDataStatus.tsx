@@ -20,6 +20,7 @@ type FireDataStatusProps = {
 
 type FireFeedFreshness = 'current' | 'stale' | 'missing' | 'invalid-future'
 type FirePointAvailability = 'available' | 'empty-published-file' | 'unavailable'
+type FireMetadataConsistency = 'consistent' | 'observation-after-publication' | 'unknown'
 
 const FIRE_CATEGORY_NAMES = new Set(['fire', 'wildfire', 'wildfires'])
 const STALE_AFTER_HOURS = 24
@@ -77,6 +78,14 @@ export function resolveFirePointAvailability(
   return 'unavailable'
 }
 
+export function resolveFireMetadataConsistency(
+  generatedMs: number,
+  latestObservationMs: number,
+): FireMetadataConsistency {
+  if (!Number.isFinite(generatedMs) || !Number.isFinite(latestObservationMs)) return 'unknown'
+  return latestObservationMs > generatedMs ? 'observation-after-publication' : 'consistent'
+}
+
 export function fireFeedSummary(
   features: HazardFeature[] = [],
   generatedAtUtc?: string,
@@ -107,6 +116,7 @@ export function fireFeedSummary(
     observationAgeHours: observationAge.ageHours,
     observationIsFuture: observationAge.isFuture,
     observationFreshness,
+    metadataConsistency: resolveFireMetadataConsistency(generatedMs, latestObservationMs),
   }
 }
 
@@ -145,6 +155,12 @@ function pointAvailabilityLabel(value: FirePointAvailability): string {
   return 'nie można potwierdzić stanu punktów bez poprawnych metadanych pliku'
 }
 
+function metadataConsistencyLabel(value: FireMetadataConsistency): string {
+  if (value === 'consistent') return 'czas obserwacji nie przekracza czasu publikacji'
+  if (value === 'observation-after-publication') return 'niespójne metadane — obserwacja jest późniejsza niż publikacja katalogu'
+  return 'nie można porównać czasów publikacji i obserwacji'
+}
+
 export function FireDataStatus({
   features = [],
   generatedAtUtc,
@@ -166,6 +182,7 @@ export function FireDataStatus({
     <div className="fact"><span>Wiek najnowszej obserwacji</span><b>{formatAge(summary.observationAgeHours, summary.observationIsFuture)}</b></div>
     <div className="fact"><span>Czas publikacji katalogu</span><b>{formatUtc(summary.generatedAtUtc)}</b></div>
     <div className="fact"><span>Wiek pliku</span><b>{formatAge(summary.ageHours, summary.generatedAtIsFuture)}</b></div>
+    <div className="fact"><span>Spójność czasów</span><b>{metadataConsistencyLabel(summary.metadataConsistency)}</b></div>
     <p className="muted">Licznik obejmuje wyłącznie geometrie punktowe zaklasyfikowane jako pożar w ostatnim opublikowanym pliku źródłowym. Zero oznacza brak takich punktów w tym konkretnym pliku tylko wtedy, gdy plik ma poprawny czas publikacji. Nie jest to ciągły obraz czasu rzeczywistego; liczba zmienia się dopiero po publikacji nowego katalogu.</p>
   </aside>
 }
