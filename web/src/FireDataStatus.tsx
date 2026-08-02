@@ -18,10 +18,12 @@ type FireDataStatusProps = {
   sourceLabel?: string
 }
 
+const FIRE_CATEGORY_NAMES = new Set(['fire', 'wildfire', 'wildfires'])
+
 export function isFireFeature(feature: HazardFeature): boolean {
   return (feature.properties?.categories ?? []).some(category => {
-    const normalized = category.toLowerCase()
-    return normalized.includes('fire') || normalized.includes('wildfire')
+    const normalized = category.trim().toLowerCase()
+    return FIRE_CATEGORY_NAMES.has(normalized)
   })
 }
 
