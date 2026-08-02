@@ -6,6 +6,7 @@ import {
   isFireFeature,
   isPublishedFirePoint,
   resolveFireFeedFreshness,
+  resolveFirePointAvailability,
   resolveHazardGeneratedAt,
 } from './FireDataStatus'
 
@@ -20,6 +21,7 @@ describe('FireDataStatus', () => {
     const summary = fireFeedSummary(features, '2026-08-01T20:00:00Z', Date.parse('2026-08-02T00:00:00Z'))
 
     expect(summary.pointCount).toBe(2)
+    expect(summary.pointAvailability).toBe('available')
     expect(summary.ageHours).toBe(4)
     expect(summary.generatedAtIsFuture).toBe(false)
     expect(summary.freshness).toBe('current')
@@ -139,6 +141,7 @@ describe('FireDataStatus', () => {
     expect(html).toContain('Źródło katalogu')
     expect(html).toContain('NASA EONET')
     expect(html).toContain('aktualny opublikowany plik (≤ 24 h)')
+    expect(html).toContain('punkty pożarowe dostępne')
     expect(html).toContain('najnowsza obserwacja ma ≤ 24 h')
     expect(html).toContain('Aktywne punkty w pliku')
     expect(html).toContain('>2<')
@@ -148,6 +151,26 @@ describe('FireDataStatus', () => {
     expect(html).toContain('4.0 h')
     expect(html).toContain('wyłącznie geometrie punktowe')
     expect(html).toContain('Nie jest to ciągły obraz czasu rzeczywistego')
+  })
+
+  it('distinguishes a published zero-point file from unavailable feed metadata', () => {
+    expect(resolveFirePointAvailability(0, 'current')).toBe('empty-published-file')
+    expect(resolveFirePointAvailability(0, 'stale')).toBe('empty-published-file')
+    expect(resolveFirePointAvailability(0, 'missing')).toBe('unavailable')
+    expect(resolveFirePointAvailability(0, 'invalid-future')).toBe('unavailable')
+
+    const emptyPublishedHtml = renderToStaticMarkup(
+      <FireDataStatus
+        features={[]}
+        generatedAtUtc="2026-08-01T23:00:00Z"
+        nowMs={Date.parse('2026-08-02T00:00:00Z')}
+      />,
+    )
+    const unavailableHtml = renderToStaticMarkup(<FireDataStatus features={[]} />)
+
+    expect(emptyPublishedHtml).toContain('opublikowany plik nie zawiera punktów pożarowych')
+    expect(emptyPublishedHtml).toContain('>0<')
+    expect(unavailableHtml).toContain('nie można potwierdzić stanu punktów bez poprawnych metadanych pliku')
   })
 
   it('allows the published source label to be overridden by the feed adapter', () => {
