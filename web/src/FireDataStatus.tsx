@@ -155,7 +155,7 @@ export function FireDataStatus({
   const resolvedGeneratedAt = resolveHazardGeneratedAt(generatedAtUtc, generatedUtc)
   const summary = fireFeedSummary(features, resolvedGeneratedAt, nowMs)
 
-  return <aside className="panel fire-data-status" aria-label="Stan danych pożarowych">
+  return <aside className="panel fire-data-status" aria-label="Stan danych pożarowych" aria-live="polite" aria-atomic="true">
     <h2>Stan opublikowanego pliku pożarów</h2>
     <div className="fact"><span>Źródło katalogu</span><b>{sourceLabel}</b></div>
     <div className="fact"><span>Stan świeżości pliku</span><b>{freshnessLabel(summary.freshness)}</b></div>
