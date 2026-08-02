@@ -16,6 +16,16 @@ describe('RealisticEarthGlobe scene lifecycle', () => {
     expect(globeSource).toContain('if (rotationEnabledRef.current)')
   })
 
+  it('preserves the current Earth angle while paused and resumes from that angle', () => {
+    expect(globeSource).toContain('const liveAngleRef = useRef(utcEarthAngle(selectedTime) - Math.PI / 2)')
+    expect(globeSource).toContain('liveAngleRef.current += elapsedSeconds * (Math.PI * 2 / SIDEREAL_DAY_SECONDS)')
+    expect(globeSource).toContain('earth.rotation.y = liveAngleRef.current')
+    expect(globeSource).toContain('clouds.rotation.y = liveAngleRef.current')
+    expect(globeSource).toContain('grid.rotation.y = liveAngleRef.current')
+    expect(globeSource).not.toContain('earth.rotation.y +=')
+    expect(globeSource).not.toContain('clouds.rotation.y +=')
+  })
+
   it('moves camera presets without reconstructing the renderer', () => {
     expect(globeSource).toContain('camera.position.set(...preset.position)')
     expect(globeSource).toContain('camera.updateProjectionMatrix()')
