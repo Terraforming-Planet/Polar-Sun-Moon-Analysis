@@ -11,7 +11,7 @@ type HazardFeature = {
 }
 
 type FireDataStatusProps = {
-  features?: HazardFeature[]
+  features?: unknown
   generatedAtUtc?: string
   generatedUtc?: string
   nowMs?: number
@@ -27,16 +27,27 @@ const FIRE_CATEGORY_NAMES = new Set(['fire', 'wildfire', 'wildfires'])
 const STALE_AFTER_HOURS = 24
 const DEFAULT_FIRE_SOURCE_LABEL = 'NASA EONET'
 
-export function isFireFeature(feature: HazardFeature): boolean {
-  return (feature.properties?.categories ?? []).some(category => {
+function asHazardFeature(value: unknown): HazardFeature | null {
+  return value !== null && typeof value === 'object' ? value as HazardFeature : null
+}
+
+export function isFireFeature(feature: unknown): boolean {
+  const hazardFeature = asHazardFeature(feature)
+  if (!hazardFeature) return false
+
+  const categories = hazardFeature.properties?.categories
+  if (!Array.isArray(categories)) return false
+
+  return categories.some(category => {
     if (typeof category !== 'string') return false
     const normalized = category.trim().toLowerCase()
     return FIRE_CATEGORY_NAMES.has(normalized)
   })
 }
 
-export function isPublishedFirePoint(feature: HazardFeature): boolean {
-  return feature.geometry?.type === 'Point' && isFireFeature(feature)
+export function isPublishedFirePoint(feature: unknown): boolean {
+  const hazardFeature = asHazardFeature(feature)
+  return hazardFeature?.geometry?.type === 'Point' && isFireFeature(hazardFeature)
 }
 
 export function resolveHazardGeneratedAt(
@@ -100,14 +111,15 @@ export function resolveFireMetadataConsistency(
 }
 
 export function fireFeedSummary(
-  features: HazardFeature[] = [],
+  features: unknown = [],
   generatedAtUtc?: string,
   nowMs = Date.now(),
 ) {
-  const firePoints = features.filter(isPublishedFirePoint)
+  const featureCollection = Array.isArray(features) ? features : []
+  const firePoints = featureCollection.filter(isPublishedFirePoint)
   const generatedMs = generatedAtUtc ? Date.parse(generatedAtUtc) : Number.NaN
   const latestObservationUtc = newestValidTimestamp(
-    firePoints.map(feature => feature.properties?.observation_time),
+    firePoints.map(feature => asHazardFeature(feature)?.properties?.observation_time),
   )
   const latestObservationMs = latestObservationUtc ? Date.parse(latestObservationUtc) : Number.NaN
   const generatedAge = timestampAge(generatedMs, nowMs)
