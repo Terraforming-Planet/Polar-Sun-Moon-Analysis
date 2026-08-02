@@ -26,6 +26,7 @@ describe('FireDataStatus', () => {
     expect(summary.latestObservationUtc).toBe('2026-08-01T18:30:00Z')
     expect(summary.observationAgeHours).toBe(5.5)
     expect(summary.observationIsFuture).toBe(false)
+    expect(summary.observationFreshness).toBe('current')
     expect(isFireFeature(features[2])).toBe(false)
   })
 
@@ -65,6 +66,7 @@ describe('FireDataStatus', () => {
     expect(summary.latestObservationUtc).toBeNull()
     expect(summary.observationAgeHours).toBeNull()
     expect(summary.observationIsFuture).toBe(false)
+    expect(summary.observationFreshness).toBe('missing')
   })
 
   it('prefers the snake_case catalog timestamp and supports the legacy camelCase field', () => {
@@ -89,9 +91,40 @@ describe('FireDataStatus', () => {
     )
     const missingHtml = renderToStaticMarkup(<FireDataStatus features={features} />)
 
-    expect(staleHtml).toContain('Stan świeżości')
+    expect(staleHtml).toContain('Stan świeżości pliku')
     expect(staleHtml).toContain('plik starszy niż 24 h')
     expect(missingHtml).toContain('brak poprawnego czasu publikacji')
+  })
+
+  it('classifies observation freshness independently from catalog publication freshness', () => {
+    const staleObservationFeatures = [
+      { geometry: { type: 'Point' }, properties: { categories: ['Fire'], observation_time: '2026-07-31T23:59:00Z' } },
+    ]
+    const html = renderToStaticMarkup(
+      <FireDataStatus
+        features={staleObservationFeatures}
+        generatedAtUtc="2026-08-01T23:00:00Z"
+        nowMs={Date.parse('2026-08-02T00:00:00Z')}
+      />,
+    )
+
+    expect(html).toContain('aktualny opublikowany plik (≤ 24 h)')
+    expect(html).toContain('Stan świeżości obserwacji')
+    expect(html).toContain('najnowsza obserwacja ma ponad 24 h')
+  })
+
+  it('treats an observation exactly 24 hours old as current', () => {
+    const boundaryFeatures = [
+      { geometry: { type: 'Point' }, properties: { categories: ['Wildfire'], observation_time: '2026-08-01T00:00:00Z' } },
+    ]
+    const summary = fireFeedSummary(
+      boundaryFeatures,
+      '2026-08-01T23:00:00Z',
+      Date.parse('2026-08-02T00:00:00Z'),
+    )
+
+    expect(summary.observationAgeHours).toBe(24)
+    expect(summary.observationFreshness).toBe('current')
   })
 
   it('renders an explicit source, non-realtime disclosure, and separate ages', () => {
@@ -106,6 +139,7 @@ describe('FireDataStatus', () => {
     expect(html).toContain('Źródło katalogu')
     expect(html).toContain('NASA EONET')
     expect(html).toContain('aktualny opublikowany plik (≤ 24 h)')
+    expect(html).toContain('najnowsza obserwacja ma ≤ 24 h')
     expect(html).toContain('Aktywne punkty w pliku')
     expect(html).toContain('>2<')
     expect(html).toContain('Najnowsza obserwacja punktu')
@@ -158,6 +192,7 @@ describe('FireDataStatus', () => {
     expect(summary.freshness).toBe('invalid-future')
     expect(summary.observationAgeHours).toBe(0)
     expect(summary.observationIsFuture).toBe(true)
+    expect(summary.observationFreshness).toBe('invalid-future')
 
     const html = renderToStaticMarkup(
       <FireDataStatus
@@ -167,7 +202,7 @@ describe('FireDataStatus', () => {
       />,
     )
 
-    expect(html).toContain('błędny czas w przyszłości')
+    expect(html.match(/błędny czas w przyszłości/g)).toHaveLength(2)
     expect(html.match(/czas przyszły — sprawdź zegar lub metadane/g)).toHaveLength(2)
     expect(html).not.toContain('0.0 h')
   })
