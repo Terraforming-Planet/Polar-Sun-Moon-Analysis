@@ -24,6 +24,7 @@ type FireMetadataConsistency = 'consistent' | 'observation-after-publication' | 
 
 const FIRE_CATEGORY_NAMES = new Set(['fire', 'wildfire', 'wildfires'])
 const STALE_AFTER_HOURS = 24
+const DEFAULT_FIRE_SOURCE_LABEL = 'NASA EONET'
 
 export function isFireFeature(feature: HazardFeature): boolean {
   return (feature.properties?.categories ?? []).some(category => {
@@ -42,6 +43,11 @@ export function resolveHazardGeneratedAt(
   generatedUtc?: string,
 ): string | undefined {
   return generatedAtUtc || generatedUtc
+}
+
+export function resolveFireSourceLabel(sourceLabel?: string): string {
+  const normalized = sourceLabel?.trim()
+  return normalized || DEFAULT_FIRE_SOURCE_LABEL
 }
 
 function newestValidTimestamp(values: unknown[]): string | null {
@@ -168,14 +174,15 @@ export function FireDataStatus({
   generatedAtUtc,
   generatedUtc,
   nowMs = Date.now(),
-  sourceLabel = 'NASA EONET',
+  sourceLabel,
 }: FireDataStatusProps) {
   const resolvedGeneratedAt = resolveHazardGeneratedAt(generatedAtUtc, generatedUtc)
+  const resolvedSourceLabel = resolveFireSourceLabel(sourceLabel)
   const summary = fireFeedSummary(features, resolvedGeneratedAt, nowMs)
 
   return <aside className="panel fire-data-status" aria-label="Stan danych pożarowych" aria-live="polite" aria-atomic="true">
     <h2>Stan opublikowanego pliku pożarów</h2>
-    <div className="fact"><span>Źródło katalogu</span><b>{sourceLabel}</b></div>
+    <div className="fact"><span>Źródło katalogu</span><b>{resolvedSourceLabel}</b></div>
     <div className="fact"><span>Stan świeżości pliku</span><b>{freshnessLabel(summary.freshness)}</b></div>
     <div className="fact"><span>Dostępność punktów</span><b>{pointAvailabilityLabel(summary.pointAvailability)}</b></div>
     <div className="fact"><span>Aktywne punkty w pliku</span><b>{summary.pointCount}</b></div>
