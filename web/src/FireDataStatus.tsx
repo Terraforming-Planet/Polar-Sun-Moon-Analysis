@@ -15,6 +15,7 @@ type FireDataStatusProps = {
   generatedAtUtc?: string
   generatedUtc?: string
   nowMs?: number
+  sourceLabel?: string
 }
 
 export function isFireFeature(feature: HazardFeature): boolean {
@@ -94,12 +95,14 @@ export function FireDataStatus({
   generatedAtUtc,
   generatedUtc,
   nowMs = Date.now(),
+  sourceLabel = 'NASA EONET',
 }: FireDataStatusProps) {
   const resolvedGeneratedAt = resolveHazardGeneratedAt(generatedAtUtc, generatedUtc)
   const summary = fireFeedSummary(features, resolvedGeneratedAt, nowMs)
 
   return <aside className="panel fire-data-status" aria-label="Stan danych pożarowych">
     <h2>Stan opublikowanego pliku pożarów</h2>
+    <div className="fact"><span>Źródło katalogu</span><b>{sourceLabel}</b></div>
     <div className="fact"><span>Aktywne punkty w pliku</span><b>{summary.pointCount}</b></div>
     <div className="fact"><span>Najnowsza obserwacja punktu</span><b>{formatUtc(summary.latestObservationUtc)}</b></div>
     <div className="fact"><span>Wiek najnowszej obserwacji</span><b>{formatAge(summary.observationAgeHours, summary.observationIsFuture)}</b></div>
