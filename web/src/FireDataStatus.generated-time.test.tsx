@@ -28,6 +28,24 @@ describe('fire catalog generated timestamp compatibility', () => {
     expect(html).toContain('aktualny opublikowany plik')
   })
 
+  it('treats a blank current field as absent and uses the legacy timestamp', () => {
+    expect(resolveHazardGeneratedAt('   ', ' 2026-08-02T09:30:00Z '))
+      .toBe('2026-08-02T09:30:00Z')
+
+    const html = renderToStaticMarkup(
+      <FireDataStatus
+        features={[]}
+        generatedAtUtc="   "
+        generatedUtc=" 2026-08-02T09:30:00Z "
+        nowMs={Date.parse('2026-08-02T10:30:00Z')}
+      />,
+    )
+
+    expect(html).toContain('09:30:00 UTC')
+    expect(html).toContain('1.0 h')
+    expect(html).toContain('aktualny opublikowany plik')
+  })
+
   it('does not silently replace an invalid current timestamp with an older legacy timestamp', () => {
     expect(resolveHazardGeneratedAt('not-a-date', '2026-08-02T09:30:00Z'))
       .toBe('not-a-date')
