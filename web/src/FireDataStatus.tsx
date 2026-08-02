@@ -21,6 +21,7 @@ type FireDataStatusProps = {
 type FireFeedFreshness = 'current' | 'stale' | 'missing' | 'invalid-future'
 type FirePointAvailability = 'available' | 'empty-published-file' | 'unavailable'
 type FireMetadataConsistency = 'consistent' | 'observation-after-publication' | 'unknown'
+type FireTimestampSubject = 'publication' | 'observation'
 
 const FIRE_CATEGORY_NAMES = new Set(['fire', 'wildfire', 'wildfires'])
 const STALE_AFTER_HOURS = 24
@@ -132,10 +133,18 @@ export function fireFeedSummary(
   }
 }
 
-function formatUtc(value: string | null): string {
-  if (!value) return 'brak czasu publikacji'
+function formatUtc(value: string | null, subject: FireTimestampSubject): string {
+  if (!value) {
+    return subject === 'observation'
+      ? 'brak poprawnego czasu obserwacji'
+      : 'brak czasu publikacji'
+  }
   const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return 'nieprawidłowy czas publikacji'
+  if (Number.isNaN(date.getTime())) {
+    return subject === 'observation'
+      ? 'nieprawidłowy czas obserwacji'
+      : 'nieprawidłowy czas publikacji'
+  }
   return `${date.toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC`
 }
 
@@ -191,9 +200,9 @@ export function FireDataStatus({
     <div className="fact"><span>Dostępność punktów</span><b>{pointAvailabilityLabel(summary.pointAvailability)}</b></div>
     <div className="fact"><span>Aktywne punkty w pliku</span><b>{summary.pointCount}</b></div>
     <div className="fact"><span>Stan świeżości obserwacji</span><b>{freshnessLabel(summary.observationFreshness, 'observation')}</b></div>
-    <div className="fact"><span>Najnowsza obserwacja punktu</span><b>{formatUtc(summary.latestObservationUtc)}</b></div>
+    <div className="fact"><span>Najnowsza obserwacja punktu</span><b>{formatUtc(summary.latestObservationUtc, 'observation')}</b></div>
     <div className="fact"><span>Wiek najnowszej obserwacji</span><b>{formatAge(summary.observationAgeHours, summary.observationIsFuture)}</b></div>
-    <div className="fact"><span>Czas publikacji katalogu</span><b>{formatUtc(summary.generatedAtUtc)}</b></div>
+    <div className="fact"><span>Czas publikacji katalogu</span><b>{formatUtc(summary.generatedAtUtc, 'publication')}</b></div>
     <div className="fact"><span>Wiek pliku</span><b>{formatAge(summary.ageHours, summary.generatedAtIsFuture)}</b></div>
     <div className="fact"><span>Spójność czasów</span><b>{metadataConsistencyLabel(summary.metadataConsistency)}</b></div>
     <p className="muted">Licznik obejmuje wyłącznie geometrie punktowe zaklasyfikowane jako pożar w ostatnim opublikowanym pliku źródłowym. Zero oznacza brak takich punktów w tym konkretnym pliku tylko wtedy, gdy plik ma poprawny czas publikacji. Nie jest to ciągły obraz czasu rzeczywistego; liczba zmienia się dopiero po publikacji nowego katalogu.</p>
