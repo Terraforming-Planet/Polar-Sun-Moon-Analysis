@@ -1,6 +1,9 @@
 import React from 'react'
 
 type HazardFeature = {
+  geometry?: {
+    type?: string
+  }
   properties?: {
     categories?: string[]
     observation_time?: string
@@ -19,6 +22,10 @@ export function isFireFeature(feature: HazardFeature): boolean {
     const normalized = category.toLowerCase()
     return normalized.includes('fire') || normalized.includes('wildfire')
   })
+}
+
+export function isPublishedFirePoint(feature: HazardFeature): boolean {
+  return feature.geometry?.type === 'Point' && isFireFeature(feature)
 }
 
 export function resolveHazardGeneratedAt(
@@ -50,17 +57,17 @@ export function fireFeedSummary(
   generatedAtUtc?: string,
   nowMs = Date.now(),
 ) {
-  const fireFeatures = features.filter(isFireFeature)
+  const firePoints = features.filter(isPublishedFirePoint)
   const generatedMs = generatedAtUtc ? Date.parse(generatedAtUtc) : Number.NaN
   const latestObservationUtc = newestValidTimestamp(
-    fireFeatures.map(feature => feature.properties?.observation_time),
+    firePoints.map(feature => feature.properties?.observation_time),
   )
   const latestObservationMs = latestObservationUtc ? Date.parse(latestObservationUtc) : Number.NaN
   const generatedAge = timestampAge(generatedMs, nowMs)
   const observationAge = timestampAge(latestObservationMs, nowMs)
 
   return {
-    pointCount: fireFeatures.length,
+    pointCount: firePoints.length,
     generatedAtUtc: generatedAtUtc ?? null,
     ageHours: generatedAge.ageHours,
     generatedAtIsFuture: generatedAge.isFuture,
@@ -98,6 +105,6 @@ export function FireDataStatus({
     <div className="fact"><span>Wiek najnowszej obserwacji</span><b>{formatAge(summary.observationAgeHours, summary.observationIsFuture)}</b></div>
     <div className="fact"><span>Czas publikacji katalogu</span><b>{formatUtc(summary.generatedAtUtc)}</b></div>
     <div className="fact"><span>Wiek pliku</span><b>{formatAge(summary.ageHours, summary.generatedAtIsFuture)}</b></div>
-    <p className="muted">To stan ostatniego opublikowanego pliku źródłowego, a nie ciągły obraz czasu rzeczywistego. Liczba zmienia się dopiero po publikacji nowego katalogu.</p>
+    <p className="muted">Licznik obejmuje wyłącznie geometrie punktowe zaklasyfikowane jako pożar w ostatnim opublikowanym pliku źródłowym. Nie jest to ciągły obraz czasu rzeczywistego; liczba zmienia się dopiero po publikacji nowego katalogu.</p>
   </aside>
 }
