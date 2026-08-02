@@ -10,6 +10,7 @@ type HazardFeature = {
 type FireDataStatusProps = {
   features?: HazardFeature[]
   generatedAtUtc?: string
+  generatedUtc?: string
   nowMs?: number
 }
 
@@ -18,6 +19,13 @@ export function isFireFeature(feature: HazardFeature): boolean {
     const normalized = category.toLowerCase()
     return normalized.includes('fire') || normalized.includes('wildfire')
   })
+}
+
+export function resolveHazardGeneratedAt(
+  generatedAtUtc?: string,
+  generatedUtc?: string,
+): string | undefined {
+  return generatedAtUtc || generatedUtc
 }
 
 export function fireFeedSummary(
@@ -45,8 +53,14 @@ function formatUtc(value: string | null): string {
   return `${date.toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC`
 }
 
-export function FireDataStatus({ features = [], generatedAtUtc, nowMs = Date.now() }: FireDataStatusProps) {
-  const summary = fireFeedSummary(features, generatedAtUtc, nowMs)
+export function FireDataStatus({
+  features = [],
+  generatedAtUtc,
+  generatedUtc,
+  nowMs = Date.now(),
+}: FireDataStatusProps) {
+  const resolvedGeneratedAt = resolveHazardGeneratedAt(generatedAtUtc, generatedUtc)
+  const summary = fireFeedSummary(features, resolvedGeneratedAt, nowMs)
   const age = summary.ageHours === null ? 'nieznany' : `${summary.ageHours.toFixed(1)} h`
 
   return <aside className="panel fire-data-status" aria-label="Stan danych pożarowych">
