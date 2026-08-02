@@ -4,17 +4,18 @@ import {
   FireDataStatus,
   fireFeedSummary,
   isFireFeature,
+  isPublishedFirePoint,
   resolveHazardGeneratedAt,
 } from './FireDataStatus'
 
 const features = [
-  { properties: { categories: ['Wildfires'], observation_time: '2026-08-01T18:00:00Z' } },
-  { properties: { categories: ['Fire'], observation_time: '2026-08-01T18:30:00Z' } },
-  { properties: { categories: ['Floods'], observation_time: '2026-08-01T23:30:00Z' } },
+  { geometry: { type: 'Point' }, properties: { categories: ['Wildfires'], observation_time: '2026-08-01T18:00:00Z' } },
+  { geometry: { type: 'Point' }, properties: { categories: ['Fire'], observation_time: '2026-08-01T18:30:00Z' } },
+  { geometry: { type: 'Point' }, properties: { categories: ['Floods'], observation_time: '2026-08-01T23:30:00Z' } },
 ]
 
 describe('FireDataStatus', () => {
-  it('counts only fire categories and calculates publication and observation age', () => {
+  it('counts only point geometries in fire categories and calculates publication and observation age', () => {
     const summary = fireFeedSummary(features, '2026-08-01T20:00:00Z', Date.parse('2026-08-02T00:00:00Z'))
 
     expect(summary.pointCount).toBe(2)
@@ -26,10 +27,30 @@ describe('FireDataStatus', () => {
     expect(isFireFeature(features[2])).toBe(false)
   })
 
+  it('does not report polygons, missing geometry, or flood points as active fire points', () => {
+    const polygonFire = {
+      geometry: { type: 'Polygon' },
+      properties: { categories: ['Wildfire'], observation_time: '2026-08-01T23:00:00Z' },
+    }
+    const missingGeometryFire = {
+      properties: { categories: ['Fire'], observation_time: '2026-08-01T22:00:00Z' },
+    }
+    const summary = fireFeedSummary(
+      [...features, polygonFire, missingGeometryFire],
+      '2026-08-01T20:00:00Z',
+      Date.parse('2026-08-02T00:00:00Z'),
+    )
+
+    expect(isPublishedFirePoint(polygonFire)).toBe(false)
+    expect(isPublishedFirePoint(missingGeometryFire)).toBe(false)
+    expect(summary.pointCount).toBe(2)
+    expect(summary.latestObservationUtc).toBe('2026-08-01T18:30:00Z')
+  })
+
   it('ignores missing and invalid observation timestamps', () => {
     const summary = fireFeedSummary([
-      { properties: { categories: ['Fire'] } },
-      { properties: { categories: ['Wildfire'], observation_time: 'not-a-date' } },
+      { geometry: { type: 'Point' }, properties: { categories: ['Fire'] } },
+      { geometry: { type: 'Point' }, properties: { categories: ['Wildfire'], observation_time: 'not-a-date' } },
     ], '2026-08-01T20:00:00Z', Date.parse('2026-08-02T00:00:00Z'))
 
     expect(summary.latestObservationUtc).toBeNull()
@@ -59,7 +80,8 @@ describe('FireDataStatus', () => {
     expect(html).toContain('Wiek najnowszej obserwacji')
     expect(html).toContain('5.5 h')
     expect(html).toContain('4.0 h')
-    expect(html).toContain('nie ciągły obraz czasu rzeczywistego')
+    expect(html).toContain('wyłącznie geometrie punktowe')
+    expect(html).toContain('Nie jest to ciągły obraz czasu rzeczywistego')
   })
 
   it('calculates age when the published file uses generatedUtc', () => {
@@ -77,7 +99,7 @@ describe('FireDataStatus', () => {
 
   it('flags future publication and observation timestamps instead of presenting zero-hour freshness', () => {
     const futureFeatures = [
-      { properties: { categories: ['Fire'], observation_time: '2026-08-02T02:00:00Z' } },
+      { geometry: { type: 'Point' }, properties: { categories: ['Fire'], observation_time: '2026-08-02T02:00:00Z' } },
     ]
     const summary = fireFeedSummary(
       futureFeatures,
