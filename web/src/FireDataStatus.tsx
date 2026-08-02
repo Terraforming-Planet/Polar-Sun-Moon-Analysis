@@ -42,7 +42,11 @@ export function resolveHazardGeneratedAt(
   generatedAtUtc?: string,
   generatedUtc?: string,
 ): string | undefined {
-  return generatedAtUtc || generatedUtc
+  const currentTimestamp = generatedAtUtc?.trim()
+  if (currentTimestamp) return currentTimestamp
+
+  const legacyTimestamp = generatedUtc?.trim()
+  return legacyTimestamp || undefined
 }
 
 export function resolveFireSourceLabel(sourceLabel?: string): string {
