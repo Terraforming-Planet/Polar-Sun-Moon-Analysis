@@ -5,6 +5,7 @@ import {
   fireFeedSummary,
   isFireFeature,
   isPublishedFirePoint,
+  resolveFireFeedFreshness,
   resolveHazardGeneratedAt,
 } from './FireDataStatus'
 
@@ -21,6 +22,7 @@ describe('FireDataStatus', () => {
     expect(summary.pointCount).toBe(2)
     expect(summary.ageHours).toBe(4)
     expect(summary.generatedAtIsFuture).toBe(false)
+    expect(summary.freshness).toBe('current')
     expect(summary.latestObservationUtc).toBe('2026-08-01T18:30:00Z')
     expect(summary.observationAgeHours).toBe(5.5)
     expect(summary.observationIsFuture).toBe(false)
@@ -72,6 +74,26 @@ describe('FireDataStatus', () => {
       .toBe('2026-08-01T19:00:00Z')
   })
 
+  it('classifies publication freshness without pretending stale or missing files are live', () => {
+    expect(resolveFireFeedFreshness(24, false)).toBe('current')
+    expect(resolveFireFeedFreshness(24.01, false)).toBe('stale')
+    expect(resolveFireFeedFreshness(null, false)).toBe('missing')
+    expect(resolveFireFeedFreshness(0, true)).toBe('invalid-future')
+
+    const staleHtml = renderToStaticMarkup(
+      <FireDataStatus
+        features={features}
+        generatedAtUtc="2026-07-31T23:00:00Z"
+        nowMs={Date.parse('2026-08-02T00:00:00Z')}
+      />,
+    )
+    const missingHtml = renderToStaticMarkup(<FireDataStatus features={features} />)
+
+    expect(staleHtml).toContain('Stan świeżości')
+    expect(staleHtml).toContain('plik starszy niż 24 h')
+    expect(missingHtml).toContain('brak poprawnego czasu publikacji')
+  })
+
   it('renders an explicit source, non-realtime disclosure, and separate ages', () => {
     const html = renderToStaticMarkup(
       <FireDataStatus
@@ -83,6 +105,7 @@ describe('FireDataStatus', () => {
 
     expect(html).toContain('Źródło katalogu')
     expect(html).toContain('NASA EONET')
+    expect(html).toContain('aktualny opublikowany plik (≤ 24 h)')
     expect(html).toContain('Aktywne punkty w pliku')
     expect(html).toContain('>2<')
     expect(html).toContain('Najnowsza obserwacja punktu')
@@ -132,6 +155,7 @@ describe('FireDataStatus', () => {
 
     expect(summary.ageHours).toBe(0)
     expect(summary.generatedAtIsFuture).toBe(true)
+    expect(summary.freshness).toBe('invalid-future')
     expect(summary.observationAgeHours).toBe(0)
     expect(summary.observationIsFuture).toBe(true)
 
@@ -143,6 +167,7 @@ describe('FireDataStatus', () => {
       />,
     )
 
+    expect(html).toContain('błędny czas w przyszłości')
     expect(html.match(/czas przyszły — sprawdź zegar lub metadane/g)).toHaveLength(2)
     expect(html).not.toContain('0.0 h')
   })
