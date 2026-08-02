@@ -18,7 +18,10 @@ type FireDataStatusProps = {
   sourceLabel?: string
 }
 
+type FireFeedFreshness = 'current' | 'stale' | 'missing' | 'invalid-future'
+
 const FIRE_CATEGORY_NAMES = new Set(['fire', 'wildfire', 'wildfires'])
+const STALE_AFTER_HOURS = 24
 
 export function isFireFeature(feature: HazardFeature): boolean {
   return (feature.properties?.categories ?? []).some(category => {
@@ -55,6 +58,15 @@ function timestampAge(timeMs: number, nowMs: number) {
   }
 }
 
+export function resolveFireFeedFreshness(
+  ageHours: number | null,
+  isFuture: boolean,
+): FireFeedFreshness {
+  if (isFuture) return 'invalid-future'
+  if (ageHours === null) return 'missing'
+  return ageHours > STALE_AFTER_HOURS ? 'stale' : 'current'
+}
+
 export function fireFeedSummary(
   features: HazardFeature[] = [],
   generatedAtUtc?: string,
@@ -68,12 +80,14 @@ export function fireFeedSummary(
   const latestObservationMs = latestObservationUtc ? Date.parse(latestObservationUtc) : Number.NaN
   const generatedAge = timestampAge(generatedMs, nowMs)
   const observationAge = timestampAge(latestObservationMs, nowMs)
+  const freshness = resolveFireFeedFreshness(generatedAge.ageHours, generatedAge.isFuture)
 
   return {
     pointCount: firePoints.length,
     generatedAtUtc: generatedAtUtc ?? null,
     ageHours: generatedAge.ageHours,
     generatedAtIsFuture: generatedAge.isFuture,
+    freshness,
     latestObservationUtc,
     observationAgeHours: observationAge.ageHours,
     observationIsFuture: observationAge.isFuture,
@@ -92,6 +106,13 @@ function formatAge(value: number | null, isFuture = false): string {
   return value === null ? 'nieznany' : `${value.toFixed(1)} h`
 }
 
+function freshnessLabel(value: FireFeedFreshness): string {
+  if (value === 'current') return 'aktualny opublikowany plik (≤ 24 h)'
+  if (value === 'stale') return 'plik starszy niż 24 h'
+  if (value === 'invalid-future') return 'błędny czas w przyszłości'
+  return 'brak poprawnego czasu publikacji'
+}
+
 export function FireDataStatus({
   features = [],
   generatedAtUtc,
@@ -105,6 +126,7 @@ export function FireDataStatus({
   return <aside className="panel fire-data-status" aria-label="Stan danych pożarowych">
     <h2>Stan opublikowanego pliku pożarów</h2>
     <div className="fact"><span>Źródło katalogu</span><b>{sourceLabel}</b></div>
+    <div className="fact"><span>Stan świeżości</span><b>{freshnessLabel(summary.freshness)}</b></div>
     <div className="fact"><span>Aktywne punkty w pliku</span><b>{summary.pointCount}</b></div>
     <div className="fact"><span>Najnowsza obserwacja punktu</span><b>{formatUtc(summary.latestObservationUtc)}</b></div>
     <div className="fact"><span>Wiek najnowszej obserwacji</span><b>{formatAge(summary.observationAgeHours, summary.observationIsFuture)}</b></div>
