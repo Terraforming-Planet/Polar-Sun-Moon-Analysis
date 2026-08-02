@@ -23,7 +23,7 @@ describe('fire catalog generated timestamp compatibility', () => {
     )
 
     expect(html).toContain('Czas publikacji katalogu')
-    expect(html).toContain('02.08.2026')
+    expect(html).toContain('09:30:00 UTC')
     expect(html).toContain('1.0 h')
     expect(html).toContain('aktualny opublikowany plik')
   })
