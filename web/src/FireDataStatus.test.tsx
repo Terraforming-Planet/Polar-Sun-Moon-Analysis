@@ -65,7 +65,7 @@ describe('FireDataStatus', () => {
       .toBe('2026-08-01T19:00:00Z')
   })
 
-  it('renders an explicit non-realtime disclosure and separate ages', () => {
+  it('renders an explicit source, non-realtime disclosure, and separate ages', () => {
     const html = renderToStaticMarkup(
       <FireDataStatus
         features={features}
@@ -74,6 +74,8 @@ describe('FireDataStatus', () => {
       />,
     )
 
+    expect(html).toContain('Źródło katalogu')
+    expect(html).toContain('NASA EONET')
     expect(html).toContain('Aktywne punkty w pliku')
     expect(html).toContain('>2<')
     expect(html).toContain('Najnowsza obserwacja punktu')
@@ -82,6 +84,20 @@ describe('FireDataStatus', () => {
     expect(html).toContain('4.0 h')
     expect(html).toContain('wyłącznie geometrie punktowe')
     expect(html).toContain('Nie jest to ciągły obraz czasu rzeczywistego')
+  })
+
+  it('allows the published source label to be overridden by the feed adapter', () => {
+    const html = renderToStaticMarkup(
+      <FireDataStatus
+        features={features}
+        generatedAtUtc="2026-08-01T20:00:00Z"
+        nowMs={Date.parse('2026-08-02T00:00:00Z')}
+        sourceLabel="NASA FIRMS / VIIRS"
+      />,
+    )
+
+    expect(html).toContain('NASA FIRMS / VIIRS')
+    expect(html).not.toContain('>NASA EONET<')
   })
 
   it('calculates age when the published file uses generatedUtc', () => {
