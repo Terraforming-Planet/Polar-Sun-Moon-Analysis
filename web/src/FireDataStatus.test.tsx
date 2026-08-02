@@ -1,6 +1,11 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
-import { FireDataStatus, fireFeedSummary, isFireFeature } from './FireDataStatus'
+import {
+  FireDataStatus,
+  fireFeedSummary,
+  isFireFeature,
+  resolveHazardGeneratedAt,
+} from './FireDataStatus'
 
 const features = [
   { properties: { categories: ['Wildfires'], observation_time: '2026-08-01T18:00:00Z' } },
@@ -17,6 +22,13 @@ describe('FireDataStatus', () => {
     expect(isFireFeature(features[2])).toBe(false)
   })
 
+  it('prefers the snake_case catalog timestamp and supports the legacy camelCase field', () => {
+    expect(resolveHazardGeneratedAt('2026-08-01T20:00:00Z', '2026-08-01T19:00:00Z'))
+      .toBe('2026-08-01T20:00:00Z')
+    expect(resolveHazardGeneratedAt(undefined, '2026-08-01T19:00:00Z'))
+      .toBe('2026-08-01T19:00:00Z')
+  })
+
   it('renders an explicit non-realtime disclosure', () => {
     const html = renderToStaticMarkup(
       <FireDataStatus
@@ -30,5 +42,18 @@ describe('FireDataStatus', () => {
     expect(html).toContain('>2<')
     expect(html).toContain('4.0 h')
     expect(html).toContain('nie ciągły obraz czasu rzeczywistego')
+  })
+
+  it('calculates age when the published file uses generatedUtc', () => {
+    const html = renderToStaticMarkup(
+      <FireDataStatus
+        features={features}
+        generatedUtc="2026-08-01T18:00:00Z"
+        nowMs={Date.parse('2026-08-02T00:00:00Z')}
+      />,
+    )
+
+    expect(html).toContain('6.0 h')
+    expect(html).not.toContain('brak czasu publikacji')
   })
 })
