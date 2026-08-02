@@ -36,6 +36,15 @@ function newestValidTimestamp(values: Array<string | undefined>): string | null 
   return valid[0]?.value ?? null
 }
 
+function timestampAge(timeMs: number, nowMs: number) {
+  if (!Number.isFinite(timeMs)) return { ageHours: null, isFuture: false }
+  const deltaHours = (nowMs - timeMs) / 3_600_000
+  return {
+    ageHours: Math.max(0, deltaHours),
+    isFuture: deltaHours < 0,
+  }
+}
+
 export function fireFeedSummary(
   features: HazardFeature[] = [],
   generatedAtUtc?: string,
@@ -47,19 +56,17 @@ export function fireFeedSummary(
     fireFeatures.map(feature => feature.properties?.observation_time),
   )
   const latestObservationMs = latestObservationUtc ? Date.parse(latestObservationUtc) : Number.NaN
-  const ageHours = Number.isFinite(generatedMs)
-    ? Math.max(0, (nowMs - generatedMs) / 3_600_000)
-    : null
-  const observationAgeHours = Number.isFinite(latestObservationMs)
-    ? Math.max(0, (nowMs - latestObservationMs) / 3_600_000)
-    : null
+  const generatedAge = timestampAge(generatedMs, nowMs)
+  const observationAge = timestampAge(latestObservationMs, nowMs)
 
   return {
     pointCount: fireFeatures.length,
     generatedAtUtc: generatedAtUtc ?? null,
-    ageHours,
+    ageHours: generatedAge.ageHours,
+    generatedAtIsFuture: generatedAge.isFuture,
     latestObservationUtc,
-    observationAgeHours,
+    observationAgeHours: observationAge.ageHours,
+    observationIsFuture: observationAge.isFuture,
   }
 }
 
@@ -70,7 +77,8 @@ function formatUtc(value: string | null): string {
   return `${date.toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC`
 }
 
-function formatAge(value: number | null): string {
+function formatAge(value: number | null, isFuture = false): string {
+  if (isFuture) return 'czas przyszły — sprawdź zegar lub metadane'
   return value === null ? 'nieznany' : `${value.toFixed(1)} h`
 }
 
@@ -87,9 +95,9 @@ export function FireDataStatus({
     <h2>Stan opublikowanego pliku pożarów</h2>
     <div className="fact"><span>Aktywne punkty w pliku</span><b>{summary.pointCount}</b></div>
     <div className="fact"><span>Najnowsza obserwacja punktu</span><b>{formatUtc(summary.latestObservationUtc)}</b></div>
-    <div className="fact"><span>Wiek najnowszej obserwacji</span><b>{formatAge(summary.observationAgeHours)}</b></div>
+    <div className="fact"><span>Wiek najnowszej obserwacji</span><b>{formatAge(summary.observationAgeHours, summary.observationIsFuture)}</b></div>
     <div className="fact"><span>Czas publikacji katalogu</span><b>{formatUtc(summary.generatedAtUtc)}</b></div>
-    <div className="fact"><span>Wiek pliku</span><b>{formatAge(summary.ageHours)}</b></div>
+    <div className="fact"><span>Wiek pliku</span><b>{formatAge(summary.ageHours, summary.generatedAtIsFuture)}</b></div>
     <p className="muted">To stan ostatniego opublikowanego pliku źródłowego, a nie ciągły obraz czasu rzeczywistego. Liczba zmienia się dopiero po publikacji nowego katalogu.</p>
   </aside>
 }
