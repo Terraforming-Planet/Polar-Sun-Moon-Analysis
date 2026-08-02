@@ -5,8 +5,8 @@ type HazardFeature = {
     type?: string
   }
   properties?: {
-    categories?: string[]
-    observation_time?: string
+    categories?: unknown[]
+    observation_time?: unknown
   }
 }
 
@@ -27,6 +27,7 @@ const STALE_AFTER_HOURS = 24
 
 export function isFireFeature(feature: HazardFeature): boolean {
   return (feature.properties?.categories ?? []).some(category => {
+    if (typeof category !== 'string') return false
     const normalized = category.trim().toLowerCase()
     return FIRE_CATEGORY_NAMES.has(normalized)
   })
@@ -43,10 +44,11 @@ export function resolveHazardGeneratedAt(
   return generatedAtUtc || generatedUtc
 }
 
-function newestValidTimestamp(values: Array<string | undefined>): string | null {
+function newestValidTimestamp(values: unknown[]): string | null {
   const valid = values
-    .map(value => ({ value, time: value ? Date.parse(value) : Number.NaN }))
-    .filter((entry): entry is { value: string; time: number } => Boolean(entry.value) && Number.isFinite(entry.time))
+    .filter((value): value is string => typeof value === 'string')
+    .map(value => ({ value, time: Date.parse(value) }))
+    .filter(entry => Number.isFinite(entry.time))
     .sort((a, b) => b.time - a.time)
   return valid[0]?.value ?? null
 }
