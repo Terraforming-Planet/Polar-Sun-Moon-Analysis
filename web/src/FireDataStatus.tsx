@@ -19,6 +19,7 @@ type FireDataStatusProps = {
 }
 
 type FireFeedFreshness = 'current' | 'stale' | 'missing' | 'invalid-future'
+type FirePointAvailability = 'available' | 'empty-published-file' | 'unavailable'
 
 const FIRE_CATEGORY_NAMES = new Set(['fire', 'wildfire', 'wildfires'])
 const STALE_AFTER_HOURS = 24
@@ -67,6 +68,15 @@ export function resolveFireFeedFreshness(
   return ageHours > STALE_AFTER_HOURS ? 'stale' : 'current'
 }
 
+export function resolveFirePointAvailability(
+  pointCount: number,
+  freshness: FireFeedFreshness,
+): FirePointAvailability {
+  if (pointCount > 0) return 'available'
+  if (freshness === 'current' || freshness === 'stale') return 'empty-published-file'
+  return 'unavailable'
+}
+
 export function fireFeedSummary(
   features: HazardFeature[] = [],
   generatedAtUtc?: string,
@@ -88,6 +98,7 @@ export function fireFeedSummary(
 
   return {
     pointCount: firePoints.length,
+    pointAvailability: resolveFirePointAvailability(firePoints.length, freshness),
     generatedAtUtc: generatedAtUtc ?? null,
     ageHours: generatedAge.ageHours,
     generatedAtIsFuture: generatedAge.isFuture,
@@ -128,6 +139,12 @@ function freshnessLabel(value: FireFeedFreshness, subject: 'file' | 'observation
     : 'brak poprawnego czasu publikacji'
 }
 
+function pointAvailabilityLabel(value: FirePointAvailability): string {
+  if (value === 'available') return 'punkty pożarowe dostępne'
+  if (value === 'empty-published-file') return 'opublikowany plik nie zawiera punktów pożarowych'
+  return 'nie można potwierdzić stanu punktów bez poprawnych metadanych pliku'
+}
+
 export function FireDataStatus({
   features = [],
   generatedAtUtc,
@@ -142,12 +159,13 @@ export function FireDataStatus({
     <h2>Stan opublikowanego pliku pożarów</h2>
     <div className="fact"><span>Źródło katalogu</span><b>{sourceLabel}</b></div>
     <div className="fact"><span>Stan świeżości pliku</span><b>{freshnessLabel(summary.freshness)}</b></div>
+    <div className="fact"><span>Dostępność punktów</span><b>{pointAvailabilityLabel(summary.pointAvailability)}</b></div>
     <div className="fact"><span>Aktywne punkty w pliku</span><b>{summary.pointCount}</b></div>
     <div className="fact"><span>Stan świeżości obserwacji</span><b>{freshnessLabel(summary.observationFreshness, 'observation')}</b></div>
     <div className="fact"><span>Najnowsza obserwacja punktu</span><b>{formatUtc(summary.latestObservationUtc)}</b></div>
     <div className="fact"><span>Wiek najnowszej obserwacji</span><b>{formatAge(summary.observationAgeHours, summary.observationIsFuture)}</b></div>
     <div className="fact"><span>Czas publikacji katalogu</span><b>{formatUtc(summary.generatedAtUtc)}</b></div>
     <div className="fact"><span>Wiek pliku</span><b>{formatAge(summary.ageHours, summary.generatedAtIsFuture)}</b></div>
-    <p className="muted">Licznik obejmuje wyłącznie geometrie punktowe zaklasyfikowane jako pożar w ostatnim opublikowanym pliku źródłowym. Nie jest to ciągły obraz czasu rzeczywistego; liczba zmienia się dopiero po publikacji nowego katalogu.</p>
+    <p className="muted">Licznik obejmuje wyłącznie geometrie punktowe zaklasyfikowane jako pożar w ostatnim opublikowanym pliku źródłowym. Zero oznacza brak takich punktów w tym konkretnym pliku tylko wtedy, gdy plik ma poprawny czas publikacji. Nie jest to ciągły obraz czasu rzeczywistego; liczba zmienia się dopiero po publikacji nowego katalogu.</p>
   </aside>
 }
