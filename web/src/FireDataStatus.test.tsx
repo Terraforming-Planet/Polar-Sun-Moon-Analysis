@@ -27,6 +27,13 @@ describe('FireDataStatus', () => {
     expect(isFireFeature(features[2])).toBe(false)
   })
 
+  it('matches documented fire category names without accepting unrelated fire substrings', () => {
+    expect(isFireFeature({ properties: { categories: [' wildfire '] } })).toBe(true)
+    expect(isFireFeature({ properties: { categories: ['WILDFIRES'] } })).toBe(true)
+    expect(isFireFeature({ properties: { categories: ['Fireworks'] } })).toBe(false)
+    expect(isFireFeature({ properties: { categories: ['Forest fire risk'] } })).toBe(false)
+  })
+
   it('does not report polygons, missing geometry, or flood points as active fire points', () => {
     const polygonFire = {
       geometry: { type: 'Polygon' },
