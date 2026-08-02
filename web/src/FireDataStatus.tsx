@@ -81,6 +81,10 @@ export function fireFeedSummary(
   const generatedAge = timestampAge(generatedMs, nowMs)
   const observationAge = timestampAge(latestObservationMs, nowMs)
   const freshness = resolveFireFeedFreshness(generatedAge.ageHours, generatedAge.isFuture)
+  const observationFreshness = resolveFireFeedFreshness(
+    observationAge.ageHours,
+    observationAge.isFuture,
+  )
 
   return {
     pointCount: firePoints.length,
@@ -91,6 +95,7 @@ export function fireFeedSummary(
     latestObservationUtc,
     observationAgeHours: observationAge.ageHours,
     observationIsFuture: observationAge.isFuture,
+    observationFreshness,
   }
 }
 
@@ -106,11 +111,21 @@ function formatAge(value: number | null, isFuture = false): string {
   return value === null ? 'nieznany' : `${value.toFixed(1)} h`
 }
 
-function freshnessLabel(value: FireFeedFreshness): string {
-  if (value === 'current') return 'aktualny opublikowany plik (≤ 24 h)'
-  if (value === 'stale') return 'plik starszy niż 24 h'
+function freshnessLabel(value: FireFeedFreshness, subject: 'file' | 'observation' = 'file'): string {
+  if (value === 'current') {
+    return subject === 'observation'
+      ? 'najnowsza obserwacja ma ≤ 24 h'
+      : 'aktualny opublikowany plik (≤ 24 h)'
+  }
+  if (value === 'stale') {
+    return subject === 'observation'
+      ? 'najnowsza obserwacja ma ponad 24 h'
+      : 'plik starszy niż 24 h'
+  }
   if (value === 'invalid-future') return 'błędny czas w przyszłości'
-  return 'brak poprawnego czasu publikacji'
+  return subject === 'observation'
+    ? 'brak poprawnego czasu obserwacji'
+    : 'brak poprawnego czasu publikacji'
 }
 
 export function FireDataStatus({
@@ -126,8 +141,9 @@ export function FireDataStatus({
   return <aside className="panel fire-data-status" aria-label="Stan danych pożarowych">
     <h2>Stan opublikowanego pliku pożarów</h2>
     <div className="fact"><span>Źródło katalogu</span><b>{sourceLabel}</b></div>
-    <div className="fact"><span>Stan świeżości</span><b>{freshnessLabel(summary.freshness)}</b></div>
+    <div className="fact"><span>Stan świeżości pliku</span><b>{freshnessLabel(summary.freshness)}</b></div>
     <div className="fact"><span>Aktywne punkty w pliku</span><b>{summary.pointCount}</b></div>
+    <div className="fact"><span>Stan świeżości obserwacji</span><b>{freshnessLabel(summary.observationFreshness, 'observation')}</b></div>
     <div className="fact"><span>Najnowsza obserwacja punktu</span><b>{formatUtc(summary.latestObservationUtc)}</b></div>
     <div className="fact"><span>Wiek najnowszej obserwacji</span><b>{formatAge(summary.observationAgeHours, summary.observationIsFuture)}</b></div>
     <div className="fact"><span>Czas publikacji katalogu</span><b>{formatUtc(summary.generatedAtUtc)}</b></div>
