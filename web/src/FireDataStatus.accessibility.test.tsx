@@ -23,6 +23,6 @@ describe('FireDataStatus accessibility', () => {
     expect(html).toContain('aria-live="polite"')
     expect(html).toContain('aria-atomic="true"')
     expect(html).toContain('Aktywne punkty w pliku')
-    expect(html).toContain('&gt;1&lt;')
+    expect(html).toContain('>1<')
   })
 })
