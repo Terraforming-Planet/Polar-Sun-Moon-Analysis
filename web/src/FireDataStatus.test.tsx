@@ -19,8 +19,10 @@ describe('FireDataStatus', () => {
 
     expect(summary.pointCount).toBe(2)
     expect(summary.ageHours).toBe(4)
+    expect(summary.generatedAtIsFuture).toBe(false)
     expect(summary.latestObservationUtc).toBe('2026-08-01T18:30:00Z')
     expect(summary.observationAgeHours).toBe(5.5)
+    expect(summary.observationIsFuture).toBe(false)
     expect(isFireFeature(features[2])).toBe(false)
   })
 
@@ -32,6 +34,7 @@ describe('FireDataStatus', () => {
 
     expect(summary.latestObservationUtc).toBeNull()
     expect(summary.observationAgeHours).toBeNull()
+    expect(summary.observationIsFuture).toBe(false)
   })
 
   it('prefers the snake_case catalog timestamp and supports the legacy camelCase field', () => {
@@ -70,5 +73,32 @@ describe('FireDataStatus', () => {
 
     expect(html).toContain('6.0 h')
     expect(html).not.toContain('brak czasu publikacji')
+  })
+
+  it('flags future publication and observation timestamps instead of presenting zero-hour freshness', () => {
+    const futureFeatures = [
+      { properties: { categories: ['Fire'], observation_time: '2026-08-02T02:00:00Z' } },
+    ]
+    const summary = fireFeedSummary(
+      futureFeatures,
+      '2026-08-02T01:00:00Z',
+      Date.parse('2026-08-02T00:00:00Z'),
+    )
+
+    expect(summary.ageHours).toBe(0)
+    expect(summary.generatedAtIsFuture).toBe(true)
+    expect(summary.observationAgeHours).toBe(0)
+    expect(summary.observationIsFuture).toBe(true)
+
+    const html = renderToStaticMarkup(
+      <FireDataStatus
+        features={futureFeatures}
+        generatedAtUtc="2026-08-02T01:00:00Z"
+        nowMs={Date.parse('2026-08-02T00:00:00Z')}
+      />,
+    )
+
+    expect(html.match(/czas przyszły — sprawdź zegar lub metadane/g)).toHaveLength(2)
+    expect(html).not.toContain('0.0 h')
   })
 })
