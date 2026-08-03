@@ -31,6 +31,31 @@ describe('applyCameraPreset', () => {
   })
 
   it.each([
+    { camera: null, controls: null },
+    {
+      camera: { position: { set: vi.fn() }, fov: 55, updateProjectionMatrix: vi.fn() },
+      controls: null,
+    },
+    {
+      camera: null,
+      controls: { target: { set: vi.fn() }, update: vi.fn() },
+    },
+    {
+      camera: { position: {}, fov: 55, updateProjectionMatrix: vi.fn() },
+      controls: { target: { set: vi.fn() }, update: vi.fn() },
+    },
+    {
+      camera: { position: { set: vi.fn() }, fov: 55, updateProjectionMatrix: vi.fn() },
+      controls: { target: {}, update: vi.fn() },
+    },
+  ])('returns false for incomplete scene references without throwing', ({ camera, controls }) => {
+    const preset = { position: [0, 0.18, 6.1] as const, fov: 42 }
+
+    expect(() => applyCameraPreset(camera, controls, preset)).not.toThrow()
+    expect(applyCameraPreset(camera, controls, preset)).toBe(false)
+  })
+
+  it.each([
     null,
     undefined,
     { position: [0, 1] as unknown as readonly [number, number, number], fov: 42 },
