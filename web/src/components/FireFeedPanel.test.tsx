@@ -56,4 +56,20 @@ describe('FireFeedPanel', () => {
     expect(markup).toContain('>1<')
     expect(markup).toContain('4.0 h')
   })
+
+  it('does not claim a refresh failure for a blank error message', () => {
+    const markup = renderToStaticMarkup(<FireFeedPanel
+      sourceLabel="NASA EONET"
+      error="   "
+      now={new Date('2026-08-03T12:00:00Z')}
+      data={{
+        generated_at_utc: '2026-08-03T11:00:00Z',
+        features: [],
+      }}
+    />)
+
+    expect(markup).not.toContain('Nie udało się odświeżyć katalogu pożarów')
+    expect(markup).toContain('NASA EONET')
+    expect(markup).toContain('>0<')
+  })
 })
