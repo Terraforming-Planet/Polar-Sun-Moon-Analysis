@@ -21,6 +21,14 @@ function isAbortError(error: unknown): boolean {
   return typeof error.name === 'string' && error.name === 'AbortError'
 }
 
+function getObjectErrorMessage(error: object): string | null {
+  if (!('message' in error) || typeof error.message !== 'string') {
+    return null
+  }
+
+  return error.message.trim() || null
+}
+
 function getRefreshErrorMessage(error: unknown): string | null {
   if (typeof error === 'string') {
     return error.trim() || null
@@ -34,6 +42,10 @@ function getRefreshErrorMessage(error: unknown): string | null {
 
   if (error instanceof Error) {
     return error.message.trim() || error.name.trim() || null
+  }
+
+  if (typeof error === 'object' && error !== null) {
+    return getObjectErrorMessage(error)
   }
 
   return null
