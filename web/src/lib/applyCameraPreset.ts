@@ -49,10 +49,16 @@ export function applyCameraPreset(
 ): boolean {
   if (!hasUsableSceneReferences(camera, controls) || !controls || !isValidPreset(preset)) return false
 
-  camera.position.set(...preset.position)
-  camera.fov = preset.fov
-  camera.updateProjectionMatrix()
-  controls.target.set(0, 0, 0)
-  controls.update()
-  return true
+  try {
+    camera.position.set(...preset.position)
+    camera.fov = preset.fov
+    camera.updateProjectionMatrix()
+    controls.target.set(0, 0, 0)
+    controls.update()
+    return true
+  } catch {
+    // Scene references can become stale during WebGL disposal. A reset must
+    // never crash the React tree or trigger a renderer rebuild as recovery.
+    return false
+  }
 }
