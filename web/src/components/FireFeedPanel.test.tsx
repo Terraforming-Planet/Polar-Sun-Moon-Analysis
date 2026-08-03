@@ -160,6 +160,19 @@ describe('FireFeedPanel', () => {
     expect(markup).not.toContain('another realm')
   })
 
+  it('renders a message from an error-like object crossing a worker or iframe boundary', () => {
+    const markup = renderToStaticMarkup(<FireFeedPanel
+      sourceLabel="NASA EONET"
+      error={{ name: 'NetworkError', message: 'Satellite feed request failed' }}
+      now={new Date('2026-08-03T12:00:00Z')}
+      data={{ generated_at_utc: '2026-08-03T11:00:00Z', features: [] }}
+    />)
+
+    expect(markup).toContain('Nie udało się odświeżyć katalogu pożarów')
+    expect(markup).toContain('Satellite feed request failed')
+    expect(markup).toContain('ostatnich danych, które udało się wczytać')
+  })
+
   it('does not claim a refresh failure for blank or unsupported error values', () => {
     const blankMarkup = renderToStaticMarkup(<FireFeedPanel
       sourceLabel="NASA EONET"
