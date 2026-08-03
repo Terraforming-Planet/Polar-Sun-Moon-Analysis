@@ -3,15 +3,28 @@ export type CameraPreset = {
   fov: number
 }
 
+type VectorLike = {
+  x?: number
+  y?: number
+  z?: number
+  set: (x: number, y: number, z: number) => void
+}
+
 type CameraLike = {
-  position: { set: (x: number, y: number, z: number) => void }
+  position: VectorLike
   fov: number
   updateProjectionMatrix: () => void
 }
 
 type ControlsLike = {
-  target: { set: (x: number, y: number, z: number) => void }
+  target: VectorLike
   update: () => void
+}
+
+type SceneSnapshot = {
+  position: readonly [number, number, number]
+  target: readonly [number, number, number]
+  fov: number
 }
 
 function isValidPreset(preset: CameraPreset | null | undefined): preset is CameraPreset {
@@ -37,6 +50,32 @@ function hasUsableSceneReferences(
   )
 }
 
+function readVector(vector: VectorLike): readonly [number, number, number] | null {
+  const values = [vector.x, vector.y, vector.z]
+  return values.every(Number.isFinite)
+    ? values as [number, number, number]
+    : null
+}
+
+function snapshotScene(camera: CameraLike, controls: ControlsLike): SceneSnapshot | null {
+  const position = readVector(camera.position)
+  const target = readVector(controls.target)
+  if (!position || !target || !Number.isFinite(camera.fov)) return null
+  return { position, target, fov: camera.fov }
+}
+
+function restoreScene(camera: CameraLike, controls: ControlsLike, snapshot: SceneSnapshot | null) {
+  if (!snapshot) return
+  try {
+    camera.position.set(...snapshot.position)
+    camera.fov = snapshot.fov
+    camera.updateProjectionMatrix()
+    controls.target.set(...snapshot.target)
+  } catch {
+    // Best effort only: disposed Three.js references can also reject rollback.
+  }
+}
+
 /**
  * Reapplies a camera preset to the existing Three.js camera and controls.
  * This is intentionally imperative so a reset works even when the selected
@@ -49,6 +88,7 @@ export function applyCameraPreset(
 ): boolean {
   if (!hasUsableSceneReferences(camera, controls) || !controls || !isValidPreset(preset)) return false
 
+  const snapshot = snapshotScene(camera, controls)
   try {
     camera.position.set(...preset.position)
     camera.fov = preset.fov
@@ -57,8 +97,9 @@ export function applyCameraPreset(
     controls.update()
     return true
   } catch {
-    // Scene references can become stale during WebGL disposal. A reset must
-    // never crash the React tree or trigger a renderer rebuild as recovery.
+    // Scene references can become stale during WebGL disposal. Restore the
+    // previous camera state when possible instead of leaving a partial reset.
+    restoreScene(camera, controls, snapshot)
     return false
   }
 }
