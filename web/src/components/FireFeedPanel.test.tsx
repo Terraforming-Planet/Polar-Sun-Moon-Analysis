@@ -129,6 +129,23 @@ describe('FireFeedPanel', () => {
     expect(markup).toContain('Network request failed')
   })
 
+  it('keeps refresh progress visible when an older request is aborted', () => {
+    const abortError = new Error('The operation was aborted')
+    abortError.name = 'AbortError'
+
+    const markup = renderToStaticMarkup(<FireFeedPanel
+      sourceLabel="NASA EONET"
+      isRefreshing
+      error={abortError}
+      now={new Date('2026-08-03T12:00:00Z')}
+      data={{ generated_at_utc: '2026-08-03T11:00:00Z', features: [] }}
+    />)
+
+    expect(markup).toContain('Sprawdzanie nowszego pliku pożarowego')
+    expect(markup).not.toContain('Nie udało się odświeżyć katalogu pożarów')
+    expect(markup).not.toContain('The operation was aborted')
+  })
+
   it('does not claim a refresh failure for blank or unsupported error values', () => {
     const blankMarkup = renderToStaticMarkup(<FireFeedPanel
       sourceLabel="NASA EONET"
