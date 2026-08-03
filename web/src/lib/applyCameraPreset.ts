@@ -23,6 +23,20 @@ function isValidPreset(preset: CameraPreset | null | undefined): preset is Camer
     && preset.fov < 180
 }
 
+function hasUsableSceneReferences(
+  camera: CameraLike | null,
+  controls: ControlsLike | null,
+): camera is CameraLike {
+  return Boolean(
+    camera
+    && controls
+    && typeof camera.position?.set === 'function'
+    && typeof camera.updateProjectionMatrix === 'function'
+    && typeof controls.target?.set === 'function'
+    && typeof controls.update === 'function',
+  )
+}
+
 /**
  * Reapplies a camera preset to the existing Three.js camera and controls.
  * This is intentionally imperative so a reset works even when the selected
@@ -33,7 +47,7 @@ export function applyCameraPreset(
   controls: ControlsLike | null,
   preset: CameraPreset | null | undefined,
 ): boolean {
-  if (!camera || !controls || !isValidPreset(preset)) return false
+  if (!hasUsableSceneReferences(camera, controls) || !controls || !isValidPreset(preset)) return false
 
   camera.position.set(...preset.position)
   camera.fov = preset.fov
