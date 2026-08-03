@@ -14,6 +14,13 @@ type ControlsLike = {
   update: () => void
 }
 
+function isValidPreset(preset: CameraPreset) {
+  return preset.position.every(Number.isFinite)
+    && Number.isFinite(preset.fov)
+    && preset.fov > 0
+    && preset.fov < 180
+}
+
 /**
  * Reapplies a camera preset to the existing Three.js camera and controls.
  * This is intentionally imperative so a reset works even when the selected
@@ -24,7 +31,7 @@ export function applyCameraPreset(
   controls: ControlsLike | null,
   preset: CameraPreset,
 ): boolean {
-  if (!camera || !controls) return false
+  if (!camera || !controls || !isValidPreset(preset)) return false
 
   camera.position.set(...preset.position)
   camera.fov = preset.fov
