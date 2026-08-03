@@ -9,9 +9,11 @@ type FireFeedPanelProps = {
 }
 
 export function FireFeedPanel({ data, sourceLabel, now = new Date(), error }: FireFeedPanelProps) {
+  const refreshError = error?.trim()
+
   return <section aria-label="Status ostatniego opublikowanego pliku pożarowego">
-    {error && <p className="notice" role="status">
-      Nie udało się odświeżyć katalogu pożarów: {error}. Poniższy status dotyczy ostatnich danych, które udało się wczytać.
+    {refreshError && <p className="notice" role="status">
+      Nie udało się odświeżyć katalogu pożarów: {refreshError}. Poniższy status dotyczy ostatnich danych, które udało się wczytać.
     </p>}
     <FireFeedStatus
       sourceLabel={sourceLabel}
