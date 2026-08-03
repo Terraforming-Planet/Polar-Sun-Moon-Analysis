@@ -36,4 +36,24 @@ describe('FireFeedPanel', () => {
     expect(markup).toContain('nieznana — brak metadanych czasu')
     expect(markup).not.toContain('0.0 h')
   })
+
+  it('discloses a refresh failure without discarding the last loaded file status', () => {
+    const markup = renderToStaticMarkup(<FireFeedPanel
+      sourceLabel="NASA EONET"
+      error="503 data/hazards.json"
+      now={new Date('2026-08-03T12:00:00Z')}
+      data={{
+        generated_at_utc: '2026-08-03T08:00:00Z',
+        features: [
+          { geometry: { type: 'Point' }, properties: { categories: ['Fire'], observation_time: '2026-08-03T07:30:00Z' } },
+        ],
+      }}
+    />)
+
+    expect(markup).toContain('Nie udało się odświeżyć katalogu pożarów')
+    expect(markup).toContain('503 data/hazards.json')
+    expect(markup).toContain('ostatnich danych, które udało się wczytać')
+    expect(markup).toContain('>1<')
+    expect(markup).toContain('4.0 h')
+  })
 })
