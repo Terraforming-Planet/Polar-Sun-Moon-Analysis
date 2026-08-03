@@ -14,8 +14,10 @@ type ControlsLike = {
   update: () => void
 }
 
-function isValidPreset(preset: CameraPreset) {
-  return preset.position.every(Number.isFinite)
+function isValidPreset(preset: CameraPreset | null | undefined): preset is CameraPreset {
+  return Array.isArray(preset?.position)
+    && preset.position.length === 3
+    && preset.position.every(Number.isFinite)
     && Number.isFinite(preset.fov)
     && preset.fov > 0
     && preset.fov < 180
@@ -29,7 +31,7 @@ function isValidPreset(preset: CameraPreset) {
 export function applyCameraPreset(
   camera: CameraLike | null,
   controls: ControlsLike | null,
-  preset: CameraPreset,
+  preset: CameraPreset | null | undefined,
 ): boolean {
   if (!camera || !controls || !isValidPreset(preset)) return false
 
