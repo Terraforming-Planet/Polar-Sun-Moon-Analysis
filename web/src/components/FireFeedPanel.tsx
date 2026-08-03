@@ -5,11 +5,23 @@ type FireFeedPanelProps = {
   data: FireFeedData | null | undefined
   sourceLabel: string
   now?: Date
-  error?: string | null
+  error?: unknown
+}
+
+function getRefreshErrorMessage(error: unknown): string | null {
+  if (typeof error === 'string') {
+    return error.trim() || null
+  }
+
+  if (error instanceof Error) {
+    return error.message.trim() || error.name.trim() || null
+  }
+
+  return null
 }
 
 export function FireFeedPanel({ data, sourceLabel, now = new Date(), error }: FireFeedPanelProps) {
-  const refreshError = error?.trim()
+  const refreshError = getRefreshErrorMessage(error)
 
   return <section aria-label="Status ostatniego opublikowanego pliku pożarowego">
     {refreshError && <p className="notice" role="status">
