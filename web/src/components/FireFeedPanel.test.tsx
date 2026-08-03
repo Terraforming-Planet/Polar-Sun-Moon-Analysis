@@ -146,6 +146,20 @@ describe('FireFeedPanel', () => {
     expect(markup).not.toContain('The operation was aborted')
   })
 
+  it('ignores an AbortError-like object crossing a worker or iframe boundary', () => {
+    const markup = renderToStaticMarkup(<FireFeedPanel
+      sourceLabel="NASA EONET"
+      isRefreshing
+      error={{ name: 'AbortError', message: 'The operation was aborted in another realm' }}
+      now={new Date('2026-08-03T12:00:00Z')}
+      data={{ generated_at_utc: '2026-08-03T11:00:00Z', features: [] }}
+    />)
+
+    expect(markup).toContain('Sprawdzanie nowszego pliku pożarowego')
+    expect(markup).not.toContain('Nie udało się odświeżyć katalogu pożarów')
+    expect(markup).not.toContain('another realm')
+  })
+
   it('does not claim a refresh failure for blank or unsupported error values', () => {
     const blankMarkup = renderToStaticMarkup(<FireFeedPanel
       sourceLabel="NASA EONET"
