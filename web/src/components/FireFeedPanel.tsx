@@ -9,18 +9,30 @@ type FireFeedPanelProps = {
   isRefreshing?: boolean
 }
 
+function isAbortError(error: unknown): boolean {
+  if (error instanceof Error) {
+    return error.name === 'AbortError'
+  }
+
+  if (typeof error !== 'object' || error === null || !('name' in error)) {
+    return false
+  }
+
+  return typeof error.name === 'string' && error.name === 'AbortError'
+}
+
 function getRefreshErrorMessage(error: unknown): string | null {
   if (typeof error === 'string') {
     return error.trim() || null
   }
 
-  if (error instanceof Error) {
-    // An aborted request usually means that a newer refresh replaced the old one
-    // or that the component was unmounted. It is not a data-source failure.
-    if (error.name === 'AbortError') {
-      return null
-    }
+  // Errors crossing an iframe/worker boundary may not pass instanceof Error.
+  // Their AbortError name is still enough to identify an intentional cancellation.
+  if (isAbortError(error)) {
+    return null
+  }
 
+  if (error instanceof Error) {
     return error.message.trim() || error.name.trim() || null
   }
 
