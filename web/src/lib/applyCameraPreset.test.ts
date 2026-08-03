@@ -35,12 +35,17 @@ describe('applyCameraPreset', () => {
   })
 
   it.each([
-    { position: [Number.NaN, 0.18, 6.1] as const, fov: 42 },
-    { position: [0, Number.POSITIVE_INFINITY, 6.1] as const, fov: 42 },
-    { position: [0, 0.18, 6.1] as const, fov: Number.NaN },
-    { position: [0, 0.18, 6.1] as const, fov: 0 },
-    { position: [0, 0.18, 6.1] as const, fov: 180 },
-  ])('rejects an invalid preset before mutating the existing scene', invalidPreset => {
+    null,
+    undefined,
+    { position: null, fov: 42 },
+    { position: [0, 0.18], fov: 42 },
+    { position: [0, 0.18, 6.1, 8], fov: 42 },
+    { position: [Number.NaN, 0.18, 6.1], fov: 42 },
+    { position: [0, Number.POSITIVE_INFINITY, 6.1], fov: 42 },
+    { position: [0, 0.18, 6.1], fov: Number.NaN },
+    { position: [0, 0.18, 6.1], fov: 0 },
+    { position: [0, 0.18, 6.1], fov: 180 },
+  ])('rejects a missing or malformed preset before mutating the existing scene', invalidPreset => {
     const positionSet = vi.fn()
     const updateProjectionMatrix = vi.fn()
     const targetSet = vi.fn()
@@ -55,7 +60,7 @@ describe('applyCameraPreset', () => {
       update: controlsUpdate,
     }
 
-    expect(applyCameraPreset(camera, controls, invalidPreset)).toBe(false)
+    expect(applyCameraPreset(camera, controls, invalidPreset as never)).toBe(false)
     expect(positionSet).not.toHaveBeenCalled()
     expect(updateProjectionMatrix).not.toHaveBeenCalled()
     expect(targetSet).not.toHaveBeenCalled()
