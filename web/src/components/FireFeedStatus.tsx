@@ -11,9 +11,17 @@ function formatAge(value: number | null): string {
   return `${value.toFixed(1)} h`
 }
 
-export function FireFeedStatus({ summary }: { summary: FireFeedSummary }) {
-  return <section className="panel" aria-label="Status ostatniego opublikowanego pliku pożarowego">
+type FireFeedStatusProps = {
+  summary: FireFeedSummary
+  sourceLabel: string
+}
+
+export function FireFeedStatus({ summary, sourceLabel }: FireFeedStatusProps) {
+  const normalizedSource = sourceLabel.trim() || 'brak danych'
+
+  return <section className="panel" aria-label="Status ostatniego opublikowanego pliku pożarowego" aria-live="polite">
     <h2>Status danych pożarowych</h2>
+    <div className="fact"><span>Źródło katalogu</span><b>{normalizedSource}</b></div>
     <div className="fact"><span>Punkty pożarowe</span><b>{summary.pointCount}</b></div>
     <div className="fact"><span>Publikacja pliku</span><b>{formatUtc(summary.publishedAt)}</b></div>
     <div className="fact"><span>Wiek pliku</span><b>{formatAge(summary.publishedAgeHours)}</b></div>
