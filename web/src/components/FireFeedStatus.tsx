@@ -11,6 +11,15 @@ function formatAge(value: number | null): string {
   return `${value.toFixed(1)} h`
 }
 
+function freshnessLabel(summary: FireFeedSummary): string {
+  const ages = [summary.publishedAgeHours, summary.latestObservationAgeHours]
+    .filter((value): value is number => value !== null)
+
+  if (!ages.length) return 'nieznana — brak metadanych czasu'
+  if (Math.max(...ages) > 24) return 'opóźnione — ponad 24 h'
+  return 'aktualne według ostatniego pliku — do 24 h'
+}
+
 type FireFeedStatusProps = {
   summary: FireFeedSummary
   sourceLabel: string
@@ -27,6 +36,7 @@ export function FireFeedStatus({ summary, sourceLabel }: FireFeedStatusProps) {
     <div className="fact"><span>Wiek pliku</span><b>{formatAge(summary.publishedAgeHours)}</b></div>
     <div className="fact"><span>Najnowsza obserwacja</span><b>{formatUtc(summary.latestObservationAt)}</b></div>
     <div className="fact"><span>Wiek obserwacji</span><b>{formatAge(summary.latestObservationAgeHours)}</b></div>
+    <div className="fact"><span>Stan świeżości</span><b>{freshnessLabel(summary)}</b></div>
     <p className="muted">Ostatni opublikowany plik; nie jest to ciągły obraz czasu rzeczywistego.</p>
   </section>
 }
