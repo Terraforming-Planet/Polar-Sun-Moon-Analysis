@@ -6,6 +6,7 @@ type FireFeedPanelProps = {
   sourceLabel: string
   now?: Date
   error?: unknown
+  isRefreshing?: boolean
 }
 
 function getRefreshErrorMessage(error: unknown): string | null {
@@ -20,11 +21,20 @@ function getRefreshErrorMessage(error: unknown): string | null {
   return null
 }
 
-export function FireFeedPanel({ data, sourceLabel, now = new Date(), error }: FireFeedPanelProps) {
+export function FireFeedPanel({
+  data,
+  sourceLabel,
+  now = new Date(),
+  error,
+  isRefreshing = false,
+}: FireFeedPanelProps) {
   const refreshError = getRefreshErrorMessage(error)
 
   return <section aria-label="Status ostatniego opublikowanego pliku pożarowego">
-    {refreshError && <p className="notice" role="status">
+    {isRefreshing && !refreshError && <p className="notice" role="status" aria-live="polite">
+      Sprawdzanie nowszego pliku pożarowego. Poniższy status dotyczy ostatnich danych, które udało się wczytać.
+    </p>}
+    {refreshError && <p className="notice" role="status" aria-live="polite">
       Nie udało się odświeżyć katalogu pożarów: {refreshError}. Poniższy status dotyczy ostatnich danych, które udało się wczytać.
     </p>}
     <FireFeedStatus
