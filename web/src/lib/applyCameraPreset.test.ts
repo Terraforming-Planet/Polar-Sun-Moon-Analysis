@@ -80,19 +80,23 @@ describe('applyCameraPreset', () => {
     expect(applyCameraPreset(camera as never, controls as never, preset)).toBe(false)
   })
 
-  it('contains errors from stale or disposed scene references', () => {
+  it('rolls back a partial reset when stale controls throw', () => {
     const camera = {
-      position: { set: vi.fn() },
-      fov: 42,
+      position: { x: 9, y: 8, z: 7, set: vi.fn() },
+      fov: 31,
       updateProjectionMatrix: vi.fn(),
     }
     const controls = {
-      target: { set: vi.fn() },
+      target: { x: 1, y: 2, z: 3, set: vi.fn() },
       update: vi.fn(() => { throw new Error('disposed controls') }),
     }
 
     expect(() => applyCameraPreset(camera, controls, preset)).not.toThrow()
     expect(applyCameraPreset(camera, controls, preset)).toBe(false)
+    expect(camera.position.set).toHaveBeenLastCalledWith(9, 8, 7)
+    expect(camera.fov).toBe(31)
+    expect(controls.target.set).toHaveBeenLastCalledWith(1, 2, 3)
+    expect(camera.updateProjectionMatrix).toHaveBeenCalledTimes(4)
   })
 
   it.each([
