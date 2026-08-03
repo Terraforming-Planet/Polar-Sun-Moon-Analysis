@@ -33,6 +33,51 @@ describe('applyCameraPreset', () => {
     expect(controlsUpdate).toHaveBeenCalledTimes(2)
   })
 
+  it('restores the active preset after the user manually moves and zooms the existing camera', () => {
+    const position = {
+      x: 0,
+      y: 0.18,
+      z: 6.1,
+      set: vi.fn((x: number, y: number, z: number) => {
+        position.x = x
+        position.y = y
+        position.z = z
+      }),
+    }
+    const target = {
+      x: 0,
+      y: 0,
+      z: 0,
+      set: vi.fn((x: number, y: number, z: number) => {
+        target.x = x
+        target.y = y
+        target.z = z
+      }),
+    }
+    const camera = {
+      position,
+      fov: 42,
+      updateProjectionMatrix: vi.fn(),
+    }
+    const controls = {
+      target,
+      update: vi.fn(),
+    }
+    const preset = { position: [0, 0.18, 6.1] as const, fov: 42 }
+
+    position.set(4.5, -1.2, 2.7)
+    target.set(0.9, 0.4, -0.3)
+    camera.fov = 75
+
+    expect(applyCameraPreset(camera, controls, preset)).toBe(true)
+
+    expect([position.x, position.y, position.z]).toEqual([0, 0.18, 6.1])
+    expect([target.x, target.y, target.z]).toEqual([0, 0, 0])
+    expect(camera.fov).toBe(42)
+    expect(camera.updateProjectionMatrix).toHaveBeenCalledTimes(1)
+    expect(controls.update).toHaveBeenCalledTimes(1)
+  })
+
   it.each([
     { camera: null, controls: null },
     {
