@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
 import { applyCameraPreset } from './applyCameraPreset'
 
+type CameraInput = Parameters<typeof applyCameraPreset>[0]
+type ControlsInput = Parameters<typeof applyCameraPreset>[1]
+
 describe('applyCameraPreset', () => {
   it('reapplies the same preset on every reset without rebuilding the scene', () => {
     const positionSet = vi.fn()
@@ -41,14 +44,14 @@ describe('applyCameraPreset', () => {
       controls: { target: { set: vi.fn() }, update: vi.fn() },
     },
     {
-      camera: { position: {}, fov: 55, updateProjectionMatrix: vi.fn() },
+      camera: { position: {} } as unknown as CameraInput,
       controls: { target: { set: vi.fn() }, update: vi.fn() },
     },
     {
       camera: { position: { set: vi.fn() }, fov: 55, updateProjectionMatrix: vi.fn() },
-      controls: { target: {}, update: vi.fn() },
+      controls: { target: {} } as unknown as ControlsInput,
     },
-  ])('returns false for incomplete scene references without throwing', ({ camera, controls }) => {
+  ] satisfies Array<{ camera: CameraInput; controls: ControlsInput }>)('returns false for incomplete scene references without throwing', ({ camera, controls }) => {
     const preset = { position: [0, 0.18, 6.1] as const, fov: 42 }
 
     expect(() => applyCameraPreset(camera, controls, preset)).not.toThrow()
