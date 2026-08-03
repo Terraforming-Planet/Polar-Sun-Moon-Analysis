@@ -35,11 +35,23 @@ describe('applyCameraPreset', () => {
   })
 
   it.each([
-    [{ position: {}, fov: 42, updateProjectionMatrix: vi.fn() }, { target: { set: vi.fn() }, update: vi.fn() }],
-    [{ position: { set: vi.fn() }, fov: 42 }, { target: { set: vi.fn() }, update: vi.fn() }],
-    [{ position: { set: vi.fn() }, fov: 42, updateProjectionMatrix: vi.fn() }, { target: {}, update: vi.fn() }],
-    [{ position: { set: vi.fn() }, fov: 42, updateProjectionMatrix: vi.fn() }, { target: { set: vi.fn() } }],
-  ])('rejects incomplete scene references instead of throwing', ([camera, controls]) => {
+    {
+      camera: { position: {}, fov: 42, updateProjectionMatrix: vi.fn() },
+      controls: { target: { set: vi.fn() }, update: vi.fn() },
+    },
+    {
+      camera: { position: { set: vi.fn() }, fov: 42 },
+      controls: { target: { set: vi.fn() }, update: vi.fn() },
+    },
+    {
+      camera: { position: { set: vi.fn() }, fov: 42, updateProjectionMatrix: vi.fn() },
+      controls: { target: {}, update: vi.fn() },
+    },
+    {
+      camera: { position: { set: vi.fn() }, fov: 42, updateProjectionMatrix: vi.fn() },
+      controls: { target: { set: vi.fn() } },
+    },
+  ])('rejects incomplete scene references instead of throwing', ({ camera, controls }) => {
     expect(() => applyCameraPreset(camera as never, controls as never, preset)).not.toThrow()
     expect(applyCameraPreset(camera as never, controls as never, preset)).toBe(false)
   })
