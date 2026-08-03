@@ -1,0 +1,58 @@
+import { describe, expect, it, vi } from 'vitest'
+import { applyCameraPreset } from './applyCameraPreset'
+
+describe('applyCameraPreset', () => {
+  it('reapplies the same preset on every reset without rebuilding the scene', () => {
+    const positionSet = vi.fn()
+    const targetSet = vi.fn()
+    const updateProjectionMatrix = vi.fn()
+    const controlsUpdate = vi.fn()
+    const camera = {
+      position: { set: positionSet },
+      fov: 70,
+      updateProjectionMatrix,
+    }
+    const controls = {
+      target: { set: targetSet },
+      update: controlsUpdate,
+    }
+    const preset = { position: [0, 0.18, 6.1] as const, fov: 42 }
+
+    expect(applyCameraPreset(camera, controls, preset)).toBe(true)
+    expect(applyCameraPreset(camera, controls, preset)).toBe(true)
+
+    expect(positionSet).toHaveBeenCalledTimes(2)
+    expect(positionSet).toHaveBeenLastCalledWith(0, 0.18, 6.1)
+    expect(camera.fov).toBe(42)
+    expect(updateProjectionMatrix).toHaveBeenCalledTimes(2)
+    expect(targetSet).toHaveBeenCalledTimes(2)
+    expect(targetSet).toHaveBeenLastCalledWith(0, 0, 0)
+    expect(controlsUpdate).toHaveBeenCalledTimes(2)
+  })
+
+  it.each([
+    null,
+    undefined,
+    { position: [0, 1] as unknown as readonly [number, number, number], fov: 42 },
+    { position: [0, Number.NaN, 6] as const, fov: 42 },
+    { position: [0, 0, 6] as const, fov: 0 },
+    { position: [0, 0, 6] as const, fov: 180 },
+  ])('rejects malformed preset %j without mutating scene references', preset => {
+    const camera = {
+      position: { set: vi.fn() },
+      fov: 55,
+      updateProjectionMatrix: vi.fn(),
+    }
+    const controls = {
+      target: { set: vi.fn() },
+      update: vi.fn(),
+    }
+
+    expect(applyCameraPreset(camera, controls, preset)).toBe(false)
+    expect(camera.position.set).not.toHaveBeenCalled()
+    expect(camera.fov).toBe(55)
+    expect(camera.updateProjectionMatrix).not.toHaveBeenCalled()
+    expect(controls.target.set).not.toHaveBeenCalled()
+    expect(controls.update).not.toHaveBeenCalled()
+  })
+})
