@@ -15,6 +15,12 @@ function getRefreshErrorMessage(error: unknown): string | null {
   }
 
   if (error instanceof Error) {
+    // An aborted request usually means that a newer refresh replaced the old one
+    // or that the component was unmounted. It is not a data-source failure.
+    if (error.name === 'AbortError') {
+      return null
+    }
+
     return error.message.trim() || error.name.trim() || null
   }
 
