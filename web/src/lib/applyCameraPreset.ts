@@ -71,6 +71,7 @@ function restoreScene(camera: CameraLike, controls: ControlsLike, snapshot: Scen
     camera.fov = snapshot.fov
     camera.updateProjectionMatrix()
     controls.target.set(...snapshot.target)
+    controls.update()
   } catch {
     // Best effort only: disposed Three.js references can also reject rollback.
   }
