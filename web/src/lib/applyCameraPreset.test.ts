@@ -30,6 +30,30 @@ describe('applyCameraPreset', () => {
     expect(controlsUpdate).toHaveBeenCalledOnce()
   })
 
+  it('reapplies the same preset on every reset click without relying on a state transition', () => {
+    const positionSet = vi.fn()
+    const updateProjectionMatrix = vi.fn()
+    const targetSet = vi.fn()
+    const controlsUpdate = vi.fn()
+    const camera = {
+      position: { set: positionSet },
+      fov: 42,
+      updateProjectionMatrix,
+    }
+    const controls = {
+      target: { set: targetSet },
+      update: controlsUpdate,
+    }
+
+    expect(applyCameraPreset(camera, controls, preset)).toBe(true)
+    expect(applyCameraPreset(camera, controls, preset)).toBe(true)
+    expect(positionSet).toHaveBeenCalledTimes(2)
+    expect(positionSet).toHaveBeenNthCalledWith(2, 0, 0.18, 6.1)
+    expect(updateProjectionMatrix).toHaveBeenCalledTimes(2)
+    expect(targetSet).toHaveBeenCalledTimes(2)
+    expect(controlsUpdate).toHaveBeenCalledTimes(2)
+  })
+
   it('does nothing until both existing scene references are ready', () => {
     expect(applyCameraPreset(null, null, preset)).toBe(false)
   })
