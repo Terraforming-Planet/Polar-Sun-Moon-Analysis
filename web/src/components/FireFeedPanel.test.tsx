@@ -77,6 +77,32 @@ describe('FireFeedPanel', () => {
     expect(markup).not.toContain('Nie udało się odświeżyć katalogu pożarów')
   })
 
+  it('does not claim previous data during the initial file request', () => {
+    const markup = renderToStaticMarkup(<FireFeedPanel
+      sourceLabel="NASA EONET"
+      isRefreshing
+      now={new Date('2026-08-03T12:00:00Z')}
+      data={null}
+    />)
+
+    expect(markup).toContain('Pobieranie ostatniego opublikowanego pliku pożarowego')
+    expect(markup).toContain('Dane nie są jeszcze dostępne')
+    expect(markup).not.toContain('ostatnich danych, które udało się wczytać')
+  })
+
+  it('reports an initial fetch failure without inventing a previous file', () => {
+    const markup = renderToStaticMarkup(<FireFeedPanel
+      sourceLabel="NASA EONET"
+      error="Request timed out"
+      now={new Date('2026-08-03T12:00:00Z')}
+      data={null}
+    />)
+
+    expect(markup).toContain('Nie udało się pobrać katalogu pożarów')
+    expect(markup).toContain('Brak wcześniej wczytanego pliku')
+    expect(markup).not.toContain('status dotyczy ostatnich danych')
+  })
+
   it('prefers a concrete refresh error over the in-progress message', () => {
     const markup = renderToStaticMarkup(<FireFeedPanel
       sourceLabel="NASA EONET"
@@ -86,9 +112,9 @@ describe('FireFeedPanel', () => {
       data={null}
     />)
 
-    expect(markup).toContain('Nie udało się odświeżyć katalogu pożarów')
+    expect(markup).toContain('Nie udało się pobrać katalogu pożarów')
     expect(markup).toContain('Request timed out')
-    expect(markup).not.toContain('Sprawdzanie nowszego pliku pożarowego')
+    expect(markup).not.toContain('Pobieranie ostatniego opublikowanego pliku pożarowego')
   })
 
   it('renders the message from an Error returned by the loader', () => {
@@ -99,7 +125,7 @@ describe('FireFeedPanel', () => {
       data={null}
     />)
 
-    expect(markup).toContain('Nie udało się odświeżyć katalogu pożarów')
+    expect(markup).toContain('Nie udało się pobrać katalogu pożarów')
     expect(markup).toContain('Network request failed')
   })
 
