@@ -20,11 +20,26 @@ describe('FireFeedStatus', () => {
     expect(markup).toContain('2.0 h')
     expect(markup).toContain('Wiek obserwacji')
     expect(markup).toContain('2.5 h')
+    expect(markup).toContain('Stan świeżości')
+    expect(markup).toContain('aktualne według ostatniego pliku — do 24 h')
     expect(markup).toContain('Ostatni opublikowany plik')
     expect(markup).toContain('nie jest to ciągły obraz czasu rzeczywistego')
   })
 
-  it('does not invent source, timestamps or ages when metadata is missing', () => {
+  it('marks the feed as delayed when either published data or observations exceed 24 hours', () => {
+    const markup = renderToStaticMarkup(<FireFeedStatus sourceLabel="NASA EONET" summary={{
+      pointCount: 5,
+      publishedAt: '2026-08-02T12:00:00.000Z',
+      latestObservationAt: '2026-08-02T10:00:00.000Z',
+      publishedAgeHours: 23,
+      latestObservationAgeHours: 25,
+    }}/>)
+
+    expect(markup).toContain('opóźnione — ponad 24 h')
+    expect(markup).not.toContain('aktualne według ostatniego pliku — do 24 h')
+  })
+
+  it('does not invent source, timestamps, ages or freshness when metadata is missing', () => {
     const markup = renderToStaticMarkup(<FireFeedStatus sourceLabel="   " summary={{
       pointCount: 0,
       publishedAt: null,
@@ -34,6 +49,7 @@ describe('FireFeedStatus', () => {
     }}/>)
 
     expect(markup.match(/brak danych/g)).toHaveLength(5)
+    expect(markup).toContain('nieznana — brak metadanych czasu')
     expect(markup).not.toContain('0.0 h')
   })
 })
