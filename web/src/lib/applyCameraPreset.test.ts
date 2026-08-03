@@ -80,7 +80,7 @@ describe('applyCameraPreset', () => {
     expect(applyCameraPreset(camera as never, controls as never, preset)).toBe(false)
   })
 
-  it('rolls back a partial reset when stale controls throw', () => {
+  it('rolls back a partial reset and resynchronizes controls when stale controls throw', () => {
     const camera = {
       position: { x: 9, y: 8, z: 7, set: vi.fn() },
       fov: 31,
@@ -97,6 +97,7 @@ describe('applyCameraPreset', () => {
     expect(camera.fov).toBe(31)
     expect(controls.target.set).toHaveBeenLastCalledWith(1, 2, 3)
     expect(camera.updateProjectionMatrix).toHaveBeenCalledTimes(4)
+    expect(controls.update).toHaveBeenCalledTimes(4)
   })
 
   it.each([
