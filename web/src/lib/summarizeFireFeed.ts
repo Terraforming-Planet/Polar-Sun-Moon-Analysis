@@ -3,6 +3,7 @@ export type FireFeedFeature = {
   properties?: {
     categories?: unknown
     observation_time?: unknown
+    observationUtc?: unknown
   } | null
 }
 
@@ -67,6 +68,19 @@ function isFirePoint(feature: FireFeedFeature): boolean {
     && categoriesOf(feature).some(category => FIRE_CATEGORIES.has(category.trim().toLowerCase()))
 }
 
+function observationTimestampOf(feature: FireFeedFeature): string | null {
+  const properties = feature.properties
+  if (!properties) return null
+
+  // observation_time is the current producer field. When it exists but is
+  // malformed, do not conceal that problem behind the compatibility field.
+  if (Object.prototype.hasOwnProperty.call(properties, 'observation_time')) {
+    return validIsoDate(properties.observation_time)
+  }
+
+  return validIsoDate(properties.observationUtc)
+}
+
 function ageHours(timestamp: string | null, nowMs: number): number | null {
   if (!timestamp) return null
   const age = (nowMs - Date.parse(timestamp)) / 3_600_000
@@ -87,7 +101,7 @@ export function summarizeFireFeed(data: FireFeedData | null | undefined, now = n
     ? Math.min(nowMs, Date.parse(publishedAt))
     : nowMs
 
-  const parsedObservationTimes = firePoints.map(feature => validIsoDate(feature.properties?.observation_time))
+  const parsedObservationTimes = firePoints.map(observationTimestampOf)
   const observationTimes = parsedObservationTimes
     .filter((value): value is string => value !== null && Date.parse(value) <= latestAllowedObservationMs)
     .sort((left, right) => Date.parse(right) - Date.parse(left))
