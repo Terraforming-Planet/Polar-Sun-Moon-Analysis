@@ -127,6 +127,7 @@ describe('applyCameraPreset', () => {
     undefined,
     { position: [0, 1] as unknown as readonly [number, number, number], fov: 42 },
     { position: [0, Number.NaN, 6] as const, fov: 42 },
+    { position: [0, 0, 0] as const, fov: 42 },
     { position: [0, 0, 6] as const, fov: 0 },
     { position: [0, 0, 6] as const, fov: 180 },
   ])('rejects malformed preset %j without mutating scene references', preset => {
