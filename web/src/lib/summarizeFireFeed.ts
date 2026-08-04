@@ -68,17 +68,32 @@ function isFirePoint(feature: FireFeedFeature): boolean {
     && categoriesOf(feature).some(category => FIRE_CATEGORIES.has(category.trim().toLowerCase()))
 }
 
-function observationTimestampOf(feature: FireFeedFeature): string | null {
+type ObservationTimestampMetadata = {
+  timestamp: string | null
+  present: boolean
+}
+
+function observationTimestampMetadataOf(feature: FireFeedFeature): ObservationTimestampMetadata {
   const properties = feature.properties
-  if (!properties) return null
+  if (!properties) return { timestamp: null, present: false }
 
   // observation_time is the current producer field. When it exists but is
   // malformed, do not conceal that problem behind the compatibility field.
   if (Object.prototype.hasOwnProperty.call(properties, 'observation_time')) {
-    return validIsoDate(properties.observation_time)
+    return {
+      timestamp: validIsoDate(properties.observation_time),
+      present: true,
+    }
   }
 
-  return validIsoDate(properties.observationUtc)
+  if (Object.prototype.hasOwnProperty.call(properties, 'observationUtc')) {
+    return {
+      timestamp: validIsoDate(properties.observationUtc),
+      present: true,
+    }
+  }
+
+  return { timestamp: null, present: false }
 }
 
 function ageHours(timestamp: string | null, nowMs: number): number | null {
@@ -101,11 +116,15 @@ export function summarizeFireFeed(data: FireFeedData | null | undefined, now = n
     ? Math.min(nowMs, Date.parse(publishedAt))
     : nowMs
 
-  const parsedObservationTimes = firePoints.map(observationTimestampOf)
-  const observationTimes = parsedObservationTimes
+  const observationMetadata = firePoints.map(observationTimestampMetadataOf)
+  const observationTimes = observationMetadata
+    .map(metadata => metadata.timestamp)
     .filter((value): value is string => value !== null && Date.parse(value) <= latestAllowedObservationMs)
     .sort((left, right) => Date.parse(right) - Date.parse(left))
-  const ignoredObservationTimestampCount = parsedObservationTimes.length - observationTimes.length
+  const ignoredObservationTimestampCount = observationMetadata.filter(metadata =>
+    metadata.present
+      && (metadata.timestamp === null || Date.parse(metadata.timestamp) > latestAllowedObservationMs),
+  ).length
   const latestObservationAt = observationTimes[0] ?? null
 
   return {
