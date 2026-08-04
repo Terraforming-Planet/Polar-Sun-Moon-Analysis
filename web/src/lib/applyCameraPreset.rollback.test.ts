@@ -46,4 +46,55 @@ describe('applyCameraPreset rollback', () => {
     expect(camera.updateProjectionMatrix).toHaveBeenCalledTimes(2)
     expect(controls.update).toHaveBeenCalledTimes(2)
   })
+
+  it('continues restoring target and controls when projection rollback also throws', () => {
+    const position = {
+      x: 5,
+      y: 1,
+      z: 2,
+      set(x: number, y: number, z: number) {
+        this.x = x
+        this.y = y
+        this.z = z
+      },
+    }
+    const target = {
+      x: 0.4,
+      y: -0.2,
+      z: 0.1,
+      set(x: number, y: number, z: number) {
+        this.x = x
+        this.y = y
+        this.z = z
+      },
+    }
+    const updateProjectionMatrix = vi.fn()
+      .mockImplementationOnce(() => undefined)
+      .mockImplementationOnce(() => {
+        throw new Error('disposed projection matrix')
+      })
+    const controlsUpdate = vi.fn(() => {
+      throw new Error('disposed controls')
+    })
+    const camera = {
+      position,
+      fov: 68,
+      updateProjectionMatrix,
+    }
+    const controls = {
+      target,
+      update: controlsUpdate,
+    }
+
+    expect(applyCameraPreset(camera, controls, {
+      position: [0, 0.18, 6.1],
+      fov: 42,
+    })).toBe(false)
+
+    expect([position.x, position.y, position.z]).toEqual([5, 1, 2])
+    expect([target.x, target.y, target.z]).toEqual([0.4, -0.2, 0.1])
+    expect(camera.fov).toBe(68)
+    expect(updateProjectionMatrix).toHaveBeenCalledTimes(2)
+    expect(controlsUpdate).toHaveBeenCalledTimes(2)
+  })
 })
