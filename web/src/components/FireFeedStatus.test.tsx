@@ -55,6 +55,22 @@ describe('FireFeedStatus', () => {
     expect(markup).not.toContain('aktualne według ostatniego pliku — do 24 h')
   })
 
+  it('warns when the publication timestamp exists but is malformed', () => {
+    const markup = renderToStaticMarkup(<FireFeedStatus sourceLabel="NASA EONET" summary={{
+      pointCount: 5,
+      publishedAt: null,
+      latestObservationAt: '2026-08-03T11:30:00.000Z',
+      publishedAgeHours: null,
+      latestObservationAgeHours: 0.5,
+      publishedInFuture: false,
+      publicationTimestampInvalid: true,
+    }}/>)
+
+    expect(markup).toContain('niespójne — nieprawidłowy czas publikacji')
+    expect(markup).not.toContain('aktualne według ostatniego pliku — do 24 h')
+    expect(markup).not.toContain('nieznana — brak metadanych czasu')
+  })
+
   it('does not invent source, timestamps, ages or freshness when metadata is missing', () => {
     const markup = renderToStaticMarkup(<FireFeedStatus sourceLabel="   " summary={{
       pointCount: 0,
