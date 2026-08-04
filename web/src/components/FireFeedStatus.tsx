@@ -30,6 +30,7 @@ type FireFeedStatusProps = {
 
 export function FireFeedStatus({ summary, sourceLabel }: FireFeedStatusProps) {
   const normalizedSource = sourceLabel.trim() || 'brak danych'
+  const ignoredTimestampCount = summary.ignoredObservationTimestampCount ?? 0
 
   return <section className="panel" aria-label="Status ostatniego opublikowanego pliku pożarowego" aria-live="polite">
     <h2>Status danych pożarowych</h2>
@@ -40,6 +41,9 @@ export function FireFeedStatus({ summary, sourceLabel }: FireFeedStatusProps) {
     <div className="fact"><span>Najnowsza obserwacja</span><b>{formatUtc(summary.latestObservationAt)}</b></div>
     <div className="fact"><span>Wiek obserwacji</span><b>{formatAge(summary.latestObservationAgeHours)}</b></div>
     <div className="fact"><span>Stan świeżości</span><b>{freshnessLabel(summary)}</b></div>
+    {ignoredTimestampCount > 0 && <p className="muted" role="note">
+      Pominięte znaczniki czasu obserwacji: {ignoredTimestampCount}. Punkty pozostają w liczniku, ale błędne lub niemożliwe czasy nie wyznaczają najnowszej obserwacji.
+    </p>}
     <p className="muted">Ostatni opublikowany plik; nie jest to ciągły obraz czasu rzeczywistego.</p>
   </section>
 }
