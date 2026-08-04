@@ -46,6 +46,19 @@ describe('summarizeFireFeed', () => {
     expect(summary.latestObservationAgeHours).toBeNull()
   })
 
+  it('ignores future observation timestamps without hiding the latest valid observation', () => {
+    const summary = summarizeFireFeed({
+      features: [
+        { geometry: { type: 'Point' }, properties: { categories: ['Wildfire'], observation_time: '2026-08-03T12:30:00Z' } },
+        { geometry: { type: 'Point' }, properties: { categories: ['Fire'], observation_time: '2026-08-03T11:45:00Z' } },
+      ],
+    }, new Date('2026-08-03T12:00:00Z'))
+
+    expect(summary.pointCount).toBe(2)
+    expect(summary.latestObservationAt).toBe('2026-08-03T11:45:00.000Z')
+    expect(summary.latestObservationAgeHours).toBe(0.25)
+  })
+
   it('handles missing and malformed feature collections safely', () => {
     expect(summarizeFireFeed(null)).toMatchObject({ pointCount: 0, publishedAt: null })
     expect(summarizeFireFeed({ features: 'invalid' })).toMatchObject({ pointCount: 0, latestObservationAt: null })
