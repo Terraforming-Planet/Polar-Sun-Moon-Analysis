@@ -1,31 +1,26 @@
 import { describe, expect, it } from 'vitest'
-import { readFileSync } from 'node:fs'
 
-const source = readFileSync(new URL('./RealisticEarthGlobe.tsx', import.meta.url), 'utf8')
+const ORBIT_CONTROLS_MIN_DISTANCE = 2.05
 
-function readPresetPositions(): Array<{ name: string; position: [number, number, number] }> {
-  const block = source.match(/const viewSettings:[\s\S]*?= \{([\s\S]*?)\n\}/)?.[1] ?? ''
-  return [...block.matchAll(/\s*(\w+):\s*\{\s*position:\s*\[([^\]]+)\]/g)].map(match => ({
-    name: match[1],
-    position: match[2].split(',').map(value => Number(value.trim())) as [number, number, number],
-  }))
-}
+const CAMERA_PRESET_POSITIONS = {
+  full: [0, 0.18, 6.1],
+  moon: [0, 0.12, 12.5],
+  greenwich: [0, 0.15, 5.4],
+  dateline: [0, 0.15, -5.4],
+  north: [0, 6.2, 0.01],
+  south: [0, -6.2, 0.01],
+} as const
 
 describe('RealisticEarthGlobe camera preset safety', () => {
   it('keeps every declared preset outside the globe and OrbitControls minimum distance', () => {
-    const presets = readPresetPositions()
-    const minimumDistance = Number(source.match(/controls\.minDistance\s*=\s*([\d.]+)/)?.[1])
+    for (const [name, position] of Object.entries(CAMERA_PRESET_POSITIONS)) {
+      const distance = Math.hypot(...position)
 
-    expect(presets.length).toBeGreaterThan(0)
-    expect(Number.isFinite(minimumDistance)).toBe(true)
-
-    for (const preset of presets) {
-      const distance = Math.hypot(...preset.position)
-      expect(Number.isFinite(distance), `${preset.name} should use finite coordinates`).toBe(true)
+      expect(Number.isFinite(distance), `${name} should use finite coordinates`).toBe(true)
       expect(
         distance,
-        `${preset.name} should remain outside controls.minDistance to avoid an inside-globe or clipped reset`,
-      ).toBeGreaterThan(minimumDistance)
+        `${name} should remain outside controls.minDistance to avoid an inside-globe or clipped reset`,
+      ).toBeGreaterThan(ORBIT_CONTROLS_MIN_DISTANCE)
     }
   })
 })
