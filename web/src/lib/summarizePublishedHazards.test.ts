@@ -21,5 +21,15 @@ describe('published hazards fire-feed compatibility', () => {
     expect(summary.pointCount).toBeGreaterThanOrEqual(0)
     expect(summary.ignoredObservationTimestampCount).toBeGreaterThanOrEqual(0)
     expect(summary.ignoredObservationTimestampCount).toBeLessThanOrEqual(summary.pointCount)
+
+    if (summary.latestObservationAt) {
+      const latestObservationTime = new Date(summary.latestObservationAt).getTime()
+      expect(Number.isFinite(latestObservationTime)).toBe(true)
+      expect(latestObservationTime).toBeLessThanOrEqual(publicationTime.getTime())
+      expect(summary.latestObservationAgeHours).not.toBeNull()
+      expect(summary.latestObservationAgeHours!).toBeGreaterThanOrEqual(0)
+    } else {
+      expect(summary.latestObservationAgeHours).toBeNull()
+    }
   })
 })
