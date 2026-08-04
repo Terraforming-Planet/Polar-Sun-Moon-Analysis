@@ -21,6 +21,7 @@ describe('summarizeFireFeed', () => {
       latestObservationAgeHours: 2.25,
       publishedInFuture: false,
       publicationTimestampInvalid: false,
+      ignoredObservationTimestampCount: 0,
     })
   })
 
@@ -81,6 +82,7 @@ describe('summarizeFireFeed', () => {
     expect(summary.publicationTimestampInvalid).toBe(false)
     expect(summary.latestObservationAt).toBeNull()
     expect(summary.latestObservationAgeHours).toBeNull()
+    expect(summary.ignoredObservationTimestampCount).toBe(1)
   })
 
   it('ignores future observation timestamps without hiding the latest valid observation', () => {
@@ -94,6 +96,7 @@ describe('summarizeFireFeed', () => {
     expect(summary.pointCount).toBe(2)
     expect(summary.latestObservationAt).toBe('2026-08-03T11:45:00.000Z')
     expect(summary.latestObservationAgeHours).toBe(0.25)
+    expect(summary.ignoredObservationTimestampCount).toBe(1)
   })
 
   it('ignores observations newer than the published file while preserving the point count', () => {
@@ -108,10 +111,26 @@ describe('summarizeFireFeed', () => {
     expect(summary.pointCount).toBe(2)
     expect(summary.latestObservationAt).toBe('2026-08-03T09:50:00.000Z')
     expect(summary.latestObservationAgeHours).toBeCloseTo(2 + 1 / 6)
+    expect(summary.ignoredObservationTimestampCount).toBe(1)
+  })
+
+  it('counts every malformed, future or post-publication fire observation timestamp it ignores', () => {
+    const summary = summarizeFireFeed({
+      generated_at_utc: '2026-08-03T10:00:00Z',
+      features: [
+        { geometry: { type: 'Point' }, properties: { categories: ['Fire'], observation_time: 'not-a-date' } },
+        { geometry: { type: 'Point' }, properties: { categories: ['Wildfire'], observation_time: '2026-08-03T10:10:00Z' } },
+        { geometry: { type: 'Point' }, properties: { categories: ['Fires'], observation_time: '2026-08-03T09:40:00Z' } },
+      ],
+    }, new Date('2026-08-03T12:00:00Z'))
+
+    expect(summary.pointCount).toBe(3)
+    expect(summary.latestObservationAt).toBe('2026-08-03T09:40:00.000Z')
+    expect(summary.ignoredObservationTimestampCount).toBe(2)
   })
 
   it('handles missing and malformed feature collections safely', () => {
-    expect(summarizeFireFeed(null)).toMatchObject({ pointCount: 0, publishedAt: null, publishedInFuture: false, publicationTimestampInvalid: false })
-    expect(summarizeFireFeed({ features: 'invalid' })).toMatchObject({ pointCount: 0, latestObservationAt: null })
+    expect(summarizeFireFeed(null)).toMatchObject({ pointCount: 0, publishedAt: null, publishedInFuture: false, publicationTimestampInvalid: false, ignoredObservationTimestampCount: 0 })
+    expect(summarizeFireFeed({ features: 'invalid' })).toMatchObject({ pointCount: 0, latestObservationAt: null, ignoredObservationTimestampCount: 0 })
   })
 })
