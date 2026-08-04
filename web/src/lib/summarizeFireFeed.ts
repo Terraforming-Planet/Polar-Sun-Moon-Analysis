@@ -18,6 +18,7 @@ export type FireFeedSummary = {
   latestObservationAt: string | null
   publishedAgeHours: number | null
   latestObservationAgeHours: number | null
+  publishedInFuture: boolean
 }
 
 const FIRE_CATEGORIES = new Set(['fire', 'fires', 'wildfire', 'wildfires'])
@@ -54,6 +55,7 @@ export function summarizeFireFeed(data: FireFeedData | null | undefined, now = n
   const firePoints = features.filter(isFirePoint)
   const nowMs = now.getTime()
   const publishedAt = validIsoDate(data?.generated_at_utc) ?? validIsoDate(data?.generatedUtc)
+  const publishedInFuture = publishedAt !== null && Date.parse(publishedAt) > nowMs
   const latestAllowedObservationMs = publishedAt
     ? Math.min(nowMs, Date.parse(publishedAt))
     : nowMs
@@ -69,5 +71,6 @@ export function summarizeFireFeed(data: FireFeedData | null | undefined, now = n
     latestObservationAt,
     publishedAgeHours: ageHours(publishedAt, nowMs),
     latestObservationAgeHours: ageHours(latestObservationAt, nowMs),
+    publishedInFuture,
   }
 }
