@@ -66,12 +66,12 @@ export function FireFeedPanel({
     aria-label="Status ostatniego opublikowanego pliku pożarowego"
     aria-busy={isActivelyRefreshing}
   >
-    {isActivelyRefreshing && <p className="notice" role="status" aria-live="polite">
+    {isActivelyRefreshing && <p className="notice" role="status" aria-live="polite" aria-atomic="true">
       {hasLoadedFile
         ? 'Sprawdzanie nowszego pliku pożarowego. Poniższy status dotyczy ostatnich danych, które udało się wczytać.'
         : 'Pobieranie ostatniego opublikowanego pliku pożarowego. Dane nie są jeszcze dostępne.'}
     </p>}
-    {refreshError && <p className="notice" role="status" aria-live="polite">
+    {refreshError && <p className="notice" role="alert" aria-live="assertive" aria-atomic="true">
       {hasLoadedFile
         ? `Nie udało się odświeżyć katalogu pożarów: ${refreshError}. Poniższy status dotyczy ostatnich danych, które udało się wczytać.`
         : `Nie udało się pobrać katalogu pożarów: ${refreshError}. Brak wcześniej wczytanego pliku.`}
