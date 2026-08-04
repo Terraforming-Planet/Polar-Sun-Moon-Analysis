@@ -22,4 +22,21 @@ describe('RealisticEarthGlobe rotation controls', () => {
     expect(globeSource).toContain('onClick={() => setRotationEnabled(value => !value)}')
     expect(globeSource).toContain('Pauza zatrzymuje zegar obrotu bez przebudowy sceny')
   })
+
+  it('keeps all rotating layers frozen together and prevents a catch-up jump after resume', () => {
+    const previousUpdate = globeSource.indexOf('previous = now')
+    const rotationGate = globeSource.indexOf('if (rotationEnabledRef.current)')
+    const earthUpdate = globeSource.indexOf('earth.rotation.y = liveAngleRef.current')
+    const cloudsUpdate = globeSource.indexOf('clouds.rotation.y = liveAngleRef.current')
+    const gridUpdate = globeSource.indexOf('grid.rotation.y = liveAngleRef.current')
+
+    expect(previousUpdate).toBeGreaterThan(-1)
+    expect(rotationGate).toBeGreaterThan(previousUpdate)
+    expect(earthUpdate).toBeGreaterThan(rotationGate)
+    expect(cloudsUpdate).toBeGreaterThan(earthUpdate)
+    expect(gridUpdate).toBeGreaterThan(cloudsUpdate)
+
+    expect(globeSource).toContain('const elapsedSeconds = Math.max(0, (now - previous) / 1000)')
+    expect(globeSource).not.toContain('if (rotationEnabledRef.current) {\n          previous = now')
+  })
 })
