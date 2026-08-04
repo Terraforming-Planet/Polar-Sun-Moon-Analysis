@@ -19,6 +19,7 @@ describe('summarizeFireFeed', () => {
       latestObservationAt: '2026-08-03T09:45:00.000Z',
       publishedAgeHours: 2,
       latestObservationAgeHours: 2.25,
+      publishedInFuture: false,
     })
   })
 
@@ -43,6 +44,7 @@ describe('summarizeFireFeed', () => {
 
     expect(summary.publishedAt).toBe('2026-08-03T08:00:00.000Z')
     expect(summary.publishedAgeHours).toBe(1)
+    expect(summary.publishedInFuture).toBe(false)
   })
 
   it('does not turn future or malformed timestamps into a fake zero-hour age', () => {
@@ -55,6 +57,7 @@ describe('summarizeFireFeed', () => {
 
     expect(summary.pointCount).toBe(1)
     expect(summary.publishedAgeHours).toBeNull()
+    expect(summary.publishedInFuture).toBe(true)
     expect(summary.latestObservationAt).toBeNull()
     expect(summary.latestObservationAgeHours).toBeNull()
   })
@@ -87,7 +90,7 @@ describe('summarizeFireFeed', () => {
   })
 
   it('handles missing and malformed feature collections safely', () => {
-    expect(summarizeFireFeed(null)).toMatchObject({ pointCount: 0, publishedAt: null })
+    expect(summarizeFireFeed(null)).toMatchObject({ pointCount: 0, publishedAt: null, publishedInFuture: false })
     expect(summarizeFireFeed({ features: 'invalid' })).toMatchObject({ pointCount: 0, latestObservationAt: null })
   })
 })
