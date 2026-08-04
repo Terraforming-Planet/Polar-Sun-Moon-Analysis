@@ -103,6 +103,25 @@ describe('applyCameraPreset', () => {
     expect(applyCameraPreset(camera, controls, preset)).toBe(false)
   })
 
+  it('rejects invalid runtime references before mutating camera state', () => {
+    const camera = {
+      position: { set: 'not-a-function' },
+      fov: 75,
+      updateProjectionMatrix: vi.fn(),
+    } as unknown as CameraInput
+    const controls = {
+      target: { set: vi.fn() },
+      update: vi.fn(),
+    }
+    const preset = { position: [0, 0.18, 6.1] as const, fov: 42 }
+
+    expect(applyCameraPreset(camera, controls, preset)).toBe(false)
+    expect(camera?.fov).toBe(75)
+    expect(camera?.updateProjectionMatrix).not.toHaveBeenCalled()
+    expect(controls.target.set).not.toHaveBeenCalled()
+    expect(controls.update).not.toHaveBeenCalled()
+  })
+
   it.each([
     null,
     undefined,
