@@ -71,6 +71,23 @@ describe('FireFeedStatus', () => {
     expect(markup).not.toContain('nieznana — brak metadanych czasu')
   })
 
+  it('shows how many malformed or impossible observation timestamps were ignored', () => {
+    const markup = renderToStaticMarkup(<FireFeedStatus sourceLabel="NASA EONET" summary={{
+      pointCount: 5,
+      publishedAt: '2026-08-03T12:00:00.000Z',
+      latestObservationAt: '2026-08-03T11:30:00.000Z',
+      publishedAgeHours: 1,
+      latestObservationAgeHours: 1.5,
+      publishedInFuture: false,
+      ignoredObservationTimestampCount: 2,
+    }}/>)
+
+    expect(markup).toContain('Pominięte znaczniki czasu obserwacji: 2')
+    expect(markup).toContain('Punkty pozostają w liczniku')
+    expect(markup).toContain('błędne lub niemożliwe czasy nie wyznaczają najnowszej obserwacji')
+    expect(markup).toContain('role="note"')
+  })
+
   it('does not invent source, timestamps, ages or freshness when metadata is missing', () => {
     const markup = renderToStaticMarkup(<FireFeedStatus sourceLabel="   " summary={{
       pointCount: 0,
@@ -84,5 +101,6 @@ describe('FireFeedStatus', () => {
     expect(markup.match(/brak danych/g)).toHaveLength(5)
     expect(markup).toContain('nieznana — brak metadanych czasu')
     expect(markup).not.toContain('0.0 h')
+    expect(markup).not.toContain('Pominięte znaczniki czasu obserwacji')
   })
 })
