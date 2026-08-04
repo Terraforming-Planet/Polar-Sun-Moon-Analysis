@@ -10,6 +10,7 @@ describe('FireFeedStatus', () => {
       latestObservationAt: '2026-08-03T09:30:00.000Z',
       publishedAgeHours: 2,
       latestObservationAgeHours: 2.5,
+      publishedInFuture: false,
     }}/>)
 
     expect(markup).toContain('Źródło katalogu')
@@ -33,9 +34,24 @@ describe('FireFeedStatus', () => {
       latestObservationAt: '2026-08-02T10:00:00.000Z',
       publishedAgeHours: 23,
       latestObservationAgeHours: 25,
+      publishedInFuture: false,
     }}/>)
 
     expect(markup).toContain('opóźnione — ponad 24 h')
+    expect(markup).not.toContain('aktualne według ostatniego pliku — do 24 h')
+  })
+
+  it('warns instead of calling a future publication timestamp current', () => {
+    const markup = renderToStaticMarkup(<FireFeedStatus sourceLabel="NASA EONET" summary={{
+      pointCount: 5,
+      publishedAt: '2026-08-03T13:00:00.000Z',
+      latestObservationAt: '2026-08-03T11:30:00.000Z',
+      publishedAgeHours: null,
+      latestObservationAgeHours: 0.5,
+      publishedInFuture: true,
+    }}/>)
+
+    expect(markup).toContain('niespójne — czas publikacji jest w przyszłości')
     expect(markup).not.toContain('aktualne według ostatniego pliku — do 24 h')
   })
 
@@ -46,6 +62,7 @@ describe('FireFeedStatus', () => {
       latestObservationAt: null,
       publishedAgeHours: null,
       latestObservationAgeHours: null,
+      publishedInFuture: false,
     }}/>)
 
     expect(markup.match(/brak danych/g)).toHaveLength(5)
