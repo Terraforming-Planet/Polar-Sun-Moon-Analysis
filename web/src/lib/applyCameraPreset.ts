@@ -27,6 +27,14 @@ function readVector(vector: MutableVectorLike): readonly [number, number, number
     : null
 }
 
+function safelyRestore(action: () => void): void {
+  try {
+    action()
+  } catch {
+    // Best-effort rollback: scene references may have been disposed mid-update.
+  }
+}
+
 export function applyCameraPreset(
   camera: CameraLike | null | undefined,
   controls: ControlsLike | null | undefined,
@@ -67,15 +75,13 @@ export function applyCameraPreset(
     controls.update()
     return true
   } catch {
-    try {
-      if (previousPosition) camera.position.set(...previousPosition)
+    if (previousPosition) safelyRestore(() => camera.position.set(...previousPosition))
+    safelyRestore(() => {
       camera.fov = previousFov
-      camera.updateProjectionMatrix()
-      if (previousTarget) controls.target.set(...previousTarget)
-      controls.update()
-    } catch {
-      // Best-effort rollback: scene references may have been disposed mid-update.
-    }
+    })
+    safelyRestore(() => camera.updateProjectionMatrix())
+    if (previousTarget) safelyRestore(() => controls.target.set(...previousTarget))
+    safelyRestore(() => controls.update())
     return false
   }
 }
