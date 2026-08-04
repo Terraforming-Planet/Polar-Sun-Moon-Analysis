@@ -15,10 +15,13 @@ describe('FireFeedPanel loading accessibility', () => {
     />)
 
     expect(refreshingMarkup).toContain('aria-busy="true"')
+    expect(refreshingMarkup).toContain('role="status"')
+    expect(refreshingMarkup).toContain('aria-live="polite"')
+    expect(refreshingMarkup).toContain('aria-atomic="true"')
     expect(idleMarkup).toContain('aria-busy="false"')
   })
 
-  it('clears the busy state when a concrete refresh error is shown', () => {
+  it('clears the busy state and announces a concrete refresh error assertively', () => {
     const markup = renderToStaticMarkup(<FireFeedPanel
       sourceLabel="NASA EONET"
       isRefreshing
@@ -27,6 +30,9 @@ describe('FireFeedPanel loading accessibility', () => {
     />)
 
     expect(markup).toContain('aria-busy="false"')
+    expect(markup).toContain('role="alert"')
+    expect(markup).toContain('aria-live="assertive"')
+    expect(markup).toContain('aria-atomic="true"')
     expect(markup).toContain('Nie udało się odświeżyć katalogu pożarów')
     expect(markup).not.toContain('Sprawdzanie nowszego pliku pożarowego')
   })
