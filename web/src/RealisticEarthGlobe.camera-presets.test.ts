@@ -41,4 +41,13 @@ describe('RealisticEarthGlobe camera presets and atmosphere', () => {
     expect(globeSource).toContain('atmosphere.add(inner, outer)')
     expect(globeSource).toContain('atmosphereRef.current.visible = showAtmosphere')
   })
+
+  it('keeps both atmosphere shells aligned with Scientific WGS84 and Legacy sphere', () => {
+    expect(globeSource).toContain("if (model === 'scientific') earth.scale.y = POLAR_RATIO")
+    expect(globeSource).toContain('inner.scale.copy(earth.scale)')
+    expect(globeSource).toContain('outer.scale.copy(earth.scale)')
+    expect(globeSource).toContain('atmosphere.visible = showAtmosphere')
+    expect(globeSource).not.toContain('inner.scale.y = POLAR_RATIO')
+    expect(globeSource).not.toContain('outer.scale.y = POLAR_RATIO')
+  })
 })
