@@ -12,6 +12,8 @@ function formatAge(value: number | null): string {
 }
 
 function freshnessLabel(summary: FireFeedSummary): string {
+  if (summary.publishedInFuture) return 'niespójne — czas publikacji jest w przyszłości'
+
   const ages = [summary.publishedAgeHours, summary.latestObservationAgeHours]
     .filter((value): value is number => value !== null)
 
