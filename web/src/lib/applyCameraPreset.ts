@@ -4,9 +4,9 @@ export type CameraPreset = {
 }
 
 type MutableVectorLike = {
-  x: number
-  y: number
-  z: number
+  x?: number
+  y?: number
+  z?: number
   set: (x: number, y: number, z: number) => void
 }
 
@@ -19,6 +19,12 @@ type CameraLike = {
 type ControlsLike = {
   target: MutableVectorLike
   update: () => void
+}
+
+function readVector(vector: MutableVectorLike): readonly [number, number, number] | null {
+  return Number.isFinite(vector.x) && Number.isFinite(vector.y) && Number.isFinite(vector.z)
+    ? [vector.x as number, vector.y as number, vector.z as number]
+    : null
 }
 
 export function applyCameraPreset(
@@ -42,21 +48,15 @@ export function applyCameraPreset(
     || !Number.isFinite(fov)
     || fov <= 0
     || fov >= 180
-    || !Number.isFinite(camera.position?.x)
-    || !Number.isFinite(camera.position?.y)
-    || !Number.isFinite(camera.position?.z)
     || !Number.isFinite(camera.fov)
-    || !Number.isFinite(controls.target?.x)
-    || !Number.isFinite(controls.target?.y)
-    || !Number.isFinite(controls.target?.z)
     || typeof camera.position?.set !== 'function'
     || typeof camera.updateProjectionMatrix !== 'function'
     || typeof controls.target?.set !== 'function'
     || typeof controls.update !== 'function'
   ) return false
 
-  const previousPosition = [camera.position.x, camera.position.y, camera.position.z] as const
-  const previousTarget = [controls.target.x, controls.target.y, controls.target.z] as const
+  const previousPosition = readVector(camera.position)
+  const previousTarget = readVector(controls.target)
   const previousFov = camera.fov
 
   try {
@@ -68,10 +68,10 @@ export function applyCameraPreset(
     return true
   } catch {
     try {
-      camera.position.set(...previousPosition)
+      if (previousPosition) camera.position.set(...previousPosition)
       camera.fov = previousFov
       camera.updateProjectionMatrix()
-      controls.target.set(...previousTarget)
+      if (previousTarget) controls.target.set(...previousTarget)
       controls.update()
     } catch {
       // Best-effort rollback: scene references may have been disposed mid-update.
