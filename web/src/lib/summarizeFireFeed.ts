@@ -52,13 +52,13 @@ export function summarizeFireFeed(data: FireFeedData | null | undefined, now = n
     : []
 
   const firePoints = features.filter(isFirePoint)
+  const nowMs = now.getTime()
   const publishedAt = validIsoDate(data?.generated_at_utc) ?? validIsoDate(data?.generatedUtc)
   const observationTimes = firePoints
     .map(feature => validIsoDate(feature.properties?.observation_time))
-    .filter((value): value is string => value !== null)
+    .filter((value): value is string => value !== null && Date.parse(value) <= nowMs)
     .sort((left, right) => Date.parse(right) - Date.parse(left))
   const latestObservationAt = observationTimes[0] ?? null
-  const nowMs = now.getTime()
 
   return {
     pointCount: firePoints.length,
