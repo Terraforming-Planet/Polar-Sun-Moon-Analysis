@@ -20,6 +20,7 @@ export type FireFeedSummary = {
   latestObservationAgeHours: number | null
   publishedInFuture: boolean
   publicationTimestampInvalid?: boolean
+  ignoredObservationTimestampCount?: number
 }
 
 const FIRE_CATEGORIES = new Set(['fire', 'fires', 'wildfire', 'wildfires'])
@@ -85,10 +86,12 @@ export function summarizeFireFeed(data: FireFeedData | null | undefined, now = n
   const latestAllowedObservationMs = publishedAt
     ? Math.min(nowMs, Date.parse(publishedAt))
     : nowMs
-  const observationTimes = firePoints
-    .map(feature => validIsoDate(feature.properties?.observation_time))
+
+  const parsedObservationTimes = firePoints.map(feature => validIsoDate(feature.properties?.observation_time))
+  const observationTimes = parsedObservationTimes
     .filter((value): value is string => value !== null && Date.parse(value) <= latestAllowedObservationMs)
     .sort((left, right) => Date.parse(right) - Date.parse(left))
+  const ignoredObservationTimestampCount = parsedObservationTimes.length - observationTimes.length
   const latestObservationAt = observationTimes[0] ?? null
 
   return {
@@ -99,5 +102,6 @@ export function summarizeFireFeed(data: FireFeedData | null | undefined, now = n
     latestObservationAgeHours: ageHours(latestObservationAt, nowMs),
     publishedInFuture,
     publicationTimestampInvalid: publication.invalid,
+    ignoredObservationTimestampCount,
   }
 }
