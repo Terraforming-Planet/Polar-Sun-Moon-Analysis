@@ -29,6 +29,19 @@ function validIsoDate(value: unknown): string | null {
   return Number.isFinite(timestamp) ? new Date(timestamp).toISOString() : null
 }
 
+function publicationTimeOf(data: FireFeedData | null | undefined): string | null {
+  if (!data) return null
+
+  // The current field is authoritative when present. Falling back after it is
+  // present but malformed would hide a broken producer timestamp behind stale
+  // compatibility metadata.
+  if (Object.prototype.hasOwnProperty.call(data, 'generated_at_utc')) {
+    return validIsoDate(data.generated_at_utc)
+  }
+
+  return validIsoDate(data.generatedUtc)
+}
+
 function categoriesOf(feature: FireFeedFeature): string[] {
   const categories = feature.properties?.categories
   return Array.isArray(categories)
@@ -54,7 +67,7 @@ export function summarizeFireFeed(data: FireFeedData | null | undefined, now = n
 
   const firePoints = features.filter(isFirePoint)
   const nowMs = now.getTime()
-  const publishedAt = validIsoDate(data?.generated_at_utc) ?? validIsoDate(data?.generatedUtc)
+  const publishedAt = publicationTimeOf(data)
   const publishedInFuture = publishedAt !== null && Date.parse(publishedAt) > nowMs
   const latestAllowedObservationMs = publishedAt
     ? Math.min(nowMs, Date.parse(publishedAt))
