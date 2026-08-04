@@ -19,6 +19,7 @@ export type FireFeedSummary = {
   publishedAgeHours: number | null
   latestObservationAgeHours: number | null
   publishedInFuture: boolean
+  publicationTimestampInvalid?: boolean
 }
 
 const FIRE_CATEGORIES = new Set(['fire', 'fires', 'wildfire', 'wildfires'])
@@ -29,17 +30,28 @@ function validIsoDate(value: unknown): string | null {
   return Number.isFinite(timestamp) ? new Date(timestamp).toISOString() : null
 }
 
-function publicationTimeOf(data: FireFeedData | null | undefined): string | null {
-  if (!data) return null
+type PublicationMetadata = {
+  timestamp: string | null
+  invalid: boolean
+}
+
+function publicationMetadataOf(data: FireFeedData | null | undefined): PublicationMetadata {
+  if (!data) return { timestamp: null, invalid: false }
 
   // The current field is authoritative when present. Falling back after it is
   // present but malformed would hide a broken producer timestamp behind stale
   // compatibility metadata.
   if (Object.prototype.hasOwnProperty.call(data, 'generated_at_utc')) {
-    return validIsoDate(data.generated_at_utc)
+    const timestamp = validIsoDate(data.generated_at_utc)
+    return { timestamp, invalid: timestamp === null }
   }
 
-  return validIsoDate(data.generatedUtc)
+  if (Object.prototype.hasOwnProperty.call(data, 'generatedUtc')) {
+    const timestamp = validIsoDate(data.generatedUtc)
+    return { timestamp, invalid: timestamp === null }
+  }
+
+  return { timestamp: null, invalid: false }
 }
 
 function categoriesOf(feature: FireFeedFeature): string[] {
@@ -67,7 +79,8 @@ export function summarizeFireFeed(data: FireFeedData | null | undefined, now = n
 
   const firePoints = features.filter(isFirePoint)
   const nowMs = now.getTime()
-  const publishedAt = publicationTimeOf(data)
+  const publication = publicationMetadataOf(data)
+  const publishedAt = publication.timestamp
   const publishedInFuture = publishedAt !== null && Date.parse(publishedAt) > nowMs
   const latestAllowedObservationMs = publishedAt
     ? Math.min(nowMs, Date.parse(publishedAt))
@@ -85,5 +98,6 @@ export function summarizeFireFeed(data: FireFeedData | null | undefined, now = n
     publishedAgeHours: ageHours(publishedAt, nowMs),
     latestObservationAgeHours: ageHours(latestObservationAt, nowMs),
     publishedInFuture,
+    publicationTimestampInvalid: publication.invalid,
   }
 }
