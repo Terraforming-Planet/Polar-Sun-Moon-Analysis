@@ -4,6 +4,7 @@ export type FireFeedFeature = {
     categories?: unknown
     observation_time?: unknown
     observationUtc?: unknown
+    source?: unknown
   } | null
 }
 
@@ -15,6 +16,7 @@ export type FireFeedData = {
 
 export type FireFeedSummary = {
   pointCount: number
+  sourceLabels: string[]
   publishedAt: string | null
   latestObservationAt: string | null
   publishedAgeHours: number | null
@@ -66,6 +68,23 @@ function categoriesOf(feature: FireFeedFeature): string[] {
 function isFirePoint(feature: FireFeedFeature): boolean {
   return feature.geometry?.type === 'Point'
     && categoriesOf(feature).some(category => FIRE_CATEGORIES.has(category.trim().toLowerCase()))
+}
+
+function sourceLabelsOf(features: FireFeedFeature[]): string[] {
+  const labels = new Map<string, string>()
+
+  for (const feature of features) {
+    const source = feature.properties?.source
+    if (typeof source !== 'string') continue
+
+    const normalized = source.trim()
+    if (!normalized) continue
+
+    const key = normalized.toLocaleLowerCase('en-US')
+    if (!labels.has(key)) labels.set(key, normalized)
+  }
+
+  return [...labels.values()]
 }
 
 type ObservationTimestampMetadata = {
@@ -129,6 +148,7 @@ export function summarizeFireFeed(data: FireFeedData | null | undefined, now = n
 
   return {
     pointCount: firePoints.length,
+    sourceLabels: sourceLabelsOf(firePoints),
     publishedAt,
     latestObservationAt,
     publishedAgeHours: ageHours(publishedAt, nowMs),
