@@ -47,6 +47,18 @@ describe('summarizeFireFeed', () => {
     expect(summary.publishedInFuture).toBe(false)
   })
 
+  it('does not hide an invalid current publication timestamp behind legacy metadata', () => {
+    const summary = summarizeFireFeed({
+      generated_at_utc: 'not-a-date',
+      generatedUtc: '2026-08-03T08:00:00Z',
+      features: [],
+    }, new Date('2026-08-03T09:00:00Z'))
+
+    expect(summary.publishedAt).toBeNull()
+    expect(summary.publishedAgeHours).toBeNull()
+    expect(summary.publishedInFuture).toBe(false)
+  })
+
   it('does not turn future or malformed timestamps into a fake zero-hour age', () => {
     const summary = summarizeFireFeed({
       generated_at_utc: '2026-08-03T13:00:00Z',
