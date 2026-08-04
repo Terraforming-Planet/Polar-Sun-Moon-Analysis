@@ -60,9 +60,13 @@ export function FireFeedPanel({
 }: FireFeedPanelProps) {
   const refreshError = getRefreshErrorMessage(error)
   const hasLoadedFile = data !== null && data !== undefined
+  const isActivelyRefreshing = isRefreshing && !refreshError
 
-  return <section aria-label="Status ostatniego opublikowanego pliku pożarowego">
-    {isRefreshing && !refreshError && <p className="notice" role="status" aria-live="polite">
+  return <section
+    aria-label="Status ostatniego opublikowanego pliku pożarowego"
+    aria-busy={isActivelyRefreshing}
+  >
+    {isActivelyRefreshing && <p className="notice" role="status" aria-live="polite">
       {hasLoadedFile
         ? 'Sprawdzanie nowszego pliku pożarowego. Poniższy status dotyczy ostatnich danych, które udało się wczytać.'
         : 'Pobieranie ostatniego opublikowanego pliku pożarowego. Dane nie są jeszcze dostępne.'}
