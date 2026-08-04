@@ -20,6 +20,7 @@ describe('summarizeFireFeed', () => {
       publishedAgeHours: 2,
       latestObservationAgeHours: 2.25,
       publishedInFuture: false,
+      publicationTimestampInvalid: false,
     })
   })
 
@@ -45,6 +46,7 @@ describe('summarizeFireFeed', () => {
     expect(summary.publishedAt).toBe('2026-08-03T08:00:00.000Z')
     expect(summary.publishedAgeHours).toBe(1)
     expect(summary.publishedInFuture).toBe(false)
+    expect(summary.publicationTimestampInvalid).toBe(false)
   })
 
   it('does not hide an invalid current publication timestamp behind legacy metadata', () => {
@@ -57,6 +59,12 @@ describe('summarizeFireFeed', () => {
     expect(summary.publishedAt).toBeNull()
     expect(summary.publishedAgeHours).toBeNull()
     expect(summary.publishedInFuture).toBe(false)
+    expect(summary.publicationTimestampInvalid).toBe(true)
+  })
+
+  it('distinguishes missing publication metadata from a malformed legacy timestamp', () => {
+    expect(summarizeFireFeed({ features: [] }).publicationTimestampInvalid).toBe(false)
+    expect(summarizeFireFeed({ generatedUtc: 'invalid', features: [] }).publicationTimestampInvalid).toBe(true)
   })
 
   it('does not turn future or malformed timestamps into a fake zero-hour age', () => {
@@ -70,6 +78,7 @@ describe('summarizeFireFeed', () => {
     expect(summary.pointCount).toBe(1)
     expect(summary.publishedAgeHours).toBeNull()
     expect(summary.publishedInFuture).toBe(true)
+    expect(summary.publicationTimestampInvalid).toBe(false)
     expect(summary.latestObservationAt).toBeNull()
     expect(summary.latestObservationAgeHours).toBeNull()
   })
@@ -102,7 +111,7 @@ describe('summarizeFireFeed', () => {
   })
 
   it('handles missing and malformed feature collections safely', () => {
-    expect(summarizeFireFeed(null)).toMatchObject({ pointCount: 0, publishedAt: null, publishedInFuture: false })
+    expect(summarizeFireFeed(null)).toMatchObject({ pointCount: 0, publishedAt: null, publishedInFuture: false, publicationTimestampInvalid: false })
     expect(summarizeFireFeed({ features: 'invalid' })).toMatchObject({ pointCount: 0, latestObservationAt: null })
   })
 })
