@@ -51,6 +51,10 @@ function getRefreshErrorMessage(error: unknown): string | null {
   return null
 }
 
+function ensureSentenceEnding(message: string): string {
+  return /[.!?…]$/.test(message) ? message : `${message}.`
+}
+
 export function FireFeedPanel({
   data,
   sourceLabel,
@@ -59,6 +63,7 @@ export function FireFeedPanel({
   isRefreshing = false,
 }: FireFeedPanelProps) {
   const refreshError = getRefreshErrorMessage(error)
+  const refreshErrorSentence = refreshError ? ensureSentenceEnding(refreshError) : null
   const hasLoadedFile = data !== null && data !== undefined
   const isActivelyRefreshing = isRefreshing && !refreshError
 
@@ -71,10 +76,10 @@ export function FireFeedPanel({
         ? 'Sprawdzanie nowszego pliku pożarowego. Poniższy status dotyczy ostatnich danych, które udało się wczytać.'
         : 'Pobieranie ostatniego opublikowanego pliku pożarowego. Dane nie są jeszcze dostępne.'}
     </p>}
-    {refreshError && <p className="notice" role="alert" aria-live="assertive" aria-atomic="true">
+    {refreshErrorSentence && <p className="notice" role="alert" aria-live="assertive" aria-atomic="true">
       {hasLoadedFile
-        ? `Nie udało się odświeżyć katalogu pożarów: ${refreshError}. Poniższy status dotyczy ostatnich danych, które udało się wczytać.`
-        : `Nie udało się pobrać katalogu pożarów: ${refreshError}. Brak wcześniej wczytanego pliku.`}
+        ? `Nie udało się odświeżyć katalogu pożarów: ${refreshErrorSentence} Poniższy status dotyczy ostatnich danych, które udało się wczytać.`
+        : `Nie udało się pobrać katalogu pożarów: ${refreshErrorSentence} Brak wcześniej wczytanego pliku.`}
     </p>}
     <FireFeedStatus
       sourceLabel={sourceLabel}
