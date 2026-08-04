@@ -16,7 +16,7 @@ export type FireFeedData = {
 
 export type FireFeedSummary = {
   pointCount: number
-  sourceLabels: string[]
+  sourceLabels?: string[]
   publishedAt: string | null
   latestObservationAt: string | null
   publishedAgeHours: number | null
@@ -145,10 +145,11 @@ export function summarizeFireFeed(data: FireFeedData | null | undefined, now = n
       && (metadata.timestamp === null || Date.parse(metadata.timestamp) > latestAllowedObservationMs),
   ).length
   const latestObservationAt = observationTimes[0] ?? null
+  const sourceLabels = sourceLabelsOf(firePoints)
 
   return {
     pointCount: firePoints.length,
-    sourceLabels: sourceLabelsOf(firePoints),
+    ...(sourceLabels.length ? { sourceLabels } : {}),
     publishedAt,
     latestObservationAt,
     publishedAgeHours: ageHours(publishedAt, nowMs),
