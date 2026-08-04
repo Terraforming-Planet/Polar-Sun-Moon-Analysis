@@ -1,10 +1,10 @@
 {
   "schema_version": "7.0",
   "project": "Terraforming Planet",
-  "generated_at": "2026-08-04T14:45:58.049094Z",
-  "event_count": 978,
+  "generated_at": "2026-08-04T16:46:06.382097Z",
+  "event_count": 981,
   "summary": {
-    "earthquake": 240,
+    "earthquake": 243,
     "fire": 603,
     "storm": 25,
     "ice": 3,
@@ -19,7 +19,7 @@
     {
       "source": "USGS",
       "status": "ok",
-      "count": 233
+      "count": 236
     },
     {
       "source": "NASA EONET",
@@ -33,11 +33,268 @@
     },
     {
       "source": "NASA FIRMS",
-      "status": "ok",
-      "count": 0
+      "status": "error",
+      "count": 0,
+      "error": "<urlopen error [Errno 101] Network is unreachable>"
     }
   ],
   "events": [
+    {
+      "id": "usgs-aka2026piinfi",
+      "type": "earthquake",
+      "title": "M 2.1 - 24 km S of Hope, Alaska",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 60.703,
+      "longitude": -149.723,
+      "observed_at": "2026-08-04T15:53:49.448000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026piinfi",
+      "metadata": {
+        "magnitude": 2.1,
+        "depth_km": 27.7
+      }
+    },
+    {
+      "id": "usgs-nc75411207",
+      "type": "earthquake",
+      "title": "M 1.1 - 8 km ESE of Cloverdale, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 38.7695007324219,
+      "longitude": -122.939834594727,
+      "observed_at": "2026-08-04T15:39:33.960000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75411207",
+      "metadata": {
+        "magnitude": 1.12,
+        "depth_km": 5.09999990463257
+      }
+    },
+    {
+      "id": "usgs-pr71527538",
+      "type": "earthquake",
+      "title": "M 3.4 - 73 km NNE of Cruz Bay, U.S. Virgin Islands",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 18.9686666666667,
+      "longitude": -64.594,
+      "observed_at": "2026-08-04T15:38:56.030000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/pr71527538",
+      "metadata": {
+        "magnitude": 3.41,
+        "depth_km": 15.85
+      }
+    },
+    {
+      "id": "usgs-ci40666066",
+      "type": "earthquake",
+      "title": "M 0.9 - 7 km W of Tecate, B.C., MX",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 32.5716666666667,
+      "longitude": -116.7035,
+      "observed_at": "2026-08-04T15:33:47.060000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci40666066",
+      "metadata": {
+        "magnitude": 0.91,
+        "depth_km": 2.87
+      }
+    },
+    {
+      "id": "usgs-ci40666058",
+      "type": "earthquake",
+      "title": "M 1.3 - 5 km NE of Moreno Valley, CA",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 33.9575,
+      "longitude": -117.196333333333,
+      "observed_at": "2026-08-04T15:32:18.270000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci40666058",
+      "metadata": {
+        "magnitude": 1.26,
+        "depth_km": 13.14
+      }
+    },
+    {
+      "id": "usgs-aka2026pihilq",
+      "type": "earthquake",
+      "title": "M 1.6 - 65 km SSE of Igiugig, Alaska",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 58.791,
+      "longitude": -155.421,
+      "observed_at": "2026-08-04T15:18:21.935000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026pihilq",
+      "metadata": {
+        "magnitude": 1.6,
+        "depth_km": 6.2
+      }
+    },
+    {
+      "id": "usgs-aka2026pihfao",
+      "type": "earthquake",
+      "title": "M 2.2 - 20 km NNE of Fishhook, Alaska",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 61.918,
+      "longitude": -149.117,
+      "observed_at": "2026-08-04T15:14:24.458000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026pihfao",
+      "metadata": {
+        "magnitude": 2.2,
+        "depth_km": 27.6
+      }
+    },
+    {
+      "id": "usgs-nc75411187",
+      "type": "earthquake",
+      "title": "M 1.4 - 7 km ESE of Cloverdale, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 38.7729988098145,
+      "longitude": -122.946502685547,
+      "observed_at": "2026-08-04T15:06:14.820000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75411187",
+      "metadata": {
+        "magnitude": 1.38,
+        "depth_km": 6.11999988555908
+      }
+    },
+    {
+      "id": "usgs-tx2026pfuyqr",
+      "type": "earthquake",
+      "title": "M 2.0 - 14 km ESE of Pearsall, Texas",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 28.832,
+      "longitude": -98.959,
+      "observed_at": "2026-08-04T14:59:49.077000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pfuyqr",
+      "metadata": {
+        "magnitude": 2,
+        "depth_km": 8.6824
+      }
+    },
+    {
+      "id": "usgs-hv75012857",
+      "type": "earthquake",
+      "title": "M 2.3 - 15 km SE of Pāhala, Hawaii",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 19.0888328552246,
+      "longitude": -155.392501831055,
+      "observed_at": "2026-08-04T14:58:29.150000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75012857",
+      "metadata": {
+        "magnitude": 2.28,
+        "depth_km": 41.2900009155273
+      }
+    },
+    {
+      "id": "usgs-us6000ti0r",
+      "type": "earthquake",
+      "title": "M 5.1 - south of Tonga",
+      "severity": "moderate",
+      "status": "reviewed",
+      "latitude": -24.6061,
+      "longitude": -175.2303,
+      "observed_at": "2026-08-04T14:56:14.381000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000ti0r",
+      "metadata": {
+        "magnitude": 5.1,
+        "depth_km": 10
+      }
+    },
+    {
+      "id": "usgs-pr2026216003",
+      "type": "earthquake",
+      "title": "M 3.8 - 89 km NE of Cruz Bay, U.S. Virgin Islands",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 18.8206,
+      "longitude": -64.1143,
+      "observed_at": "2026-08-04T14:51:47.350000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/pr2026216003",
+      "metadata": {
+        "magnitude": 3.82,
+        "depth_km": 108
+      }
+    },
+    {
+      "id": "usgs-tx2026pfurqq",
+      "type": "earthquake",
+      "title": "M -0.8 - 54 km S of Whites City, New Mexico",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 31.69,
+      "longitude": -104.489,
+      "observed_at": "2026-08-04T14:51:45.314000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pfurqq",
+      "metadata": {
+        "magnitude": -0.8,
+        "depth_km": 4.8743
+      }
+    },
+    {
+      "id": "usgs-hv75012837",
+      "type": "earthquake",
+      "title": "M 2.5 - 20 km SSE of Pāhala, Hawaii",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 19.0503330230713,
+      "longitude": -155.374664306641,
+      "observed_at": "2026-08-04T14:49:56.230000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75012837",
+      "metadata": {
+        "magnitude": 2.53,
+        "depth_km": 42.5800018310547
+      }
+    },
+    {
+      "id": "usgs-pr71527503",
+      "type": "earthquake",
+      "title": "M 2.5 - 9 km WNW of Rincón, Puerto Rico",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 18.3576666666667,
+      "longitude": -67.3331666666667,
+      "observed_at": "2026-08-04T14:27:37.070000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/pr71527503",
+      "metadata": {
+        "magnitude": 2.47,
+        "depth_km": 11.39
+      }
+    },
+    {
+      "id": "usgs-pr2026216002",
+      "type": "earthquake",
+      "title": "M 3.5 - 69 km NW of San Antonio, Puerto Rico",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 18.9141,
+      "longitude": -67.5828,
+      "observed_at": "2026-08-04T14:24:42.950000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/pr2026216002",
+      "metadata": {
+        "magnitude": 3.49,
+        "depth_km": 7
+      }
+    },
     {
       "id": "usgs-hv75012817",
       "type": "earthquake",
@@ -87,6 +344,22 @@
       }
     },
     {
+      "id": "usgs-uu80147061",
+      "type": "earthquake",
+      "title": "M 1.1 - 28 km NE of Fremont, Utah",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 38.6633333333333,
+      "longitude": -111.425333333333,
+      "observed_at": "2026-08-04T14:08:49.570000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80147061",
+      "metadata": {
+        "magnitude": 1.1,
+        "depth_km": 1.37
+      }
+    },
+    {
       "id": "usgs-us6000ti0a",
       "type": "earthquake",
       "title": "M 4.6 - 79 km E of Onagawa Chō, Japan",
@@ -116,6 +389,22 @@
       "metadata": {
         "magnitude": 1.02,
         "depth_km": 2.44000005722046
+      }
+    },
+    {
+      "id": "usgs-tx2026pfsqzn",
+      "type": "earthquake",
+      "title": "M 1.7 - 12 km SE of Pearsall, Texas",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 28.825,
+      "longitude": -98.99,
+      "observed_at": "2026-08-04T13:50:43.594000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pfsqzn",
+      "metadata": {
+        "magnitude": 1.7,
+        "depth_km": 8.2352
       }
     },
     {
@@ -247,22 +536,6 @@
       }
     },
     {
-      "id": "usgs-tx2026pfqiyh",
-      "type": "earthquake",
-      "title": "M 1.6 - 5 km ENE of Toyah, Texas",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 31.337,
-      "longitude": -103.747,
-      "observed_at": "2026-08-04T12:40:55.925000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pfqiyh",
-      "metadata": {
-        "magnitude": 1.6,
-        "depth_km": 0
-      }
-    },
-    {
       "id": "usgs-ci40665986",
       "type": "earthquake",
       "title": "M 1.4 - 3 km SE of Frazier Park, CA",
@@ -297,17 +570,17 @@
     {
       "id": "usgs-tx2026pfpmuh",
       "type": "earthquake",
-      "title": "M 1.7 - 21 km SE of Lindsay, Texas",
+      "title": "M 1.7 - 20 km SE of Lindsay, Texas",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 31.238,
-      "longitude": -103.368,
-      "observed_at": "2026-08-04T12:15:13.967000Z",
+      "status": "reviewed",
+      "latitude": 31.253,
+      "longitude": -103.37,
+      "observed_at": "2026-08-04T12:15:13.070000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pfpmuh",
       "metadata": {
         "magnitude": 1.7,
-        "depth_km": 6.9416
+        "depth_km": 6.8817
       }
     },
     {
@@ -439,35 +712,19 @@
       }
     },
     {
-      "id": "usgs-tx2026pfmqje",
+      "id": "usgs-tx2026pfmcno",
       "type": "earthquake",
-      "title": "M 2.1 - 28 km ENE of Balmorhea, Texas",
+      "title": "M 1.3 - 34 km SE of Malaga, New Mexico",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 31.094,
-      "longitude": -103.469,
-      "observed_at": "2026-08-04T10:52:08.427000Z",
+      "status": "reviewed",
+      "latitude": 32.007,
+      "longitude": -103.817,
+      "observed_at": "2026-08-04T10:33:05.335000Z",
       "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pfmqje",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pfmcno",
       "metadata": {
-        "magnitude": 2.1,
-        "depth_km": 4.9813
-      }
-    },
-    {
-      "id": "usgs-tx2026pfmsss",
-      "type": "earthquake",
-      "title": "M 1.5 - 0 km E of Pecos, Texas",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 31.424,
-      "longitude": -103.485,
-      "observed_at": "2026-08-04T10:51:36.758000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pfmsss",
-      "metadata": {
-        "magnitude": 1.5,
-        "depth_km": 6.9238
+        "magnitude": 1.3,
+        "depth_km": 7.7277
       }
     },
     {
@@ -505,17 +762,17 @@
     {
       "id": "usgs-tx2026pfltvj",
       "type": "earthquake",
-      "title": "M 1.7 - 65 km SSW of Whites City, New Mexico",
+      "title": "M 1.6 - 60 km SSW of Whites City, New Mexico",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 31.607,
-      "longitude": -104.57,
-      "observed_at": "2026-08-04T10:22:42.051000Z",
+      "status": "reviewed",
+      "latitude": 31.64,
+      "longitude": -104.523,
+      "observed_at": "2026-08-04T10:22:42.729000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pfltvj",
       "metadata": {
-        "magnitude": 1.7,
-        "depth_km": 3.8787
+        "magnitude": 1.6,
+        "depth_km": 7.074
       }
     },
     {
@@ -532,6 +789,38 @@
       "metadata": {
         "magnitude": 3.07,
         "depth_km": 19.09
+      }
+    },
+    {
+      "id": "usgs-uw714071001",
+      "type": "earthquake",
+      "title": "M 1.1 - 31 km N of Amboy, Washington",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 46.1964988708496,
+      "longitude": -122.412170410156,
+      "observed_at": "2026-08-04T10:15:24.670000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uw714071001",
+      "metadata": {
+        "magnitude": 1.08000004,
+        "depth_km": 18.8400001525879
+      }
+    },
+    {
+      "id": "usgs-tx2026pfllbf",
+      "type": "earthquake",
+      "title": "M 0.5 - 25 km SW of Ackerly, Texas",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 32.356,
+      "longitude": -101.905,
+      "observed_at": "2026-08-04T10:12:59.070000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pfllbf",
+      "metadata": {
+        "magnitude": 0.5,
+        "depth_km": 7.2021
       }
     },
     {
@@ -553,17 +842,17 @@
     {
       "id": "usgs-ci40665970",
       "type": "earthquake",
-      "title": "M 1.3 - 17 km WNW of Progreso, B.C., MX",
+      "title": "M 1.2 - 17 km WNW of Progreso, B.C., MX",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 32.6398333333333,
-      "longitude": -115.747166666667,
-      "observed_at": "2026-08-04T10:00:01.810000Z",
+      "status": "reviewed",
+      "latitude": 32.6426666666667,
+      "longitude": -115.746,
+      "observed_at": "2026-08-04T10:00:01.730000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci40665970",
       "metadata": {
-        "magnitude": 1.25,
-        "depth_km": 5.92
+        "magnitude": 1.24,
+        "depth_km": 6.33
       }
     },
     {
@@ -697,17 +986,17 @@
     {
       "id": "usgs-tx2026pfkhii",
       "type": "earthquake",
-      "title": "M 1.5 - 61 km SSW of Whites City, New Mexico",
+      "title": "M 1.5 - 59 km SSW of Whites City, New Mexico",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 31.641,
-      "longitude": -104.561,
-      "observed_at": "2026-08-04T09:38:03.461000Z",
+      "status": "reviewed",
+      "latitude": 31.655,
+      "longitude": -104.524,
+      "observed_at": "2026-08-04T09:38:03.947000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pfkhii",
       "metadata": {
         "magnitude": 1.5,
-        "depth_km": 4.3955
+        "depth_km": 6.4587
       }
     },
     {
@@ -724,6 +1013,22 @@
       "metadata": {
         "magnitude": 4.1,
         "depth_km": 30.678
+      }
+    },
+    {
+      "id": "usgs-tx2026pfjxck",
+      "type": "earthquake",
+      "title": "M 0.7 - 15 km ESE of Stanton, Texas",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 32.071,
+      "longitude": -101.638,
+      "observed_at": "2026-08-04T09:26:09.676000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pfjxck",
+      "metadata": {
+        "magnitude": 0.7,
+        "depth_km": 4.4434
       }
     },
     {
@@ -809,17 +1114,17 @@
     {
       "id": "usgs-ci40665938",
       "type": "earthquake",
-      "title": "M 0.9 - 1 km SSW of View Park-Windsor Hills, CA",
+      "title": "M 0.9 - 2 km SSW of View Park-Windsor Hills, CA",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 33.988,
-      "longitude": -118.352166666667,
-      "observed_at": "2026-08-04T09:05:44.430000Z",
+      "status": "reviewed",
+      "latitude": 33.9795,
+      "longitude": -118.361,
+      "observed_at": "2026-08-04T09:05:44.150000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci40665938",
       "metadata": {
-        "magnitude": 0.87,
-        "depth_km": 7.01
+        "magnitude": 0.88,
+        "depth_km": 9.24
       }
     },
     {
@@ -841,17 +1146,17 @@
     {
       "id": "usgs-tx2026pfjcdh",
       "type": "earthquake",
-      "title": "M 0.9 - 13 km NW of Midland, Texas",
+      "title": "M 0.9 - 14 km NW of Midland, Texas",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 32.075,
-      "longitude": -102.193,
-      "observed_at": "2026-08-04T09:02:07.738000Z",
+      "status": "reviewed",
+      "latitude": 32.081,
+      "longitude": -102.196,
+      "observed_at": "2026-08-04T09:02:08.177000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pfjcdh",
       "metadata": {
         "magnitude": 0.9,
-        "depth_km": 4.1901
+        "depth_km": 7.2998
       }
     },
     {
@@ -951,6 +1256,22 @@
       }
     },
     {
+      "id": "usgs-tx2026pfhbvx",
+      "type": "earthquake",
+      "title": "M 1.3 - 19 km NW of Toyah, Texas",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 31.431,
+      "longitude": -103.941,
+      "observed_at": "2026-08-04T08:01:23.519000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pfhbvx",
+      "metadata": {
+        "magnitude": 1.3,
+        "depth_km": 6.087
+      }
+    },
+    {
       "id": "usgs-nc75411057",
       "type": "earthquake",
       "title": "M 0.8 - 1 km ENE of The Geysers, CA",
@@ -969,17 +1290,17 @@
     {
       "id": "usgs-tx2026pfgpxh",
       "type": "earthquake",
-      "title": "M 2.1 - 60 km S of Whites City, New Mexico",
+      "title": "M 2.2 - 60 km S of Whites City, New Mexico",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 31.626,
-      "longitude": -104.394,
-      "observed_at": "2026-08-04T07:51:17.276000Z",
+      "status": "reviewed",
+      "latitude": 31.631,
+      "longitude": -104.387,
+      "observed_at": "2026-08-04T07:51:16.853000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pfgpxh",
       "metadata": {
-        "magnitude": 2.1,
-        "depth_km": 4.4453
+        "magnitude": 2.2,
+        "depth_km": 6.3562
       }
     },
     {
@@ -996,6 +1317,22 @@
       "metadata": {
         "magnitude": 3.1,
         "depth_km": 30.89
+      }
+    },
+    {
+      "id": "usgs-tx2026pfgrvu",
+      "type": "earthquake",
+      "title": "M 0.6 - 20 km NW of Stanton, Texas",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 32.24,
+      "longitude": -101.956,
+      "observed_at": "2026-08-04T07:49:32.491000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pfgrvu",
+      "metadata": {
+        "magnitude": 0.6,
+        "depth_km": 8.374
       }
     },
     {
@@ -1143,6 +1480,22 @@
       }
     },
     {
+      "id": "usgs-uw714070971",
+      "type": "earthquake",
+      "title": "M 0.7 - 4 km NW of Wilsonville, Oregon",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 45.3203333333333,
+      "longitude": -122.816333333333,
+      "observed_at": "2026-08-04T06:03:32.070000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uw714070971",
+      "metadata": {
+        "magnitude": 0.68,
+        "depth_km": 20.46
+      }
+    },
+    {
       "id": "usgs-tx2026pfdecg",
       "type": "earthquake",
       "title": "M 1.1 - 48 km S of Whites City, New Mexico",
@@ -1241,17 +1594,17 @@
     {
       "id": "usgs-ci40665898",
       "type": "earthquake",
-      "title": "M 0.9 - 1 km SW of Loma Linda, CA",
+      "title": "M 0.8 - 1 km WNW of Loma Linda, CA",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 34.045,
-      "longitude": -117.266,
-      "observed_at": "2026-08-04T05:26:14.710000Z",
+      "status": "reviewed",
+      "latitude": 34.0521666666667,
+      "longitude": -117.268333333333,
+      "observed_at": "2026-08-04T05:26:14.490000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci40665898",
       "metadata": {
-        "magnitude": 0.91,
-        "depth_km": 14.42
+        "magnitude": 0.78,
+        "depth_km": 15.04
       }
     },
     {
@@ -1433,17 +1786,17 @@
     {
       "id": "usgs-nn00922753",
       "type": "earthquake",
-      "title": "M 1.9 - 18 km NNW of Indian Springs, Nevada",
+      "title": "M 2.0 - 17 km NNW of Indian Springs, Nevada",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 36.7237,
-      "longitude": -115.748,
-      "observed_at": "2026-08-04T04:16:24.088000Z",
+      "status": "reviewed",
+      "latitude": 36.7144,
+      "longitude": -115.7517,
+      "observed_at": "2026-08-04T04:16:24.902000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nn00922753",
       "metadata": {
-        "magnitude": 1.94,
-        "depth_km": 1.0242
+        "magnitude": 2.03,
+        "depth_km": 5.4278
       }
     },
     {
@@ -1721,17 +2074,17 @@
     {
       "id": "usgs-nn00922747",
       "type": "earthquake",
-      "title": "M 2.0 - 56 km ESE of Lovelock, Nevada",
+      "title": "M 1.9 - 56 km ESE of Lovelock, Nevada",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 39.9958,
-      "longitude": -117.8513,
-      "observed_at": "2026-08-04T02:20:02.254000Z",
+      "status": "reviewed",
+      "latitude": 39.9784,
+      "longitude": -117.8612,
+      "observed_at": "2026-08-04T02:20:03.160000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nn00922747",
       "metadata": {
-        "magnitude": 2.03,
-        "depth_km": 15.7896
+        "magnitude": 1.85,
+        "depth_km": 8.0524
       }
     },
     {
@@ -1851,15 +2204,15 @@
       "type": "earthquake",
       "title": "M 0.6 - 15 km NE of Little Lake, CA",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 36.0235,
-      "longitude": -117.774,
-      "observed_at": "2026-08-04T01:29:32.410000Z",
+      "status": "reviewed",
+      "latitude": 36.0216666666667,
+      "longitude": -117.775333333333,
+      "observed_at": "2026-08-04T01:29:32.380000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci40665850",
       "metadata": {
         "magnitude": 0.63,
-        "depth_km": 1.87
+        "depth_km": 1.98
       }
     },
     {
@@ -2055,6 +2408,22 @@
       }
     },
     {
+      "id": "usgs-tx2026perdvs",
+      "type": "earthquake",
+      "title": "M 1.1 - 21 km S of Westbrook, Texas",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 32.162,
+      "longitude": -101.05,
+      "observed_at": "2026-08-04T00:00:42.456000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026perdvs",
+      "metadata": {
+        "magnitude": 1.1,
+        "depth_km": 5.0049
+      }
+    },
+    {
       "id": "usgs-aka2026phcoph",
       "type": "earthquake",
       "title": "M 3.0 - 211 km S of False Pass, Alaska",
@@ -2089,17 +2458,17 @@
     {
       "id": "usgs-tx2026peqssz",
       "type": "earthquake",
-      "title": "M 1.7 - 24 km SSW of Westbrook, Texas",
+      "title": "M 1.8 - 23 km SSW of Westbrook, Texas",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 32.137,
-      "longitude": -101.078,
-      "observed_at": "2026-08-03T23:48:01.682000Z",
+      "status": "reviewed",
+      "latitude": 32.145,
+      "longitude": -101.073,
+      "observed_at": "2026-08-03T23:48:02.027000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026peqssz",
       "metadata": {
-        "magnitude": 1.7,
-        "depth_km": 2.9011
+        "magnitude": 1.8,
+        "depth_km": 3.3936
       }
     },
     {
@@ -2121,49 +2490,17 @@
     {
       "id": "usgs-tx2026pepwex",
       "type": "earthquake",
-      "title": "M 1.8 - 25 km SSW of Westbrook, Texas",
+      "title": "M 1.8 - 24 km SSW of Westbrook, Texas",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 32.138,
-      "longitude": -101.091,
-      "observed_at": "2026-08-03T23:21:39.827000Z",
+      "status": "reviewed",
+      "latitude": 32.141,
+      "longitude": -101.081,
+      "observed_at": "2026-08-03T23:21:40.137000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pepwex",
       "metadata": {
         "magnitude": 1.8,
-        "depth_km": 3.3079
-      }
-    },
-    {
-      "id": "usgs-tx2026pepvjj",
-      "type": "earthquake",
-      "title": "M 1.6 - 24 km SSW of Westbrook, Texas",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 32.14,
-      "longitude": -101.077,
-      "observed_at": "2026-08-03T23:21:39.752000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pepvjj",
-      "metadata": {
-        "magnitude": 1.6,
-        "depth_km": 2.7375
-      }
-    },
-    {
-      "id": "usgs-tx2026pepvel",
-      "type": "earthquake",
-      "title": "M 1.8 - 26 km SSE of Lindsay, Texas",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 31.158,
-      "longitude": -103.41,
-      "observed_at": "2026-08-03T23:20:35.497000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pepvel",
-      "metadata": {
-        "magnitude": 1.8,
-        "depth_km": 4.9164
+        "depth_km": 6.6895
       }
     },
     {
@@ -2219,15 +2556,15 @@
       "type": "earthquake",
       "title": "M 1.6 - 24 km SSW of Westbrook, Texas",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 32.144,
-      "longitude": -101.086,
-      "observed_at": "2026-08-03T22:57:16.570000Z",
+      "status": "reviewed",
+      "latitude": 32.141,
+      "longitude": -101.077,
+      "observed_at": "2026-08-03T22:57:16.810000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pepbdb",
       "metadata": {
         "magnitude": 1.6,
-        "depth_km": 2.2713
+        "depth_km": 5.249
       }
     },
     {
@@ -2265,17 +2602,17 @@
     {
       "id": "usgs-tx2026peotng",
       "type": "earthquake",
-      "title": "M 1.6 - 55 km S of Whites City, New Mexico",
+      "title": "M 1.6 - 56 km S of Whites City, New Mexico",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 31.676,
-      "longitude": -104.413,
-      "observed_at": "2026-08-03T22:51:35.812000Z",
+      "status": "reviewed",
+      "latitude": 31.67,
+      "longitude": -104.418,
+      "observed_at": "2026-08-03T22:51:35.789000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026peotng",
       "metadata": {
         "magnitude": 1.6,
-        "depth_km": 7.908
+        "depth_km": 7.843
       }
     },
     {
@@ -2308,6 +2645,22 @@
       "metadata": {
         "magnitude": 1.94,
         "depth_km": 27.3600006103516
+      }
+    },
+    {
+      "id": "usgs-uw714070781",
+      "type": "earthquake",
+      "title": "M 1.8 Explosion - 14 km S of Princeton, Canada",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 49.3245,
+      "longitude": -120.484833333333,
+      "observed_at": "2026-08-03T22:31:48.850000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uw714070781",
+      "metadata": {
+        "magnitude": 1.81,
+        "depth_km": -0.49
       }
     },
     {
@@ -2393,17 +2746,17 @@
     {
       "id": "usgs-tx2026penpdb",
       "type": "earthquake",
-      "title": "M 1.9 - 51 km NW of Toyah, Texas",
+      "title": "M 1.9 - 49 km NW of Toyah, Texas",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 31.584,
-      "longitude": -104.229,
-      "observed_at": "2026-08-03T22:14:21.655000Z",
+      "status": "reviewed",
+      "latitude": 31.602,
+      "longitude": -104.196,
+      "observed_at": "2026-08-03T22:14:21.798000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026penpdb",
       "metadata": {
         "magnitude": 1.9,
-        "depth_km": 3.04
+        "depth_km": 6.4075
       }
     },
     {
@@ -2427,7 +2780,7 @@
       "type": "earthquake",
       "title": "M 1.7 - 3 km S of Quilcene, Washington",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 47.7879981994629,
       "longitude": -122.880836486816,
       "observed_at": "2026-08-03T21:56:39.500000Z",
@@ -2505,17 +2858,17 @@
     {
       "id": "usgs-tx2026pemhkd",
       "type": "earthquake",
-      "title": "M 1.4 - 19 km E of Forsan, Texas",
+      "title": "M 1.5 - 19 km E of Forsan, Texas",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 32.124,
-      "longitude": -101.163,
-      "observed_at": "2026-08-03T21:33:58.595000Z",
+      "status": "reviewed",
+      "latitude": 32.127,
+      "longitude": -101.159,
+      "observed_at": "2026-08-03T21:33:58.847000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pemhkd",
       "metadata": {
-        "magnitude": 1.4,
-        "depth_km": 2.7441
+        "magnitude": 1.5,
+        "depth_km": 5.4932
       }
     },
     {
@@ -3460,310 +3813,6 @@
       "metadata": {
         "magnitude": 1.41,
         "depth_km": 9.86
-      }
-    },
-    {
-      "id": "usgs-aka2026pgochz",
-      "type": "earthquake",
-      "title": "M 1.9 - 56 km WSW of Denali Park, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 63.617,
-      "longitude": -150.016,
-      "observed_at": "2026-08-03T16:41:52.210000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026pgochz",
-      "metadata": {
-        "magnitude": 1.9,
-        "depth_km": 143
-      }
-    },
-    {
-      "id": "usgs-tx2026pecmnn",
-      "type": "earthquake",
-      "title": "M 1.2 - 32 km SE of Malaga, New Mexico",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 31.985,
-      "longitude": -103.878,
-      "observed_at": "2026-08-03T16:38:14.731000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pecmnn",
-      "metadata": {
-        "magnitude": 1.2,
-        "depth_km": 8.8684
-      }
-    },
-    {
-      "id": "usgs-aka2026pgnyad",
-      "type": "earthquake",
-      "title": "M 3.4 - 229 km ESE of Attu Station, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 52.144,
-      "longitude": 176.363,
-      "observed_at": "2026-08-03T16:36:44.763000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026pgnyad",
-      "metadata": {
-        "magnitude": 3.4,
-        "depth_km": 0.9
-      }
-    },
-    {
-      "id": "usgs-aka2026pgntrq",
-      "type": "earthquake",
-      "title": "M 1.7 - 8 km W of Ninilchik, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 60.051,
-      "longitude": -151.814,
-      "observed_at": "2026-08-03T16:32:04.333000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026pgntrq",
-      "metadata": {
-        "magnitude": 1.7,
-        "depth_km": 58.9
-      }
-    },
-    {
-      "id": "usgs-tx2026pebujg",
-      "type": "earthquake",
-      "title": "M 1.6 - 60 km SSW of Whites City, New Mexico",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 31.644,
-      "longitude": -104.53,
-      "observed_at": "2026-08-03T16:17:27.491000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026pebujg",
-      "metadata": {
-        "magnitude": 1.6,
-        "depth_km": 7.0355
-      }
-    },
-    {
-      "id": "usgs-aka2026pgnepj",
-      "type": "earthquake",
-      "title": "M 1.7 - 59 km WNW of Anchor Point, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 59.897,
-      "longitude": -152.859,
-      "observed_at": "2026-08-03T16:14:37.742000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026pgnepj",
-      "metadata": {
-        "magnitude": 1.7,
-        "depth_km": 109.1
-      }
-    },
-    {
-      "id": "usgs-hv75012317",
-      "type": "earthquake",
-      "title": "M 1.8 - 11 km NE of Pāhala, Hawaii",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 19.2604999542236,
-      "longitude": -155.389831542969,
-      "observed_at": "2026-08-03T16:09:37.590000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75012317",
-      "metadata": {
-        "magnitude": 1.8,
-        "depth_km": 30
-      }
-    },
-    {
-      "id": "usgs-aka2026pgmymz",
-      "type": "earthquake",
-      "title": "M 3.0 - 55 km E of Sand Point, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 55.384,
-      "longitude": -159.624,
-      "observed_at": "2026-08-03T16:07:37.653000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026pgmymz",
-      "metadata": {
-        "magnitude": 3,
-        "depth_km": 5
-      }
-    },
-    {
-      "id": "usgs-nn00922725",
-      "type": "earthquake",
-      "title": "M 2.3 - 17 km NNW of Indian Springs, Nevada",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 36.7116,
-      "longitude": -115.7533,
-      "observed_at": "2026-08-03T16:03:25.696000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nn00922725",
-      "metadata": {
-        "magnitude": 2.33,
-        "depth_km": 4.9136
-      }
-    },
-    {
-      "id": "usgs-nc75410687",
-      "type": "earthquake",
-      "title": "M 0.9 - 7 km NW of The Geysers, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 38.8128318786621,
-      "longitude": -122.822830200195,
-      "observed_at": "2026-08-03T16:00:04.360000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75410687",
-      "metadata": {
-        "magnitude": 0.89,
-        "depth_km": 2.3199999332428
-      }
-    },
-    {
-      "id": "usgs-us6000ths9",
-      "type": "earthquake",
-      "title": "M 4.5 - 123 km E of Miyako, Japan",
-      "severity": "moderate",
-      "status": "reviewed",
-      "latitude": 39.6999,
-      "longitude": 143.3753,
-      "observed_at": "2026-08-03T15:54:05.781000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000ths9",
-      "metadata": {
-        "magnitude": 4.5,
-        "depth_km": 35
-      }
-    },
-    {
-      "id": "usgs-uu80146976",
-      "type": "earthquake",
-      "title": "M 2.2 - 7 km WNW of Bennington, Idaho",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 42.4123333333333,
-      "longitude": -111.4085,
-      "observed_at": "2026-08-03T15:52:57.460000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80146976",
-      "metadata": {
-        "magnitude": 2.19,
-        "depth_km": 2.74
-      }
-    },
-    {
-      "id": "usgs-ci40665634",
-      "type": "earthquake",
-      "title": "M 2.1 - 7 km N of Beaumont, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 33.992,
-      "longitude": -116.9755,
-      "observed_at": "2026-08-03T15:50:25.920000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci40665634",
-      "metadata": {
-        "magnitude": 2.11,
-        "depth_km": 9.5
-      }
-    },
-    {
-      "id": "usgs-ci40665626",
-      "type": "earthquake",
-      "title": "M 1.4 - 6 km SW of Calimesa, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 33.946,
-      "longitude": -117.097333333333,
-      "observed_at": "2026-08-03T15:31:44.510000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci40665626",
-      "metadata": {
-        "magnitude": 1.4,
-        "depth_km": 15.27
-      }
-    },
-    {
-      "id": "usgs-aka2026pglaid",
-      "type": "earthquake",
-      "title": "M 2.3 - 37 km SSE of Denali National Park, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 63.256,
-      "longitude": -151.337,
-      "observed_at": "2026-08-03T15:09:37.791000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026pglaid",
-      "metadata": {
-        "magnitude": 2.3,
-        "depth_km": 5
-      }
-    },
-    {
-      "id": "usgs-nc75410672",
-      "type": "earthquake",
-      "title": "M 0.7 - 7 km WNW of Cobb, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 38.8366661071777,
-      "longitude": -122.800834655762,
-      "observed_at": "2026-08-03T15:05:34.960000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75410672",
-      "metadata": {
-        "magnitude": 0.71,
-        "depth_km": 2.02999997138977
-      }
-    },
-    {
-      "id": "usgs-aka2026pgkpfy",
-      "type": "earthquake",
-      "title": "M 4.0 - 232 km ESE of Attu Station, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 51.999,
-      "longitude": 176.314,
-      "observed_at": "2026-08-03T14:56:35.226000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026pgkpfy",
-      "metadata": {
-        "magnitude": 4,
-        "depth_km": 0.2
-      }
-    },
-    {
-      "id": "usgs-aka2026pgkmga",
-      "type": "earthquake",
-      "title": "M 1.6 - 45 km NW of Nikiski, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 60.926,
-      "longitude": -151.975,
-      "observed_at": "2026-08-03T14:53:23.836000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026pgkmga",
-      "metadata": {
-        "magnitude": 1.6,
-        "depth_km": 89.4
-      }
-    },
-    {
-      "id": "usgs-nc75410657",
-      "type": "earthquake",
-      "title": "M 0.9 - 10 km ESE of Gilroy, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 36.9686660766602,
-      "longitude": -121.462997436523,
-      "observed_at": "2026-08-03T14:47:34.650000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75410657",
-      "metadata": {
-        "magnitude": 0.91,
-        "depth_km": 10.7200002670288
       }
     },
     {
@@ -11310,8 +11359,8 @@
       "id": "cems-EMSR908",
       "type": "fire",
       "title": "Wildfires in Castilla y Leon, Spain and Norte, Portugal",
-      "severity": "high",
-      "status": "active",
+      "severity": "moderate",
+      "status": "closed",
       "latitude": 41.375,
       "longitude": -6.29,
       "observed_at": "2026-07-28T23:07:00",
