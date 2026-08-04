@@ -29,6 +29,10 @@ export function applyCameraPreset(
     || !Number.isFinite(fov)
     || fov <= 0
     || fov >= 180
+    || typeof camera.position?.set !== 'function'
+    || typeof camera.updateProjectionMatrix !== 'function'
+    || typeof controls.target?.set !== 'function'
+    || typeof controls.update !== 'function'
   ) return false
 
   try {
