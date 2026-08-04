@@ -20,7 +20,7 @@ export type FireFeedSummary = {
   latestObservationAgeHours: number | null
 }
 
-const FIRE_CATEGORY_PATTERN = /(?:^|\b)(?:wild)?fire(?:s)?(?:\b|$)/i
+const FIRE_CATEGORIES = new Set(['fire', 'fires', 'wildfire', 'wildfires'])
 
 function validIsoDate(value: unknown): string | null {
   if (typeof value !== 'string' || !value.trim()) return null
@@ -37,7 +37,7 @@ function categoriesOf(feature: FireFeedFeature): string[] {
 
 function isFirePoint(feature: FireFeedFeature): boolean {
   return feature.geometry?.type === 'Point'
-    && categoriesOf(feature).some(category => FIRE_CATEGORY_PATTERN.test(category))
+    && categoriesOf(feature).some(category => FIRE_CATEGORIES.has(category.trim().toLowerCase()))
 }
 
 function ageHours(timestamp: string | null, nowMs: number): number | null {
