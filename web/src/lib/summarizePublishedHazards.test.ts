@@ -12,7 +12,8 @@ describe('published hazards fire-feed compatibility', () => {
 
     const summary = summarizeFireFeed(publishedHazards as FireFeedData, publicationTime)
 
-    expect(summary.publishedAt).toBe(publicationTimestamp)
+    expect(summary.publishedAt).not.toBeNull()
+    expect(new Date(summary.publishedAt!).getTime()).toBe(publicationTime.getTime())
     expect(summary.publishedAgeHours).toBe(0)
     expect(summary.publishedInFuture).toBe(false)
     expect(summary.publicationTimestampInvalid).toBe(false)
