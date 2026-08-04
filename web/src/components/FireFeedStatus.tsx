@@ -12,6 +12,7 @@ function formatAge(value: number | null): string {
 }
 
 function freshnessLabel(summary: FireFeedSummary): string {
+  if (summary.publicationTimestampInvalid) return 'niespójne — nieprawidłowy czas publikacji'
   if (summary.publishedInFuture) return 'niespójne — czas publikacji jest w przyszłości'
 
   const ages = [summary.publishedAgeHours, summary.latestObservationAgeHours]
