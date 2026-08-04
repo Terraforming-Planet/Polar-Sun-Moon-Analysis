@@ -22,10 +22,16 @@ export function applyCameraPreset(
   if (!camera || !controls || !preset) return false
 
   const { position, fov } = preset
+  const distanceSquared = Array.isArray(position) && position.length === 3
+    ? position.reduce((sum, coordinate) => sum + coordinate * coordinate, 0)
+    : 0
+
   if (
     !Array.isArray(position)
     || position.length !== 3
     || !position.every(Number.isFinite)
+    || !Number.isFinite(distanceSquared)
+    || distanceSquared <= Number.EPSILON
     || !Number.isFinite(fov)
     || fov <= 0
     || fov >= 180
