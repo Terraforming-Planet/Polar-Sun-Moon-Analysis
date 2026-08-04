@@ -22,6 +22,19 @@ describe('summarizeFireFeed', () => {
     })
   })
 
+  it('counts only explicit fire category labels', () => {
+    const summary = summarizeFireFeed({
+      features: [
+        { geometry: { type: 'Point' }, properties: { categories: [' fire '] } },
+        { geometry: { type: 'Point' }, properties: { categories: ['WILDFIRES'] } },
+        { geometry: { type: 'Point' }, properties: { categories: ['Fire weather'] } },
+        { geometry: { type: 'Point' }, properties: { categories: ['Wildfire risk'] } },
+      ],
+    })
+
+    expect(summary.pointCount).toBe(2)
+  })
+
   it('supports the legacy generatedUtc field', () => {
     const summary = summarizeFireFeed({
       generatedUtc: '2026-08-03T08:00:00Z',
