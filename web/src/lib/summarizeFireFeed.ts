@@ -70,6 +70,10 @@ function isFirePoint(feature: FireFeedFeature): boolean {
     && categoriesOf(feature).some(category => FIRE_CATEGORIES.has(category.trim().toLowerCase()))
 }
 
+function normalizeSourceLabel(value: string): string {
+  return value.trim().replace(/\s+/g, ' ')
+}
+
 function sourceLabelsOf(features: FireFeedFeature[]): string[] {
   const labels = new Map<string, string>()
 
@@ -77,7 +81,7 @@ function sourceLabelsOf(features: FireFeedFeature[]): string[] {
     const source = feature.properties?.source
     if (typeof source !== 'string') continue
 
-    const normalized = source.trim()
+    const normalized = normalizeSourceLabel(source)
     if (!normalized) continue
 
     const key = normalized.toLocaleLowerCase('en-US')
