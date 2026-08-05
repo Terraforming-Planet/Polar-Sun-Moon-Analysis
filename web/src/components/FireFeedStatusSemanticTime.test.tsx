@@ -31,4 +31,20 @@ describe('FireFeedStatus semantic timestamps', () => {
     expect(markup).not.toContain('dateTime=')
     expect(markup.match(/<time>brak danych<\/time>/g)).toHaveLength(2)
   })
+
+  it('does not expose malformed timestamps as semantic values or Invalid Date text', () => {
+    const markup = renderToStaticMarkup(<FireFeedStatus sourceLabel="NASA EONET" summary={{
+      pointCount: 1,
+      publishedAt: 'not-a-timestamp',
+      latestObservationAt: '2026-99-99T25:61:00Z',
+      publishedAgeHours: null,
+      latestObservationAgeHours: null,
+      publishedInFuture: false,
+      publicationTimestampInvalid: true,
+    }}/>)
+
+    expect(markup).not.toContain('dateTime=')
+    expect(markup).not.toContain('Invalid Date')
+    expect(markup.match(/<time>brak danych<\/time>/g)).toHaveLength(2)
+  })
 })
