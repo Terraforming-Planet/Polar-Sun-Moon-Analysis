@@ -88,7 +88,7 @@ function sourceLabelsOf(features: FireFeedFeature[]): string[] {
     if (!labels.has(key)) labels.set(key, normalized)
   }
 
-  return [...labels.values()]
+  return [...labels.values()].sort((left, right) => left.localeCompare(right, 'en-US', { sensitivity: 'base' }))
 }
 
 type ObservationTimestampMetadata = {
