@@ -1,5 +1,5 @@
 export type FireFeedFeature = {
-  geometry?: { type?: string } | null
+  geometry?: { type?: string; coordinates?: unknown } | null
   properties?: {
     categories?: unknown
     observation_time?: unknown
@@ -65,8 +65,27 @@ function categoriesOf(feature: FireFeedFeature): string[] {
     : []
 }
 
+function hasUsablePointCoordinates(feature: FireFeedFeature): boolean {
+  const geometry = feature.geometry
+  if (!geometry || !Object.prototype.hasOwnProperty.call(geometry, 'coordinates')) return true
+
+  const coordinates = geometry.coordinates
+  if (!Array.isArray(coordinates) || coordinates.length < 2) return false
+
+  const [longitude, latitude] = coordinates
+  return typeof longitude === 'number'
+    && Number.isFinite(longitude)
+    && longitude >= -180
+    && longitude <= 180
+    && typeof latitude === 'number'
+    && Number.isFinite(latitude)
+    && latitude >= -90
+    && latitude <= 90
+}
+
 function isFirePoint(feature: FireFeedFeature): boolean {
   return feature.geometry?.type === 'Point'
+    && hasUsablePointCoordinates(feature)
     && categoriesOf(feature).some(category => FIRE_CATEGORIES.has(category.trim().toLowerCase()))
 }
 
