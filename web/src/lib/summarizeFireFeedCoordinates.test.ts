@@ -14,6 +14,7 @@ describe('summarizeFireFeed point coordinates', () => {
       features: [
         firePoint([18.6466, 54.352]),
         firePoint([180, 90]),
+        firePoint([86.925, 27.9881, 8848.86]),
         firePoint(),
         firePoint(null),
         firePoint([]),
@@ -22,10 +23,13 @@ describe('summarizeFireFeed point coordinates', () => {
         firePoint([Number.NaN, 54.352]),
         firePoint([181, 54.352]),
         firePoint([18.6466, -91]),
+        firePoint([18.6466, 54.352, 'unknown-height']),
+        firePoint([18.6466, 54.352, Number.NaN]),
+        firePoint([18.6466, 54.352, Number.POSITIVE_INFINITY]),
       ],
     })
 
-    expect(summary.pointCount).toBe(3)
+    expect(summary.pointCount).toBe(4)
     expect(summary.sourceLabels).toEqual(['NASA FIRMS'])
   })
 })
