@@ -24,9 +24,16 @@ function freshnessLabel(summary: FireFeedSummary): string {
 }
 
 function sourceDisplay(summary: FireFeedSummary, fallback: string): string {
+  const seen = new Set<string>()
   const detected = summary.sourceLabels
     ?.map(label => label.trim())
-    .filter(Boolean)
+    .filter(label => {
+      if (!label) return false
+      const key = label.toLocaleLowerCase('en-US')
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
 
   if (detected?.length) return detected.join(', ')
   return fallback.trim() || 'brak danych'
