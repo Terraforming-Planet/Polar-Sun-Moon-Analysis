@@ -3,7 +3,22 @@ import { describe, expect, it } from 'vitest'
 import { FireFeedStatus } from './FireFeedStatus'
 
 describe('FireFeedStatus', () => {
-  it('shows source, point count, publication metadata and an explicit non-live limitation', () => {
+  it('shows detected point sources before the adapter fallback label', () => {
+    const markup = renderToStaticMarkup(<FireFeedStatus sourceLabel="Adapter fallback" summary={{
+      pointCount: 2,
+      sourceLabels: ['NASA FIRMS / VIIRS', 'NASA EONET'],
+      publishedAt: '2026-08-03T10:00:00.000Z',
+      latestObservationAt: '2026-08-03T09:30:00.000Z',
+      publishedAgeHours: 2,
+      latestObservationAgeHours: 2.5,
+      publishedInFuture: false,
+    }}/>)
+
+    expect(markup).toContain('NASA FIRMS / VIIRS, NASA EONET')
+    expect(markup).not.toContain('Adapter fallback')
+  })
+
+  it('uses the explicit adapter source only when points do not expose a source', () => {
     const markup = renderToStaticMarkup(<FireFeedStatus sourceLabel="NASA EONET" summary={{
       pointCount: 37,
       publishedAt: '2026-08-03T10:00:00.000Z',
