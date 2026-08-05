@@ -5,8 +5,12 @@ function formatUtc(value: string | null): string {
   return new Date(value).toLocaleString('pl-PL', { timeZone: 'UTC' }) + ' UTC'
 }
 
+function isValidAge(value: number | null): value is number {
+  return value !== null && Number.isFinite(value) && value >= 0
+}
+
 function formatAge(value: number | null): string {
-  if (value === null || !Number.isFinite(value) || value < 0) return 'brak danych'
+  if (!isValidAge(value)) return 'brak danych'
   if (value === 0) return '0 min'
   if (value < 1 / 60) return '< 1 min'
   if (value < 1) return `${Math.round(value * 60)} min`
@@ -16,15 +20,15 @@ function formatAge(value: number | null): string {
 function freshnessLabel(summary: FireFeedSummary): string {
   if (summary.publicationTimestampInvalid) return 'niespójne — nieprawidłowy czas publikacji'
   if (summary.publishedInFuture) return 'niespójne — czas publikacji jest w przyszłości'
-  if (summary.pointCount === 0 && summary.publishedAgeHours !== null) {
+  if (summary.pointCount === 0 && isValidAge(summary.publishedAgeHours)) {
     return 'brak punktów pożarowych w ostatnim pliku'
   }
-  if (summary.pointCount > 0 && summary.latestObservationAgeHours === null) {
+  if (summary.pointCount > 0 && !isValidAge(summary.latestObservationAgeHours)) {
     return 'częściowe — brak wiarygodnego czasu obserwacji'
   }
 
   const ages = [summary.publishedAgeHours, summary.latestObservationAgeHours]
-    .filter((value): value is number => value !== null && Number.isFinite(value) && value >= 0)
+    .filter(isValidAge)
 
   if (!ages.length) return 'nieznana — brak metadanych czasu'
   if (Math.max(...ages) > 24) return 'opóźnione — ponad 24 h'
