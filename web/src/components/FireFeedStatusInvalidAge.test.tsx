@@ -14,20 +14,22 @@ function renderWithAges(publishedAgeHours: number, latestObservationAgeHours: nu
 }
 
 describe('FireFeedStatus invalid age handling', () => {
-  it('does not present non-finite or negative ages as valid freshness data', () => {
+  it('prioritizes invalid publication age when both ages are unusable', () => {
     const markup = renderWithAges(Number.NaN, -1)
 
     expect(markup.match(/>brak danych</g)).toHaveLength(2)
-    expect(markup).toContain('częściowe — brak wiarygodnego czasu obserwacji')
+    expect(markup).toContain('częściowe — brak wiarygodnego czasu publikacji')
+    expect(markup).not.toContain('częściowe — brak wiarygodnego czasu obserwacji')
     expect(markup).not.toContain('NaN')
     expect(markup).not.toContain('-1 min')
   })
 
-  it('ignores infinity when deciding whether the feed is current or delayed', () => {
+  it('prioritizes infinite publication age before invalid observation age', () => {
     const markup = renderWithAges(Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY)
 
     expect(markup.match(/>brak danych</g)).toHaveLength(2)
-    expect(markup).toContain('częściowe — brak wiarygodnego czasu obserwacji')
+    expect(markup).toContain('częściowe — brak wiarygodnego czasu publikacji')
+    expect(markup).not.toContain('częściowe — brak wiarygodnego czasu obserwacji')
     expect(markup).not.toContain('Infinity')
     expect(markup).not.toContain('opóźnione — ponad 24 h')
   })
