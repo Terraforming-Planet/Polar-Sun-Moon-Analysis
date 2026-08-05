@@ -18,6 +18,22 @@ describe('FireFeedStatus', () => {
     expect(markup).not.toContain('Adapter fallback')
   })
 
+  it('deduplicates detected point sources defensively before display', () => {
+    const markup = renderToStaticMarkup(<FireFeedStatus sourceLabel="Adapter fallback" summary={{
+      pointCount: 3,
+      sourceLabels: [' NASA EONET ', 'nasa eonet', 'NASA FIRMS / VIIRS'],
+      publishedAt: '2026-08-03T10:00:00.000Z',
+      latestObservationAt: '2026-08-03T09:30:00.000Z',
+      publishedAgeHours: 2,
+      latestObservationAgeHours: 2.5,
+      publishedInFuture: false,
+    }}/>)
+
+    expect(markup).toContain('NASA EONET, NASA FIRMS / VIIRS')
+    expect(markup).not.toContain('NASA EONET, nasa eonet')
+    expect(markup).not.toContain('Adapter fallback')
+  })
+
   it('uses the explicit adapter source only when points do not expose a source', () => {
     const markup = renderToStaticMarkup(<FireFeedStatus sourceLabel="NASA EONET" summary={{
       pointCount: 37,
