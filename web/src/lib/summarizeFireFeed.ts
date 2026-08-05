@@ -73,13 +73,15 @@ function hasUsablePointCoordinates(feature: FireFeedFeature): boolean {
   const coordinates = geometry.coordinates
   if (!Array.isArray(coordinates) || coordinates.length < 2) return false
 
+  // A GeoJSON position may include altitude or further ordinates, but every
+  // supplied ordinate must remain a finite number. Counting a point with a
+  // corrupt height value would publish a location that cannot be rendered or
+  // inspected reliably even when longitude and latitude look valid.
+  if (!coordinates.every(value => typeof value === 'number' && Number.isFinite(value))) return false
+
   const [longitude, latitude] = coordinates
-  return typeof longitude === 'number'
-    && Number.isFinite(longitude)
-    && longitude >= -180
+  return longitude >= -180
     && longitude <= 180
-    && typeof latitude === 'number'
-    && Number.isFinite(latitude)
     && latitude >= -90
     && latitude <= 90
 }
