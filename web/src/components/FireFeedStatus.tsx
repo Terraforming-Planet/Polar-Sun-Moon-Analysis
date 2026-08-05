@@ -23,6 +23,9 @@ function freshnessLabel(summary: FireFeedSummary): string {
   if (summary.pointCount === 0 && isValidAge(summary.publishedAgeHours)) {
     return 'brak punktów pożarowych w ostatnim pliku'
   }
+  if (summary.pointCount > 0 && !isValidAge(summary.publishedAgeHours)) {
+    return 'częściowe — brak wiarygodnego czasu publikacji'
+  }
   if (summary.pointCount > 0 && !isValidAge(summary.latestObservationAgeHours)) {
     return 'częściowe — brak wiarygodnego czasu obserwacji'
   }
