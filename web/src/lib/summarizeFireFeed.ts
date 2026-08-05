@@ -90,7 +90,13 @@ function isFirePoint(feature: FireFeedFeature): boolean {
 }
 
 function normalizeSourceLabel(value: string): string {
-  return value.trim().replace(/\s+/g, ' ')
+  return value
+    // Source labels are display metadata. Strip control and bidirectional
+    // formatting characters so malformed feeds cannot hide or reorder text in
+    // the status panel, while preserving normal Unicode names.
+    .replace(/[\u0000-\u001F\u007F-\u009F\u061C\u200E\u200F\u202A-\u202E\u2066-\u2069]/g, ' ')
+    .trim()
+    .replace(/\s+/g, ' ')
 }
 
 function sourceLabelsOf(features: FireFeedFeature[]): string[] {
