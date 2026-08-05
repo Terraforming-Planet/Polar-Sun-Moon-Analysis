@@ -28,10 +28,18 @@ export type FireFeedSummary = {
 
 const FIRE_CATEGORIES = new Set(['fire', 'fires', 'wildfire', 'wildfires'])
 const MAX_SOURCE_LABEL_LENGTH = 160
+const ISO_TIMESTAMP_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/i
 
 function validIsoDate(value: unknown): string | null {
-  if (typeof value !== 'string' || !value.trim()) return null
-  const timestamp = Date.parse(value)
+  if (typeof value !== 'string') return null
+
+  const normalized = value.trim()
+  // Date.parse also accepts implementation-dependent strings such as
+  // "08/05/2026 10:00". Hazard metadata must carry an explicit date, time and
+  // timezone so the UI never guesses whether a feed is fresh.
+  if (!ISO_TIMESTAMP_PATTERN.test(normalized)) return null
+
+  const timestamp = Date.parse(normalized)
   return Number.isFinite(timestamp) ? new Date(timestamp).toISOString() : null
 }
 
