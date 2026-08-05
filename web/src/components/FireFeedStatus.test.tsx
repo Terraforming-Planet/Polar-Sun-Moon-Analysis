@@ -72,6 +72,21 @@ describe('FireFeedStatus', () => {
     expect(markup).not.toContain('aktualne według ostatniego pliku — do 24 h')
   })
 
+  it('reports explicitly when the latest published file contains no fire points', () => {
+    const markup = renderToStaticMarkup(<FireFeedStatus sourceLabel="NASA EONET" summary={{
+      pointCount: 0,
+      publishedAt: '2026-08-03T10:00:00.000Z',
+      latestObservationAt: null,
+      publishedAgeHours: 1,
+      latestObservationAgeHours: null,
+      publishedInFuture: false,
+    }}/>)
+
+    expect(markup).toContain('brak punktów pożarowych w ostatnim pliku')
+    expect(markup).not.toContain('aktualne według ostatniego pliku — do 24 h')
+    expect(markup).not.toContain('częściowe — brak wiarygodnego czasu obserwacji')
+  })
+
   it('marks the feed as delayed when either published data or observations exceed 24 hours', () => {
     const markup = renderToStaticMarkup(<FireFeedStatus sourceLabel="NASA EONET" summary={{
       pointCount: 5,
