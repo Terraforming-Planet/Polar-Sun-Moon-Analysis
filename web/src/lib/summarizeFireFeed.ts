@@ -85,7 +85,11 @@ function sourceLabelsOf(features: FireFeedFeature[]): string[] {
     if (!normalized) continue
 
     const key = normalized.toLocaleLowerCase('en-US')
-    if (!labels.has(key)) labels.set(key, normalized)
+    const existing = labels.get(key)
+
+    // Choose a deterministic representative for case-only duplicates instead
+    // of keeping whichever spelling happened to appear first in the feed.
+    if (!existing || normalized < existing) labels.set(key, normalized)
   }
 
   return [...labels.values()].sort((left, right) => left.localeCompare(right, 'en-US', { sensitivity: 'base' }))
