@@ -58,6 +58,20 @@ describe('FireFeedStatus', () => {
     expect(markup).toContain('nie jest to ciągły obraz czasu rzeczywistego')
   })
 
+  it('marks a feed with points but no trustworthy observation time as partial', () => {
+    const markup = renderToStaticMarkup(<FireFeedStatus sourceLabel="NASA EONET" summary={{
+      pointCount: 12,
+      publishedAt: '2026-08-03T10:00:00.000Z',
+      latestObservationAt: null,
+      publishedAgeHours: 1,
+      latestObservationAgeHours: null,
+      publishedInFuture: false,
+    }}/>)
+
+    expect(markup).toContain('częściowe — brak wiarygodnego czasu obserwacji')
+    expect(markup).not.toContain('aktualne według ostatniego pliku — do 24 h')
+  })
+
   it('marks the feed as delayed when either published data or observations exceed 24 hours', () => {
     const markup = renderToStaticMarkup(<FireFeedStatus sourceLabel="NASA EONET" summary={{
       pointCount: 5,
