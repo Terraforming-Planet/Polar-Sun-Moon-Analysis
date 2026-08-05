@@ -27,6 +27,7 @@ export type FireFeedSummary = {
 }
 
 const FIRE_CATEGORIES = new Set(['fire', 'fires', 'wildfire', 'wildfires'])
+const MAX_SOURCE_LABEL_LENGTH = 160
 
 function validIsoDate(value: unknown): string | null {
   if (typeof value !== 'string' || !value.trim()) return null
@@ -90,13 +91,17 @@ function isFirePoint(feature: FireFeedFeature): boolean {
 }
 
 function normalizeSourceLabel(value: string): string {
-  return value
+  const normalized = value
     // Source labels are display metadata. Strip control and bidirectional
     // formatting characters so malformed feeds cannot hide or reorder text in
     // the status panel, while preserving normal Unicode names.
     .replace(/[\u0000-\u001F\u007F-\u009F\u061C\u200E\u200F\u202A-\u202E\u2066-\u2069]/g, ' ')
     .trim()
     .replace(/\s+/g, ' ')
+
+  // Keep untrusted metadata from expanding the status panel indefinitely.
+  // Truncate by Unicode code points so surrogate pairs are not split.
+  return [...normalized].slice(0, MAX_SOURCE_LABEL_LENGTH).join('').trimEnd()
 }
 
 function sourceLabelsOf(features: FireFeedFeature[]): string[] {
