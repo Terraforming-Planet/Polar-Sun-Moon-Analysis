@@ -1,8 +1,15 @@
 import type { FireFeedSummary } from '../lib/summarizeFireFeed'
 
+function validTimestamp(value: string | null): string | null {
+  if (!value) return null
+  const timestamp = Date.parse(value)
+  return Number.isFinite(timestamp) ? value : null
+}
+
 function formatUtc(value: string | null): string {
-  if (!value) return 'brak danych'
-  return new Date(value).toLocaleString('pl-PL', { timeZone: 'UTC' }) + ' UTC'
+  const normalized = validTimestamp(value)
+  if (!normalized) return 'brak danych'
+  return new Date(normalized).toLocaleString('pl-PL', { timeZone: 'UTC' }) + ' UTC'
 }
 
 function isValidAge(value: number | null): value is number {
@@ -62,14 +69,16 @@ type FireFeedStatusProps = {
 export function FireFeedStatus({ summary, sourceLabel }: FireFeedStatusProps) {
   const normalizedSource = sourceDisplay(summary, sourceLabel)
   const ignoredTimestampCount = summary.ignoredObservationTimestampCount ?? 0
+  const publishedAt = validTimestamp(summary.publishedAt)
+  const latestObservationAt = validTimestamp(summary.latestObservationAt)
 
   return <section className="panel" aria-label="Status ostatniego opublikowanego pliku pożarowego" aria-live="polite">
     <h2>Status danych pożarowych</h2>
     <div className="fact"><span>Źródło katalogu</span><b>{normalizedSource}</b></div>
     <div className="fact"><span>Punkty pożarowe</span><b>{summary.pointCount}</b></div>
-    <div className="fact"><span>Publikacja pliku</span><b><time dateTime={summary.publishedAt ?? undefined}>{formatUtc(summary.publishedAt)}</time></b></div>
+    <div className="fact"><span>Publikacja pliku</span><b><time dateTime={publishedAt ?? undefined}>{formatUtc(publishedAt)}</time></b></div>
     <div className="fact"><span>Wiek pliku</span><b>{formatAge(summary.publishedAgeHours)}</b></div>
-    <div className="fact"><span>Najnowsza obserwacja</span><b><time dateTime={summary.latestObservationAt ?? undefined}>{formatUtc(summary.latestObservationAt)}</time></b></div>
+    <div className="fact"><span>Najnowsza obserwacja</span><b><time dateTime={latestObservationAt ?? undefined}>{formatUtc(latestObservationAt)}</time></b></div>
     <div className="fact"><span>Wiek obserwacji</span><b>{formatAge(summary.latestObservationAgeHours)}</b></div>
     <div className="fact"><span>Stan świeżości</span><b>{freshnessLabel(summary)}</b></div>
     {ignoredTimestampCount > 0 && <p className="muted" role="note">
