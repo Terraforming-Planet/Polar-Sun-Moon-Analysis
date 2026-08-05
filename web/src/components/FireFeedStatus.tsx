@@ -6,7 +6,7 @@ function formatUtc(value: string | null): string {
 }
 
 function formatAge(value: number | null): string {
-  if (value === null) return 'brak danych'
+  if (value === null || !Number.isFinite(value) || value < 0) return 'brak danych'
   if (value === 0) return '0 min'
   if (value < 1 / 60) return '< 1 min'
   if (value < 1) return `${Math.round(value * 60)} min`
@@ -24,7 +24,7 @@ function freshnessLabel(summary: FireFeedSummary): string {
   }
 
   const ages = [summary.publishedAgeHours, summary.latestObservationAgeHours]
-    .filter((value): value is number => value !== null)
+    .filter((value): value is number => value !== null && Number.isFinite(value) && value >= 0)
 
   if (!ages.length) return 'nieznana — brak metadanych czasu'
   if (Math.max(...ages) > 24) return 'opóźnione — ponad 24 h'
