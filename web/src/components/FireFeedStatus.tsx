@@ -23,13 +23,22 @@ function freshnessLabel(summary: FireFeedSummary): string {
   return 'aktualne według ostatniego pliku — do 24 h'
 }
 
+function sourceDisplay(summary: FireFeedSummary, fallback: string): string {
+  const detected = summary.sourceLabels
+    ?.map(label => label.trim())
+    .filter(Boolean)
+
+  if (detected?.length) return detected.join(', ')
+  return fallback.trim() || 'brak danych'
+}
+
 type FireFeedStatusProps = {
   summary: FireFeedSummary
   sourceLabel: string
 }
 
 export function FireFeedStatus({ summary, sourceLabel }: FireFeedStatusProps) {
-  const normalizedSource = sourceLabel.trim() || 'brak danych'
+  const normalizedSource = sourceDisplay(summary, sourceLabel)
   const ignoredTimestampCount = summary.ignoredObservationTimestampCount ?? 0
 
   return <section className="panel" aria-label="Status ostatniego opublikowanego pliku pożarowego" aria-live="polite">
