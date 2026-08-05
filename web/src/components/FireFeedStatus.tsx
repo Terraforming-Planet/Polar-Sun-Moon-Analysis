@@ -37,11 +37,17 @@ function freshnessLabel(summary: FireFeedSummary): string {
     return 'częściowe — brak wiarygodnego czasu obserwacji'
   }
 
+  const publicationStale = isValidAge(summary.publishedAgeHours) && summary.publishedAgeHours > 24
+  const observationStale = isValidAge(summary.latestObservationAgeHours) && summary.latestObservationAgeHours > 24
+
+  if (publicationStale && observationStale) return 'opóźnione — plik i obserwacja ponad 24 h'
+  if (publicationStale) return 'opóźnione — plik ponad 24 h'
+  if (observationStale) return 'opóźnione — obserwacja ponad 24 h'
+
   const ages = [summary.publishedAgeHours, summary.latestObservationAgeHours]
     .filter(isValidAge)
 
   if (!ages.length) return 'nieznana — brak metadanych czasu'
-  if (Math.max(...ages) > 24) return 'opóźnione — ponad 24 h'
   return 'aktualne według ostatniego pliku — do 24 h'
 }
 
