@@ -58,9 +58,9 @@ export function FireFeedStatus({ summary, sourceLabel }: FireFeedStatusProps) {
     <h2>Status danych pożarowych</h2>
     <div className="fact"><span>Źródło katalogu</span><b>{normalizedSource}</b></div>
     <div className="fact"><span>Punkty pożarowe</span><b>{summary.pointCount}</b></div>
-    <div className="fact"><span>Publikacja pliku</span><b>{formatUtc(summary.publishedAt)}</b></div>
+    <div className="fact"><span>Publikacja pliku</span><b><time dateTime={summary.publishedAt ?? undefined}>{formatUtc(summary.publishedAt)}</time></b></div>
     <div className="fact"><span>Wiek pliku</span><b>{formatAge(summary.publishedAgeHours)}</b></div>
-    <div className="fact"><span>Najnowsza obserwacja</span><b>{formatUtc(summary.latestObservationAt)}</b></div>
+    <div className="fact"><span>Najnowsza obserwacja</span><b><time dateTime={summary.latestObservationAt ?? undefined}>{formatUtc(summary.latestObservationAt)}</time></b></div>
     <div className="fact"><span>Wiek obserwacji</span><b>{formatAge(summary.latestObservationAgeHours)}</b></div>
     <div className="fact"><span>Stan świeżości</span><b>{freshnessLabel(summary)}</b></div>
     {ignoredTimestampCount > 0 && <p className="muted" role="note">
