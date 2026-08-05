@@ -1,3 +1,5 @@
+import { normalizeHazardCategories } from './normalizeHazardCategories'
+
 export type FireFeedFeature = {
   geometry?: { type?: string; coordinates?: unknown } | null
   properties?: {
@@ -68,10 +70,7 @@ function publicationMetadataOf(data: FireFeedData | null | undefined): Publicati
 }
 
 function categoriesOf(feature: FireFeedFeature): string[] {
-  const categories = feature.properties?.categories
-  return Array.isArray(categories)
-    ? categories.filter((value): value is string => typeof value === 'string')
-    : []
+  return normalizeHazardCategories(feature.properties?.categories)
 }
 
 function hasUsablePointCoordinates(feature: FireFeedFeature): boolean {
