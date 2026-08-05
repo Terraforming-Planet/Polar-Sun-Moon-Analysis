@@ -7,6 +7,8 @@ function formatUtc(value: string | null): string {
 
 function formatAge(value: number | null): string {
   if (value === null) return 'brak danych'
+  if (value === 0) return '0 min'
+  if (value < 1 / 60) return '< 1 min'
   if (value < 1) return `${Math.round(value * 60)} min`
   return `${value.toFixed(1)} h`
 }
