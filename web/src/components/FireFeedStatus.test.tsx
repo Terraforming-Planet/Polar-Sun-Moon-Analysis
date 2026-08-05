@@ -87,7 +87,7 @@ describe('FireFeedStatus', () => {
     expect(markup).not.toContain('częściowe — brak wiarygodnego czasu obserwacji')
   })
 
-  it('marks the feed as delayed when either published data or observations exceed 24 hours', () => {
+  it('marks a recent file with stale observations as delayed for the observation age', () => {
     const markup = renderToStaticMarkup(<FireFeedStatus sourceLabel="NASA EONET" summary={{
       pointCount: 5,
       publishedAt: '2026-08-02T12:00:00.000Z',
@@ -97,7 +97,8 @@ describe('FireFeedStatus', () => {
       publishedInFuture: false,
     }}/>)
 
-    expect(markup).toContain('opóźnione — ponad 24 h')
+    expect(markup).toContain('opóźnione — obserwacja ponad 24 h')
+    expect(markup).not.toContain('opóźnione — plik ponad 24 h')
     expect(markup).not.toContain('aktualne według ostatniego pliku — do 24 h')
   })
 
