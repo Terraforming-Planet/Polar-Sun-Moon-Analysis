@@ -58,4 +58,21 @@ describe('summarizeFireFeed timestamp normalization', () => {
     expect(dateOnly.latestObservationAt).toBeNull()
     expect(dateOnly.ignoredObservationTimestampCount).toBe(1)
   })
+
+  it('rejects impossible calendar dates instead of accepting Date.parse normalization', () => {
+    const summary = summarizeFireFeed({
+      generated_at_utc: '2026-02-30T10:00:00Z',
+      features: [
+        feature('2026-02-29T09:00:00Z'),
+        feature('2026-04-31T09:00:00Z'),
+        feature('2024-02-29T09:00:00Z'),
+      ],
+    }, new Date('2026-05-01T12:00:00Z'))
+
+    expect(summary.publishedAt).toBeNull()
+    expect(summary.publicationTimestampInvalid).toBe(true)
+    expect(summary.latestObservationAt).toBe('2024-02-29T09:00:00.000Z')
+    expect(summary.ignoredObservationTimestampCount).toBe(2)
+    expect(summary.latestObservationAgeHours).toBeGreaterThan(0)
+  })
 })
