@@ -1,4 +1,5 @@
 import { normalizeHazardCategories } from './normalizeHazardCategories'
+import { strictIsoTimestamp } from './strictIsoTimestamp'
 
 export type FireFeedFeature = {
   geometry?: { type?: string; coordinates?: unknown } | null
@@ -30,20 +31,6 @@ export type FireFeedSummary = {
 
 const FIRE_CATEGORIES = new Set(['fire', 'fires', 'wildfire', 'wildfires'])
 const MAX_SOURCE_LABEL_LENGTH = 160
-const ISO_TIMESTAMP_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/i
-
-function validIsoDate(value: unknown): string | null {
-  if (typeof value !== 'string') return null
-
-  const normalized = value.trim()
-  // Date.parse also accepts implementation-dependent strings such as
-  // "08/05/2026 10:00". Hazard metadata must carry an explicit date, time and
-  // timezone so the UI never guesses whether a feed is fresh.
-  if (!ISO_TIMESTAMP_PATTERN.test(normalized)) return null
-
-  const timestamp = Date.parse(normalized)
-  return Number.isFinite(timestamp) ? new Date(timestamp).toISOString() : null
-}
 
 type PublicationMetadata = {
   timestamp: string | null
@@ -57,12 +44,12 @@ function publicationMetadataOf(data: FireFeedData | null | undefined): Publicati
   // present but malformed would hide a broken producer timestamp behind stale
   // compatibility metadata.
   if (Object.prototype.hasOwnProperty.call(data, 'generated_at_utc')) {
-    const timestamp = validIsoDate(data.generated_at_utc)
+    const timestamp = strictIsoTimestamp(data.generated_at_utc)
     return { timestamp, invalid: timestamp === null }
   }
 
   if (Object.prototype.hasOwnProperty.call(data, 'generatedUtc')) {
-    const timestamp = validIsoDate(data.generatedUtc)
+    const timestamp = strictIsoTimestamp(data.generatedUtc)
     return { timestamp, invalid: timestamp === null }
   }
 
@@ -147,14 +134,14 @@ function observationTimestampMetadataOf(feature: FireFeedFeature): ObservationTi
   // malformed, do not conceal that problem behind the compatibility field.
   if (Object.prototype.hasOwnProperty.call(properties, 'observation_time')) {
     return {
-      timestamp: validIsoDate(properties.observation_time),
+      timestamp: strictIsoTimestamp(properties.observation_time),
       present: true,
     }
   }
 
   if (Object.prototype.hasOwnProperty.call(properties, 'observationUtc')) {
     return {
-      timestamp: validIsoDate(properties.observationUtc),
+      timestamp: strictIsoTimestamp(properties.observationUtc),
       present: true,
     }
   }
