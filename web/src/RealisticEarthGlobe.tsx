@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { SatelliteSourceStatusPanel } from './SatelliteSourceStatusPanel'
+import { applyCameraPreset } from './lib/applyCameraPreset'
 import { readEarthModel, writeEarthModel, type EarthModel } from './lib/earthPreferences'
 import { latLonToCartesian } from './lib/wgs84'
 import {
@@ -117,15 +118,7 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
   }, [showDayNight])
 
   useEffect(() => {
-    const camera = cameraRef.current
-    const controls = controlsRef.current
-    if (!camera || !controls) return
-    const preset = viewSettings[view]
-    camera.position.set(...preset.position)
-    camera.fov = preset.fov
-    camera.updateProjectionMatrix()
-    controls.target.set(0, 0, 0)
-    controls.update()
+    applyCameraPreset(cameraRef.current, controlsRef.current, viewSettings[view])
   }, [view])
 
   useEffect(() => {
@@ -341,6 +334,11 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
     try { writeEarthModel(next) } catch { /* localStorage can be blocked */ }
   }
 
+  const selectView = (next: ViewPreset) => {
+    setView(next)
+    applyCameraPreset(cameraRef.current, controlsRef.current, viewSettings[next])
+  }
+
   const zoom = (factor: number) => {
     const camera = cameraRef.current
     const controls = controlsRef.current
@@ -357,7 +355,7 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
       <button type="button" className={model === 'legacy' ? 'is-active' : ''} onClick={() => selectModel('legacy')}>Legacy sphere</button>
     </div>
     <div className="earth-view-presets" role="group" aria-label="Widoki kamery Ziemi">
-      {(Object.keys(viewSettings) as ViewPreset[]).map(key => <button key={key} type="button" className={view === key ? 'is-active' : ''} onClick={() => setView(key)}>{viewSettings[key].label}</button>)}
+      {(Object.keys(viewSettings) as ViewPreset[]).map(key => <button key={key} type="button" className={view === key ? 'is-active' : ''} onClick={() => selectView(key)}>{viewSettings[key].label}</button>)}
     </div>
     <div className="earth-layer-switch" role="group" aria-label="Warstwy modelu Ziemi">
       <button type="button" className={rotationEnabled ? 'is-active' : ''} onClick={() => setRotationEnabled(value => !value)}>{rotationEnabled ? '⏸ Zatrzymaj Ziemię i chmury' : '▶ Wznów synchronizację'}</button>
@@ -367,7 +365,7 @@ export function RealisticEarthGlobe({ textureUrl = DEFAULT_EARTH_TEXTURE, select
       <button type="button" className={showDayNight ? 'is-active' : ''} onClick={() => setShowDayNight(value => !value)}>Realny dzień / noc</button>
       <button type="button" onClick={() => zoom(0.72)}>＋ Przybliż</button>
       <button type="button" onClick={() => zoom(1.38)}>－ Oddal</button>
-      <button type="button" onClick={() => setView('full')}>Reset kamery</button>
+      <button type="button" onClick={() => selectView('full')}>Reset kamery</button>
     </div>
     <div className="earth-model-switch" role="group" aria-label="Wybór źródła satelitarnego">
       <button type="button" className={sourceMode === 'auto' ? 'is-active' : ''} onClick={() => setSourceMode('auto')}>AUTO — najlepsze dostępne</button>
