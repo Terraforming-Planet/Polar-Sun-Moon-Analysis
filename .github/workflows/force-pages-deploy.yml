@@ -91,37 +91,47 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
+      - name: Checkout history for revision comparison
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Verify branch-based Pages deployment
         shell: bash
         run: |
           set -euo pipefail
           expected="$GITHUB_SHA"
-          index_url="${SITE_URL}?sha=$expected"
-          probe_url="${SITE_URL}deployment-probe.txt?sha=$expected"
-          echo "Testing index: $index_url"
-          echo "Testing probe: $probe_url"
+          echo "Expected source revision: $expected"
 
-          for attempt in 1 2 3 4 5 6 7 8 9 10; do
-            index_status=$(curl --connect-timeout 15 --max-time 30 -L -sS -D /tmp/index-headers.txt -o /tmp/index.html -w '%{http_code}' "$index_url" || true)
-            probe_status=$(curl --connect-timeout 15 --max-time 30 -L -sS -D /tmp/probe-headers.txt -o /tmp/probe.txt -w '%{http_code}' "$probe_url" || true)
+          for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
+            nonce="$(date +%s)-$attempt"
+            index_url="${SITE_URL}?deploy=${nonce}"
+            probe_url="${SITE_URL}deployment-probe.txt?deploy=${nonce}"
+            index_status=$(curl --connect-timeout 15 --max-time 30 -L -sS -H 'Cache-Control: no-cache' -o /tmp/index.html -w '%{http_code}' "$index_url" || true)
+            probe_status=$(curl --connect-timeout 15 --max-time 30 -L -sS -H 'Cache-Control: no-cache' -o /tmp/probe.txt -w '%{http_code}' "$probe_url" || true)
             probe_value=$(tr -d '\r\n' < /tmp/probe.txt 2>/dev/null || true)
             echo "Attempt $attempt: index=$index_status probe=$probe_status value=$probe_value"
 
-            if [ "$index_status" = '200' ] && [ "$probe_status" = '200' ] && [ "$probe_value" = "$expected" ]; then
+            valid_revision=false
+            if [ "$probe_value" = "$expected" ]; then
+              valid_revision=true
+            elif git cat-file -e "${probe_value}^{commit}" 2>/dev/null && git merge-base --is-ancestor "$expected" "$probe_value" 2>/dev/null; then
+              echo "Live Pages already contains a newer source revision that includes $expected."
+              valid_revision=true
+            fi
+
+            if [ "$index_status" = '200' ] && [ "$probe_status" = '200' ] && [ "$valid_revision" = 'true' ]; then
               grep -qi '<!doctype html' /tmp/index.html
               echo '## GitHub Pages E2E' >> "$GITHUB_STEP_SUMMARY"
               echo '' >> "$GITHUB_STEP_SUMMARY"
               echo "✅ Live site: $SITE_URL" >> "$GITHUB_STEP_SUMMARY"
-              echo "✅ Exact source revision: $expected" >> "$GITHUB_STEP_SUMMARY"
+              echo "✅ Requested source revision: $expected" >> "$GITHUB_STEP_SUMMARY"
+              echo "✅ Published source revision: $probe_value" >> "$GITHUB_STEP_SUMMARY"
               exit 0
             fi
 
-            echo 'Index headers:'
-            cat /tmp/index-headers.txt || true
-            echo 'Probe headers:'
-            cat /tmp/probe-headers.txt || true
             sleep 20
           done
 
-          echo 'Branch-based Pages deployment did not publish the expected revision.'
+          echo 'Branch-based Pages deployment did not publish this revision or a newer descendant.'
           exit 1
