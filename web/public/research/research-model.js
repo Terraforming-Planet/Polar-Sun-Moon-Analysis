@@ -1,5 +1,5 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.179.1/build/three.module.js'
-import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.179.1/examples/jsm/controls/OrbitControls.js'
+import * as THREE from 'https://esm.sh/three@0.179.1'
+import { OrbitControls } from 'https://esm.sh/three@0.179.1/examples/jsm/controls/OrbitControls.js'
 
 const bodyColors = {
   Sun: 0xffd15c, Mercury: 0xa9a9a9, Venus: 0xdba66b, Earth: 0x3f83ff,
@@ -18,10 +18,8 @@ function scaledPosition(position, trueScale) {
 function buildSolarSystem(host, data, { speed = 1, trueScale = false, controlsPrefix = '' } = {}) {
   const scene = new THREE.Scene()
   scene.fog = new THREE.FogExp2(0x030711, 0.006)
-
   const camera = new THREE.PerspectiveCamera(48, 1, 0.01, 1000)
   camera.position.set(0, 34, 64)
-
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
   renderer.outputColorSpace = THREE.SRGBColorSpace
@@ -33,8 +31,7 @@ function buildSolarSystem(host, data, { speed = 1, trueScale = false, controlsPr
   orbitControls.maxDistance = 180
 
   scene.add(new THREE.AmbientLight(0x7897c5, 1.4))
-  const sunLight = new THREE.PointLight(0xffe1a1, 1800, 250)
-  scene.add(sunLight)
+  scene.add(new THREE.PointLight(0xffe1a1, 1800, 250))
 
   const stars = new THREE.BufferGeometry()
   const starPoints = []
@@ -42,11 +39,7 @@ function buildSolarSystem(host, data, { speed = 1, trueScale = false, controlsPr
     const radius = 180 + Math.random() * 180
     const theta = Math.random() * Math.PI * 2
     const phi = Math.acos(2 * Math.random() - 1)
-    starPoints.push(
-      radius * Math.sin(phi) * Math.cos(theta),
-      radius * Math.cos(phi),
-      radius * Math.sin(phi) * Math.sin(theta),
-    )
+    starPoints.push(radius * Math.sin(phi) * Math.cos(theta), radius * Math.cos(phi), radius * Math.sin(phi) * Math.sin(theta))
   }
   stars.setAttribute('position', new THREE.Float32BufferAttribute(starPoints, 3))
   scene.add(new THREE.Points(stars, new THREE.PointsMaterial({ color: 0xb9d4ff, size: 0.34 })))
@@ -57,13 +50,10 @@ function buildSolarSystem(host, data, { speed = 1, trueScale = false, controlsPr
     const isSun = body.body === 'Sun'
     const isMoon = body.body === 'Moon'
     const size = isSun ? 2.5 : isMoon ? 0.34 : body.body === 'Jupiter' ? 1.15 : body.body === 'Saturn' ? 1.0 : 0.62
-    const material = new THREE.MeshStandardMaterial({
-      color: bodyColors[body.body] ?? 0xffffff,
-      emissive: isSun ? 0xff9d26 : 0x000000,
-      emissiveIntensity: isSun ? 2.2 : 0,
-      roughness: 0.78,
-    })
-    const mesh = new THREE.Mesh(new THREE.SphereGeometry(size, 32, 32), material)
+    const mesh = new THREE.Mesh(
+      new THREE.SphereGeometry(size, 32, 32),
+      new THREE.MeshStandardMaterial({ color: bodyColors[body.body] ?? 0xffffff, emissive: isSun ? 0xff9d26 : 0x000000, emissiveIntensity: isSun ? 2.2 : 0, roughness: 0.78 }),
+    )
     mesh.position.copy(position)
     scene.add(mesh)
 
@@ -78,14 +68,11 @@ function buildSolarSystem(host, data, { speed = 1, trueScale = false, controlsPr
     }
 
     if (body.body === 'Saturn') {
-      const rings = new THREE.Mesh(
-        new THREE.RingGeometry(1.35, 2.0, 64),
-        new THREE.MeshBasicMaterial({ color: 0xbcae7d, side: THREE.DoubleSide, transparent: true, opacity: 0.65 }),
-      )
+      const rings = new THREE.Mesh(new THREE.RingGeometry(1.35, 2.0, 64), new THREE.MeshBasicMaterial({ color: 0xbcae7d, side: THREE.DoubleSide, transparent: true, opacity: 0.65 }))
       rings.position.copy(position)
       rings.rotation.x = 1.2
       scene.add(rings)
-      movingBodies[movingBodies.length - 1].rings = rings
+      if (movingBodies.length) movingBodies[movingBodies.length - 1].rings = rings
     }
   })
 
@@ -95,7 +82,6 @@ function buildSolarSystem(host, data, { speed = 1, trueScale = false, controlsPr
   const play = document.getElementById(`${controlsPrefix}play`)
   const stop = document.getElementById(`${controlsPrefix}stop`)
   const status = document.getElementById(`${controlsPrefix}status`)
-
   const setRunning = value => {
     running = value
     if (status) status.textContent = running ? `PLAY · ${speed}×` : 'STOP'
@@ -111,19 +97,16 @@ function buildSolarSystem(host, data, { speed = 1, trueScale = false, controlsPr
     camera.aspect = clientWidth / clientHeight
     camera.updateProjectionMatrix()
   }
-
   const animate = now => {
     frame = requestAnimationFrame(animate)
     const delta = Math.min(now - last, 50)
     last = now
-    if (running) {
-      movingBodies.forEach(body => {
-        body.phase += body.rate * delta * speed
-        body.mesh.position.set(Math.cos(body.phase) * body.radius, body.mesh.position.y, Math.sin(body.phase) * body.radius)
-        body.mesh.rotation.y += 0.0015 * delta * speed
-        if (body.rings) body.rings.position.copy(body.mesh.position)
-      })
-    }
+    if (running) movingBodies.forEach(body => {
+      body.phase += body.rate * delta * speed
+      body.mesh.position.set(Math.cos(body.phase) * body.radius, body.mesh.position.y, Math.sin(body.phase) * body.radius)
+      body.mesh.rotation.y += 0.0015 * delta * speed
+      if (body.rings) body.rings.position.copy(body.mesh.position)
+    })
     orbitControls.update()
     renderer.render(scene, camera)
   }
@@ -133,13 +116,6 @@ function buildSolarSystem(host, data, { speed = 1, trueScale = false, controlsPr
   resize()
   setRunning(false)
   animate(performance.now())
-
-  return () => {
-    cancelAnimationFrame(frame)
-    observer.disconnect()
-    orbitControls.dispose()
-    renderer.dispose()
-  }
 }
 
 async function start() {
