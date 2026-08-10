@@ -1,87 +1,142 @@
 import * as THREE from 'https://esm.sh/three@0.179.1'
 import { OrbitControls } from 'https://esm.sh/three@0.179.1/examples/jsm/controls/OrbitControls.js'
 
-const bodyColors = {
-  Sun: 0xffd15c, Mercury: 0xa9a9a9, Venus: 0xdba66b, Earth: 0x3f83ff,
-  Moon: 0xd6d9df, Mars: 0xd76543, Jupiter: 0xd7a472, Saturn: 0xe3cf8f,
-  Uranus: 0x83d8e5, Neptune: 0x315dce,
-}
+const COLORS = { Sun: 0xffc94f, Earth: 0x2f82ff, Moon: 0xd9dde5 }
 
-function scaledPosition(position, trueScale) {
+function scaledPosition(position) {
   const vector = new THREE.Vector3(...position)
   const distance = vector.length()
   if (!distance) return vector
-  const radius = trueScale ? distance * 16 : Math.log10(1 + distance * 120) * 13
+  const radius = Math.log10(1 + distance * 120) * 13
   return vector.normalize().multiplyScalar(radius)
 }
 
-function buildSolarSystem(host, data, { speed = 1, trueScale = false, controlsPrefix = '' } = {}) {
+function makeStars(scene) {
+  const geometry = new THREE.BufferGeometry()
+  const points = []
+  for (let i = 0; i < 1700; i += 1) {
+    const radius = 150 + Math.random() * 180
+    const theta = Math.random() * Math.PI * 2
+    const phi = Math.acos(2 * Math.random() - 1)
+    points.push(
+      radius * Math.sin(phi) * Math.cos(theta),
+      radius * Math.cos(phi),
+      radius * Math.sin(phi) * Math.sin(theta),
+    )
+  }
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(points, 3))
+  scene.add(new THREE.Points(geometry, new THREE.PointsMaterial({ color: 0xb9d4ff, size: 0.34 })))
+}
+
+function addOrbit(scene, radius, color = 0x29476f) {
+  const ring = new THREE.Mesh(
+    new THREE.RingGeometry(Math.max(0.01, radius - 0.025), radius + 0.025, 180),
+    new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.5, side: THREE.DoubleSide }),
+  )
+  ring.rotation.x = Math.PI / 2
+  scene.add(ring)
+  return ring
+}
+
+function addLabel(scene, text, position, color) {
+  const canvas = document.createElement('canvas')
+  canvas.width = 256
+  canvas.height = 64
+  const ctx = canvas.getContext('2d')
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+  ctx.font = '700 28px Arial'
+  ctx.fillStyle = color
+  ctx.textAlign = 'center'
+  ctx.fillText(text, 128, 40)
+  const texture = new THREE.CanvasTexture(canvas)
+  const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true }))
+  sprite.position.copy(position)
+  sprite.position.y += 1.8
+  sprite.scale.set(6, 1.5, 1)
+  scene.add(sprite)
+  return sprite
+}
+
+function buildSunEarthMoon(host, data, { speed = 1, prefix = '' } = {}) {
   const scene = new THREE.Scene()
   scene.fog = new THREE.FogExp2(0x030711, 0.006)
   const camera = new THREE.PerspectiveCamera(48, 1, 0.01, 1000)
-  camera.position.set(0, 34, 64)
+  camera.position.set(0, 26, 58)
+
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
   renderer.outputColorSpace = THREE.SRGBColorSpace
   host.replaceChildren(renderer.domElement)
 
-  const orbitControls = new OrbitControls(camera, renderer.domElement)
-  orbitControls.enableDamping = true
-  orbitControls.minDistance = 5
-  orbitControls.maxDistance = 180
+  const controls = new OrbitControls(camera, renderer.domElement)
+  controls.enableDamping = true
+  controls.minDistance = 6
+  controls.maxDistance = 160
 
-  scene.add(new THREE.AmbientLight(0x7897c5, 1.4))
-  scene.add(new THREE.PointLight(0xffe1a1, 1800, 250))
+  scene.add(new THREE.AmbientLight(0x7897c5, 1.3))
+  const sunLight = new THREE.PointLight(0xffe1a1, 2200, 260)
+  scene.add(sunLight)
+  makeStars(scene)
 
-  const stars = new THREE.BufferGeometry()
-  const starPoints = []
-  for (let index = 0; index < 1700; index += 1) {
-    const radius = 180 + Math.random() * 180
-    const theta = Math.random() * Math.PI * 2
-    const phi = Math.acos(2 * Math.random() - 1)
-    starPoints.push(radius * Math.sin(phi) * Math.cos(theta), radius * Math.cos(phi), radius * Math.sin(phi) * Math.sin(theta))
-  }
-  stars.setAttribute('position', new THREE.Float32BufferAttribute(starPoints, 3))
-  scene.add(new THREE.Points(stars, new THREE.PointsMaterial({ color: 0xb9d4ff, size: 0.34 })))
+  const sunData = data.bodies.find(body => body.body === 'Sun')
+  const earthData = data.bodies.find(body => body.body === 'Earth')
+  const moonData = data.bodies.find(body => body.body === 'Moon')
+  if (!sunData || !earthData || !moonData) throw new Error('Brakuje Sun/Earth/Moon w solar-system.json')
 
-  const movingBodies = []
-  data.bodies.forEach((body, bodyIndex) => {
-    const position = scaledPosition(body.position_au, trueScale)
-    const isSun = body.body === 'Sun'
-    const isMoon = body.body === 'Moon'
-    const size = isSun ? 2.5 : isMoon ? 0.34 : body.body === 'Jupiter' ? 1.15 : body.body === 'Saturn' ? 1.0 : 0.62
-    const mesh = new THREE.Mesh(
-      new THREE.SphereGeometry(size, 32, 32),
-      new THREE.MeshStandardMaterial({ color: bodyColors[body.body] ?? 0xffffff, emissive: isSun ? 0xff9d26 : 0x000000, emissiveIntensity: isSun ? 2.2 : 0, roughness: 0.78 }),
-    )
-    mesh.position.copy(position)
-    scene.add(mesh)
+  const sun = new THREE.Mesh(
+    new THREE.SphereGeometry(2.7, 48, 48),
+    new THREE.MeshStandardMaterial({ color: COLORS.Sun, emissive: 0xff8b1f, emissiveIntensity: 2.5, roughness: 0.7 }),
+  )
+  scene.add(sun)
+  addLabel(scene, 'SUN', new THREE.Vector3(0, 0, 0), '#ffd76a')
 
-    if (!isSun && position.length() > 1) {
-      const ring = new THREE.Mesh(
-        new THREE.RingGeometry(position.length() - 0.025, position.length() + 0.025, 180),
-        new THREE.MeshBasicMaterial({ color: 0x29476f, transparent: true, opacity: 0.45, side: THREE.DoubleSide }),
-      )
-      ring.rotation.x = Math.PI / 2
-      scene.add(ring)
-      movingBodies.push({ mesh, radius: position.length(), phase: Math.atan2(position.z, position.x), rate: 0.00009 * (11 - Math.min(bodyIndex, 9)) })
-    }
+  const earthStart = scaledPosition(earthData.position_au)
+  const earthRadius = earthStart.length()
+  addOrbit(scene, earthRadius)
+  const earth = new THREE.Mesh(
+    new THREE.SphereGeometry(1.1, 48, 48),
+    new THREE.MeshStandardMaterial({ color: COLORS.Earth, roughness: 0.76, metalness: 0.02 }),
+  )
+  earth.position.copy(earthStart)
+  scene.add(earth)
+  const earthLabel = addLabel(scene, 'EARTH', earth.position, '#69c8ff')
 
-    if (body.body === 'Saturn') {
-      const rings = new THREE.Mesh(new THREE.RingGeometry(1.35, 2.0, 64), new THREE.MeshBasicMaterial({ color: 0xbcae7d, side: THREE.DoubleSide, transparent: true, opacity: 0.65 }))
-      rings.position.copy(position)
-      rings.rotation.x = 1.2
-      scene.add(rings)
-      if (movingBodies.length) movingBodies[movingBodies.length - 1].rings = rings
-    }
-  })
+  const moonVisualRadius = 3.0
+  const moon = new THREE.Mesh(
+    new THREE.SphereGeometry(0.34, 32, 32),
+    new THREE.MeshStandardMaterial({ color: COLORS.Moon, roughness: 0.92 }),
+  )
+  const moonDelta = new THREE.Vector3(...moonData.position_au).sub(new THREE.Vector3(...earthData.position_au))
+  const moonPhase0 = Math.atan2(moonDelta.z, moonDelta.x)
+  moon.position.set(
+    earth.position.x + Math.cos(moonPhase0) * moonVisualRadius,
+    earth.position.y + 0.35,
+    earth.position.z + Math.sin(moonPhase0) * moonVisualRadius,
+  )
+  scene.add(moon)
+  const moonLabel = addLabel(scene, 'MOON', moon.position, '#e7ecf5')
 
-  let frame = 0
+  const moonOrbit = new THREE.Mesh(
+    new THREE.RingGeometry(moonVisualRadius - 0.025, moonVisualRadius + 0.025, 120),
+    new THREE.MeshBasicMaterial({ color: 0x7f9fc4, transparent: true, opacity: 0.52, side: THREE.DoubleSide }),
+  )
+  moonOrbit.rotation.x = Math.PI / 2
+  moonOrbit.position.copy(earth.position)
+  scene.add(moonOrbit)
+
+  const lineGeometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), earth.position.clone()])
+  const sunEarthLine = new THREE.Line(lineGeometry, new THREE.LineBasicMaterial({ color: 0x41617d, transparent: true, opacity: 0.55 }))
+  scene.add(sunEarthLine)
+
   let running = false
+  let frame = 0
   let last = performance.now()
-  const play = document.getElementById(`${controlsPrefix}play`)
-  const stop = document.getElementById(`${controlsPrefix}stop`)
-  const status = document.getElementById(`${controlsPrefix}status`)
+  let earthPhase = Math.atan2(earth.position.z, earth.position.x)
+  let moonPhase = moonPhase0
+  const play = document.getElementById(`${prefix}play`)
+  const stop = document.getElementById(`${prefix}stop`)
+  const status = document.getElementById(`${prefix}status`)
+
   const setRunning = value => {
     running = value
     if (status) status.textContent = running ? `PLAY · ${speed}×` : 'STOP'
@@ -92,22 +147,34 @@ function buildSolarSystem(host, data, { speed = 1, trueScale = false, controlsPr
   stop?.addEventListener('click', () => setRunning(false))
 
   const resize = () => {
-    const { clientWidth, clientHeight } = host
-    renderer.setSize(clientWidth, clientHeight, false)
-    camera.aspect = clientWidth / clientHeight
+    const width = Math.max(host.clientWidth, 1)
+    const height = Math.max(host.clientHeight, 1)
+    renderer.setSize(width, height, false)
+    camera.aspect = width / height
     camera.updateProjectionMatrix()
   }
+
   const animate = now => {
     frame = requestAnimationFrame(animate)
     const delta = Math.min(now - last, 50)
     last = now
-    if (running) movingBodies.forEach(body => {
-      body.phase += body.rate * delta * speed
-      body.mesh.position.set(Math.cos(body.phase) * body.radius, body.mesh.position.y, Math.sin(body.phase) * body.radius)
-      body.mesh.rotation.y += 0.0015 * delta * speed
-      if (body.rings) body.rings.position.copy(body.mesh.position)
-    })
-    orbitControls.update()
+    if (running) {
+      earthPhase += 0.000035 * delta * speed
+      moonPhase += 0.00042 * delta * speed
+      earth.position.set(Math.cos(earthPhase) * earthRadius, earthStart.y, Math.sin(earthPhase) * earthRadius)
+      earth.rotation.y += 0.0018 * delta * speed
+      moon.position.set(
+        earth.position.x + Math.cos(moonPhase) * moonVisualRadius,
+        earth.position.y + 0.35 * Math.sin(moonPhase * 0.7),
+        earth.position.z + Math.sin(moonPhase) * moonVisualRadius,
+      )
+      moon.rotation.y += 0.00045 * delta * speed
+      moonOrbit.position.copy(earth.position)
+      earthLabel.position.copy(earth.position); earthLabel.position.y += 1.8
+      moonLabel.position.copy(moon.position); moonLabel.position.y += 1.3
+      sunEarthLine.geometry.setFromPoints([new THREE.Vector3(0, 0, 0), earth.position.clone()])
+    }
+    controls.update()
     renderer.render(scene, camera)
   }
 
@@ -118,17 +185,122 @@ function buildSolarSystem(host, data, { speed = 1, trueScale = false, controlsPr
   animate(performance.now())
 }
 
+function cellAddress(index) {
+  return `CELL-${String(index + 1).padStart(3, '0')}`
+}
+
+function decodeCell(index) {
+  const z = Math.floor(index / 64)
+  const rest = index % 64
+  const y = Math.floor(rest / 8)
+  const x = rest % 8
+  return { x, y, z }
+}
+
+function buildPlanetaryGrid() {
+  const stage = document.getElementById('cube-stage')
+  const controls = document.getElementById('layer-controls')
+  const list = document.getElementById('cell-list')
+  const legend = document.getElementById('legend')
+  if (!stage || !controls || !list || !legend) return
+
+  const cells = []
+  const layers = []
+  let selectedIndex = 0
+  let activeLayer = null
+
+  const updateReadout = index => {
+    selectedIndex = index
+    const { x, y, z } = decodeCell(index)
+    document.getElementById('cell-address').textContent = cellAddress(index)
+    document.getElementById('cell-index').textContent = `index ${index} · X${x} Y${y} Z${z}`
+    document.getElementById('coord-x').textContent = x
+    document.getElementById('coord-y').textContent = y
+    document.getElementById('coord-z').textContent = z
+    cells.forEach((cell, i) => cell.classList.toggle('selected', i === index))
+  }
+
+  for (let z = 0; z < 8; z += 1) {
+    const layer = document.createElement('div')
+    layer.className = 'voxel-layer'
+    layer.dataset.layer = String(z)
+    layer.style.setProperty('--z', `${(z - 3.5) * 28}px`)
+    layer.style.opacity = String(0.42 + z * 0.07)
+    layers.push(layer)
+
+    for (let y = 0; y < 8; y += 1) {
+      for (let x = 0; x < 8; x += 1) {
+        const index = z * 64 + y * 8 + x
+        const button = document.createElement('button')
+        button.className = 'voxel-cell'
+        button.type = 'button'
+        button.dataset.index = String(index)
+        button.dataset.address = cellAddress(index)
+        button.dataset.x = String(x)
+        button.dataset.y = String(y)
+        button.dataset.z = String(z)
+        button.style.setProperty('--h', String((z * 45 + y * 7 + x * 3) % 360))
+        button.title = `${cellAddress(index)} · X${x} Y${y} Z${z}`
+        button.setAttribute('aria-label', button.title)
+        button.addEventListener('click', () => updateReadout(index))
+        layer.appendChild(button)
+        cells.push(button)
+
+        const row = document.createElement('button')
+        row.type = 'button'
+        row.innerHTML = `<b>${cellAddress(index)}</b><span>X${x} · Y${y} · Z${z}</span><span>#${index}</span>`
+        row.addEventListener('click', () => {
+          activeLayer = z
+          applyLayerFilter()
+          updateReadout(index)
+          cells[index].scrollIntoView({ behavior: 'smooth', block: 'center' })
+        })
+        list.appendChild(row)
+      }
+    }
+    stage.appendChild(layer)
+
+    const layerButton = document.createElement('button')
+    layerButton.type = 'button'
+    layerButton.className = 'layer-btn'
+    layerButton.textContent = `Z${z}`
+    layerButton.addEventListener('click', () => {
+      activeLayer = activeLayer === z ? null : z
+      applyLayerFilter()
+    })
+    controls.appendChild(layerButton)
+
+    const swatch = document.createElement('div')
+    swatch.style.background = `hsl(${z * 45} 78% 52%)`
+    legend.appendChild(swatch)
+  }
+
+  function applyLayerFilter() {
+    layers.forEach((layer, z) => {
+      const active = activeLayer === null || z === activeLayer
+      layer.style.opacity = active ? '0.9' : '0.08'
+      layer.style.filter = active ? 'none' : 'grayscale(.6)'
+    })
+    ;[...controls.children].forEach((button, z) => button.classList.toggle('active', activeLayer === z))
+  }
+
+  updateReadout(selectedIndex)
+  if (cells.length !== 512) throw new Error(`Grid integrity error: expected 512 cells, got ${cells.length}`)
+}
+
 async function start() {
-  const response = await fetch('../data/solar-system.json', { cache: 'no-store' }).catch(() => null)
-  if (!response?.ok) throw new Error('Nie można pobrać danych solar-system.json')
+  buildPlanetaryGrid()
+  const response = await fetch('../data/solar-system.json', { cache: 'no-store' })
+  if (!response.ok) throw new Error(`solar-system.json HTTP ${response.status}`)
   const data = await response.json()
   document.querySelectorAll('[data-epoch]').forEach(node => { node.textContent = data.timestamp_utc || 'brak danych' })
-  buildSolarSystem(document.getElementById('solar-standard'), data, { speed: 1, controlsPrefix: 'std-' })
-  buildSolarSystem(document.getElementById('solar-fast'), data, { speed: 30, controlsPrefix: 'fast-' })
+  buildSunEarthMoon(document.getElementById('solar-standard'), data, { speed: 1, prefix: 'std-' })
+  buildSunEarthMoon(document.getElementById('solar-fast'), data, { speed: 30, prefix: 'fast-' })
 }
 
 start().catch(error => {
+  console.error(error)
   document.querySelectorAll('.model-canvas').forEach(host => {
-    host.innerHTML = `<div class="model-error">Model 3D nie został uruchomiony: ${String(error.message || error)}</div>`
+    if (!host.querySelector('canvas')) host.innerHTML = `<div class="model-error">Model 3D nie został uruchomiony: ${String(error.message || error)}</div>`
   })
 })
