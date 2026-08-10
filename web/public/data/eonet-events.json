@@ -1,7 +1,34 @@
 {
-  "generatedUtc": "2026-08-10T12:50:02.732021Z",
+  "generatedUtc": "2026-08-10T14:15:54.116696Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
+    {
+      "id": "EONET_22386",
+      "title": "Tropical Storm 15W",
+      "categories": [
+        "Severe Storms"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 35.0,
+        "magnitudeUnit": "kts",
+        "date": "2026-08-10T06:00:00Z",
+        "type": "Point",
+        "coordinates": [
+          160.7,
+          27.1
+        ]
+      },
+      "sources": [
+        {
+          "id": "JTWC",
+          "url": "https://www.metoc.navy.mil/jtwc/products/wp1526.tcw"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22386",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
     {
       "id": "EONET_22196",
       "title": "Wildfire Wrights Spring, Klamath, Oregon",
@@ -5372,33 +5399,6 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21248",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_21021",
-      "title": "Wildfire RA 6 ADA CO CLAREMONT, Ada, Idaho",
-      "categories": [
-        "Wildfires"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 2000.0,
-        "magnitudeUnit": "acres",
-        "date": "2026-07-06T16:15:00Z",
-        "type": "Point",
-        "coordinates": [
-          -116.175933,
-          43.6347
-        ]
-      },
-      "sources": [
-        {
-          "id": "IRWIN",
-          "url": "https://irwin.doi.gov/observer/incidents/2026-ID1AX-000618"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21021",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
