@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { RealisticEarthGlobe as CesiumScientificEarth } from './CleanRealisticEarthGlobe'
 import { EarthViewerErrorBoundary } from './EarthViewerErrorBoundary'
 import { StableEarthGlobe } from './StableEarthGlobe'
@@ -10,9 +10,21 @@ import './stable-earth-globe.css'
 type Marker = { longitude: number; latitude: number; color?: number; radius?: number }
 type Props = { textureUrl?: string; selectedTime: string; markers?: Marker[]; autoRotate?: boolean }
 
+function markerSignature(markers: Marker[]) {
+  let signature = `${markers.length}`
+  for (const marker of markers) {
+    signature += `|${marker.latitude.toFixed(5)},${marker.longitude.toFixed(5)},${marker.color ?? 0},${marker.radius ?? 0}`
+  }
+  return signature
+}
+
 export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = true }: Props) {
   const [model, setModel] = useState<EarthModel>('scientific')
   const [satelliteMode, setSatelliteMode] = useState(true)
+  const markerCache = useRef<{ signature: string; markers: Marker[] }>({ signature: '', markers: [] })
+  const signature = markerSignature(markers)
+  if (markerCache.current.signature !== signature) markerCache.current = { signature, markers }
+  const stableMarkers = markerCache.current.markers
 
   useEffect(() => {
     try { setModel(readEarthModel()) } catch { setModel('scientific') }
@@ -25,7 +37,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = t
   }
 
   const stableScientific = (
-    <StableEarthGlobe selectedTime={selectedTime} markers={markers} autoRotate={autoRotate} model="scientific" />
+    <StableEarthGlobe selectedTime={selectedTime} markers={stableMarkers} autoRotate={autoRotate} model="scientific" />
   )
 
   return (
@@ -58,10 +70,10 @@ export function RealisticEarthGlobe({ selectedTime, markers = [], autoRotate = t
       )}
 
       {model === 'legacy' ? (
-        <StableEarthGlobe selectedTime={selectedTime} markers={markers} autoRotate={autoRotate} model="legacy" />
+        <StableEarthGlobe selectedTime={selectedTime} markers={stableMarkers} autoRotate={autoRotate} model="legacy" />
       ) : satelliteMode ? (
         <EarthViewerErrorBoundary fallback={stableScientific}>
-          <CesiumScientificEarth selectedTime={selectedTime} markers={markers} />
+          <CesiumScientificEarth selectedTime={selectedTime} markers={stableMarkers} />
         </EarthViewerErrorBoundary>
       ) : stableScientific}
 
