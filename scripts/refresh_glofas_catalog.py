@@ -121,7 +121,8 @@ def main() -> None:
     previous = load_previous(args.output)
     manifest = build_manifest(previous=previous)
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    rendered = json.dumps(manifest, indent=2, ensure_ascii=False) + "\n"
+    args.output.write_text(rendered, encoding="utf-8")
     print(f"Wrote {args.output} with {len(manifest['sources'])} official GloFAS sources")
 
 
