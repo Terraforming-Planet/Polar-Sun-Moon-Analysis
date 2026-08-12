@@ -54,7 +54,36 @@ def point_wkt(value: Any) -> tuple[float | None, float | None]:
     return (float(match.group(2)), float(match.group(1))) if match else (None, None)
 
 
-def event_feature(event: dict[str, Any]) -> dict[str, Any] | None:
+def normalized_geojson_geometry(event: dict[str, Any]) -> dict[str, Any] | None:
+    geometry = event.get("geometry")
+    if isinstance(geometry, dict):
+        geometry_type = geometry.get("type")
+        coordinates = geometry.get("coordinates")
+        if geometry_type == "Point" and isinstance(coordinates, list) and len(coordinates) >= 2:
+            longitude, latitude = coordinates[:2]
+            if valid_coordinate(longitude, -180, 180) and valid_coordinate(latitude, -90, 90):
+                return {
+                    "type": "Point",
+                    "coordinates": [float(longitude), float(latitude)],
+                }
+        if geometry_type == "Polygon" and isinstance(coordinates, list) and coordinates:
+            rings: list[list[list[float]]] = []
+            for ring in coordinates:
+                if not isinstance(ring, list) or len(ring) < 4:
+                    return None
+                normalized_ring: list[list[float]] = []
+                for point in ring:
+                    if not isinstance(point, list) or len(point) < 2:
+                        return None
+                    longitude, latitude = point[:2]
+                    if not valid_coordinate(longitude, -180, 180) or not valid_coordinate(
+                        latitude, -90, 90
+                    ):
+                        return None
+                    normalized_ring.append([float(longitude), float(latitude)])
+                rings.append(normalized_ring)
+            return {"type": "Polygon", "coordinates": rings}
+
     latitude = event.get("latitude")
     longitude = event.get("longitude")
     if not valid_coordinate(latitude, -90, 90) or not valid_coordinate(
@@ -62,17 +91,25 @@ def event_feature(event: dict[str, Any]) -> dict[str, Any] | None:
     ):
         return None
     return {
+        "type": "Point",
+        "coordinates": [float(longitude), float(latitude)],
+    }
+
+
+def event_feature(event: dict[str, Any]) -> dict[str, Any] | None:
+    geometry = normalized_geojson_geometry(event)
+    if geometry is None:
+        return None
+    observed_at = event.get("observed_at")
+    return {
         "type": "Feature",
         "id": event.get("id"),
-        "geometry": {
-            "type": "Point",
-            "coordinates": [float(longitude), float(latitude)],
-        },
+        "geometry": geometry,
         "properties": {
             "title": event.get("title") or "Environmental event",
             "categories": [event.get("type") or "unknown"],
-            "observation_time": None,
-            "source_observation_time": event.get("observed_at"),
+            "observation_time": observed_at,
+            "source_observation_time": observed_at,
             "source_url": event.get("source_url"),
             "source": event.get("source"),
             "severity": event.get("severity"),
@@ -181,6 +218,14 @@ def main() -> int:
                 if geometry.get("type") == "Point" and coordinates
                 else None
             )
+            preserved_geometry = (
+                {
+                    "type": geometry.get("type"),
+                    "coordinates": coordinates,
+                }
+                if geometry.get("type") in {"Point", "Polygon"}
+                else None
+            )
             events.append(
                 {
                     "id": f"eonet-{item.get('id')}",
@@ -193,6 +238,7 @@ def main() -> int:
                     "status": "open",
                     "latitude": latitude,
                     "longitude": longitude,
+                    "geometry": preserved_geometry,
                     "observed_at": geometry.get("date"),
                     "source": "NASA EONET",
                     "source_url": item.get("link"),
@@ -410,6 +456,11 @@ def main() -> int:
         for event in selected[:600]
         if (feature := event_feature(event)) is not None
     ]
+    rendered_summary: dict[str, int] = {}
+    for feature in features:
+        categories = feature.get("properties", {}).get("categories") or ["unknown"]
+        category = str(categories[0])
+        rendered_summary[category] = rendered_summary.get(category, 0) + 1
     hazard_payload = {
         "type": "FeatureCollection",
         "generated_at_utc": generated_at,
@@ -420,6 +471,7 @@ def main() -> int:
         ),
         "feature_count": len(features),
         "summary": summary,
+        "rendered_summary": rendered_summary,
         "features": features,
         "alerts": [],
     }
@@ -428,6 +480,7 @@ def main() -> int:
     print("Events:", len(events))
     print("3D markers:", len(features))
     print("Summary:", summary)
+    print("Rendered summary:", rendered_summary)
     return 0
 
 
