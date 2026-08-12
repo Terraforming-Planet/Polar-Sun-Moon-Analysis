@@ -49,6 +49,44 @@ def test_failed_refresh_preserves_previous_manifest() -> None:
     assert build_manifest(loader=failing_loader, previous=previous) == previous
 
 
+def test_partial_refresh_preserves_failed_collection_records() -> None:
+    previous = {
+        "generated_at_utc": "2026-08-12T20:00:00+00:00",
+        "observations": [
+            {"id": "old-s1", "collection": "sentinel-1-grd", "datetime_utc": "2026-08-12T18:00:00Z"},
+            {"id": "old-s2", "collection": "sentinel-2-l2a", "datetime_utc": "2026-08-12T17:00:00Z"},
+        ],
+        "aoi": {"id": "olszowka-gardeja-water-testbed"},
+    }
+
+    def partial_loader(_url: str, payload: dict[str, object]) -> dict[str, object]:
+        collection = str(payload["collections"][0])  # type: ignore[index]
+        if collection == "sentinel-2-l2a":
+            raise OSError("temporary Sentinel-2 outage")
+        return {
+            "features": [
+                {
+                    "id": "new-s1",
+                    "bbox": AOI_BBOX,
+                    "properties": {"datetime": "2026-08-12T21:00:00Z", "platform": "sentinel-1"},
+                    "assets": {},
+                    "links": [],
+                }
+            ]
+        }
+
+    manifest = build_manifest(
+        loader=partial_loader,
+        now=datetime(2026, 8, 13, tzinfo=UTC),
+        previous=previous,
+    )
+
+    assert {item["id"] for item in manifest["observations"]} == {"new-s1", "old-s2"}
+    assert manifest["errors"] == [
+        {"collection": "sentinel-2-l2a", "error": "temporary Sentinel-2 outage"}
+    ]
+
+
 def test_field_report_is_priority_for_verification_not_confirmed_disaster() -> None:
     def empty_loader(_url: str, _payload: dict[str, object]) -> dict[str, object]:
         return {"features": []}
