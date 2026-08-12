@@ -24,6 +24,15 @@ describe('RealisticEarthGlobe scene lifecycle', () => {
     expect(globeSource).toContain('const stableMarkers = markerCache.current.markers')
   })
 
+  it('updates Cesium hazard entities separately from Viewer initialization', () => {
+    expect(cesiumSource).toContain('viewer.entities.removeAll()')
+    expect(cesiumSource).toContain('markerCssColor(marker)')
+    expect(cesiumSource).toContain('viewer.scene.requestRender()')
+    expect(cesiumSource).toContain('}, [view])')
+    expect(cesiumSource).toContain('}, [ready, view, markers])')
+    expect(cesiumSource).not.toContain('}, [view, markers])')
+  })
+
   it('uses tiled Cesium imagery and request-render mode in the scientific viewer', () => {
     expect(cesiumSource).toContain('new Cesium.Viewer')
     expect(cesiumSource).toContain('requestRenderMode: true')
