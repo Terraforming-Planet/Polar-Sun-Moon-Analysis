@@ -31,7 +31,7 @@ type GoesManifest = {
   updated_utc?: string
 }
 
-type CesiumApi = {
+type EclipseCesiumApi = {
   Viewer: new (element: HTMLElement, options: Record<string, unknown>) => any
   UrlTemplateImageryProvider: new (options: Record<string, unknown>) => any
   Cartesian3: { fromDegrees: (longitude: number, latitude: number, height?: number) => any }
@@ -40,11 +40,9 @@ type CesiumApi = {
   Math: { toRadians: (value: number) => number }
 }
 
-declare global {
-  interface Window {
-    Cesium?: CesiumApi
-    CESIUM_BASE_URL?: string
-  }
+type EclipseCesiumWindow = Window & {
+  Cesium?: EclipseCesiumApi
+  CESIUM_BASE_URL?: string
 }
 
 const CESIUM_VERSION = '1.126'
@@ -71,9 +69,10 @@ const observerSites: ObserverSite[] = [
   { id: 'london', label: 'Londyn', country: 'Wielka Brytania', longitude: -0.1276, latitude: 51.5072, kind: 'partial', coverage: '91%', localMaximum: '19:13 BST', note: 'NASA podaje 91% zakrycia.' },
 ]
 
-function loadCesium(): Promise<CesiumApi> {
-  if (window.Cesium) return Promise.resolve(window.Cesium)
-  window.CESIUM_BASE_URL = CESIUM_BASE
+function loadCesium(): Promise<EclipseCesiumApi> {
+  const browserWindow = window as EclipseCesiumWindow
+  if (browserWindow.Cesium) return Promise.resolve(browserWindow.Cesium)
+  browserWindow.CESIUM_BASE_URL = CESIUM_BASE
   if (!document.querySelector(`link[href="${CESIUM_BASE}Widgets/widgets.css"]`)) {
     const link = document.createElement('link')
     link.rel = 'stylesheet'
@@ -83,14 +82,14 @@ function loadCesium(): Promise<CesiumApi> {
   return new Promise((resolve, reject) => {
     const existing = document.querySelector<HTMLScriptElement>(`script[src="${CESIUM_BASE}Cesium.js"]`)
     if (existing) {
-      existing.addEventListener('load', () => window.Cesium ? resolve(window.Cesium) : reject(new Error('Cesium unavailable')))
+      existing.addEventListener('load', () => browserWindow.Cesium ? resolve(browserWindow.Cesium) : reject(new Error('Cesium unavailable')))
       existing.addEventListener('error', () => reject(new Error('Nie udało się załadować Cesium')))
       return
     }
     const script = document.createElement('script')
     script.src = `${CESIUM_BASE}Cesium.js`
     script.async = true
-    script.onload = () => window.Cesium ? resolve(window.Cesium) : reject(new Error('Cesium unavailable'))
+    script.onload = () => browserWindow.Cesium ? resolve(browserWindow.Cesium) : reject(new Error('Cesium unavailable'))
     script.onerror = () => reject(new Error('Nie udało się załadować Cesium'))
     document.head.append(script)
   })
@@ -99,7 +98,7 @@ function loadCesium(): Promise<CesiumApi> {
 function EclipseCesiumObserver({ site, utc }: { site: ObserverSite; utc: string }) {
   const host = useRef<HTMLDivElement>(null)
   const viewerRef = useRef<any>(null)
-  const cesiumRef = useRef<CesiumApi | null>(null)
+  const cesiumRef = useRef<EclipseCesiumApi | null>(null)
   const [ready, setReady] = useState(false)
   const [error, setError] = useState('')
 
