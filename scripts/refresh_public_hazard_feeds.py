@@ -122,10 +122,16 @@ def normalize_earthquakes(payload: dict[str, Any]) -> dict[str, Any]:
 
 def normalize_eonet(payload: dict[str, Any]) -> dict[str, Any]:
     events: list[dict[str, Any]] = []
+    features: list[dict[str, Any]] = []
+
     for event in payload.get("events", []):
         geometry = event.get("geometry") or []
         latest = geometry[-1] if geometry else None
-        categories = [item.get("title") for item in event.get("categories", [])]
+        categories = [
+            item.get("title")
+            for item in event.get("categories", [])
+            if item.get("title")
+        ]
         events.append(
             {
                 "id": event.get("id"),
@@ -142,10 +148,41 @@ def normalize_eonet(payload: dict[str, Any]) -> dict[str, Any]:
                 ),
             }
         )
+
+        if not latest:
+            continue
+        geometry_type = latest.get("type")
+        coordinates = latest.get("coordinates")
+        if geometry_type not in {"Point", "Polygon"} or coordinates is None:
+            continue
+
+        features.append(
+            {
+                "type": "Feature",
+                "id": event.get("id"),
+                "geometry": {
+                    "type": geometry_type,
+                    "coordinates": coordinates,
+                },
+                "properties": {
+                    "source": "NASA EONET",
+                    "evidenceType": "event-catalogue",
+                    "title": event.get("title"),
+                    "categories": categories,
+                    "observationUtc": latest.get("date"),
+                    "observation_time": latest.get("date"),
+                    "eventUrl": event.get("link"),
+                    "source_url": event.get("link"),
+                    "sources": event.get("sources", []),
+                },
+            }
+        )
+
     return {
         "generatedUtc": utc_now(),
         "sourceUrl": EONET_URL,
         "events": events,
+        "features": features,
     }
 
 
@@ -195,6 +232,7 @@ def main() -> None:
         eonet_raw = fetch_json(EONET_URL)
         eonet = normalize_eonet(eonet_raw)
         write_json(OUT / "eonet-events.json", eonet)
+        features.extend(eonet["features"])
         source_status.append(
             {
                 "id": "nasa-eonet-open-events",
