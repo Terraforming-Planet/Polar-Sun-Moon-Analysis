@@ -5,11 +5,12 @@ The central-line coordinates, path widths and times below are transcribed from
 NASA GSFC's official eclipse path table (WGS84, 120-second cadence):
 https://eclipse.gsfc.nasa.gov/SEpath/SEpath2001/SE2026Aug12Tpath.html
 
-This renderer is a scientific visualization of the predicted umbral path.  It
-must not be presented as satellite photography.  The broad translucent halo is
+This renderer is a scientific visualization of the predicted umbral path. It
+must not be presented as satellite photography. The broad translucent halo is
 only visual context for partial-shadow shading; the black core diameter uses
 NASA's published totality-path width for each sample.
 """
+
 from __future__ import annotations
 
 import json
@@ -17,7 +18,7 @@ import math
 from datetime import datetime, timezone
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 
 OUT = Path("web/public/eclipse/2026-08-12")
 SIZE = 900
@@ -26,8 +27,13 @@ CENTER = (SIZE // 2, SIZE // 2 + 10)
 VIEW_LAT = math.radians(62.0)
 VIEW_LON = math.radians(-22.0)
 EARTH_RADIUS_KM = 6371.0088
-NASA_PATH_URL = "https://eclipse.gsfc.nasa.gov/SEpath/SEpath2001/SE2026Aug12Tpath.html"
-NASA_SCIENCE_URL = "https://science.nasa.gov/eclipses/future-eclipses/total-solar-eclipse-on-august-12-2026/"
+NASA_PATH_URL = (
+    "https://eclipse.gsfc.nasa.gov/SEpath/SEpath2001/SE2026Aug12Tpath.html"
+)
+NASA_SCIENCE_URL = (
+    "https://science.nasa.gov/eclipses/future-eclipses/"
+    "total-solar-eclipse-on-august-12-2026/"
+)
 
 # UTC, central latitude deg/min/N|S, central longitude deg/min/E|W, path width km
 RAW = """
@@ -89,12 +95,14 @@ def samples() -> list[dict[str, float | str]]:
     rows: list[dict[str, float | str]] = []
     for line in RAW.splitlines():
         t, lat_d, lat_m, lat_h, lon_d, lon_m, lon_h, width = line.split()
-        rows.append({
-            "timestamp_utc": f"2026-08-12T{t}:00Z",
-            "latitude": dm(lat_d, lat_m, lat_h),
-            "longitude": dm(lon_d, lon_m, lon_h),
-            "path_width_km": float(width),
-        })
+        rows.append(
+            {
+                "timestamp_utc": f"2026-08-12T{t}:00Z",
+                "latitude": dm(lat_d, lat_m, lat_h),
+                "longitude": dm(lon_d, lon_m, lon_h),
+                "path_width_km": float(width),
+            }
+        )
     return rows
 
 
@@ -102,65 +110,142 @@ def project(lat_deg: float, lon_deg: float) -> tuple[float, float, bool]:
     lat = math.radians(lat_deg)
     lon = math.radians(lon_deg)
     dlon = lon - VIEW_LON
-    cosc = math.sin(VIEW_LAT) * math.sin(lat) + math.cos(VIEW_LAT) * math.cos(lat) * math.cos(dlon)
+    cosc = (
+        math.sin(VIEW_LAT) * math.sin(lat)
+        + math.cos(VIEW_LAT) * math.cos(lat) * math.cos(dlon)
+    )
     x = R * math.cos(lat) * math.sin(dlon)
-    y = -R * (math.cos(VIEW_LAT) * math.sin(lat) - math.sin(VIEW_LAT) * math.cos(lat) * math.cos(dlon))
+    y = -R * (
+        math.cos(VIEW_LAT) * math.sin(lat)
+        - math.sin(VIEW_LAT) * math.cos(lat) * math.cos(dlon)
+    )
     return CENTER[0] + x, CENTER[1] + y, cosc >= 0
+
+
+def _draw_polyline(
+    draw: ImageDraw.ImageDraw,
+    points: list[tuple[float, float]],
+    fill: tuple[int, int, int, int],
+) -> None:
+    if len(points) > 1:
+        draw.line(points, fill=fill, width=1)
 
 
 def base_globe(path_rows: list[dict[str, float | str]]) -> Image.Image:
     img = Image.new("RGB", (SIZE, SIZE), (2, 7, 18))
     draw = ImageDraw.Draw(img, "RGBA")
-    # simple atmospheric/globe shading
     for rr in range(R, 0, -1):
         f = rr / R
-        draw.ellipse((CENTER[0]-rr, CENTER[1]-rr, CENTER[0]+rr, CENTER[1]+rr), fill=(8, int(31+25*f), int(57+50*f), 255))
-    draw.ellipse((CENTER[0]-R, CENTER[1]-R, CENTER[0]+R, CENTER[1]+R), outline=(93, 196, 255, 190), width=3)
-    # geographic grid
+        draw.ellipse(
+            (
+                CENTER[0] - rr,
+                CENTER[1] - rr,
+                CENTER[0] + rr,
+                CENTER[1] + rr,
+            ),
+            fill=(8, int(31 + 25 * f), int(57 + 50 * f), 255),
+        )
+    draw.ellipse(
+        (CENTER[0] - R, CENTER[1] - R, CENTER[0] + R, CENTER[1] + R),
+        outline=(93, 196, 255, 190),
+        width=3,
+    )
+
     for lat in range(-60, 91, 15):
-        pts = []
+        points: list[tuple[float, float]] = []
         for lon in range(-180, 181, 3):
-            x, y, vis = project(lat, lon)
-            if vis: pts.append((x, y))
-            elif len(pts) > 1:
-                draw.line(pts, fill=(150, 210, 235, 40), width=1); pts=[]
-        if len(pts) > 1: draw.line(pts, fill=(150, 210, 235, 40), width=1)
+            x, y, visible = project(lat, lon)
+            if visible:
+                points.append((x, y))
+            else:
+                _draw_polyline(draw, points, (150, 210, 235, 40))
+                points = []
+        _draw_polyline(draw, points, (150, 210, 235, 40))
+
     for lon in range(-180, 181, 15):
-        pts = []
+        points = []
         for lat in range(-90, 91, 2):
-            x, y, vis = project(lat, lon)
-            if vis: pts.append((x, y))
-            elif len(pts) > 1:
-                draw.line(pts, fill=(150, 210, 235, 32), width=1); pts=[]
-        if len(pts) > 1: draw.line(pts, fill=(150, 210, 235, 32), width=1)
-    # full NASA central path
+            x, y, visible = project(lat, lon)
+            if visible:
+                points.append((x, y))
+            else:
+                _draw_polyline(draw, points, (150, 210, 235, 32))
+                points = []
+        _draw_polyline(draw, points, (150, 210, 235, 32))
+
     visible_path = []
     for row in path_rows:
-        x, y, vis = project(float(row["latitude"]), float(row["longitude"]))
-        if vis: visible_path.append((x, y))
+        x, y, visible = project(
+            float(row["latitude"]),
+            float(row["longitude"]),
+        )
+        if visible:
+            visible_path.append((x, y))
     if len(visible_path) > 1:
         draw.line(visible_path, fill=(255, 65, 65, 230), width=5)
     return img
 
 
-def render_frame(base: Image.Image, row: dict[str, float | str], index: int, count: int) -> Image.Image:
+def render_frame(
+    base: Image.Image,
+    row: dict[str, float | str],
+    index: int,
+    count: int,
+) -> Image.Image:
     img = base.copy().convert("RGBA")
     draw = ImageDraw.Draw(img, "RGBA")
-    x, y, visible = project(float(row["latitude"]), float(row["longitude"]))
+    latitude = float(row["latitude"])
+    longitude = float(row["longitude"])
+    x, y, visible = project(latitude, longitude)
     width_km = float(row["path_width_km"])
     umbra_px = max(5.0, R * (width_km / EARTH_RADIUS_KM))
     if visible:
-        # broad halo is deliberately illustrative, not a computed penumbra boundary.
         halo = umbra_px * 8.5
-        draw.ellipse((x-halo, y-halo, x+halo, y+halo), fill=(20, 20, 25, 55))
-        draw.ellipse((x-umbra_px/2, y-umbra_px/2, x+umbra_px/2, y+umbra_px/2), fill=(0, 0, 0, 240), outline=(255, 90, 75, 255), width=2)
-        draw.ellipse((x-4, y-4, x+4, y+4), fill=(255, 80, 65, 255))
-    ts = str(row["timestamp_utc"])
-    draw.rounded_rectangle((32, 28, 868, 132), radius=18, fill=(2, 8, 20, 210), outline=(67, 193, 244, 150), width=2)
-    draw.text((54, 48), "TOTAL SOLAR ECLIPSE · NASA GSFC PREDICTION", fill=(225, 247, 255, 255))
-    draw.text((54, 76), f"{ts}   center {float(row['latitude']):.3f}°, {float(row['longitude']):.3f}°   totality path {width_km:.0f} km", fill=(129, 218, 255, 255))
-    draw.text((54, 103), f"Frame {index+1}/{count} · black core follows NASA central-line/path-width data · gray halo is illustrative", fill=(150, 167, 184, 255))
-    draw.text((42, 842), "Terraforming Planet · prediction visualization, not satellite photography", fill=(170, 190, 210, 255))
+        draw.ellipse(
+            (x - halo, y - halo, x + halo, y + halo),
+            fill=(20, 20, 25, 55),
+        )
+        draw.ellipse(
+            (
+                x - umbra_px / 2,
+                y - umbra_px / 2,
+                x + umbra_px / 2,
+                y + umbra_px / 2,
+            ),
+            fill=(0, 0, 0, 240),
+            outline=(255, 90, 75, 255),
+            width=2,
+        )
+        draw.ellipse((x - 4, y - 4, x + 4, y + 4), fill=(255, 80, 65, 255))
+
+    timestamp = str(row["timestamp_utc"])
+    draw.rounded_rectangle(
+        (32, 28, 868, 132),
+        radius=18,
+        fill=(2, 8, 20, 210),
+        outline=(67, 193, 244, 150),
+        width=2,
+    )
+    draw.text(
+        (54, 48),
+        "TOTAL SOLAR ECLIPSE · NASA GSFC PREDICTION",
+        fill=(225, 247, 255, 255),
+    )
+    details = (
+        f"{timestamp}   center {latitude:.3f}°, {longitude:.3f}°   "
+        f"totality path {width_km:.0f} km"
+    )
+    draw.text((54, 76), details, fill=(129, 218, 255, 255))
+    context = (
+        f"Frame {index + 1}/{count} · black core follows NASA central-line/path-width "
+        "data · gray halo is illustrative"
+    )
+    draw.text((54, 103), context, fill=(150, 167, 184, 255))
+    draw.text(
+        (42, 842),
+        "Terraforming Planet · prediction visualization, not satellite photography",
+        fill=(170, 190, 210, 255),
+    )
     return img.convert("RGB")
 
 
@@ -170,14 +255,22 @@ def main() -> None:
     frames_dir.mkdir(parents=True, exist_ok=True)
     rows = samples()
     base = base_globe(rows)
-    rendered = []
-    for i, row in enumerate(rows):
-        frame = render_frame(base, row, i, len(rows))
+    rendered: list[Image.Image] = []
+    for index, row in enumerate(rows):
+        frame = render_frame(base, row, index, len(rows))
         stamp = str(row["timestamp_utc"])[11:16].replace(":", "")
         target = frames_dir / f"eclipse-{stamp}Z.png"
         frame.save(target, optimize=True)
         rendered.append(frame.resize((600, 600)))
-    rendered[0].save(OUT / "eclipse-2026-08-12.gif", save_all=True, append_images=rendered[1:], duration=220, loop=0, optimize=True)
+
+    rendered[0].save(
+        OUT / "eclipse-2026-08-12.gif",
+        save_all=True,
+        append_images=rendered[1:],
+        duration=220,
+        loop=0,
+        optimize=True,
+    )
     manifest = {
         "event": "Total Solar Eclipse 2026-08-12",
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -191,7 +284,10 @@ def main() -> None:
         "frame_count": len(rows),
         "samples": rows,
     }
-    (OUT / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    (OUT / "manifest.json").write_text(
+        json.dumps(manifest, indent=2) + "\n",
+        encoding="utf-8",
+    )
     print(f"Rendered {len(rows)} frames to {OUT}")
 
 
