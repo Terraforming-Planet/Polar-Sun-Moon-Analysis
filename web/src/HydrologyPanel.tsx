@@ -8,7 +8,7 @@ type HazardFeature = {
   properties: { categories?: string[]; observation_time?: string; title?: string; source_url?: string }
 }
 type HazardData = { generated_at_utc?: string; generatedUtc?: string; features?: HazardFeature[] }
-type Marker = { longitude: number; latitude: number; color?: number; radius?: number }
+type Marker = { longitude: number; latitude: number; color: number; radius: number }
 
 const GDO_HOME = 'https://drought.emergency.copernicus.eu/'
 const GDO_MAP = 'https://drought.emergency.copernicus.eu/gdo/php/index.php?id=2050'
