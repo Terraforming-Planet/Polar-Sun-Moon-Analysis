@@ -37,54 +37,99 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Capture official GOES-19 GeoColor sequence
+      - name: Initialize observation audit log
         shell: bash
         run: |
           set -euo pipefail
+          mkdir -p eclipse-audit/logs
+          {
+            echo "workflow_started_utc=$(date -u +%FT%TZ)"
+            echo "repository=${GITHUB_REPOSITORY}"
+            echo "workflow=${GITHUB_WORKFLOW}"
+            echo "run_id=${GITHUB_RUN_ID}"
+            echo "run_attempt=${GITHUB_RUN_ATTEMPT}"
+            echo "event=${GITHUB_EVENT_NAME}"
+            echo "runner_os=${RUNNER_OS}"
+            echo "head_sha=${GITHUB_SHA}"
+            echo "checked_out_sha=$(git rev-parse HEAD)"
+            echo "python=$(python --version 2>&1)"
+          } | tee eclipse-audit/session.txt
+
+      - name: Capture official GOES-19 GeoColor sequence
+        shell: bash
+        run: |
+          set -uo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
 
+          failures=0
           # 36 slots x 10 minutes = six-hour observation window.
-          # The script stores NOAA observation timestamps and SHA-256 provenance.
+          # Each slot writes a durable local log even when NOAA or publishing fails.
           for slot in $(seq 1 36); do
-            echo "GOES-19 capture slot ${slot}/36 at $(date -u +%FT%TZ)"
-            python scripts/capture_goes19_eclipse.py || true
-            git add web/public/eclipse/2026-08-12/goes19 || true
+            slot_id=$(printf '%02d' "$slot")
+            slot_log="eclipse-audit/logs/slot-${slot_id}.log"
+            {
+              echo "slot=${slot}/36"
+              echo "slot_started_utc=$(date -u +%FT%TZ)"
+              echo "main_before=$(git rev-parse HEAD)"
+            } | tee "$slot_log"
 
+            set +e
+            python scripts/capture_goes19_eclipse.py 2>&1 | tee -a "$slot_log"
+            capture_rc=${PIPESTATUS[0]}
+            set -e
+            echo "capture_exit_code=${capture_rc}" | tee -a "$slot_log"
+            if [ "$capture_rc" -ne 0 ]; then
+              failures=$((failures + 1))
+            fi
+
+            git add web/public/eclipse/2026-08-12/goes19 || true
             if ! git diff --cached --quiet; then
-              git commit -m "data(eclipse): capture NOAA GOES-19 frame"
+              git commit -m "data(eclipse): capture NOAA GOES-19 frame" 2>&1 | tee -a "$slot_log"
 
               published=false
               for attempt in 1 2 3 4; do
-                git fetch origin main
-                git rebase origin/main
-                if git push origin HEAD:main; then
+                echo "publish_attempt=${attempt}" | tee -a "$slot_log"
+                if git fetch origin main 2>&1 | tee -a "$slot_log" \
+                  && git rebase origin/main 2>&1 | tee -a "$slot_log" \
+                  && git push origin HEAD:main 2>&1 | tee -a "$slot_log"; then
                   published=true
                   break
                 fi
-                echo "Push attempt ${attempt} raced with another main update; retrying."
+                git rebase --abort >/dev/null 2>&1 || true
+                echo "Push attempt ${attempt} failed or raced with another main update." \
+                  | tee -a "$slot_log"
                 sleep $((attempt * 5))
               done
 
               if [ "$published" != true ]; then
-                echo 'Unable to publish GOES-19 frame after four synchronized attempts.' >&2
-                exit 1
+                failures=$((failures + 1))
+                echo 'Unable to publish this GOES-19 frame after four synchronized attempts.' \
+                  | tee -a "$slot_log" >&2
               fi
             else
-              echo 'No new NOAA observation in this slot.'
+              echo 'No new NOAA observation in this slot.' | tee -a "$slot_log"
             fi
+
+            if [ -f web/public/eclipse/2026-08-12/goes19/manifest.json ]; then
+              cp web/public/eclipse/2026-08-12/goes19/manifest.json \
+                "eclipse-audit/manifest-slot-${slot_id}.json"
+            fi
+            echo "slot_finished_utc=$(date -u +%FT%TZ)" | tee -a "$slot_log"
 
             if [ "$slot" -lt 36 ]; then
               sleep 600
             fi
           done
 
+          echo "capture_or_publish_failures=${failures}" | tee -a eclipse-audit/session.txt
+
       - name: Validate observation provenance
         shell: bash
         run: |
           set -euo pipefail
           test -s web/public/eclipse/2026-08-12/goes19/manifest.json
-          python - <<'PY'
+          python - <<'PY' 2>&1 | tee eclipse-audit/provenance-validation.log
           import json
           from pathlib import Path
 
@@ -102,8 +147,21 @@ jobs:
           print(f"Validated {len(data['frames'])} official GOES-19 frames.")
           PY
 
+      - name: Preserve complete observation record
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: goes19-eclipse-2026-full-record-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: warn
+          retention-days: 90
+          path: |
+            eclipse-audit/
+            web/public/eclipse/2026-08-12/goes19/
+
       - name: Summary
+        if: always()
         run: |
           echo '## NOAA GOES-19 eclipse observation' >> "$GITHUB_STEP_SUMMARY"
-          echo 'Captured official GOES-19 ABI Full Disk GeoColor imagery at NOAA 10-minute cadence when available.' >> "$GITHUB_STEP_SUMMARY"
-          echo 'These files are satellite observations, kept separate from the NASA predicted-shadow visualization.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'The workflow stores full per-slot logs plus every available NOAA frame and manifest as a GitHub artifact for 90 days.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'If the web presentation fails, the raw observation record remains recoverable from the workflow artifact.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Satellite observations remain separate from the NASA predicted-shadow visualization.' >> "$GITHUB_STEP_SUMMARY"
