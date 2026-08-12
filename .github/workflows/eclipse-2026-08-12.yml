@@ -60,7 +60,7 @@ jobs:
           print('Eclipse products validated.')
           PY
 
-      - name: Commit generated eclipse products
+      - name: Commit and publish generated eclipse products
         shell: bash
         run: |
           set -euo pipefail
@@ -69,10 +69,26 @@ jobs:
           git add web/public/eclipse/2026-08-12
           if git diff --cached --quiet; then
             echo 'Eclipse products are already current.'
-          else
-            git commit -m 'data(eclipse): publish 2026-08-12 NASA shadow sequence'
-            git push origin HEAD:main
+            exit 0
           fi
+
+          git commit -m 'data(eclipse): publish 2026-08-12 NASA shadow sequence'
+
+          # Hazard feeds also write to main. Rebase and retry so a simultaneous
+          # official-data refresh cannot make the one-time eclipse publication fail.
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              echo "Published eclipse products on attempt ${attempt}."
+              exit 0
+            fi
+            echo "Push attempt ${attempt} raced with another main update; retrying."
+            sleep $((attempt * 5))
+          done
+
+          echo 'Unable to publish eclipse products after four synchronized attempts.' >&2
+          exit 1
 
       - name: Summary
         run: |
