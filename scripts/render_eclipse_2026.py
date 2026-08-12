@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import json
 import math
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from PIL import Image, ImageDraw
@@ -273,7 +273,7 @@ def main() -> None:
     )
     manifest = {
         "event": "Total Solar Eclipse 2026-08-12",
-        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "generated_at_utc": datetime.now(UTC).isoformat(),
         "classification": "NASA GSFC predicted central-line visualization",
         "not_satellite_photography": True,
         "greatest_eclipse_utc": "2026-08-12T17:45:53.8Z",
