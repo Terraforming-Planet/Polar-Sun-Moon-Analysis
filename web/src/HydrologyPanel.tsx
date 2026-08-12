@@ -37,8 +37,12 @@ export function HydrologyPanel({ baseUrl }: Props) {
     </div>
     <p className="notice">GloFAS jest systemem modelowym Copernicus CEMS. Nie przedstawiamy tych danych jako bezpośredniego pomiaru wód gruntowych ani jako samodzielnego alarmu powodziowego.</p>
     {error && <p className="notice">Nie udało się odczytać lokalnego manifestu GloFAS: {error}</p>}
+    <div className="hero-actions">
+      <a className="button-link" href={`${baseUrl}flood-map/`}>Otwórz mapę powodzi Sentinel-1</a>
+      <a className="button-link" href={`${baseUrl}copernicus/`}>Otwórz panel Copernicus</a>
+    </div>
     <div className="water-grid">
-      <article><span className="evidence-badge observation">SENTINEL</span><h2>Woda powierzchniowa</h2><p>Sentinel-1 SAR i Sentinel-2 mogą pokazywać zasięg wody dla rzeczywistych momentów przelotu. Do porównania przed/po użyj zakładki Powodzie.</p></article>
+      <article><span className="evidence-badge observation">SENTINEL</span><h2>Woda powierzchniowa</h2><p>Sentinel-1 SAR i Sentinel-2 mogą pokazywać zasięg wody dla rzeczywistych momentów przelotu. Do porównania przed/po użyj zakładki Powodzie lub bezpośredniego przycisku mapy powyżej.</p></article>
       <article><span className="evidence-badge estimate">GLOFAS</span><h2>Przepływ i wilgotność gleby</h2><p>Najnowszy koniec zakresu opublikowanego w manifestach: <b>{formatUtc(newest)}</b>.</p><p>{variables.length ? variables.map(variableLabel).join(' · ') : 'Ładowanie zmiennych GloFAS…'}</p></article>
       <article><span className="evidence-badge unknown">OGRANICZENIE</span><h2>Woda podziemna</h2><p>Satelity i GloFAS nie pokazują bezpośrednio wody w szczelinach skalnych. Do takich wniosków potrzebne są dane hydrogeologiczne i pomiary terenowe.</p></article>
     </div>
