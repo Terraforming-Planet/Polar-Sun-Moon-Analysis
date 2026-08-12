@@ -119,6 +119,7 @@ export function HydrologyPanel({ baseUrl }: Props) {
       <span className="evidence-badge estimate">MODEL HYDROLOGICZNY + OBSERWACJE</span>
     </div>
     <p className="notice">GloFAS jest systemem modelowym Copernicus CEMS. Nie przedstawiamy tych danych jako bezpośredniego pomiaru wód gruntowych ani jako samodzielnego alarmu powodziowego. Niebieskie markery 3D pochodzą z opublikowanego katalogu zdarzeń powodziowych; obszary suszy poniżej są najnowszym opisowym przeglądem Copernicus GDO, a nie sztucznie wygenerowaną mapą.</p>
+    <p className="notice"><b>Olszówka / Gardeja — lokalny poligon krytyczny:</b> dodaliśmy osobne obserwatorium łączące katalog najnowszych produktów Sentinel-1 i Sentinel-2, nocną radiancję NASA VIIRS DNB oraz historię EC JRC Global Surface Water. Zgłoszenie terenowe o zaniku wody jest traktowane jako priorytet do weryfikacji, nie jako automatycznie potwierdzona klęska.</p>
     {error && <p className="notice">Nie udało się odczytać lokalnego manifestu GloFAS: {error}</p>}
     {hazardError && <p className="notice">Nie udało się odczytać lokalnego katalogu zagrożeń: {hazardError}</p>}
 
@@ -149,6 +150,7 @@ export function HydrologyPanel({ baseUrl }: Props) {
     <p className="muted">Daty źródłowe przeglądu GDO: globalny obraz — koniec czerwca 2026; europejski przegląd — połowa lipca 2026. System nie podnosi tych opisów do rangi bieżącego alarmu lokalnego.</p>
 
     <div className="hero-actions">
+      <a className="button-link" href={`${baseUrl}water-local/`}>ALARM · Olszówka multi-sensor</a>
       <a className="button-link" href={`${baseUrl}flood-map/`}>Otwórz mapę powodzi Sentinel-1</a>
       <a className="button-link" href={`${baseUrl}copernicus/`}>Otwórz panel Copernicus</a>
       <a className="button-link" href={GDO_HOME} target="_blank" rel="noreferrer">Copernicus Drought Observatories ↗</a>
