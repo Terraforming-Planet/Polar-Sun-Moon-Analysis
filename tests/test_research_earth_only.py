@@ -1,6 +1,5 @@
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 MODEL = ROOT / "web" / "public" / "research" / "research-model.js"
 NOTEBOOK = ROOT / "notebooks" / "cdse_realistic_earth_pipeline.ipynb"
