@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#020711" />
+  <title>Terraforming Planet · Galeria zaćmienia 2026</title>
+  <style>
+    :root{color-scheme:dark;font-family:Inter,system-ui,sans-serif;background:#020711;color:#eaf7ff}*{box-sizing:border-box}body{margin:0;background:#020711}.shell{max-width:1400px;margin:auto;padding:10px}.panel{border:1px solid #17415f;background:#071525;border-radius:12px;padding:14px;margin-bottom:12px}.hero{border-color:#18b7ef}h1{font-size:clamp(30px,6vw,56px);line-height:.98;margin:6px 0 12px}.eyebrow{font-size:11px;letter-spacing:.11em;color:#5ee1ff;font-weight:800}.notice{border-left:4px solid #42e5a3;background:#0d3024;color:#caffea;padding:10px;line-height:1.45}.warn{border-left-color:#ffd24a;background:#302812;color:#fff3be}.controls{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}button,a.button{background:#0d2c46;color:#eaf7ff;border:1px solid #2d6f97;border-radius:8px;padding:9px 11px;text-decoration:none;cursor:pointer}.active{background:#126884;border-color:#6be2ff}.player{display:grid;grid-template-columns:minmax(0,2fr) minmax(260px,1fr);gap:12px}.player img{width:100%;display:block;border-radius:10px;background:#000}.facts{border:1px solid #173754;border-radius:10px;padding:10px;background:#06111e}.fact{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #173754;padding:7px 0}.fact span{color:#95adbf}.fact b{text-align:right;word-break:break-all}.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.card{border:1px solid #1b4a69;border-radius:10px;padding:10px;background:#030a12}.card img{width:100%;display:block;border-radius:8px;background:#000}.tiny{font-size:12px;color:#a9bfd0;line-height:1.45}.ok{color:#75ffc7}.bad{color:#ff8c8c}a{color:#63dcff}@media(max-width:820px){.player{grid-template-columns:1fr}.shell{padding:7px}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <section class="panel hero">
+    <div class="eyebrow">ARCHIWUM BADAWCZE · 12 AUG 2026 · NOAA GOES-19 ABI BAND 2</div>
+    <h1>Galeria zdjęć i animacja zaćmienia</h1>
+    <p class="notice"><b>Każda klatka poniżej jest zapisaną obserwacją satelitarną NOAA</b> z czasem obserwacji, oryginalnym URL-em źródłowym i SHA-256. <b>Animacja nie tworzy nowych danych</b> — tylko odtwarza zapisane klatki po kolei.</p>
+    <p class="notice warn"><b>Pełne logi:</b> workflow zapisuje <code>session.log</code>, <code>capture.log</code>, <code>provenance.log</code> oraz kopię całego katalogu obserwacji jako GitHub Actions artifact przez 90 dni.</p>
+    <div class="controls"><a class="button" href="./">🌍 Obserwator 3D</a><a class="button" href="./close.html">🌙 CLOSE / noktowizor</a><a class="button" href="https://github.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/actions/workflows/capture-goes19-band02-eclipse-2026.yml" target="_blank" rel="noreferrer">🧾 Workflow i logi ↗</a></div>
+  </section>
+
+  <section class="panel">
+    <div class="eyebrow">ANIMACJA Z ARCHIWALNYCH KLATEK</div>
+    <div class="controls"><button id="play">▶ Odtwarzaj</button><button id="prev">◀</button><button id="next">▶</button><label>Tempo <select id="speed"><option value="1400">1.4 s</option><option value="900" selected>0.9 s</option><option value="500">0.5 s</option></select></label></div>
+    <div class="player"><div><img id="player-img" alt="Archiwalna klatka NOAA GOES-19 Band 2" /></div><div class="facts"><div class="fact"><span>Klatka</span><b id="frame-index">—</b></div><div class="fact"><span>Obserwacja UTC</span><b id="frame-time">—</b></div><div class="fact"><span>Przechwycono UTC</span><b id="capture-time">—</b></div><div class="fact"><span>SHA-256</span><b id="frame-sha">—</b></div><div class="fact"><span>Źródło</span><b><a id="frame-source" target="_blank" rel="noreferrer">NOAA</a></b></div></div></div>
+  </section>
+
+  <section class="panel">
+    <div class="eyebrow">WSZYSTKIE ZAPISANE KLATKI</div>
+    <h2 id="summary">Ładowanie manifestu…</h2>
+    <div id="gallery" class="gallery"></div>
+  </section>
+</div>
+<script>
+const manifestUrl='../eclipse/2026-08-12/goes19-band02/manifest.json';
+const base='../eclipse/2026-08-12/goes19-band02/';
+let frames=[],index=0,timer=null;
+function showFrame(i){if(!frames.length)return;index=(i+frames.length)%frames.length;const f=frames[index];document.getElementById('player-img').src=base+f.file;document.getElementById('frame-index').textContent=`${index+1} / ${frames.length}`;document.getElementById('frame-time').textContent=f.observed_utc;document.getElementById('capture-time').textContent=f.captured_utc;document.getElementById('frame-sha').textContent=f.sha256;const a=document.getElementById('frame-source');a.href=f.source_url;a.textContent='oryginał NOAA ↗'}
+function stop(){if(timer){clearInterval(timer);timer=null}document.getElementById('play').textContent='▶ Odtwarzaj';document.getElementById('play').classList.remove('active')}
+function play(){if(timer){stop();return}const delay=Number(document.getElementById('speed').value);timer=setInterval(()=>showFrame(index+1),delay);document.getElementById('play').textContent='⏸ Pauza';document.getElementById('play').classList.add('active')}
+document.getElementById('play').onclick=play;document.getElementById('prev').onclick=()=>{stop();showFrame(index-1)};document.getElementById('next').onclick=()=>{stop();showFrame(index+1)};document.getElementById('speed').onchange=()=>{if(timer){stop();play()}};
+async function load(){try{const r=await fetch(manifestUrl+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const m=await r.json();frames=Array.isArray(m.frames)?m.frames:[];document.getElementById('summary').textContent=`${frames.length} zapisanych klatek · ${m.product}`;const gallery=document.getElementById('gallery');gallery.innerHTML='';for(const [i,f] of frames.entries()){const card=document.createElement('article');card.className='card';const img=document.createElement('img');img.loading='lazy';img.alt='NOAA '+f.observed_utc;img.src=base+f.file;img.onclick=()=>{stop();showFrame(i);window.scrollTo({top:0,behavior:'smooth'})};const h=document.createElement('h3');h.textContent=f.observed_utc;const p=document.createElement('p');p.className='tiny';p.innerHTML=`SHA-256: <code>${f.sha256}</code><br/>${f.bytes.toLocaleString('pl-PL')} B`;const a=document.createElement('a');a.href=f.source_url;a.target='_blank';a.rel='noreferrer';a.textContent='Oryginalny plik NOAA ↗';card.append(img,h,p,a);gallery.append(card)}showFrame(frames.length-1)}catch(e){document.getElementById('summary').textContent='Nie udało się wczytać manifestu: '+e;document.getElementById('summary').className='bad'}}
+load();
+</script>
+</body>
+</html>
