@@ -22,7 +22,7 @@ def test_close_night_mode_switches_to_official_eumetsat_ir() -> None:
     assert "mtg_fd:vis06_hrfi" in source
     assert "nightVision?'mtg_fd:ir105_hrfi':'mtg_fd:vis06_hrfi'" in source
     assert "EUMETSAT Meteosat-12 · IR 10.5 HRFI · NOC" in source
-    assert "nie jest lokalną kamerą IR" in source
+    assert "Nie jest lokalną kamerą IR" in source
 
 
 def test_gallery_uses_only_archived_manifest_frames_for_animation() -> None:
