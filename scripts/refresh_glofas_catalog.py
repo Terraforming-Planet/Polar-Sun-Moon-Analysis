@@ -3,9 +3,10 @@ from __future__ import annotations
 import argparse
 import json
 import urllib.request
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 CATALOGUE = "https://ewds.climate.copernicus.eu/api/catalogue/v1/collections"
 COLLECTIONS = ("cems-glofas-forecast", "cems-glofas-historical")
