@@ -1,0 +1,108 @@
+name: Capture 2026-08-12 eclipse from NOAA GOES-19
+
+on:
+  workflow_dispatch:
+  schedule:
+    # One long-running capture starts before the eclipse path reaches the Atlantic.
+    # GitHub cron is UTC; the year guard prevents recurrence in later years.
+    - cron: '45 14 12 8 *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: goes19-eclipse-2026-08-12
+  cancel-in-progress: false
+
+jobs:
+  capture-goes19:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Enforce 2026 event date for scheduled runs
+        if: github.event_name == 'schedule'
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(date -u +%F)" = '2026-08-12'
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Capture official GOES-19 GeoColor sequence
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          # 36 slots x 10 minutes = six-hour observation window.
+          # The script stores NOAA observation timestamps and SHA-256 provenance.
+          for slot in $(seq 1 36); do
+            echo "GOES-19 capture slot ${slot}/36 at $(date -u +%FT%TZ)"
+            python scripts/capture_goes19_eclipse.py || true
+            git add web/public/eclipse/2026-08-12/goes19 || true
+
+            if ! git diff --cached --quiet; then
+              git commit -m "data(eclipse): capture NOAA GOES-19 frame"
+
+              published=false
+              for attempt in 1 2 3 4; do
+                git fetch origin main
+                git rebase origin/main
+                if git push origin HEAD:main; then
+                  published=true
+                  break
+                fi
+                echo "Push attempt ${attempt} raced with another main update; retrying."
+                sleep $((attempt * 5))
+              done
+
+              if [ "$published" != true ]; then
+                echo 'Unable to publish GOES-19 frame after four synchronized attempts.' >&2
+                exit 1
+              fi
+            else
+              echo 'No new NOAA observation in this slot.'
+            fi
+
+            if [ "$slot" -lt 36 ]; then
+              sleep 600
+            fi
+          done
+
+      - name: Validate observation provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s web/public/eclipse/2026-08-12/goes19/manifest.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path('web/public/eclipse/2026-08-12/goes19/manifest.json')
+          data = json.loads(path.read_text(encoding='utf-8'))
+          assert data['source'] == 'NOAA NESDIS STAR GOES-19 ABI Full Disk GeoColor'
+          assert data['satellite_photography'] is True
+          assert data['synthetic'] is False
+          assert data['frames'], 'No real GOES-19 frames were captured.'
+          for frame in data['frames']:
+              assert frame['source_url'].startswith(
+                  'https://cdn.star.nesdis.noaa.gov/GOES19/ABI/FD/GEOCOLOR/'
+              )
+              assert len(frame['sha256']) == 64
+          print(f"Validated {len(data['frames'])} official GOES-19 frames.")
+          PY
+
+      - name: Summary
+        run: |
+          echo '## NOAA GOES-19 eclipse observation' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Captured official GOES-19 ABI Full Disk GeoColor imagery at NOAA 10-minute cadence when available.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'These files are satellite observations, kept separate from the NASA predicted-shadow visualization.' >> "$GITHUB_STEP_SUMMARY"
