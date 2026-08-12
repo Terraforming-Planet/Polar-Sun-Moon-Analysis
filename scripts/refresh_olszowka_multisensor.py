@@ -80,14 +80,29 @@ def source_record(collection: str, days: int) -> dict[str, Any]:
     }
 
 
+def _previous_by_collection(previous: dict[str, Any] | None) -> dict[str, list[dict[str, Any]]]:
+    grouped = {collection: [] for collection in COLLECTION_WINDOWS}
+    observations = (previous or {}).get("observations")
+    if not isinstance(observations, list):
+        return grouped
+    for item in observations:
+        if not isinstance(item, dict):
+            continue
+        collection = item.get("collection")
+        if collection in grouped:
+            grouped[collection].append(item)
+    return grouped
+
+
 def build_manifest(
     loader: Callable[[str, dict[str, Any]], dict[str, Any]] = post_json,
     now: datetime | None = None,
     previous: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     current = now or datetime.now(UTC)
-    observations: list[dict[str, Any]] = []
+    observations_by_collection = _previous_by_collection(previous)
     errors: list[dict[str, str]] = []
+    successful_collections: set[str] = set()
 
     for collection, days in COLLECTION_WINDOWS.items():
         start = current - timedelta(days=days)
@@ -101,25 +116,29 @@ def build_manifest(
         try:
             data = loader(STAC_SEARCH, payload)
             items = data.get("features") if isinstance(data, dict) else []
-            if isinstance(items, list):
-                observations.extend(normalise_item(item, collection) for item in items if isinstance(item, dict))
+            observations_by_collection[collection] = (
+                [normalise_item(item, collection) for item in items if isinstance(item, dict)]
+                if isinstance(items, list)
+                else []
+            )
+            successful_collections.add(collection)
         except Exception as exc:
             errors.append({"collection": collection, "error": str(exc)})
+            print(f"collection={collection} refresh=failed preserving_previous_collection=true error={exc}")
 
-    if errors and previous and not observations:
-        print("catalogue_refresh=failed_preserving_previous")
-        for error in errors:
-            print(f"collection={error['collection']} error={error['error']}")
+    if errors and previous and not successful_collections:
+        print("catalogue_refresh=failed_preserving_previous_manifest")
         return previous
 
+    observations = [
+        item
+        for collection in COLLECTION_WINDOWS
+        for item in observations_by_collection.get(collection, [])
+    ]
     observations.sort(key=lambda item: item.get("datetime_utc") or "", reverse=True)
     previous_observations = (previous or {}).get("observations")
     changed = observations != previous_observations
-    generated_at = (
-        current.isoformat()
-        if changed or not previous
-        else previous.get("generated_at_utc", current.isoformat())
-    )
+    generated_at = current.isoformat() if changed or not previous else previous.get("generated_at_utc", current.isoformat())
 
     return {
         "generated_at_utc": generated_at,
