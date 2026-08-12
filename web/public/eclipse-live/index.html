@@ -9,41 +9,32 @@
   <style>
     :root{color-scheme:dark;font-family:Inter,system-ui,sans-serif;background:#020711;color:#eaf7ff}
     *{box-sizing:border-box}body{margin:0;background:#020711}.shell{max-width:1500px;margin:auto;padding:12px}
-    .hero,.panel{border:1px solid #173754;background:#071525;border-radius:12px;padding:14px;margin-bottom:12px}
-    .hero{border-color:#18b7ef}.eyebrow{font-size:11px;letter-spacing:.12em;color:#5ee1ff;font-weight:800}
-    h1{font-size:clamp(28px,6vw,58px);line-height:.95;margin:8px 0 12px}h2{margin:.2rem 0 .8rem}
-    .notice{padding:10px;border-left:4px solid #ffd24a;background:#302812;color:#fff3be;line-height:1.45}
-    .evidence{padding:10px;border-left:4px solid #42e5a3;background:#0d3024;color:#caffea;line-height:1.45}
-    .grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(260px,1fr);gap:12px}
-    .controls{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px;align-items:end}
-    button,select,a.button{background:#0d2c46;color:#eaf7ff;border:1px solid #2d6f97;border-radius:8px;padding:9px 11px;text-decoration:none}
-    button{cursor:pointer}.active{background:#126884;border-color:#6be2ff}select{max-width:100%}
-    .fact{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #173754;padding:7px 0}.fact span{color:#95adbf}.fact b{text-align:right}
-    .badge{display:inline-block;border:1px solid #2fe1a2;border-radius:999px;padding:5px 9px;color:#7effc9;font-size:11px;font-weight:800}
-    .warn{border-color:#ffd24a;color:#ffe88b}.model{border-color:#ffca55;color:#ffdf88}
-    .cesium{height:560px;border-radius:10px;overflow:hidden;background:#000}.satellite img{width:100%;height:auto;display:block;border-radius:8px}
-    .links a{color:#63dcff}.site-note{line-height:1.5;color:#b3c5d3}.source-card{border:1px solid #1b4a69;border-radius:8px;padding:9px;margin-top:9px;background:#06111e}
-    .cloud-ok{color:#75ffc7}.cloud-warn{color:#ffd66b}.research{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.research article{border:1px solid #173754;border-radius:10px;padding:12px;background:#06111e}
-    @media(max-width:820px){.grid,.research{grid-template-columns:1fr}.cesium{height:470px}.shell{padding:8px}button,select,a.button{font-size:12px;padding:8px}}
+    .hero,.panel{border:1px solid #173754;background:#071525;border-radius:12px;padding:14px;margin-bottom:12px}.hero{border-color:#18b7ef}
+    .eyebrow{font-size:11px;letter-spacing:.12em;color:#5ee1ff;font-weight:800}h1{font-size:clamp(28px,6vw,58px);line-height:.95;margin:8px 0 12px}h2{margin:.2rem 0 .8rem}
+    .notice{padding:10px;border-left:4px solid #ffd24a;background:#302812;color:#fff3be;line-height:1.45}.evidence{padding:10px;border-left:4px solid #42e5a3;background:#0d3024;color:#caffea;line-height:1.45}
+    .grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(260px,1fr);gap:12px}.controls{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px;align-items:end}
+    button,select,a.button{background:#0d2c46;color:#eaf7ff;border:1px solid #2d6f97;border-radius:8px;padding:9px 11px;text-decoration:none}button{cursor:pointer}.active{background:#126884;border-color:#6be2ff}select{max-width:100%}
+    .fact{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #173754;padding:7px 0}.fact span{color:#95adbf}.fact b{text-align:right}.badge{display:inline-block;border:1px solid #2fe1a2;border-radius:999px;padding:5px 9px;color:#7effc9;font-size:11px;font-weight:800}.warn{border-color:#ffd24a;color:#ffe88b}
+    .cesium{height:590px;border-radius:10px;overflow:hidden;background:#000}.satellite img{width:100%;height:auto;display:block;border-radius:8px;background:#000}.links a{color:#63dcff}.site-note{line-height:1.5;color:#b3c5d3}.source-card{border:1px solid #1b4a69;border-radius:8px;padding:9px;margin-top:9px;background:#06111e}.ok{color:#75ffc7}.pending{color:#ffd66b}.research{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.research article{border:1px solid #173754;border-radius:10px;padding:12px;background:#06111e}.raw-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.raw-card{border:1px solid #1b4a69;border-radius:10px;padding:10px;background:#030a12}.raw-card img{width:100%;display:block;border-radius:8px;background:#000}
+    @media(max-width:820px){.grid,.research,.raw-grid{grid-template-columns:1fr}.cesium{height:500px}.shell{padding:8px}button,select,a.button{font-size:12px;padding:8px}}
   </style>
 </head>
 <body>
 <div class="shell">
   <section class="hero">
-    <div class="eyebrow">TERRAFORMING PLANET · 12 AUG 2026 · NASA + EUMETSAT + NOAA + CESIUM</div>
+    <div class="eyebrow">TERRAFORMING PLANET · 12 AUG 2026 · NASA GSFC + NOAA GOES-19 + EUMETSAT + CESIUM</div>
     <h1>Zaćmienie LIVE<br/>obserwator 3D</h1>
     <span class="badge">OPEN SCIENCE</span> <span class="badge warn">OPENAI DEV SUBMISSION CANDIDATE</span>
-    <p class="notice"><b>Bez fałszywych klatek:</b> chmury na globie pochodzą z najnowszej dostępnej warstwy EUMETSAT EUMETView MTG Geo Colour. Ciemny ślad zaćmienia jest osobno oznaczonym modelem NASA GSFC. Panel NOAA pokazuje wyłącznie rzeczywiście zapisane klatki GOES-19. Interfejs może odświeżać się częściej niż satelity publikują nowe obrazy.</p>
+    <p class="notice"><b>Korekta naukowa:</b> EUMETSAT Geo Colour jest prawdziwym produktem satelitarnym, ale jest kompozycją RGB i nie służy jako bezpośredni pomiar spadku napromienienia podczas zaćmienia. Dlatego oddzielamy: <b>RAW VIS</b> = rzeczywista obserwacja odbitego światła, <b>NASA GSFC</b> = geometria umbry/penumbry, <b>Cesium</b> = wizualizacja 3D. Nie nazywamy modelu fotografią.</p>
   </section>
 
   <section class="panel">
     <div class="controls">
       <label>Punkt obserwacyjny<br/><select id="site"></select></label>
-      <button id="human">🧍 2 m</button>
-      <button id="aerial">🚁 5 km</button>
-      <button id="orbit">🛰 2500 km</button>
-      <button id="global">🌍 Glob</button>
-      <button id="cloud-toggle" class="active">☁ EUMETSAT LIVE</button>
+      <button id="human">🧍 2 m</button><button id="aerial">🚁 5 km</button><button id="orbit">🛰 2500 km</button><button id="global">🌍 Glob</button>
+      <button id="shadow-track">🎯 Śledź cień · 700 km</button>
+      <button id="cloud-toggle" class="active">☁ EUMETSAT</button>
+      <button id="lighting-toggle">☀ Dzień/noc Cesium OFF</button>
       <a class="button" href="../">← Główna strona</a>
     </div>
     <div class="grid">
@@ -52,123 +43,74 @@
         <h2 id="site-title">Olszówka · gmina Gardeja · Polska</h2>
         <div class="fact"><span>Aktualny UTC</span><b id="utc">—</b></div>
         <div class="fact"><span>Typ</span><b id="kind">częściowe</b></div>
-        <div class="fact"><span>Zakrycie lokalne</span><b id="coverage">nie zgadujemy — do obliczenia z Bessela</b></div>
-        <div class="fact"><span>Maksimum lokalne</span><b id="maximum">do wyliczenia z elementów Bessela</b></div>
-        <div class="fact"><span>Centralna umbra NASA</span><b id="umbra-status">jeszcze poza zakresem tabeli</b></div>
-        <div class="fact"><span>Chmury EUMETSAT</span><b id="cloud-status" class="cloud-warn">ładowanie…</b></div>
+        <div class="fact"><span>Zakrycie lokalne</span><b id="coverage">do obliczenia z Bessela</b></div>
+        <div class="fact"><span>Centralna umbra</span><b id="umbra-status">—</b></div>
+        <div class="fact"><span>Promień penumbry l1</span><b id="penumbra-status">—</b></div>
+        <div class="fact"><span>Warstwa satelitarna</span><b id="cloud-status" class="pending">ładowanie…</b></div>
         <p id="site-note" class="site-note"></p>
-        <div class="source-card">
-          <b>Warstwy na globie</b><br/>
-          ☁ EUMETSAT MTG Geo Colour = prawdziwa najnowsza obserwacja chmur.<br/>
-          🌑 NASA GSFC = model centralnej umbry WGS84, nie fotografia.<br/>
-          ☀ Cesium = oświetlenie Słońca dla aktualnego UTC.
-        </div>
+        <div class="source-card"><b>Jak czytać glob</b><br/>☁ obraz EUMETSAT = obserwacja satelitarna.<br/>◐ półprzezroczyste ciemnienie = <b>MODEL</b> penumbry z elementu Bessela NASA l1, nie piksele satelity.<br/>● ciemny środek = <b>MODEL</b> umbry z oficjalnej centralnej ścieżki NASA WGS84.<br/>☀ standardowe światło dzień/noc Cesium jest domyślnie wyłączone, aby nie mylić terminatora z cieniem Księżyca.</div>
         <div class="links" style="margin-top:10px">
-          <a href="https://view.eumetsat.int/geoserver/wms?service=WMS&version=1.3.0&request=GetCapabilities" target="_blank" rel="noreferrer">EUMETSAT EUMETView WMS ↗</a><br/>
-          <a href="https://science.nasa.gov/eclipses/future-eclipses/total-solar-eclipse-on-august-12-2026/" target="_blank" rel="noreferrer">NASA Science ↗</a><br/>
-          <a href="https://eclipse.gsfc.nasa.gov/SEpath/SEpath2001/SE2026Aug12Tpath.html" target="_blank" rel="noreferrer">NASA GSFC · ścieżka WGS84 ↗</a>
+          <a href="https://eclipse.gsfc.nasa.gov/SEbeselm/SEbeselm2001/SE2026Aug12Tbeselm.html" target="_blank" rel="noreferrer">NASA GSFC · elementy Bessela ↗</a><br/>
+          <a href="https://eclipse.gsfc.nasa.gov/SEpath/SEpath2001/SE2026Aug12Tpath.html" target="_blank" rel="noreferrer">NASA GSFC · centralna ścieżka WGS84 ↗</a><br/>
+          <a href="https://www.star.nesdis.noaa.gov/GOES/fulldisk_band.php?band=02&length=12&sat=G19" target="_blank" rel="noreferrer">NOAA GOES-19 · Band 2 RAW VIS ↗</a>
         </div>
       </aside>
     </div>
   </section>
 
   <section class="panel satellite">
-    <div class="eyebrow">NOAA NESDIS STAR · GOES-19 ABI FULL DISK GEOCOLOR</div>
-    <h2>Prawdziwa obserwacja satelitarna</h2>
-    <p class="evidence"><b>SATELLITE_PHOTOGRAPHY = TRUE · SYNTHETIC = FALSE</b><br/>Workflow zapisuje oryginalny URL NOAA, czas obserwacji i SHA-256. Brak klatki oznacza brak opublikowanej/zapisanej klatki — nie generujemy zastępczej grafiki.</p>
-    <div class="grid">
-      <div id="frame-box"><p>Oczekiwanie na pierwszą klatkę opublikowaną przez workflow GitHub Actions.</p></div>
-      <aside>
-        <div class="fact"><span>Kadencja źródła</span><b id="cadence">10 min</b></div>
-        <div class="fact"><span>Odświeżanie panelu</span><b>5 s</b></div>
-        <div class="fact"><span>Liczba zapisanych klatek</span><b id="count">0</b></div>
-        <div class="fact"><span>Ostatnia obserwacja</span><b id="observed">brak</b></div>
-        <div class="fact"><span>SHA-256</span><b id="sha">brak</b></div>
-        <div class="links"><a id="source-frame" href="https://www.star.nesdis.noaa.gov/GOES/fulldisk.php?sat=G19" target="_blank" rel="noreferrer">Oficjalny NOAA GOES Full Disk ↗</a></div>
-      </aside>
+    <div class="eyebrow">RAW SATELLITE EVIDENCE · BEZ NAKŁADKI MODELU</div>
+    <h2>Rzeczywiste obrazy widzialne</h2>
+    <p class="evidence"><b>To są piksele satelitarne, nie render Cesium.</b> NOAA ABI Band 2 mierzy widzialne światło 0,64 µm i jest najlepszym kanałem GOES do obserwacji dziennej przy 0,5 km nominalnej rozdzielczości w punkcie podsatelitarnym. Obraz jest odświeżany z oficjalnego endpointu; model NASA nie jest na niego nakładany.</p>
+    <div class="raw-grid">
+      <article class="raw-card"><h3>NOAA GOES-19 · Band 2 · 0,64 µm RAW VIS</h3><img id="noaa-raw" alt="NOAA GOES-19 ABI Band 2 visible"/><div class="fact"><span>Odświeżenie UI</span><b>60 s</b></div><a href="https://cdn.star.nesdis.noaa.gov/GOES19/ABI/FD/02/" target="_blank" rel="noreferrer">Oficjalny katalog NOAA ↗</a></article>
+      <article class="raw-card"><h3>EUMETSAT MTG · obraz na globie</h3><p>Na Cesium próbujemy najpierw kanału <b>VIS 0.6 HRFI</b>. Jeżeli WMS nie udostępni go przeglądarce, automatycznie wracamy do Geo Colour i oznaczamy to w statusie. VIS 0.6 jest właściwszy do sprawdzania chwilowego spadku odbitego światła niż kompozycja Geo Colour.</p><div class="fact"><span>Tryb</span><b id="eumet-mode">VIS0.6 → fallback GeoColour</b></div><div class="fact"><span>Źródło</span><b>EUMETView WMS</b></div><a href="https://view.eumetsat.int/geoserver/wms?service=WMS&version=1.3.0&request=GetCapabilities" target="_blank" rel="noreferrer">EUMETView GetCapabilities ↗</a></article>
     </div>
   </section>
 
-  <section class="panel">
-    <div class="research">
-      <article><h2>Eksperyment Olszówka</h2><p>Domyślny punkt to Olszówka, gmina Gardeja: 53.61586°N, 18.99546°E (OpenStreetMap node 692621270). Widok 2 m odpowiada obserwatorowi przy powierzchni, a kolejne presety pozwalają porównać lokalną i globalną geometrię.</p></article>
-      <article><h2>Chmury vs cień Księżyca</h2><p>Warstwa EUMETSAT przedstawia rzeczywiste chmury. Okrąg umbry jest obliczeniowym modelem NASA. Nie opisujemy wizualizacji NASA jako zdjęcia satelitarnego ani nie wyliczamy osobnej warstwy cieni chmur na gruncie bez danych pomiarowych.</p></article>
-      <article><h2>Siatka 8×8×8</h2><p>512 adresowalnych komórek pozostaje eksperymentalną warstwą indeksowania przestrzeni 3D dla obserwacji astronomicznych i środowiskowych; WGS84 pozostaje układem odniesienia.</p></article>
-    </div>
+  <section class="panel satellite">
+    <div class="eyebrow">ARCHIWIZACJA EKSPERYMENTU · NOAA GOES-19</div><h2>Zapisane klatki z SHA-256</h2>
+    <div class="grid"><div id="frame-box"><p>Oczekiwanie na pierwszą klatkę zapisaną przez workflow GitHub Actions.</p></div><aside><div class="fact"><span>Kadencja źródła</span><b id="cadence">10 min</b></div><div class="fact"><span>Liczba zapisanych</span><b id="count">0</b></div><div class="fact"><span>Ostatnia obserwacja</span><b id="observed">brak</b></div><div class="fact"><span>SHA-256</span><b id="sha">brak</b></div><a id="source-frame" href="https://www.star.nesdis.noaa.gov/GOES/fulldisk.php?sat=G19" target="_blank" rel="noreferrer">NOAA źródło ↗</a></aside></div>
   </section>
+
+  <section class="panel"><div class="research"><article><h2>Olszówka</h2><p>53.61586°N, 18.99546°E. Punkt eksperymentu pozostaje zaznaczony, ale przycisk „Śledź cień” przenosi kamerę nad aktualną centralną ścieżkę.</p></article><article><h2>Obserwacja vs model</h2><p>RAW VIS służy do sprawdzania rzeczywistego spadku jasności chmur i powierzchni. NASA Besselian/Path służy do niezależnej geometrii. Zgodność obu warstw jest wynikiem badawczym, nie założeniem.</p></article><article><h2>Penumbra</h2><p>Promień wizualizowanej penumbry jest liczony z oficjalnego współczynnika l1 NASA w fundamentalnej płaszczyźnie i służy tylko jako przybliżony zasięg na globie. Nie jest mapą procentowego zakrycia.</p></article></div></section>
 </div>
 <script>window.CESIUM_BASE_URL='https://cdn.jsdelivr.net/npm/cesium@1.126/Build/Cesium/'</script>
 <script src="https://cdn.jsdelivr.net/npm/cesium@1.126/Build/Cesium/Cesium.js"></script>
 <script>
 const sites=[
-  {id:'olszowka-gardeja',label:'Olszówka · gmina Gardeja',country:'Polska',lon:18.99546,lat:53.61586,kind:'częściowe',note:'Punkt eksperymentu. Współrzędne lokalizacji pochodzą z publicznego OpenStreetMap (node 692621270). Parametrów zakrycia nie zgadujemy — wymagają lokalnego obliczenia z elementów Bessela NASA.'},
-  {id:'gdansk',label:'Gdańsk',country:'Polska',lon:18.6466,lat:54.3520,kind:'częściowe',note:'Północna Polska. Lokalną fazę należy wyliczać z danych referencyjnych, a nie z samej grafiki Cesium.'},
-  {id:'krakow',label:'Kraków',country:'Polska',lon:19.9450,lat:50.0647,kind:'częściowe',coverage:'64%',maximum:'19:56 CEST',note:'Wartość zachowana z wcześniej zweryfikowanej tabeli projektu.'},
-  {id:'warszawa',label:'Warszawa',country:'Polska',lon:21.0122,lat:52.2297,kind:'częściowe',note:'Punkt obserwacyjny w Polsce.'},
-  {id:'poznan',label:'Poznań',country:'Polska',lon:16.9252,lat:52.4064,kind:'częściowe',note:'Punkt obserwacyjny w Polsce; ważny jest zachodni horyzont.'},
-  {id:'wroclaw',label:'Wrocław',country:'Polska',lon:17.0385,lat:51.1079,kind:'częściowe',note:'Punkt obserwacyjny w Polsce.'},
-  {id:'szczecin',label:'Szczecin',country:'Polska',lon:14.5528,lat:53.4285,kind:'częściowe',note:'Punkt obserwacyjny w północno-zachodniej Polsce.'},
-  {id:'reykjavik',label:'Reykjavík',country:'Islandia',lon:-21.9426,lat:64.1466,kind:'CAŁKOWITE',maximum:'około 17:48 UTC',note:'NASA wskazuje Reykjavík w pasie całkowitości.'},
-  {id:'leon',label:'León',country:'Hiszpania',lon:-5.5671,lat:42.5987,kind:'CAŁKOWITE',maximum:'około 20:29 CEST',note:'NASA wskazuje León w pasie całkowitości.'},
-  {id:'zaragoza',label:'Zaragoza',country:'Hiszpania',lon:-0.8891,lat:41.6488,kind:'CAŁKOWITE',maximum:'około 20:29 CEST',note:'NASA wskazuje Zaragozę w pasie całkowitości.'},
-  {id:'valencia',label:'Valencia',country:'Hiszpania',lon:-0.3763,lat:39.4699,kind:'CAŁKOWITE',maximum:'około 20:32 CEST',note:'NASA wskazuje Valencię w pasie całkowitości tuż przed zachodem.'}
+{id:'olszowka-gardeja',label:'Olszówka · gmina Gardeja',country:'Polska',lon:18.99546,lat:53.61586,kind:'częściowe',note:'Punkt eksperymentu. Lokalnego procentu nie zgadujemy z grafiki; powinien być obliczany z elementów Bessela.'},
+{id:'gdansk',label:'Gdańsk',country:'Polska',lon:18.6466,lat:54.3520,kind:'częściowe',note:'Północna Polska.'},
+{id:'warszawa',label:'Warszawa',country:'Polska',lon:21.0122,lat:52.2297,kind:'częściowe',note:'Polska centralna.'},
+{id:'reykjavik',label:'Reykjavík',country:'Islandia',lon:-21.9426,lat:64.1466,kind:'CAŁKOWITE',note:'NASA wskazuje Reykjavík w pasie całkowitości.'},
+{id:'leon',label:'León',country:'Hiszpania',lon:-5.5671,lat:42.5987,kind:'CAŁKOWITE',note:'NASA wskazuje León w pasie całkowitości.'},
+{id:'zaragoza',label:'Zaragoza',country:'Hiszpania',lon:-0.8891,lat:41.6488,kind:'CAŁKOWITE',note:'NASA wskazuje Zaragozę w pasie całkowitości.'}
 ];
-
-const nasaUmbraPath=[
-  ['2026-08-12T17:02:00Z',82.275,112.48667,273],['2026-08-12T17:04:00Z',85.295,104.215,274],['2026-08-12T17:06:00Z',87.27833,81.525,274],['2026-08-12T17:08:00Z',87.82333,33,275],['2026-08-12T17:10:00Z',86.835,-1.63833,275],['2026-08-12T17:12:00Z',85.40333,-15.18167,275],['2026-08-12T17:14:00Z',83.93167,-21.18667,276],['2026-08-12T17:16:00Z',82.495,-24.27167,276],['2026-08-12T17:18:00Z',81.11,-25.99167,277],['2026-08-12T17:20:00Z',79.77333,-26.98167,278],['2026-08-12T17:22:00Z',78.48333,-27.54,278],['2026-08-12T17:24:00Z',77.23333,-27.825,279],['2026-08-12T17:26:00Z',76.01833,-27.92833,280],['2026-08-12T17:28:00Z',74.83667,-27.905,281],['2026-08-12T17:30:00Z',73.68333,-27.78833,282],['2026-08-12T17:32:00Z',72.55667,-27.60333,283],['2026-08-12T17:34:00Z',71.45,-27.36167,285],['2026-08-12T17:36:00Z',70.365,-27.07833,286],['2026-08-12T17:38:00Z',69.29833,-26.76,288],['2026-08-12T17:40:00Z',68.24667,-26.41,289],['2026-08-12T17:42:00Z',67.21,-26.03167,291],['2026-08-12T17:44:00Z',66.185,-25.63,292],['2026-08-12T17:46:00Z',65.17167,-25.205,294],['2026-08-12T17:48:00Z',64.16833,-24.75667,296],['2026-08-12T17:50:00Z',63.17167,-24.28667,298],['2026-08-12T17:52:00Z',62.18333,-23.79333,300],['2026-08-12T17:54:00Z',61.2,-23.27667,302],['2026-08-12T17:56:00Z',60.22167,-22.73667,304],['2026-08-12T17:58:00Z',59.245,-22.17,305],['2026-08-12T18:00:00Z',58.27167,-21.57333,307],['2026-08-12T18:02:00Z',57.29667,-20.94667,309],['2026-08-12T18:04:00Z',56.32167,-20.28667,311],['2026-08-12T18:06:00Z',55.34333,-19.58833,313],['2026-08-12T18:08:00Z',54.36167,-18.84667,315],['2026-08-12T18:10:00Z',53.37167,-18.05667,316],['2026-08-12T18:12:00Z',52.37167,-17.21167,318],['2026-08-12T18:14:00Z',51.36,-16.30333,319],['2026-08-12T18:16:00Z',50.33333,-15.31667,319],['2026-08-12T18:18:00Z',49.285,-14.23833,319],['2026-08-12T18:20:00Z',48.21167,-13.04833,319],['2026-08-12T18:22:00Z',47.10167,-11.715,318],['2026-08-12T18:24:00Z',45.94333,-10.19,315],['2026-08-12T18:26:00Z',44.71333,-8.39833,311],['2026-08-12T18:28:00Z',43.37167,-6.18833,304],['2026-08-12T18:30:00Z',41.81667,-3.185,294],['2026-08-12T18:32:00Z',39.40833,2.95,270]
+const path=[
+['2026-08-12T17:02:00Z',82.275,112.48667,273],['2026-08-12T17:04:00Z',85.295,104.215,274],['2026-08-12T17:06:00Z',87.27833,81.525,274],['2026-08-12T17:08:00Z',87.82333,33,275],['2026-08-12T17:10:00Z',86.835,-1.63833,275],['2026-08-12T17:12:00Z',85.40333,-15.18167,275],['2026-08-12T17:14:00Z',83.93167,-21.18667,276],['2026-08-12T17:16:00Z',82.495,-24.27167,276],['2026-08-12T17:18:00Z',81.11,-25.99167,277],['2026-08-12T17:20:00Z',79.77333,-26.98167,278],['2026-08-12T17:22:00Z',78.48333,-27.54,278],['2026-08-12T17:24:00Z',77.23333,-27.825,279],['2026-08-12T17:26:00Z',76.01833,-27.92833,280],['2026-08-12T17:28:00Z',74.83667,-27.905,281],['2026-08-12T17:30:00Z',73.68333,-27.78833,282],['2026-08-12T17:32:00Z',72.55667,-27.60333,283],['2026-08-12T17:34:00Z',71.45,-27.36167,285],['2026-08-12T17:36:00Z',70.365,-27.07833,286],['2026-08-12T17:38:00Z',69.29833,-26.76,288],['2026-08-12T17:40:00Z',68.24667,-26.41,289],['2026-08-12T17:42:00Z',67.21,-26.03167,291],['2026-08-12T17:44:00Z',66.185,-25.63,292],['2026-08-12T17:46:00Z',65.17167,-25.205,294],['2026-08-12T17:48:00Z',64.16833,-24.75667,296],['2026-08-12T17:50:00Z',63.17167,-24.28667,298],['2026-08-12T17:52:00Z',62.18333,-23.79333,300],['2026-08-12T17:54:00Z',61.2,-23.27667,302],['2026-08-12T17:56:00Z',60.22167,-22.73667,304],['2026-08-12T17:58:00Z',59.245,-22.17,305],['2026-08-12T18:00:00Z',58.27167,-21.57333,307],['2026-08-12T18:02:00Z',57.29667,-20.94667,309],['2026-08-12T18:04:00Z',56.32167,-20.28667,311],['2026-08-12T18:06:00Z',55.34333,-19.58833,313],['2026-08-12T18:08:00Z',54.36167,-18.84667,315],['2026-08-12T18:10:00Z',53.37167,-18.05667,316],['2026-08-12T18:12:00Z',52.37167,-17.21167,318],['2026-08-12T18:14:00Z',51.36,-16.30333,319],['2026-08-12T18:16:00Z',50.33333,-15.31667,319],['2026-08-12T18:18:00Z',49.285,-14.23833,319],['2026-08-12T18:20:00Z',48.21167,-13.04833,319],['2026-08-12T18:22:00Z',47.10167,-11.715,318],['2026-08-12T18:24:00Z',45.94333,-10.19,315],['2026-08-12T18:26:00Z',44.71333,-8.39833,311],['2026-08-12T18:28:00Z',43.37167,-6.18833,304],['2026-08-12T18:30:00Z',41.81667,-3.185,294],['2026-08-12T18:32:00Z',39.40833,2.95,270]
 ].map(([utc,latitude,longitude,widthKm])=>({utc,latitude,longitude,widthKm}));
-
-function interpolateUmbra(date){
-  const now=date.getTime();const first=Date.parse(nasaUmbraPath[0].utc);const last=Date.parse(nasaUmbraPath.at(-1).utc);
-  if(now<first||now>last)return null;
-  for(let i=0;i<nasaUmbraPath.length-1;i+=1){const a=nasaUmbraPath[i],b=nasaUmbraPath[i+1],start=Date.parse(a.utc),end=Date.parse(b.utc);if(now<start||now>end)continue;const r=(now-start)/(end-start);return{latitude:a.latitude+(b.latitude-a.latitude)*r,longitude:a.longitude+(b.longitude-a.longitude)*r,widthKm:a.widthKm+(b.widthKm-a.widthKm)*r};}
-  return nasaUmbraPath.at(-1);
-}
-
-const siteSelect=document.getElementById('site');
-for(const s of sites){const o=document.createElement('option');o.value=s.id;o.textContent=`${s.label} · ${s.country} · ${s.kind}${s.coverage?' · '+s.coverage:''}`;siteSelect.append(o)}
-let current=sites[0];
+function axisAt(date){const t=date.getTime(),first=Date.parse(path[0].utc),last=Date.parse(path.at(-1).utc);if(t<first||t>last)return null;for(let i=0;i<path.length-1;i++){const a=path[i],b=path[i+1],s=Date.parse(a.utc),e=Date.parse(b.utc);if(t<s||t>e)continue;const r=(t-s)/(e-s);return{latitude:a.latitude+(b.latitude-a.latitude)*r,longitude:a.longitude+(b.longitude-a.longitude)*r,widthKm:a.widthKm+(b.widthKm-a.widthKm)*r}}return path.at(-1)}
+function penumbraRadiusKm(date){const utcHours=date.getUTCHours()+date.getUTCMinutes()/60+date.getUTCSeconds()/3600;const t=(utcHours+71.4/3600)-18;if(t<-3||t>3)return null;const l1=0.537954+0.0000940*t-0.0000121*t*t;return Math.abs(l1)*6378.137}
+const select=document.getElementById('site');for(const s of sites){const o=document.createElement('option');o.value=s.id;o.textContent=`${s.label} · ${s.country} · ${s.kind}`;select.append(o)}let current=sites[0];
 const viewer=new Cesium.Viewer('cesium',{animation:false,timeline:false,baseLayerPicker:false,geocoder:false,homeButton:false,sceneModePicker:false,navigationHelpButton:false,fullscreenButton:false,infoBox:false,selectionIndicator:false,imageryProvider:false,requestRenderMode:true,maximumRenderTimeChange:1});
 viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',minimumLevel:0,maximumLevel:18,credit:'Esri World Imagery'}));
-viewer.scene.globe.enableLighting=true;viewer.scene.skyAtmosphere.show=true;viewer.scene.globe.showGroundAtmosphere=true;viewer.scene.sun.show=true;viewer.scene.moon.show=true;viewer.scene.globe.maximumScreenSpaceError=innerWidth<=768?2.2:1.5;viewer.scene.globe.tileCacheSize=innerWidth<=768?140:260;viewer.resolutionScale=innerWidth<=768?.72:1;
-
-let cloudLayer=null;let cloudEnabled=true;
-function addCloudLayer(){
-  if(cloudLayer){viewer.imageryLayers.remove(cloudLayer,true);cloudLayer=null}
-  const provider=new Cesium.WebMapServiceImageryProvider({
-    url:`https://view.eumetsat.int/geoserver/wms?refresh=${Date.now()}`,
-    layers:'mtg_fd:rgb_geocolour',
-    parameters:{transparent:true,format:'image/png',version:'1.3.0'},
-    credit:'EUMETSAT EUMETView · MTG-I Geo Colour RGB'
-  });
-  provider.errorEvent.addEventListener(()=>{const el=document.getElementById('cloud-status');el.textContent='błąd pobierania — ponawiam';el.className='cloud-warn'});
-  cloudLayer=viewer.imageryLayers.addImageryProvider(provider);cloudLayer.alpha=.88;cloudLayer.show=cloudEnabled;
-  const el=document.getElementById('cloud-status');el.textContent='EUMETView MTG · najnowsza warstwa';el.className='cloud-ok';viewer.scene.requestRender();
-}
-addCloudLayer();setInterval(()=>{if(cloudEnabled)addCloudLayer()},60000);
-
-document.getElementById('cloud-toggle').onclick=()=>{cloudEnabled=!cloudEnabled;if(cloudLayer)cloudLayer.show=cloudEnabled;document.getElementById('cloud-toggle').classList.toggle('active',cloudEnabled);viewer.scene.requestRender()};
-
-function fly(height,pitch,heading=270){viewer.camera.flyTo({destination:Cesium.Cartesian3.fromDegrees(current.lon,current.lat,height),orientation:{heading:Cesium.Math.toRadians(heading),pitch:Cesium.Math.toRadians(pitch),roll:0},duration:.65});viewer.scene.requestRender()}
-const humanView=()=>fly(2,4);const aerialView=()=>fly(5000,-35);const orbitView=()=>fly(2500000,-90,0);const globalView=()=>fly(10000000,-90,0);
-document.getElementById('human').onclick=humanView;document.getElementById('aerial').onclick=aerialView;document.getElementById('orbit').onclick=orbitView;document.getElementById('global').onclick=globalView;
-
-function renderSite(){
-  document.getElementById('site-title').textContent=`${current.label} · ${current.country}`;document.getElementById('kind').textContent=current.kind;document.getElementById('coverage').textContent=current.coverage||'nie zgadujemy — do obliczenia z Bessela';document.getElementById('maximum').textContent=current.maximum||'do wyliczenia z elementów Bessela';document.getElementById('site-note').textContent=current.note;
-  const old=viewer.entities.getById('observer-site');if(old)viewer.entities.remove(old);viewer.entities.add({id:'observer-site',position:Cesium.Cartesian3.fromDegrees(current.lon,current.lat,0),point:{pixelSize:12,color:Cesium.Color.YELLOW},label:{text:current.label,font:'14px sans-serif',pixelOffset:new Cesium.Cartesian2(0,-22)}});humanView();
-}
-siteSelect.addEventListener('change',()=>{current=sites.find(s=>s.id===siteSelect.value)||sites[0];renderSite()});renderSite();
-
-function updateUmbra(now){
-  const old=viewer.entities.getById('nasa-umbra');if(old)viewer.entities.remove(old);const u=interpolateUmbra(now);const status=document.getElementById('umbra-status');
-  if(!u){status.textContent=now<Date.parse('2026-08-12T17:02:00Z')?'centralna umbra jeszcze nie weszła w tabelę NASA':'centralna umbra poza zakresem tabeli';return}
-  viewer.entities.add({id:'nasa-umbra',position:Cesium.Cartesian3.fromDegrees(u.longitude,u.latitude,0),ellipse:{semiMajorAxis:u.widthKm*500,semiMinorAxis:u.widthKm*500,material:Cesium.Color.fromCssColorString('rgba(0,0,0,0.66)'),outline:true,outlineColor:Cesium.Color.fromCssColorString('#ffdf72')},label:{text:`UMBRA · NASA GSFC MODEL · ${u.widthKm.toFixed(0)} km`,font:'13px sans-serif',pixelOffset:new Cesium.Cartesian2(0,-30),fillColor:Cesium.Color.WHITE,showBackground:true,backgroundColor:Cesium.Color.fromCssColorString('rgba(0,0,0,.65)')}});
-  status.textContent=`${u.latitude.toFixed(2)}°, ${u.longitude.toFixed(2)}° · ${u.widthKm.toFixed(0)} km`;viewer.scene.requestRender();
-}
-
-setInterval(()=>{const now=new Date();document.getElementById('utc').textContent=now.toLocaleString('pl-PL',{timeZone:'UTC'})+' UTC';viewer.clock.currentTime=Cesium.JulianDate.fromDate(now);updateUmbra(now);viewer.scene.requestRender()},1000);
-updateUmbra(new Date());
-
+viewer.scene.globe.enableLighting=false;viewer.scene.skyAtmosphere.show=true;viewer.scene.globe.showGroundAtmosphere=true;viewer.scene.sun.show=true;viewer.scene.moon.show=true;viewer.scene.globe.maximumScreenSpaceError=innerWidth<=768?2.4:1.6;viewer.scene.globe.tileCacheSize=innerWidth<=768?120:240;viewer.resolutionScale=innerWidth<=768?.72:1;
+let satLayer=null,cloudEnabled=true,usingRawVis=true,lighting=false,tracking=false;
+function installEumet(layerName,mode){if(satLayer){viewer.imageryLayers.remove(satLayer,true);satLayer=null}const provider=new Cesium.WebMapServiceImageryProvider({url:`https://view.eumetsat.int/geoserver/wms?refresh=${Date.now()}`,layers:layerName,parameters:{transparent:true,format:'image/png',version:'1.3.0'},credit:`EUMETSAT EUMETView · ${mode}`});let failed=false;provider.errorEvent.addEventListener(()=>{if(failed)return;failed=true;if(layerName!=='mtg_fd:rgb_geocolour'){usingRawVis=false;document.getElementById('eumet-mode').textContent='GeoColour fallback';installEumet('mtg_fd:rgb_geocolour','MTG Geo Colour')}else{document.getElementById('cloud-status').textContent='EUMETSAT WMS błąd';document.getElementById('cloud-status').className='pending'}});satLayer=viewer.imageryLayers.addImageryProvider(provider);satLayer.alpha=usingRawVis?.82:.88;satLayer.show=cloudEnabled;document.getElementById('cloud-status').textContent=usingRawVis?'MTG VIS0.6 HRFI':'MTG GeoColour fallback';document.getElementById('cloud-status').className='ok';viewer.scene.requestRender()}
+installEumet('mtg_fd:vis06_hrfi','MTG VIS 0.6 HRFI');setInterval(()=>{if(cloudEnabled)installEumet(usingRawVis?'mtg_fd:vis06_hrfi':'mtg_fd:rgb_geocolour',usingRawVis?'MTG VIS 0.6 HRFI':'MTG Geo Colour')},60000);
+document.getElementById('cloud-toggle').onclick=()=>{cloudEnabled=!cloudEnabled;if(satLayer)satLayer.show=cloudEnabled;document.getElementById('cloud-toggle').classList.toggle('active',cloudEnabled);viewer.scene.requestRender()};
+document.getElementById('lighting-toggle').onclick=()=>{lighting=!lighting;viewer.scene.globe.enableLighting=lighting;document.getElementById('lighting-toggle').textContent=lighting?'☀ Dzień/noc Cesium ON':'☀ Dzień/noc Cesium OFF';document.getElementById('lighting-toggle').classList.toggle('active',lighting);viewer.scene.requestRender()};
+function fly(height,pitch,heading=270,lon=current.lon,lat=current.lat){viewer.camera.flyTo({destination:Cesium.Cartesian3.fromDegrees(lon,lat,height),orientation:{heading:Cesium.Math.toRadians(heading),pitch:Cesium.Math.toRadians(pitch),roll:0},duration:.55});viewer.scene.requestRender()}
+document.getElementById('human').onclick=()=>fly(2,4);document.getElementById('aerial').onclick=()=>fly(5000,-35);document.getElementById('orbit').onclick=()=>fly(2500000,-90,0);document.getElementById('global').onclick=()=>fly(10000000,-90,0);
+document.getElementById('shadow-track').onclick=()=>{tracking=!tracking;document.getElementById('shadow-track').classList.toggle('active',tracking);const u=axisAt(new Date());if(u)fly(700000,-90,0,u.longitude,u.latitude)};
+function renderSite(){document.getElementById('site-title').textContent=`${current.label} · ${current.country}`;document.getElementById('kind').textContent=current.kind;document.getElementById('site-note').textContent=current.note;const old=viewer.entities.getById('observer-site');if(old)viewer.entities.remove(old);viewer.entities.add({id:'observer-site',position:Cesium.Cartesian3.fromDegrees(current.lon,current.lat,0),point:{pixelSize:12,color:Cesium.Color.YELLOW},label:{text:current.label,font:'14px sans-serif',pixelOffset:new Cesium.Cartesian2(0,-22)}});fly(2500000,-90,0)}
+select.addEventListener('change',()=>{current=sites.find(s=>s.id===select.value)||sites[0];renderSite()});renderSite();
+function clearShadow(){for(const id of ['pen-outer','pen-mid','pen-inner','nasa-umbra']){const e=viewer.entities.getById(id);if(e)viewer.entities.remove(e)}}
+function ellipse(id,u,radius,alpha,label){viewer.entities.add({id,position:Cesium.Cartesian3.fromDegrees(u.longitude,u.latitude,0),ellipse:{semiMajorAxis:radius,semiMinorAxis:radius,material:Cesium.Color.fromCssColorString(`rgba(0,0,12,${alpha})`),height:100},label:label?{text:label,font:'12px sans-serif',pixelOffset:new Cesium.Cartesian2(0,-28),showBackground:true,backgroundColor:Cesium.Color.fromCssColorString('rgba(0,0,0,.65)')}:undefined})}
+function updateShadow(now){clearShadow();const u=axisAt(now),pr=penumbraRadiusKm(now);document.getElementById('penumbra-status').textContent=pr?`${pr.toFixed(0)} km · model l1`:'poza zakresem NASA';if(!u){document.getElementById('umbra-status').textContent=now<Date.parse('2026-08-12T17:02:00Z')?'oś centralna jeszcze nie przecina Ziemi':'po centralnej ścieżce';return}if(pr){ellipse('pen-outer',u,pr*1000,.035,'PENUMBRA · NASA BESSEL l1 · MODEL');ellipse('pen-mid',u,pr*680,.055);ellipse('pen-inner',u,pr*380,.08)}ellipse('nasa-umbra',u,u.widthKm*500,.62,`UMBRA · NASA GSFC · ${u.widthKm.toFixed(0)} km · MODEL`);document.getElementById('umbra-status').textContent=`${u.latitude.toFixed(2)}°, ${u.longitude.toFixed(2)}° · ${u.widthKm.toFixed(0)} km`;if(tracking)viewer.camera.setView({destination:Cesium.Cartesian3.fromDegrees(u.longitude,u.latitude,700000),orientation:{heading:0,pitch:-Math.PI/2,roll:0}});viewer.scene.requestRender()}
+setInterval(()=>{const now=new Date();document.getElementById('utc').textContent=now.toLocaleString('pl-PL',{timeZone:'UTC'})+' UTC';viewer.clock.currentTime=Cesium.JulianDate.fromDate(now);updateShadow(now);viewer.scene.requestRender()},1000);updateShadow(new Date());
+function refreshRaw(){document.getElementById('noaa-raw').src=`https://cdn.star.nesdis.noaa.gov/GOES19/ABI/FD/02/1808x1808.jpg?refresh=${Date.now()}`}
+refreshRaw();setInterval(refreshRaw,60000);
 async function poll(){try{const r=await fetch('../eclipse/2026-08-12/goes19/manifest.json?refresh='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const m=await r.json();const frames=Array.isArray(m.frames)?m.frames:[];document.getElementById('cadence').textContent=(m.cadence_minutes||10)+' min';document.getElementById('count').textContent=String(frames.length);const f=frames.at(-1);if(!f)return;document.getElementById('observed').textContent=f.observed_utc;document.getElementById('sha').textContent=f.sha256.slice(0,16)+'…';const box=document.getElementById('frame-box');box.innerHTML='';const img=document.createElement('img');img.alt='NOAA GOES-19 '+f.observed_utc;img.src='../eclipse/2026-08-12/goes19/'+f.file+'?refresh='+Date.now();box.append(img);document.getElementById('source-frame').href=f.source_url}catch(e){console.debug('NOAA manifest not ready',e)}}
 poll();setInterval(poll,5000);
 </script>
