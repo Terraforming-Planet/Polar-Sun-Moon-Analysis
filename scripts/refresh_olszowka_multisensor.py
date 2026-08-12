@@ -14,7 +14,14 @@ COLLECTION_WINDOWS = {
     "sentinel-1-grd": 21,
     "sentinel-2-l2a": 45,
 }
-PREVIEW_KEYS = ("visual", "rendered_preview", "thumbnail", "overview", "preview", "quicklook")
+PREVIEW_KEYS = (
+    "visual",
+    "rendered_preview",
+    "thumbnail",
+    "overview",
+    "preview",
+    "quicklook",
+)
 
 
 def post_json(url: str, payload: dict[str, Any], timeout: float = 40.0) -> dict[str, Any]:
@@ -40,7 +47,11 @@ def preview_url(item: dict[str, Any]) -> str | None:
     for asset in assets.values():
         href = asset.get("href") if isinstance(asset, dict) else None
         media_type = asset.get("type") if isinstance(asset, dict) else None
-        if isinstance(href, str) and isinstance(media_type, str) and media_type.startswith("image/"):
+        if (
+            isinstance(href, str)
+            and isinstance(media_type, str)
+            and media_type.startswith("image/")
+        ):
             return href
     return None
 
@@ -106,10 +117,12 @@ def build_manifest(
 
     for collection, days in COLLECTION_WINDOWS.items():
         start = current - timedelta(days=days)
+        start_utc = start.isoformat().replace("+00:00", "Z")
+        current_utc = current.isoformat().replace("+00:00", "Z")
         payload = {
             "collections": [collection],
             "bbox": AOI_BBOX,
-            "datetime": f"{start.isoformat().replace('+00:00', 'Z')}/{current.isoformat().replace('+00:00', 'Z')}",
+            "datetime": f"{start_utc}/{current_utc}",
             "limit": 8,
             "sortby": [{"field": "datetime", "direction": "desc"}],
         }
@@ -124,7 +137,10 @@ def build_manifest(
             successful_collections.add(collection)
         except Exception as exc:
             errors.append({"collection": collection, "error": str(exc)})
-            print(f"collection={collection} refresh=failed preserving_previous_collection=true error={exc}")
+            print(
+                f"collection={collection} refresh=failed "
+                f"preserving_previous_collection=true error={exc}"
+            )
 
     if errors and previous and not successful_collections:
         print("catalogue_refresh=failed_preserving_previous_manifest")
@@ -138,7 +154,10 @@ def build_manifest(
     observations.sort(key=lambda item: item.get("datetime_utc") or "", reverse=True)
     previous_observations = (previous or {}).get("observations")
     changed = observations != previous_observations
-    generated_at = current.isoformat() if changed or not previous else previous.get("generated_at_utc", current.isoformat())
+    if changed or not previous:
+        generated_at = current.isoformat()
+    else:
+        generated_at = previous.get("generated_at_utc", current.isoformat())
 
     return {
         "generated_at_utc": generated_at,
@@ -149,7 +168,10 @@ def build_manifest(
             "focus_wgs84": [19.02, 53.61],
         },
         "observations": observations,
-        "sources": [source_record(collection, days) for collection, days in COLLECTION_WINDOWS.items()],
+        "sources": [
+            source_record(collection, days)
+            for collection, days in COLLECTION_WINDOWS.items()
+        ],
         "night_lights": {
             "provider": "NASA Earthdata / VIIRS Day-Night Band",
             "gibs_layer_radiance": "VIIRS_SNPP_DayNightBand_At_Sensor_Radiance",
@@ -158,7 +180,8 @@ def build_manifest(
             "evidence_class": "nighttime_radiance_observation",
             "notice": (
                 "Warstwa DNB może pokazać regionalną radiancję nocną, ale nie gwarantuje "
-                "rozróżnienia pojedynczej lampy. Kontrast w Cesium jest wyłącznie transformacją wizualizacji."
+                "rozróżnienia pojedynczej lampy. Kontrast w Cesium jest wyłącznie "
+                "transformacją wizualizacji."
             ),
         },
         "historical_water": {
@@ -166,7 +189,10 @@ def build_manifest(
             "dataset": "Global Surface Water v1.4",
             "temporal_extent": "1984-2021",
             "source_url": "https://global-surface-water.appspot.com/",
-            "notice": "Warstwa historyczna służy do porównania zaniku i zmian zasięgu wód, nie do bieżącego alarmu.",
+            "notice": (
+                "Warstwa historyczna służy do porównania zaniku i zmian zasięgu wód, "
+                "nie do bieżącego alarmu."
+            ),
         },
         "field_report": {
             "priority": "critical_review_requested",
