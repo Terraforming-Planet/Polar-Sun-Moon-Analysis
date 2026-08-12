@@ -65,7 +65,11 @@ def build_report(now: datetime, config: dict[str, object]) -> dict[str, object]:
     verified = config.get("verified_times_utc")
     capture = config.get("capture")
     policy = config.get("research_policy")
-    if not isinstance(verified, dict) or not isinstance(capture, dict) or not isinstance(policy, dict):
+    if (
+        not isinstance(verified, dict)
+        or not isinstance(capture, dict)
+        or not isinstance(policy, dict)
+    ):
         raise ValueError("invalid eclipse readiness configuration")
 
     path_start = parse_utc(str(verified["totality_path_table_first_row"]))
@@ -84,7 +88,9 @@ def build_report(now: datetime, config: dict[str, object]) -> dict[str, object]:
     return {
         "checked_utc": now.isoformat().replace("+00:00", "Z"),
         "phase": phase,
-        "seconds_to_totality_path_table_start": max(0, int((path_start - now).total_seconds())),
+        "seconds_to_totality_path_table_start": max(
+            0, int((path_start - now).total_seconds())
+        ),
         "seconds_to_greatest_eclipse": max(0, int((greatest - now).total_seconds())),
         "capture_policy_ok": (
             capture.get("source_nominal_cadence_minutes") == 10
