@@ -16,14 +16,15 @@
     <div class="eyebrow">TERRAFORMING PLANET · 12 AUG 2026 · REAL DATA FIRST</div>
     <h1>Zaćmienie LIVE<br/>obserwator 3D</h1>
     <span class="badge">OPEN SCIENCE</span> <span class="badge warn">OPENAI DEV SUBMISSION CANDIDATE</span>
-    <p class="notice"><b>Tryb badawczy:</b> EUMETSAT Meteosat-12 FCI VIS 0.6 HRFI i NOAA GOES-19 Band 2 są obserwacjami satelitarnymi. NASA GSFC Besselian Elements są oficjalnym modelem geometrii zaćmienia. Cesium jest wyłącznie wizualizacją 3D. Nie nakładamy modelu na surowe zdjęcia i nie udajemy, że render Cesium jest fotografią.</p>
+    <p class="notice"><b>Tryb badawczy:</b> EUMETSAT Meteosat-12 FCI VIS 0.6 HRFI i NOAA GOES-19 Band 2 są obserwacjami satelitarnymi. NASA GSFC Besselian Elements są oficjalnym modelem geometrii zaćmienia. Cesium jest wyłącznie wizualizacją 3D. Nocny widok CLOSE używa prawdziwego EUMETSAT IR10.5 HRFI; zielony noktowizor pozostaje wyłącznie filtrem UI.</p>
   </section>
 
   <section class="panel">
     <div class="controls">
       <label>Punkt obserwacyjny<br/><select id="site"></select></label>
       <button id="human">🧍 2 m</button><button id="aerial">🚁 5 km</button><button id="orbit">🛰 2500 km</button><button id="global">🌍 Glob</button>
-      <button id="shadow-track">🎯 Śledź oś cienia · 700 km</button><button id="model-toggle">🌑 Model NASA OFF</button><button id="cloud-toggle" class="active">☁ MTG VIS0.6</button><a class="button" href="../">← Główna strona</a>
+      <button id="shadow-track">🎯 Śledź oś cienia · 700 km</button><button id="model-toggle">🌑 Model NASA OFF</button><button id="cloud-toggle" class="active">☁ MTG VIS0.6</button>
+      <a class="button" href="./close.html">🌙 Noktowizor + IR10.5 · CLOSE</a><a class="button" href="./gallery.html">🖼 Galeria / animacja</a><a class="button" href="../">← Główna strona</a>
     </div>
     <div class="grid">
       <div class="cesium-wrap"><div id="cesium" class="cesium"></div></div>
@@ -47,7 +48,7 @@
           </svg>
           <div class="tiny">Położenie i skala tarcz wynikają z bieżących elementów Bessela NASA GSFC. To <b>model geometryczny</b>, nie obraz z kamery.</div>
         </div>
-        <div class="source-card"><b>Ważne:</b> czarna „kropka” Cesium została usunięta. W widoku człowieka nie używamy wbudowanego Księżyca Cesium do fazy zaćmienia, bo nie odwzorowywał poprawnie lokalnego zasłonięcia. Faza jest liczona z NASA co sekundę.</div>
+        <div class="source-card"><b>Nocny eksperyment:</b> wybierz przycisk „🌙 Noktowizor + IR10.5 · CLOSE”. W tym widoku warstwa satelitarna przełącza się na EUMETSAT FCI IR10.5 HRFI, który jest kanałem termicznym działającym również po zmroku.</div>
       </aside>
     </div>
   </section>
@@ -64,7 +65,7 @@
 
   <section class="panel">
     <div class="eyebrow">ARCHIWIZACJA · NOAA GOES-19 BAND 2</div><h2>Zapisane klatki z SHA-256</h2>
-    <div class="grid"><div id="frame-box"><p>Oczekiwanie na pierwszą zapisaną klatkę.</p></div><aside><div class="fact"><span>Liczba zapisanych</span><b id="count">0</b></div><div class="fact"><span>Ostatnia obserwacja</span><b id="observed">brak</b></div><div class="fact"><span>SHA-256</span><b id="sha">brak</b></div></aside></div>
+    <div class="grid"><div id="frame-box"><p>Oczekiwanie na pierwszą zapisaną klatkę.</p></div><aside><div class="fact"><span>Liczba zapisanych</span><b id="count">0</b></div><div class="fact"><span>Ostatnia obserwacja</span><b id="observed">brak</b></div><div class="fact"><span>SHA-256</span><b id="sha">brak</b></div><p><a href="./gallery.html">Otwórz pełną galerię i animację →</a></p></aside></div>
   </section>
 
   <section class="panel"><div class="research"><article><h2>NASA GSFC</h2><p>Używamy Besselian Elements dla 2026-08-12: ΔT = 75.4 s, t0 = 18.000 TDT, współczynników x, y, d, l1, l2 i μ oraz tan f1/f2. Obliczenia lokalne są wykonywane co sekundę dla wybranego punktu.</p></article><article><h2>Olszówka</h2><p>Domyślny punkt eksperymentu: 53.61586°N, 18.99546°E. Strona pokazuje bieżący procent powierzchni tarczy Słońca zakrytej przez Księżyc, wysokość i azymut Słońca oraz maksimum widoczne przed zachodem.</p></article><article><h2>Zasada dowodowa</h2><p><b>Zdjęcie satelitarne = obserwacja.</b> <b>Besselian = model.</b> <b>Cesium = wizualizacja.</b> Zgodność ruchu cienia z pikselami satelitarnymi jest wynikiem badania, a nie założeniem.</p></article></div></section>
