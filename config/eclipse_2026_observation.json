@@ -1,0 +1,32 @@
+{
+  "event": "2026-08-12 total solar eclipse",
+  "event_date": "2026-08-12",
+  "authoritative_sources": {
+    "nasa_science": "https://science.nasa.gov/eclipses/future-eclipses/total-solar-eclipse-on-august-12-2026/",
+    "nasa_gsfc_path": "https://eclipse.gsfc.nasa.gov/SEpath/SEpath2001/SE2026Aug12Tpath.html",
+    "nasa_gsfc_besselian": "https://eclipse.gsfc.nasa.gov/SEbeselm/SEbeselm2001/SE2026Aug12Tbeselm.html",
+    "noaa_goes19": "https://www.star.nesdis.noaa.gov/GOES/fulldisk.php?sat=G19"
+  },
+  "verified_times_utc": {
+    "totality_path_table_first_row": "2026-08-12T17:02:00Z",
+    "greatest_eclipse": "2026-08-12T17:45:53.8Z"
+  },
+  "capture": {
+    "source": "NOAA NESDIS STAR GOES-19 ABI Full Disk GeoColor",
+    "manifest": "web/public/eclipse/2026-08-12/goes19/manifest.json",
+    "poll_interval_seconds": 5,
+    "source_nominal_cadence_minutes": 10,
+    "synthetic_frames_allowed": false
+  },
+  "observer_default": {
+    "name": "Gdansk",
+    "country": "Poland"
+  },
+  "research_policy": {
+    "wgs84_is_reference_frame": true,
+    "satellite_observation_must_be_separated_from_prediction": true,
+    "model_output_must_not_be_labeled_as_satellite_photography": true,
+    "source_url_and_observation_time_required": true,
+    "sha256_required_for_captured_frames": true
+  }
+}
