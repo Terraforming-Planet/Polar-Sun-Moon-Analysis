@@ -6,55 +6,40 @@ PUBLIC = ROOT / "web" / "public"
 
 
 def test_frontend_public_data_contract() -> None:
-    required_files = [
-        PUBLIC / "data" / "solar-system.json",
-        PUBLIC / "data" / "hazards.json",
-        PUBLIC / "data" / "sources.json",
-        PUBLIC / "data" / "observations.json",
-        PUBLIC / "data" / "copernicus" / "latest.json",
-        PUBLIC / "data" / "hydrology" / "glofas-catalog.json",
-        PUBLIC / "flood-map" / "assets" / "map-data.json",
-        PUBLIC / "flood-map" / "index.html",
-        PUBLIC / "copernicus" / "index.html",
-        PUBLIC / "research" / "index.html",
-        PUBLIC / "research" / "research-model.js",
-    ]
-
-    missing = [
-        str(path.relative_to(ROOT))
-        for path in required_files
-        if not path.is_file()
-    ]
-    assert not missing, f"Missing public files required by the web application: {missing}"
+    assert (PUBLIC / "data" / "solar-system.json").is_file()
+    assert (PUBLIC / "data" / "hazards.json").is_file()
+    assert (PUBLIC / "data" / "sources.json").is_file()
+    assert (PUBLIC / "data" / "observations.json").is_file()
+    assert (PUBLIC / "data" / "copernicus" / "latest.json").is_file()
+    assert (PUBLIC / "data" / "hydrology" / "glofas-catalog.json").is_file()
+    assert (PUBLIC / "flood-map" / "assets" / "map-data.json").is_file()
+    assert (PUBLIC / "flood-map" / "index.html").is_file()
+    assert (PUBLIC / "copernicus" / "index.html").is_file()
+    assert (PUBLIC / "research" / "index.html").is_file()
+    assert (PUBLIC / "research" / "research-model.js").is_file()
 
 
 def test_main_tabs_reference_existing_public_paths() -> None:
     main = (ROOT / "web" / "src" / "main.tsx").read_text(encoding="utf-8")
 
-    for tab_label in [
-        "Centrum sterowania",
-        "Ziemia 3D",
-        "Powodzie",
-        "Pożary",
-        "Woda i susza",
-        "Biegun północny",
-        "Biegun południowy",
-        "Słońce i Księżyc",
-        "Dane i źródła",
-    ]:
-        assert tab_label in main
+    assert "Centrum sterowania" in main
+    assert "Ziemia 3D" in main
+    assert "Powodzie" in main
+    assert "Pożary" in main
+    assert "Woda i susza" in main
+    assert "Biegun północny" in main
+    assert "Biegun południowy" in main
+    assert "Słońce i Księżyc" in main
+    assert "Dane i źródła" in main
 
-    for public_path in [
-        "data/solar-system.json",
-        "data/hazards.json",
-        "data/sources.json",
-        "data/observations.json",
-        "data/copernicus/latest.json",
-        "flood-map/assets/map-data.json",
-        "flood-map/",
-        "copernicus/",
-    ]:
-        assert public_path in main
+    assert "data/solar-system.json" in main
+    assert "data/hazards.json" in main
+    assert "data/sources.json" in main
+    assert "data/observations.json" in main
+    assert "data/copernicus/latest.json" in main
+    assert "flood-map/assets/map-data.json" in main
+    assert "flood-map/" in main
+    assert "copernicus/" in main
 
 
 def test_research_grid_is_exactly_8_by_8_by_8_with_cube_spacing() -> None:
