@@ -16,8 +16,12 @@ def test_cesium_uses_adaptive_mobile_rendering_limits() -> None:
 
 def test_mobile_full_live_view_reduces_expensive_overlays() -> None:
     source = SOURCE.read_text(encoding="utf-8")
+    wave_condition = (
+        "layer === 'ocean-waves' || "
+        "(layer === 'full-live-earth' && !constrainedDevice)"
+    )
 
     assert "constrainedDevice && layer === 'full-live-earth'" in source
-    assert "layer === 'ocean-waves' || (layer === 'full-live-earth' && !constrainedDevice)" in source
+    assert wave_condition in source
     assert "viewer.scene.highDynamicRange = !constrainedDevice" in source
     assert "viewer.scene.postProcessStages.fxaa.enabled = !constrainedDevice" in source
