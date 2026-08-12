@@ -16,7 +16,7 @@ describe('EclipseObserverPanel', () => {
     expect(source).toContain('5_000')
     expect(source).toContain('cadence_minutes')
     expect(source).toContain('SATELLITE_PHOTOGRAPHY = TRUE · SYNTHETIC = FALSE')
-    expect(source).toContain('nie tworzy fałszywych')
+    expect(source).toContain('NOAA publikuje Full Disk zwykle co około 10 minut')
   })
 
   it('offers human aerial orbital and global Cesium camera presets', () => {
