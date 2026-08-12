@@ -9,8 +9,15 @@ def test_build_manifest_normalises_official_collection() -> None:
             "title": collection_id,
             "updated": "2026-08-10T00:00:00Z",
             "sci:doi": "10.example/test",
-            "extent": {"temporal": {"interval": [["2020-01-01T00:00:00Z", "2026-08-10T00:00:00Z"]]}},
-            "cads:sanity_check": {"status": "available", "timestamp": "2026-08-10T12:00:00Z"},
+            "extent": {
+                "temporal": {
+                    "interval": [["2020-01-01T00:00:00Z", "2026-08-10T00:00:00Z"]]
+                }
+            },
+            "cads:sanity_check": {
+                "status": "available",
+                "timestamp": "2026-08-10T12:00:00Z",
+            },
             "cads:update_frequency": "Daily",
             "links": [{"rel": "retrieve", "href": f"https://example.test/{collection_id}"}],
         }
@@ -39,8 +46,12 @@ def test_build_manifest_preserves_previous_metadata_on_network_failure() -> None
         raise OSError("temporary outage")
 
     manifest = build_manifest(loader=broken_loader, previous=previous)
-    forecast = next(item for item in manifest["sources"] if item["id"] == "cems-glofas-forecast")
-    historical = next(item for item in manifest["sources"] if item["id"] == "cems-glofas-historical")
+    forecast = next(
+        item for item in manifest["sources"] if item["id"] == "cems-glofas-forecast"
+    )
+    historical = next(
+        item for item in manifest["sources"] if item["id"] == "cems-glofas-historical"
+    )
 
     assert forecast["status"] == "available"
     assert forecast["fetch_state"] == "stale_preserved"
