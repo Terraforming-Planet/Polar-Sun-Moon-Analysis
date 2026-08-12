@@ -31,12 +31,19 @@ def frame_url(value: datetime) -> str:
 
 
 def is_jpeg(payload: bytes) -> bool:
-    return len(payload) > 10_000 and payload.startswith(b"\xff\xd8") and payload.endswith(b"\xff\xd9")
+    return (
+        len(payload) > 10_000
+        and payload.startswith(b"\xff\xd8")
+        and payload.endswith(b"\xff\xd9")
+    )
 
 
 def fetch_frame(value: datetime, timeout: float = 30.0) -> bytes:
     request = urllib.request.Request(frame_url(value), headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(request, timeout=timeout) as response:  # noqa: S310 - fixed NOAA HTTPS host
+    with urllib.request.urlopen(  # noqa: S310 - fixed NOAA HTTPS host
+        request,
+        timeout=timeout,
+    ) as response:
         payload = response.read()
     if not is_jpeg(payload):
         raise ValueError("NOAA response is not a valid non-trivial JPEG")
@@ -53,7 +60,8 @@ def find_latest_frame(now: datetime, lookback_slots: int = 8) -> tuple[datetime,
             return observed, payload, frame_url(observed)
         except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, ValueError) as exc:
             last_error = exc
-    raise RuntimeError(f"No GOES-19 GeoColor frame found in {lookback_slots + 1} slots") from last_error
+    message = f"No GOES-19 GeoColor frame found in {lookback_slots + 1} slots"
+    raise RuntimeError(message) from last_error
 
 
 def load_manifest() -> dict[str, object]:
@@ -84,7 +92,14 @@ def store_frame(now: datetime) -> tuple[Path, bool]:
     if not isinstance(frames, list):
         raise ValueError("Invalid GOES-19 manifest: frames must be a list")
 
-    existing = next((item for item in frames if isinstance(item, dict) and item.get("sha256") == digest), None)
+    existing = next(
+        (
+            item
+            for item in frames
+            if isinstance(item, dict) and item.get("sha256") == digest
+        ),
+        None,
+    )
     if existing:
         return OUTPUT_DIR / str(existing["file"]), False
 
@@ -99,17 +114,31 @@ def store_frame(now: datetime) -> tuple[Path, bool]:
             "bytes": len(payload),
         }
     )
-    frames.sort(key=lambda item: str(item.get("observed_utc", "")) if isinstance(item, dict) else "")
+    frames.sort(
+        key=lambda item: (
+            str(item.get("observed_utc", "")) if isinstance(item, dict) else ""
+        )
+    )
     manifest["updated_utc"] = now.astimezone(UTC).isoformat().replace("+00:00", "Z")
-    MANIFEST_PATH.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    serialized = json.dumps(manifest, ensure_ascii=False, indent=2) + "\n"
+    MANIFEST_PATH.write_text(serialized, encoding="utf-8")
     return output, True
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Capture the latest official NOAA GOES-19 GeoColor frame.")
-    parser.add_argument("--now", help="Override current UTC time for reproducible tests/runs.")
+    parser = argparse.ArgumentParser(
+        description="Capture the latest official NOAA GOES-19 GeoColor frame."
+    )
+    parser.add_argument(
+        "--now",
+        help="Override current UTC time for reproducible tests/runs.",
+    )
     args = parser.parse_args()
-    now = datetime.fromisoformat(args.now.replace("Z", "+00:00")) if args.now else datetime.now(UTC)
+    now = (
+        datetime.fromisoformat(args.now.replace("Z", "+00:00"))
+        if args.now
+        else datetime.now(UTC)
+    )
     output, created = store_frame(now)
     print(json.dumps({"file": str(output), "created": created}, ensure_ascii=False))
     return 0
