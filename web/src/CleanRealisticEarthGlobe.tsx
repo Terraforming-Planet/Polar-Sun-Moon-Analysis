@@ -36,6 +36,11 @@ const LAST_FRAME = 1008
 
 function floorToTenMinutes(value: Date) { return new Date(Math.floor(value.getTime() / TEN_MINUTES) * TEN_MINUTES) }
 
+function markerCssColor(marker: Marker) {
+  const value = Math.max(0, Math.min(0xffffff, marker.color ?? 0xff674f))
+  return `#${value.toString(16).padStart(6, '0')}`
+}
+
 function loadCesium(): Promise<CesiumApi> {
   if (window.Cesium) return Promise.resolve(window.Cesium)
   window.CESIUM_BASE_URL = CESIUM_BASE
@@ -158,11 +163,30 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
       viewer.scene.screenSpaceCameraController.maximumZoomDistance = 80000000
       viewer.scene.screenSpaceCameraController.enableCollisionDetection = true
       viewer.camera.setView({ destination: Cesium.Cartesian3.fromDegrees(15, 15, 21000000) })
-      for (const marker of markers.slice(0, 500)) viewer.entities.add({ position: Cesium.Cartesian3.fromDegrees(marker.longitude, marker.latitude, 0), point: { pixelSize: 7, color: Cesium.Color.fromCssColorString('#ff674f'), outlineColor: Cesium.Color.BLACK, outlineWidth: 1, heightReference: Cesium.HeightReference.CLAMP_TO_GROUND } })
       setReady(true)
     }).catch(reason => setError(String(reason)))
     return () => { cancelled = true; setReady(false); if (viewer && !viewer.isDestroyed()) viewer.destroy(); viewerRef.current = null; cesiumRef.current = null; host.current?.replaceChildren() }
-  }, [view, markers])
+  }, [view])
+
+  useEffect(() => {
+    const viewer = viewerRef.current
+    const Cesium = cesiumRef.current
+    if (!ready || !viewer || !Cesium || view !== 'globe') return
+    viewer.entities.removeAll()
+    for (const marker of markers.slice(0, 500)) {
+      viewer.entities.add({
+        position: Cesium.Cartesian3.fromDegrees(marker.longitude, marker.latitude, 0),
+        point: {
+          pixelSize: Math.max(5, Math.min(12, 6 + (marker.radius ?? 1))),
+          color: Cesium.Color.fromCssColorString(markerCssColor(marker)),
+          outlineColor: Cesium.Color.BLACK,
+          outlineWidth: 1,
+          heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+        },
+      })
+    }
+    viewer.scene.requestRender()
+  }, [ready, view, markers])
 
   useEffect(() => {
     const viewer = viewerRef.current
