@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#020711" />
+  <title>Terraforming Planet · Zaćmienie CLOSE LIVE</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cesium@1.126/Build/Cesium/Widgets/widgets.css" />
+  <style>
+    :root{color-scheme:dark;font-family:Inter,system-ui,sans-serif;background:#020711;color:#eaf7ff}*{box-sizing:border-box}body{margin:0;background:#020711}.shell{max-width:1200px;margin:auto;padding:8px}.panel{border:1px solid #17415f;background:#071525;border-radius:12px;padding:12px;margin-bottom:10px}.hero{border-color:#20c8ff}.eyebrow{font-size:11px;letter-spacing:.1em;color:#64e5ff;font-weight:800}h1{font-size:clamp(28px,6vw,52px);line-height:.98;margin:6px 0 10px}.notice{border-left:4px solid #ffd24a;background:#302812;color:#fff3be;padding:9px;line-height:1.42}.controls{display:flex;gap:7px;flex-wrap:wrap;align-items:end;margin:8px 0}button,select,a.button{background:#0d2c46;color:#eaf7ff;border:1px solid #2d6f97;border-radius:8px;padding:9px 10px;text-decoration:none}.active{background:#126884;border-color:#6be2ff}.stage{position:relative;height:min(70vh,680px);min-height:430px;border-radius:10px;overflow:hidden;background:#000}.cesium{position:absolute;inset:0}.eclipse-overlay{position:absolute;inset:0;z-index:10;pointer-events:none;display:none}.eclipse-overlay.active{display:block}.eclipse-overlay svg{width:100%;height:100%;display:block}.model-badge{position:absolute;left:10px;top:10px;z-index:11;background:rgba(3,10,18,.86);border:1px solid #ffd24a;border-radius:8px;padding:7px 9px;font-size:12px;color:#fff2b5}.readout{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}.fact{border:1px solid #173754;border-radius:8px;padding:8px;background:#06111e}.fact span{display:block;color:#91acbf;font-size:11px}.fact b{font-size:15px}.ok{color:#72ffc4}.tiny{font-size:12px;color:#a8bfd0;line-height:1.4}.raw{display:grid;grid-template-columns:1fr 1fr;gap:10px}.raw article{border:1px solid #173754;border-radius:8px;padding:9px;background:#06111e}.raw img{width:100%;display:block;background:#000;border-radius:6px}.raw a{color:#64dcff}@media(max-width:760px){.stage{height:520px;min-height:430px}.readout{grid-template-columns:1fr 1fr}.raw{grid-template-columns:1fr}button,select,a.button{font-size:12px;padding:8px}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <section class="panel hero">
+    <div class="eyebrow">PILNY HOTFIX · 12 AUG 2026 · NASA GSFC + EUMETSAT + CESIUM</div>
+    <h1>Zaćmienie LIVE · widok z bliska</h1>
+    <div class="notice"><b>Co widzisz:</b> teren i warstwa VIS0.6 pochodzą z Cesium/EUMETSAT, natomiast tarcze Słońca i Księżyca w widoku 2 m / 5 km są <b>deterministycznym modelem lokalnej geometrii NASA GSFC Besselian</b>, aktualizowanym co sekundę. To nie jest zdjęcie lokalnego nieba. Surowe obrazy satelitarne pozostają osobno i bez nakładki modelu.</div>
+  </section>
+
+  <section class="panel">
+    <div class="controls">
+      <label>Punkt<br/><select id="site"></select></label>
+      <button id="human" class="active">🧍 2 m · CLOSE</button>
+      <button id="aerial">🚁 5 km · CLOSE</button>
+      <a class="button" href="./">🌍 pełny obserwator</a>
+    </div>
+    <div id="stage" class="stage">
+      <div id="cesium" class="cesium"></div>
+      <div id="eclipse-overlay" class="eclipse-overlay active" aria-label="Model lokalnej fazy zaćmienia NASA GSFC">
+        <div class="model-badge">MODEL NASA GSFC · lokalna faza · NIE FOTOGRAFIA</div>
+        <svg viewBox="0 0 1000 620" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0" stop-color="rgba(255,247,190,.48)"/>
+              <stop offset=".42" stop-color="rgba(255,220,120,.20)"/>
+              <stop offset="1" stop-color="rgba(255,210,100,0)"/>
+            </radialGradient>
+          </defs>
+          <circle id="close-glow" cx="500" cy="310" r="190" fill="url(#sunGlow)"/>
+          <circle id="close-sun" cx="500" cy="310" r="78" fill="#fff8c6" stroke="#ffd24a" stroke-width="2"/>
+          <circle id="close-moon" cx="700" cy="310" r="80" fill="#010207" stroke="#607080" stroke-width="1"/>
+          <text id="close-label" x="500" y="430" text-anchor="middle" fill="#fff" font-size="23" font-family="system-ui">—</text>
+        </svg>
+      </div>
+    </div>
+    <div class="readout">
+      <div class="fact"><span>Punkt</span><b id="site-name">Olszówka</b></div>
+      <div class="fact"><span>UTC</span><b id="utc">—</b></div>
+      <div class="fact"><span>Zakrycie powierzchni</span><b id="obsc" class="ok">—</b></div>
+      <div class="fact"><span>Magnituda</span><b id="mag">—</b></div>
+      <div class="fact"><span>Słońce alt / az</span><b id="altaz">—</b></div>
+    </div>
+    <p class="tiny">Kształt rogala wynika z bieżącego przesunięcia <code>dx/dy</code> i względnych promieni tarcz <code>rMoon/rSun</code> obliczonych z elementów Bessela NASA dla lokalnego obserwatora WGS84. Wbudowane obiekty Sun/Moon Cesium są wyłączone, aby nie tworzyć błędnej „czarnej kropki”.</p>
+  </section>
+
+  <section class="panel raw">
+    <article><h3>EUMETSAT Meteosat-12 · VIS 0.6 HRFI</h3><img id="eumet" alt="EUMETSAT Meteosat-12 VIS 0.6 latest Europe"/><p class="tiny">Prawdziwy obraz satelitarny Europy. Bez nakładki lokalnego modelu tarcz.</p><a href="https://view.eumetsat.int/" target="_blank" rel="noreferrer">EUMETView ↗</a></article>
+    <article><h3>NOAA GOES-19 · ABI Band 2</h3><img id="noaa" alt="NOAA GOES-19 ABI Band 2 latest"/><p class="tiny">Prawdziwy kanał widzialny 0.64 µm dla Ameryk/Atlantyku.</p><a href="https://www.star.nesdis.noaa.gov/GOES/fulldisk_band.php?band=02&length=12&sat=G19" target="_blank" rel="noreferrer">NOAA NESDIS STAR ↗</a></article>
+  </section>
+</div>
+<script>window.CESIUM_BASE_URL='https://cdn.jsdelivr.net/npm/cesium@1.126/Build/Cesium/'</script>
+<script src="https://cdn.jsdelivr.net/npm/cesium@1.126/Build/Cesium/Cesium.js"></script>
+<script>
+const sites=[
+  {id:'olszowka',label:'Olszówka · gmina Gardeja',lon:18.99546,lat:53.61586},
+  {id:'gdansk',label:'Gdańsk',lon:18.6466,lat:54.3520},
+  {id:'warszawa',label:'Warszawa',lon:21.0122,lat:52.2297},
+  {id:'reykjavik',label:'Reykjavík',lon:-21.9426,lat:64.1466},
+  {id:'leon',label:'León',lon:-5.5671,lat:42.5987}
+];
+const NASA={deltaT:75.4,t0:18,x:[0.4755140,0.5189249,-0.0000773,-0.0000080],y:[0.7711830,-0.2301680,-0.0001246,0.0000038],d:[14.7966700,-0.0120650,-0.0000030,0],l1:[0.5379550,0.0000939,-0.0000121,0],l2:[-0.0081420,0.0000935,-0.0000121,0],mu:[88.747787,15.003090,0,0],tanF1:0.0046141,tanF2:0.0045911};
+const rad=v=>v*Math.PI/180,deg=v=>v*180/Math.PI,clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function poly(c,t){return c[0]+c[1]*t+c[2]*t*t+c[3]*t*t*t}
+function elementsAt(date){const h=date.getUTCHours()+date.getUTCMinutes()/60+date.getUTCSeconds()/3600+NASA.deltaT/3600,t=h-NASA.t0;return{x:poly(NASA.x,t),y:poly(NASA.y,t),d:poly(NASA.d,t),l1:poly(NASA.l1,t),l2:poly(NASA.l2,t),mu:poly(NASA.mu,t)}}
+function circleOverlap(rm,rs,d){if(d>=rm+rs)return 0;if(d<=Math.abs(rm-rs))return Math.min(1,Math.min(rm,rs)**2/rs**2);const a=Math.acos(clamp((d*d+rm*rm-rs*rs)/(2*d*rm),-1,1)),b=Math.acos(clamp((d*d+rs*rs-rm*rm)/(2*d*rs),-1,1)),area=rm*rm*a+rs*rs*b-.5*Math.sqrt(Math.max(0,(-d+rm+rs)*(d+rm-rs)*(d-rm+rs)*(d+rm+rs)));return clamp(area/(Math.PI*rs*rs),0,1)}
+function localState(site,date){const e=elementsAt(date),f=1/298.257223563,phi=rad(site.lat),u=Math.atan((1-f)*Math.tan(phi)),rhoSin=(1-f)*Math.sin(u),rhoCos=Math.cos(u),H=rad(e.mu+site.lon),dd=rad(e.d),xi=rhoCos*Math.sin(H),eta=rhoSin*Math.cos(dd)-rhoCos*Math.cos(H)*Math.sin(dd),zeta=rhoSin*Math.sin(dd)+rhoCos*Math.cos(H)*Math.cos(dd),dx=e.x-xi,dy=e.y-eta,sep=Math.hypot(dx,dy),L1=e.l1-zeta*NASA.tanF1,L2=e.l2-zeta*NASA.tanF2,rMoon=(L1-L2)/2,rSun=(L1+L2)/2,obsc=circleOverlap(rMoon,rSun,sep),mag=clamp((rMoon+rSun-sep)/(2*rSun),0,2),alt=deg(Math.asin(Math.sin(phi)*Math.sin(dd)+Math.cos(phi)*Math.cos(dd)*Math.cos(H))),az=(deg(Math.atan2(Math.sin(H),Math.cos(H)*Math.sin(phi)-Math.tan(dd)*Math.cos(phi)))+180)%360;return{dx,dy,rMoon,rSun,obsc,mag,alt,az}}
+const select=document.getElementById('site');for(const site of sites){const o=document.createElement('option');o.value=site.id;o.textContent=site.label;select.append(o)}let current=sites[0],closeHeight=2;
+const viewer=new Cesium.Viewer('cesium',{animation:false,timeline:false,baseLayerPicker:false,geocoder:false,homeButton:false,sceneModePicker:false,navigationHelpButton:false,fullscreenButton:false,infoBox:false,selectionIndicator:false,imageryProvider:false,requestRenderMode:true,maximumRenderTimeChange:1});
+viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',maximumLevel:18,credit:'Esri World Imagery'}));
+const mtg=new Cesium.WebMapServiceImageryProvider({url:'https://view.eumetsat.int/geoserver/wms',layers:'mtg_fd:vis06_hrfi',parameters:{transparent:true,format:'image/png',version:'1.3.0'},credit:'EUMETSAT Meteosat-12 FCI VIS0.6 HRFI'});const mtgLayer=viewer.imageryLayers.addImageryProvider(mtg);mtgLayer.alpha=.82;
+viewer.scene.sun.show=false;viewer.scene.moon.show=false;viewer.scene.globe.enableLighting=false;viewer.scene.skyAtmosphere.show=true;viewer.scene.globe.maximumScreenSpaceError=innerWidth<=768?2.5:1.7;viewer.resolutionScale=innerWidth<=768?.78:1;const defaultFov=viewer.camera.frustum.fov;
+function aimClose(){const s=localState(current,new Date());viewer.camera.frustum.fov=rad(5);viewer.camera.setView({destination:Cesium.Cartesian3.fromDegrees(current.lon,current.lat,closeHeight),orientation:{heading:rad(s.az),pitch:rad(clamp(s.alt,-4,35)),roll:0}});viewer.scene.requestRender()}
+function setClose(height,button){closeHeight=height;document.getElementById('human').classList.toggle('active',height===2);document.getElementById('aerial').classList.toggle('active',height===5000);document.getElementById('eclipse-overlay').classList.add('active');viewer.camera.frustum.fov=rad(5);aimClose();button.blur()}
+document.getElementById('human').onclick=e=>setClose(2,e.currentTarget);document.getElementById('aerial').onclick=e=>setClose(5000,e.currentTarget);select.onchange=()=>{current=sites.find(s=>s.id===select.value)||sites[0];document.getElementById('site-name').textContent=current.label;aimClose()};
+function updateOverlay(s){const cx=500,cy=310,sunR=78,scale=sunR/s.rSun,mx=cx+s.dx*scale,my=cy-s.dy*scale,mr=s.rMoon*scale;const moon=document.getElementById('close-moon');moon.setAttribute('cx',mx.toFixed(2));moon.setAttribute('cy',my.toFixed(2));moon.setAttribute('r',mr.toFixed(2));document.getElementById('close-label').textContent=`${(s.obsc*100).toFixed(1)}% zakrycia · magnituda ${s.mag.toFixed(3)}`;document.getElementById('obsc').textContent=`${(s.obsc*100).toFixed(1)}%`;document.getElementById('mag').textContent=s.mag.toFixed(3);document.getElementById('altaz').textContent=`${s.alt.toFixed(2)}° / ${s.az.toFixed(1)}°`}
+let cameraTick=0;function tick(){const now=new Date(),s=localState(current,now);document.getElementById('utc').textContent=now.toLocaleTimeString('pl-PL',{timeZone:'UTC'})+' UTC';updateOverlay(s);viewer.clock.currentTime=Cesium.JulianDate.fromDate(now);cameraTick++;if(cameraTick%5===0)aimClose();viewer.scene.requestRender()}tick();setInterval(tick,1000);
+const EUMET='https://view.eumetsat.int/geoserver/wms?service=WMS&version=1.3.0&request=GetMap&layers=mtg_fd:vis06_hrfi,backgrounds:ne_10m_coastline,backgrounds:ne_boundary_lines_land&bbox=-2500000,3050000,3750000,5450000&width=1800&height=950&srs=AUTO:97004,9001,0,0&styles=&format=image/jpeg&bgcolor=0x000000';function refreshRaw(){const q=Date.now();document.getElementById('eumet').src=EUMET+'&refresh='+q;document.getElementById('noaa').src='https://cdn.star.nesdis.noaa.gov/GOES19/ABI/FD/02/1808x1808.jpg?refresh='+q}refreshRaw();setInterval(refreshRaw,30000);
+aimClose();
+</script>
+</body>
+</html>
