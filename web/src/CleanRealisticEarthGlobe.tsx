@@ -119,6 +119,10 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   const host = useRef<HTMLDivElement>(null)
   const viewerRef = useRef<any>(null)
   const cesiumRef = useRef<CesiumApi | null>(null)
+  const constrainedDevice = useMemo(() => {
+    const coarsePointer = window.matchMedia?.('(pointer: coarse)').matches ?? false
+    return coarsePointer || window.innerWidth <= 768
+  }, [])
   const [ready, setReady] = useState(false)
   const [view, setView] = useState<ViewMode>('globe')
   const [layer, setLayer] = useState<Layer>('full-live-earth')
@@ -154,26 +158,27 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
       viewer = new Cesium.Viewer(host.current, { animation: false, timeline: false, baseLayerPicker: false, geocoder: false, homeButton: false, sceneModePicker: false, navigationHelpButton: false, fullscreenButton: false, infoBox: false, selectionIndicator: false, imageryProvider: false, requestRenderMode: true, maximumRenderTimeChange: Infinity })
       viewerRef.current = viewer
       viewer.scene.globe.baseColor = Cesium.Color.fromCssColorString('#02060a')
-      viewer.scene.globe.maximumScreenSpaceError = .28
-      viewer.scene.globe.tileCacheSize = 1800
+      viewer.resolutionScale = constrainedDevice ? .72 : 1
+      viewer.scene.globe.maximumScreenSpaceError = constrainedDevice ? 1.5 : .55
+      viewer.scene.globe.tileCacheSize = constrainedDevice ? 250 : 900
       viewer.scene.skyAtmosphere.show = true
       viewer.scene.globe.showGroundAtmosphere = true
       viewer.scene.fog.enabled = true
-      viewer.scene.screenSpaceCameraController.minimumZoomDistance = 1
+      viewer.scene.screenSpaceCameraController.minimumZoomDistance = constrainedDevice ? 25 : 1
       viewer.scene.screenSpaceCameraController.maximumZoomDistance = 80000000
       viewer.scene.screenSpaceCameraController.enableCollisionDetection = true
       viewer.camera.setView({ destination: Cesium.Cartesian3.fromDegrees(15, 15, 21000000) })
       setReady(true)
     }).catch(reason => setError(String(reason)))
     return () => { cancelled = true; setReady(false); if (viewer && !viewer.isDestroyed()) viewer.destroy(); viewerRef.current = null; cesiumRef.current = null; host.current?.replaceChildren() }
-  }, [view])
+  }, [view, constrainedDevice])
 
   useEffect(() => {
     const viewer = viewerRef.current
     const Cesium = cesiumRef.current
     if (!ready || !viewer || !Cesium || view !== 'globe') return
     viewer.entities.removeAll()
-    for (const marker of markers.slice(0, 500)) {
+    for (const marker of markers.slice(0, constrainedDevice ? 250 : 500)) {
       viewer.entities.add({
         position: Cesium.Cartesian3.fromDegrees(marker.longitude, marker.latitude, 0),
         point: {
@@ -186,7 +191,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
       })
     }
     viewer.scene.requestRender()
-  }, [ready, view, markers])
+  }, [ready, view, markers, constrainedDevice])
 
   useEffect(() => {
     const viewer = viewerRef.current
@@ -202,12 +207,15 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
       trueColor.alpha = layer === 'full-live-earth' ? .72 : .86
     }
     if (layer === 'full-live-earth' || layer === 'realtime-clouds') {
-      for (const [name, credit] of [['GOES-East_ABI_GeoColor', 'GOES-East'], ['GOES-West_ABI_GeoColor', 'GOES-West'], ['Himawari_AHI_Band13_Clean_Infrared', 'Himawari']] as const) {
+      const cloudProducts = constrainedDevice && layer === 'full-live-earth'
+        ? [['GOES-East_ABI_GeoColor', 'GOES-East']] as const
+        : [['GOES-East_ABI_GeoColor', 'GOES-East'], ['GOES-West_ABI_GeoColor', 'GOES-West'], ['Himawari_AHI_Band13_Clean_Infrared', 'Himawari']] as const
+      for (const [name, credit] of cloudProducts) {
         const clouds = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({ url: NASA_WMTS, layer: name, style: 'default', format: 'image/png', tileMatrixSetID: 'GoogleMapsCompatible_Level7', maximumLevel: 7, dimensions: { Time: subdailyTime }, credit: `NASA GIBS · ${credit}` }))
         clouds.alpha = cloudOpacity
       }
     }
-    if (layer === 'full-live-earth' || layer === 'ocean-waves') {
+    if (layer === 'ocean-waves' || (layer === 'full-live-earth' && !constrainedDevice)) {
       const waves = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapServiceImageryProvider({ url: WAVEWATCH_WMS, layers: 'WaveWatch_2026:Thgt', parameters: { transparent: true, format: 'image/png', time: date.toISOString(), colorscalerange: '0,12' }, credit: 'NOAA/PacIOOS WaveWatch III · significant wave height' }))
       waves.alpha = waveOpacity
     }
@@ -220,10 +228,10 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
       copernicus.alpha = .9
     }
     viewer.scene.globe.enableLighting = solarLighting
-    viewer.scene.highDynamicRange = true
-    viewer.scene.postProcessStages.fxaa.enabled = true
+    viewer.scene.highDynamicRange = !constrainedDevice
+    viewer.scene.postProcessStages.fxaa.enabled = !constrainedDevice
     viewer.scene.requestRender()
-  }, [ready, layer, day, subdailyTime, view, date, solarLighting, cloudOpacity, waveOpacity])
+  }, [ready, layer, day, subdailyTime, view, date, solarLighting, cloudOpacity, waveOpacity, constrainedDevice])
 
   const zoom = (factor: number) => {
     const viewer = viewerRef.current
@@ -237,8 +245,9 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   const maximumZoom = () => {
     const viewer = viewerRef.current
     if (!viewer) return
+    const targetHeight = constrainedDevice ? 25 : 1.5
     const height = viewer.camera.positionCartographic.height
-    if (height > 1.5) viewer.camera.zoomIn(height - 1.5)
+    if (height > targetHeight) viewer.camera.zoomIn(height - targetHeight)
     viewer.scene.requestRender()
   }
 
@@ -260,7 +269,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
         <label><input type="checkbox" checked={solarLighting} onChange={event => setSolarLighting(event.target.checked)} /> dzień/noc</label>
         <label><input type="checkbox" checked={nightVision} onChange={event => setNightVision(event.target.checked)} /> noktowizor</label>
       </>}
-      <div className="location-globe-status"><strong>{layer === 'full-live-earth' ? 'PEŁNA ZIEMIA LIVE · PRAWDZIWY KOLOR · CHMURY · FALOWANIE OCEANU' : animatedMode ? 'ANIMACJA 7 DNI · KROK 10 MINUT' : 'PEŁNA ZIEMIA · MAKSYMALNY ZOOM DO OK. 1,5 M NAD POWIERZCHNIĄ'}</strong><span>{date.toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span><span>Przycisk MAX zbliża kamerę niemal do powierzchni. Szczegółowość końcowa zależy od dostępnej rozdzielczości zdjęć dla danego miejsca.</span>{error && <span>{error}</span>}</div>
+      <div className="location-globe-status"><strong>{layer === 'full-live-earth' ? 'PEŁNA ZIEMIA LIVE · PRAWDZIWY KOLOR · CHMURY · FALOWANIE OCEANU' : animatedMode ? 'ANIMACJA 7 DNI · KROK 10 MINUT' : constrainedDevice ? 'PEŁNA ZIEMIA · TRYB MOBILNY · ZOOM OGRANICZONY DLA STABILNOŚCI' : 'PEŁNA ZIEMIA · MAKSYMALNY ZOOM DO OK. 1,5 M NAD POWIERZCHNIĄ'}</strong><span>{date.toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span><span>{constrainedDevice ? 'Na urządzeniu mobilnym szczegółowość i liczba jednoczesnych warstw są adaptacyjnie ograniczane, aby nie blokować interfejsu.' : 'Przycisk MAX zbliża kamerę niemal do powierzchni. Szczegółowość końcowa zależy od dostępnej rozdzielczości zdjęć dla danego miejsca.'}</span>{error && <span>{error}</span>}</div>
     </div>
     {view === 'globe' ? <>
       {animatedMode && <div className="scene-controls"><button type="button" onClick={() => setPlaying(value => !value)}>{playing ? 'Ⅱ Pauza' : '▶ Odtwarzaj 7 dni'}</button><button type="button" onClick={() => { setPlaying(false); setFrameIndex(LAST_FRAME); setLive(true) }}>TERAZ</button><label>Prędkość<select value={speed} onChange={event => setSpeed(Number(event.target.value))}><option value={1}>1 kl./s</option><option value={2}>2 kl./s</option><option value={4}>4 kl./s</option></select></label>{layer !== 'ocean-waves' && <label>Chmury {Math.round(cloudOpacity * 100)}%<input type="range" min="10" max="100" value={Math.round(cloudOpacity * 100)} onChange={event => setCloudOpacity(Number(event.target.value) / 100)} /></label>}{layer !== 'realtime-clouds' && <label>Fale {Math.round(waveOpacity * 100)}%<input type="range" min="10" max="90" value={Math.round(waveOpacity * 100)} onChange={event => setWaveOpacity(Number(event.target.value) / 100)} /></label>}<label>Klatka {frameIndex + 1}/1009<input type="range" min="0" max={LAST_FRAME} step="1" value={frameIndex} onChange={event => { setPlaying(false); setLive(false); setFrameIndex(Number(event.target.value)) }} /></label></div>}
