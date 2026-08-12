@@ -4,7 +4,11 @@ import { OrbitControls } from 'https://esm.sh/three@0.179.1/examples/jsm/control
 const COLORS = { Sun: 0xffc94f, Earth: 0x2f82ff, Moon: 0xd9dde5 }
 
 function scaledPosition(position) {
-  const vector = new THREE.Vector3(...position)
+  // JPL ICRF vectors are X/Y in the dominant orbital plane and Z close to the
+  // ecliptic normal. Three.js uses Y as the visual vertical, so remap ICRF Z
+  // to scene Y. Using raw ICRF Y as scene height pushed Earth/Moon far above
+  // the orbit plane and could leave the model apparently empty.
+  const vector = new THREE.Vector3(position[0], position[2], position[1])
   const distance = vector.length()
   if (!distance) return vector
   const radius = Math.log10(1 + distance * 120) * 13
@@ -62,16 +66,20 @@ function buildSunEarthMoon(host, data, { speed = 1, prefix = '' } = {}) {
   scene.fog = new THREE.FogExp2(0x030711, 0.006)
   const camera = new THREE.PerspectiveCamera(48, 1, 0.01, 1000)
   camera.position.set(0, 26, 58)
+  camera.lookAt(0, 0, 0)
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' })
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
   renderer.outputColorSpace = THREE.SRGBColorSpace
+  renderer.setClearColor(0x02050c, 1)
   host.replaceChildren(renderer.domElement)
 
   const controls = new OrbitControls(camera, renderer.domElement)
   controls.enableDamping = true
   controls.minDistance = 6
   controls.maxDistance = 160
+  controls.target.set(0, 0, 0)
+  controls.update()
 
   scene.add(new THREE.AmbientLight(0x7897c5, 1.3))
   const sunLight = new THREE.PointLight(0xffe1a1, 2200, 260)
@@ -106,7 +114,8 @@ function buildSunEarthMoon(host, data, { speed = 1, prefix = '' } = {}) {
     new THREE.SphereGeometry(0.34, 32, 32),
     new THREE.MeshStandardMaterial({ color: COLORS.Moon, roughness: 0.92 }),
   )
-  const moonDelta = new THREE.Vector3(...moonData.position_au).sub(new THREE.Vector3(...earthData.position_au))
+  const moonDeltaRaw = new THREE.Vector3(...moonData.position_au).sub(new THREE.Vector3(...earthData.position_au))
+  const moonDelta = new THREE.Vector3(moonDeltaRaw.x, moonDeltaRaw.z, moonDeltaRaw.y)
   const moonPhase0 = Math.atan2(moonDelta.z, moonDelta.x)
   moon.position.set(
     earth.position.x + Math.cos(moonPhase0) * moonVisualRadius,
@@ -220,11 +229,15 @@ function buildPlanetaryGrid() {
     cells.forEach((cell, i) => cell.classList.toggle('selected', i === index))
   }
 
+  // A layer is 8 cells wide. The previous 28 px gap produced a flat stack.
+  // 72 px * 7 intervals gives ~504 px of Z depth against a ~520 px board,
+  // so the 8x8x8 navigator now reads as an actual cube.
+  const layerGap = 72
   for (let z = 0; z < 8; z += 1) {
     const layer = document.createElement('div')
     layer.className = 'voxel-layer'
     layer.dataset.layer = String(z)
-    layer.style.setProperty('--z', `${(z - 3.5) * 28}px`)
+    layer.style.setProperty('--z', `${(z - 3.5) * layerGap}px`)
     layer.style.opacity = String(0.42 + z * 0.07)
     layers.push(layer)
 

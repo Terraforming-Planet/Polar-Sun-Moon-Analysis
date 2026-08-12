@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { HydrologyPanel } from './HydrologyPanel'
 import { RealisticEarthGlobe } from './RealisticEarthGlobe'
 import './styles.css'
 import './control-center.css'
@@ -17,8 +18,15 @@ type HazardFeature = {
 type HazardData = { generated_at_utc?: string; generatedUtc?: string; notice?: string; features?: HazardFeature[]; alerts?: unknown[] }
 type Source = { id: string; agency: string; mission: string; instrument: string; temporal_coverage: string; spatial_resolution: string; access: string; url: string; limitations: string }
 type PolarRow = {
-  year: number; season: string; pole: string; body: string; timestamp_utc: string
-  apparent_altitude_deg: number; declination_deg: number; source_url?: string; quality_flag?: string
+  year: number
+  season: string
+  pole: string
+  body: string
+  timestamp_utc: string
+  apparent_altitude_deg: number
+  declination_deg: number
+  source_url?: string
+  quality_flag?: string
 }
 type CopernicusData = {
   metadata?: {
@@ -87,8 +95,14 @@ function stepDate(value: string, speed: Speed, direction = 1) {
 }
 
 function TimeController({ requested, selected, timestamps, playing, speed, onRequested, onPlaying, onSpeed }: {
-  requested: string; selected: string; timestamps: string[]; playing: boolean; speed: Speed
-  onRequested: (value: string) => void; onPlaying: (value: boolean) => void; onSpeed: (value: Speed) => void
+  requested: string
+  selected: string
+  timestamps: string[]
+  playing: boolean
+  speed: Speed
+  onRequested: (value: string) => void
+  onPlaying: (value: boolean) => void
+  onSpeed: (value: Speed) => void
 }) {
   const sorted = [...timestamps].sort()
   const index = Math.max(0, sorted.indexOf(selected))
@@ -113,8 +127,7 @@ function TimeController({ requested, selected, timestamps, playing, speed, onReq
       <label>Krok<select value={speed} onChange={event => onSpeed(event.target.value as Speed)}><option value="hour">1 godzina</option><option value="day">1 dzień</option><option value="month">1 miesiąc</option><option value="year">1 rok</option></select></label>
     </div>
     <div className="time-status">
-      <span><b>Żądany:</b> {formatUtc(requested)}</span><span><b>Wybrana obserwacja:</b> {formatUtc(selected)}</span><span><b>Różnica:</b> {hoursBetween(requested, selected).toFixed(1)} h</span><span><b>Wiek danych:</b> {age.toFixed(1)} h</span>
-      <span><b>Zakres:</b> {formatUtc(sorted[0])} — {formatUtc(sorted.at(-1))}</span>
+      <span><b>Żądany:</b> {formatUtc(requested)}</span><span><b>Wybrana obserwacja:</b> {formatUtc(selected)}</span><span><b>Różnica:</b> {hoursBetween(requested, selected).toFixed(1)} h</span><span><b>Wiek danych:</b> {age.toFixed(1)} h</span><span><b>Zakres:</b> {formatUtc(sorted[0])} — {formatUtc(sorted.at(-1))}</span>
     </div>
   </section>
 }
@@ -164,28 +177,68 @@ function EarthGlobe({ data, selectedTime, category = 'all' }: { data?: HazardDat
 
 function PolarObservatory({ rows, pole, requested }: { rows: PolarRow[]; pole: 'North Pole' | 'South Pole'; requested: string }) {
   const [body, setBody] = useState<'Sun' | 'Moon'>('Moon')
-  const [year, setYear] = useState(2024); const [season, setSeason] = useState('vernal')
+  const [year, setYear] = useState(2024)
+  const [season, setSeason] = useState('vernal')
   const candidates = rows.filter(row => row.pole === pole && row.body === body)
   const exact = candidates.find(row => row.year === year && row.season === season)
   const chosen = exact ?? candidates.reduce<PolarRow | null>((best, row) => !best || hoursBetween(requested, row.timestamp_utc) < hoursBetween(requested, best.timestamp_utc) ? row : best, null)
   const host = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     if (!host.current || !chosen) return
-    const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(48, 1, .1, 100); camera.position.set(5.5, 4.5, 7)
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); host.current.appendChild(renderer.domElement)
-    const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true
-    const earth = new THREE.Mesh(new THREE.SphereGeometry(2, 48, 48), new THREE.MeshStandardMaterial({ color: 0x135a8c, roughness: .8 })); scene.add(earth)
-    scene.add(new THREE.AxesHelper(3.3)); scene.add(new THREE.AmbientLight(0x9dcfff, 1.8)); const light = new THREE.DirectionalLight(0xffffff, 2); light.position.set(4, 5, 4); scene.add(light)
+    const scene = new THREE.Scene()
+    const camera = new THREE.PerspectiveCamera(48, 1, .1, 100)
+    camera.position.set(5.5, 4.5, 7)
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2))
+    host.current.appendChild(renderer.domElement)
+    const controls = new OrbitControls(camera, renderer.domElement)
+    controls.enableDamping = true
+    const earth = new THREE.Mesh(new THREE.SphereGeometry(2, 48, 48), new THREE.MeshStandardMaterial({ color: 0x135a8c, roughness: .8 }))
+    scene.add(earth)
+    scene.add(new THREE.AxesHelper(3.3))
+    scene.add(new THREE.AmbientLight(0x9dcfff, 1.8))
+    const light = new THREE.DirectionalLight(0xffffff, 2)
+    light.position.set(4, 5, 4)
+    scene.add(light)
     const y = pole === 'North Pole' ? 2.05 : -2.05
-    const observer = new THREE.Mesh(new THREE.SphereGeometry(.11, 16, 16), new THREE.MeshBasicMaterial({ color: 0x74ffb8 })); observer.position.set(0, y, 0); scene.add(observer)
-    const horizon = new THREE.Mesh(new THREE.CircleGeometry(2.5, 64), new THREE.MeshBasicMaterial({ color: 0x31cfff, transparent: true, opacity: .13, side: THREE.DoubleSide })); horizon.rotation.x = Math.PI / 2; horizon.position.y = y; scene.add(horizon)
-    const altitude = chosen.apparent_altitude_deg * Math.PI / 180; const sign = pole === 'North Pole' ? 1 : -1
+    const observer = new THREE.Mesh(new THREE.SphereGeometry(.11, 16, 16), new THREE.MeshBasicMaterial({ color: 0x74ffb8 }))
+    observer.position.set(0, y, 0)
+    scene.add(observer)
+    const horizon = new THREE.Mesh(new THREE.CircleGeometry(2.5, 64), new THREE.MeshBasicMaterial({ color: 0x31cfff, transparent: true, opacity: .13, side: THREE.DoubleSide }))
+    horizon.rotation.x = Math.PI / 2
+    horizon.position.y = y
+    scene.add(horizon)
+    const altitude = chosen.apparent_altitude_deg * Math.PI / 180
+    const sign = pole === 'North Pole' ? 1 : -1
     const direction = new THREE.Vector3(Math.cos(altitude) * 3.4, y + sign * Math.sin(altitude) * 3.4, 0)
-    const arrow = new THREE.ArrowHelper(direction.clone().sub(observer.position).normalize(), observer.position, 3.4, body === 'Sun' ? 0xffd45c : 0xd6e3ff, .35, .18); scene.add(arrow)
-    let frame = 0; const resize = () => { if (!host.current) return; renderer.setSize(host.current.clientWidth, host.current.clientHeight, false); camera.aspect = host.current.clientWidth / host.current.clientHeight; camera.updateProjectionMatrix() }
-    const animate = () => { frame = requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera) }; const ro = new ResizeObserver(resize); ro.observe(host.current); resize(); animate()
-    return () => { cancelAnimationFrame(frame); ro.disconnect(); controls.dispose(); renderer.dispose(); host.current?.replaceChildren() }
+    const arrow = new THREE.ArrowHelper(direction.clone().sub(observer.position).normalize(), observer.position, 3.4, body === 'Sun' ? 0xffd45c : 0xd6e3ff, .35, .18)
+    scene.add(arrow)
+    let frame = 0
+    const resize = () => {
+      if (!host.current) return
+      renderer.setSize(host.current.clientWidth, host.current.clientHeight, false)
+      camera.aspect = host.current.clientWidth / host.current.clientHeight
+      camera.updateProjectionMatrix()
+    }
+    const animate = () => {
+      frame = requestAnimationFrame(animate)
+      controls.update()
+      renderer.render(scene, camera)
+    }
+    const ro = new ResizeObserver(resize)
+    ro.observe(host.current)
+    resize()
+    animate()
+    return () => {
+      cancelAnimationFrame(frame)
+      ro.disconnect()
+      controls.dispose()
+      renderer.dispose()
+      host.current?.replaceChildren()
+    }
   }, [chosen, pole, body])
+
   const years = [...new Set(candidates.map(row => row.year))].sort((a, b) => a - b)
   return <section className="workspace"><div className="workspace-head"><div><small>NASA JPL HORIZONS · {pole}</small><h1>{pole === 'North Pole' ? 'Biegun północny' : 'Biegun południowy'} — obserwatorium 3D</h1></div><EvidenceBadge kind="observation">ZWERYFIKOWANE EFEMERYDY</EvidenceBadge></div>
     <div className="selector-grid"><label>Obiekt<select value={body} onChange={event => setBody(event.target.value as 'Sun' | 'Moon')}><option>Sun</option><option>Moon</option></select></label><label>Rok<select value={year} onChange={event => setYear(Number(event.target.value))}>{years.map(value => <option key={value}>{value}</option>)}</select></label><label>Sezon<select value={season} onChange={event => setSeason(event.target.value)}><option value="vernal">Równonoc marcowa</option><option value="summer">Przesilenie czerwcowe</option><option value="autumnal">Równonoc wrześniowa</option><option value="winter">Przesilenie grudniowe</option></select></label></div>
@@ -213,14 +266,22 @@ function DataAvailability({ polar, solar, hazards, copernicus, flood }: { polar:
 }
 
 function App() {
-  const [tab, setTab] = useState<Tab>('control'); const [playing, setPlaying] = useState(false); const [speed, setSpeed] = useState<Speed>('day')
+  const [tab, setTab] = useState<Tab>('control')
+  const [playing, setPlaying] = useState(false)
+  const [speed, setSpeed] = useState<Speed>('day')
   const [liveUtc, setLiveUtc] = useState(() => new Date().toISOString())
-  const [solar] = useJson<SolarData>('data/solar-system.json'); const [hazards, hazardError] = useJson<HazardData>('data/hazards.json', 10_000); const [sources] = useJson<Source[]>('data/sources.json'); const [polar] = useJson<PolarRow[]>('data/observations.json')
-  const [copernicus, copernicusError] = useJson<CopernicusData>('data/copernicus/latest.json', 10_000); const [flood] = useJson<FloodMeta>('flood-map/assets/map-data.json')
+  const [solar] = useJson<SolarData>('data/solar-system.json')
+  const [hazards, hazardError] = useJson<HazardData>('data/hazards.json', 10_000)
+  const [sources] = useJson<Source[]>('data/sources.json')
+  const [polar] = useJson<PolarRow[]>('data/observations.json')
+  const [copernicus, copernicusError] = useJson<CopernicusData>('data/copernicus/latest.json', 10_000)
+  const [flood] = useJson<FloodMeta>('flood-map/assets/map-data.json')
+
   useEffect(() => {
     const timer = window.setInterval(() => setLiveUtc(new Date().toISOString()), 10_000)
     return () => window.clearInterval(timer)
   }, [])
+
   const timestamps = useMemo(() => {
     const values = (polar ?? []).map(row => row.timestamp_utc)
     if (hazards?.generated_at_utc) values.push(hazards.generated_at_utc)
@@ -229,7 +290,12 @@ function App() {
   }, [polar, hazards, solar])
   const [requested, setRequested] = useState(() => new Date().toISOString())
   const selected = nearestTimestamp(requested, timestamps)
-  useEffect(() => { if (!playing) return; const timer = window.setInterval(() => setRequested(current => stepDate(current, speed)), 1200); return () => clearInterval(timer) }, [playing, speed])
+  useEffect(() => {
+    if (!playing) return
+    const timer = window.setInterval(() => setRequested(current => stepDate(current, speed)), 1200)
+    return () => clearInterval(timer)
+  }, [playing, speed])
+
   const tabs: [Tab, string][] = [['control','Centrum sterowania'],['earth','Ziemia 3D'],['floods','Powodzie'],['fires','Pożary'],['water','Woda i susza'],['north','Biegun północny'],['south','Biegun południowy'],['solar','Słońce i Księżyc'],['sources','Dane i źródła']]
   return <div className="app-shell control-center-app"><header className="app-header"><a className="brand" href={base}><span className="brand-mark">T</span><span><strong>TERRA OBSERVATION</strong><small>Time-aware environmental intelligence</small></span></a><nav className="main-tabs" aria-label="Główne sekcje">{tabs.map(([id,label]) => <button key={id} className={tab === id ? 'active' : ''} onClick={() => setTab(id)}>{label}</button>)}</nav><div className="live"><i/> OPEN SCIENCE</div></header>
     <main><TimeController requested={requested} selected={selected} timestamps={timestamps} playing={playing} speed={speed} onRequested={setRequested} onPlaying={setPlaying} onSpeed={setSpeed}/>
@@ -237,7 +303,7 @@ function App() {
       {tab === 'earth' && <section className="workspace"><div className="workspace-head"><div><small>LIVE UTC · CLEAN EARTH MODEL</small><h1>Ziemia 3D bez warstwy alarmowej</h1></div><EvidenceBadge kind="observation">CZYSTY MODEL — MARKERY W ZAKŁADKACH ZAGROŻEŃ</EvidenceBadge></div><div className="hazard-layout"><RealisticEarthGlobe selectedTime={liveUtc} markers={[]} autoRotate/><aside className="panel"><h2>Widok aktualny</h2><div className="fact"><span>Aktualizacja zegara modelu</span><b>co 10 sekund</b></div><div className="fact"><span>Aktualny UTC</span><b>{formatUtc(liveUtc)}</b></div><div className="fact"><span>Wygenerowano katalog</span><b>{formatUtc(hazards?.generated_at_utc ?? hazards?.generatedUtc)}</b></div>{hazardError && <p className="muted">Katalog zdarzeń chwilowo niedostępny: {hazardError}. Model 3D działa niezależnie.</p>}<a className="button-link block" href={`${base}flood-map/`}>Mapa Sentinel-1</a><a className="button-link block" href={`${base}copernicus/`}>Wyniki Copernicus</a><p className="muted">Punkty pożarów i powodzi są celowo ukryte w tym widoku. Otwórz odpowiednią zakładkę zagrożenia.</p></aside></div></section>}
       {tab === 'floods' && <section className="workspace"><div className="workspace-head"><div><small>SENTINEL-1 SAR · 3D FLOOD LAYER</small><h1>Powodzie — model 3D i porównanie przed/po</h1></div><EvidenceBadge kind="derived">NIEBIESKIE PUNKTY KATALOGOWE</EvidenceBadge></div><EarthGlobe data={hazards} selectedTime={liveUtc} category="flood"/><div className="cards"><article><h2>Interaktywna mapa</h2><p>Warstwy przed, po i różnica radarowa dla opublikowanego przebiegu.</p><a className="button-link block" href={`${base}flood-map/`}>Otwórz mapę</a></article><article><h2>Czas obserwacji</h2><p>Aktualny czas modelu: {formatUtc(liveUtc)}. Mapa zawiera tylko epoki zapisane w metadanych przebiegu.</p></article><article><h2>Ograniczenie</h2><p>Zmiana sygnału nie jest sama w sobie potwierdzonym zasięgiem zalania. Potrzebne są progi, maska stałych wód i walidacja.</p></article></div></section>}
       {tab === 'fires' && <section className="workspace"><div className="workspace-head"><div><small>NASA EONET · FIRMS READY · LIVE UTC</small><h1>Pożary — czerwone markery 3D</h1></div><EvidenceBadge kind="observation">CZERWONE PUNKTY POŻAROWE</EvidenceBadge></div><p className="notice">Warstwa pokazuje wyłącznie zdarzenia zaklasyfikowane jako pożar. Dane i zegar są sprawdzane co 10 sekund, natomiast nowe obserwacje satelitarne pojawiają się zgodnie z faktycznym czasem publikacji źródła.</p><EarthGlobe data={hazards} selectedTime={liveUtc} category="fire"/></section>}
-      {tab === 'water' && <section className="workspace"><div className="workspace-head"><div><small>SURFACE · STORAGE · SUBSURFACE</small><h1>Woda i susza</h1></div></div><div className="water-grid"><article><EvidenceBadge kind="observation"/><h2>Powierzchnia</h2><p>Sentinel-1 i Sentinel-2 mogą wyznaczać zasięg wody w momentach przelotu.</p></article><article><EvidenceBadge kind="estimate"/><h2>Retencja i gleba</h2><p>Wnioski wymagają połączenia wielu źródeł i modeli, a nie pojedynczego obrazu.</p></article><article><EvidenceBadge kind="unknown"/><h2>Woda w skałach</h2><p>Satelity nie pokazują bezpośrednio wody w szczelinach; potrzebne są pomiary terenowe.</p></article></div></section>}
+      {tab === 'water' && <HydrologyPanel baseUrl={base}/>} 
       {tab === 'north' && <PolarObservatory rows={polar ?? []} pole="North Pole" requested={requested}/>} {tab === 'south' && <PolarObservatory rows={polar ?? []} pole="South Pole" requested={requested}/>} 
       {tab === 'solar' && <section className="workspace"><div className="workspace-head"><div><small>NASA JPL HORIZONS · LOCKED EPOCH</small><h1>Słońce i Księżyc</h1></div><EvidenceBadge kind="observation">POZYCJE ZABLOKOWANE DO {formatUtc(solar?.timestamp_utc)}</EvidenceBadge></div><p className="notice"><b>Uczciwe sterowanie czasem:</b> globalny suwak nie przesuwa planet historycznie, ponieważ repozytorium zawiera obecnie jeden snapshot układu. Do obserwacji historycznych użyj danych polarnych 2006–2024 w zakładkach biegunów.</p>{solar && <div className="solar-list">{solar.bodies.map(body => <article key={body.body}><b>{body.body}</b><span>{body.position_au.map(value => value.toFixed(4)).join(', ')} AU</span><small>{body.source}</small></article>)}</div>}</section>}
       {tab === 'sources' && <section className="workspace"><div className="workspace-head"><div><small>PROVENANCE REGISTRY</small><h1>Dane i źródła</h1></div></div><DataAvailability polar={polar ?? []} solar={solar} hazards={hazards} copernicus={copernicus} flood={flood}/>{copernicusError && <p className="notice">Copernicus STAC: {copernicusError}</p>}<div className="source-list">{sources?.map(source => <article key={source.id}><div className="source-title"><span>{source.agency}</span><h2>{source.mission} · {source.instrument}</h2></div><p>{source.limitations}</p><a href={source.url} target="_blank" rel="noreferrer">Oficjalna dokumentacja ↗</a></article>)}</div></section>}

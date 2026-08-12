@@ -1,0 +1,97 @@
+name: 2026-08-12 solar eclipse capture
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run before the umbral central line enters the published NASA path.
+    # GitHub cron is UTC. A year guard below prevents recurrence in later years.
+    - cron: '30 15 12 8 *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: eclipse-2026-08-12
+  cancel-in-progress: false
+
+jobs:
+  render-eclipse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Enforce 2026 event date for scheduled runs
+        if: github.event_name == 'schedule'
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(date -u +%F)" = '2026-08-12'
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install renderer dependency
+        run: python -m pip install --disable-pip-version-check 'Pillow>=10,<12'
+
+      - name: Render complete NASA GSFC eclipse sequence
+        run: python scripts/render_eclipse_2026.py
+
+      - name: Validate generated observation products
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s web/public/eclipse/2026-08-12/manifest.json
+          test -s web/public/eclipse/2026-08-12/eclipse-2026-08-12.gif
+          test "$(find web/public/eclipse/2026-08-12/frames -name '*.png' | wc -l)" -eq 46
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('web/public/eclipse/2026-08-12/manifest.json')
+          data = json.loads(p.read_text())
+          assert data['frame_count'] == 46
+          assert data['not_satellite_photography'] is True
+          assert data['greatest_eclipse_utc'] == '2026-08-12T17:45:53.8Z'
+          print('Eclipse products validated.')
+          PY
+
+      - name: Commit and publish generated eclipse products
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add web/public/eclipse/2026-08-12
+          if git diff --cached --quiet; then
+            echo 'Eclipse products are already current.'
+            exit 0
+          fi
+
+          git commit -m 'data(eclipse): publish 2026-08-12 NASA shadow sequence'
+
+          # Hazard feeds also write to main. Rebase and retry so a simultaneous
+          # official-data refresh cannot make the one-time eclipse publication fail.
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              echo "Published eclipse products on attempt ${attempt}."
+              exit 0
+            fi
+            echo "Push attempt ${attempt} raced with another main update; retrying."
+            sleep $((attempt * 5))
+          done
+
+          echo 'Unable to publish eclipse products after four synchronized attempts.' >&2
+          exit 1
+
+      - name: Summary
+        run: |
+          echo '## 2026-08-12 solar eclipse' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Generated 46 predicted shadow frames at 2-minute NASA GSFC cadence.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Products are explicitly labeled as prediction visualizations, not satellite photography.' >> "$GITHUB_STEP_SUMMARY"

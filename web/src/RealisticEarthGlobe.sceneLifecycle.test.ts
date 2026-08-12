@@ -1,33 +1,56 @@
 import { describe, expect, it } from 'vitest'
 import globeSource from './RealisticEarthGlobe.tsx?raw'
+import cesiumSource from './CleanRealisticEarthGlobe.tsx?raw'
 
 describe('RealisticEarthGlobe scene lifecycle', () => {
-  it('keeps runtime controls outside the WebGL scene effect dependencies', () => {
-    expect(globeSource).toContain('}, [model, renderedMarkers, textureUrl, mobile])')
-    expect(globeSource).not.toContain('textureUrl, selectedTime, showClouds')
-    expect(globeSource).not.toContain('showDayNight, view, rotationEnabled])')
+  it('restores Cesium as the default scientific renderer with an error fallback', () => {
+    expect(globeSource).toContain("import { RealisticEarthGlobe as CesiumScientificEarth } from './CleanRealisticEarthGlobe'")
+    expect(globeSource).toContain("import { EarthViewerErrorBoundary } from './EarthViewerErrorBoundary'")
+    expect(globeSource).toContain("const [satelliteMode, setSatelliteMode] = useState(true)")
+    expect(globeSource).toContain('<CesiumScientificEarth selectedTime={selectedTime} markers={stableMarkers} />')
+    expect(globeSource).toContain('<EarthViewerErrorBoundary fallback={stableScientific}>')
   })
 
-  it('updates rotation and visible layers through persistent refs', () => {
-    expect(globeSource).toContain('rotationEnabledRef.current = rotationEnabled')
-    expect(globeSource).toContain('cloudsRef.current.visible = showClouds')
-    expect(globeSource).toContain('atmosphereRef.current.visible = showAtmosphere')
-    expect(globeSource).toContain('gridRef.current.visible = showGrid')
-    expect(globeSource).toContain('if (rotationEnabledRef.current)')
+  it('keeps the lightweight WGS84 and legacy renderers available as fallbacks', () => {
+    expect(globeSource).toContain('Lekki WGS84 · fallback')
+    expect(globeSource).toContain('Legacy sphere · fallback')
+    expect(globeSource).toContain('model="scientific"')
+    expect(globeSource).toContain('model="legacy"')
   })
 
-  it('moves camera presets without reconstructing the renderer', () => {
-    expect(globeSource).toContain('camera.position.set(...preset.position)')
-    expect(globeSource).toContain('camera.updateProjectionMatrix()')
-    expect(globeSource).toContain('}, [view])')
+  it('stabilizes unchanged hazard markers so periodic JSON refreshes do not recreate Cesium', () => {
+    expect(globeSource).toContain('function markerSignature(markers: Marker[])')
+    expect(globeSource).toContain('markerCache.current.signature !== signature')
+    expect(globeSource).toContain('const stableMarkers = markerCache.current.markers')
   })
 
-  it('mounts the honest satellite source status for AUTO and manual modes', () => {
-    expect(globeSource).toContain("import { SatelliteSourceStatusPanel } from './SatelliteSourceStatusPanel'")
-    expect(globeSource).toContain('<SatelliteSourceStatusPanel')
-    expect(globeSource).toContain('source={selectedSource}')
-    expect(globeSource).toContain('logicalZoom={logicalZoom}')
-    expect(globeSource).toContain("tilesConnected: false")
-    expect(globeSource).toContain("sourceMode === 'auto' ? 'AUTO — najlepsze dostępne' : 'Ręczny wybór'")
+  it('updates Cesium hazard entities separately from Viewer initialization', () => {
+    expect(cesiumSource).toContain('viewer.entities.removeAll()')
+    expect(cesiumSource).toContain('markerCssColor(marker)')
+    expect(cesiumSource).toContain('viewer.scene.requestRender()')
+    expect(cesiumSource).toContain('}, [view])')
+    expect(cesiumSource).toContain('}, [ready, view, markers])')
+    expect(cesiumSource).not.toContain('}, [view, markers])')
+  })
+
+  it('preserves per-marker color, size and ground clamping for flood and fire overlays', () => {
+    expect(cesiumSource).toContain('pixelSize: Math.max(5, Math.min(12, 6 + (marker.radius ?? 1)))')
+    expect(cesiumSource).toContain('color: Cesium.Color.fromCssColorString(markerCssColor(marker))')
+    expect(cesiumSource).toContain('heightReference: Cesium.HeightReference.CLAMP_TO_GROUND')
+    expect(cesiumSource).toContain('for (const marker of markers.slice(0, 500))')
+  })
+
+  it('uses tiled Cesium imagery and request-render mode in the scientific viewer', () => {
+    expect(cesiumSource).toContain('new Cesium.Viewer')
+    expect(cesiumSource).toContain('requestRenderMode: true')
+    expect(cesiumSource).toContain('UrlTemplateImageryProvider')
+    expect(cesiumSource).toContain('WebMapTileServiceImageryProvider')
+    expect(cesiumSource).toContain('NASA_WMTS')
+    expect(cesiumSource).toContain('CDSE_WMS')
+  })
+
+  it('keeps the source registry visible next to the combined renderer', () => {
+    expect(globeSource).toContain("import { SatelliteSourceRegistry } from './satellite-source-registry'")
+    expect(globeSource).toContain('<SatelliteSourceRegistry />')
   })
 })
