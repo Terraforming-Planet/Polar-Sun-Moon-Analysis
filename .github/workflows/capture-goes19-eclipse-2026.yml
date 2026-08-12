@@ -3,9 +3,10 @@ name: Capture 2026-08-12 eclipse from NOAA GOES-19
 on:
   workflow_dispatch:
   schedule:
-    # One long-running capture starts before the eclipse path reaches the Atlantic.
-    # GitHub cron is UTC; the year guard prevents recurrence in later years.
-    - cron: '45 14 12 8 *'
+    # The original 14:45 UTC trigger was merged after its scheduled minute.
+    # This one-time backup starts at 15:10 UTC, still before the eclipse reaches
+    # the central totality path. The year guard prevents recurrence in later years.
+    - cron: '10 15 12 8 *'
 
 permissions:
   contents: write
