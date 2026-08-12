@@ -19,8 +19,18 @@ def test_build_manifest_uses_official_cdse_and_real_observation_metadata() -> No
                         "eo:cloud_cover": 12.5 if collection == "sentinel-2-l2a" else None,
                         "platform": "sentinel",
                     },
-                    "assets": {"thumbnail": {"href": "https://example.invalid/preview.png", "type": "image/png"}},
-                    "links": [{"rel": "self", "href": "https://stac.dataspace.copernicus.eu/v1/items/sample"}],
+                    "assets": {
+                        "thumbnail": {
+                            "href": "https://example.invalid/preview.png",
+                            "type": "image/png",
+                        }
+                    },
+                    "links": [
+                        {
+                            "rel": "self",
+                            "href": "https://stac.dataspace.copernicus.eu/v1/items/sample",
+                        }
+                    ],
                 }
             ]
         }
@@ -30,9 +40,13 @@ def test_build_manifest_uses_official_cdse_and_real_observation_metadata() -> No
     assert len(calls) == 2
     assert all(url == STAC_SEARCH for url, _ in calls)
     assert all(payload["bbox"] == AOI_BBOX for _, payload in calls)
-    assert {item["collection"] for item in manifest["observations"]} == {"sentinel-1-grd", "sentinel-2-l2a"}
+    collections = {item["collection"] for item in manifest["observations"]}
+    assert collections == {"sentinel-1-grd", "sentinel-2-l2a"}
     assert all(item["synthetic"] is False for item in manifest["observations"])
-    assert manifest["night_lights"]["gibs_layer_radiance"] == "VIIRS_SNPP_DayNightBand_At_Sensor_Radiance"
+    assert (
+        manifest["night_lights"]["gibs_layer_radiance"]
+        == "VIIRS_SNPP_DayNightBand_At_Sensor_Radiance"
+    )
     assert manifest["historical_water"]["dataset"] == "Global Surface Water v1.4"
 
 
@@ -53,8 +67,16 @@ def test_partial_refresh_preserves_failed_collection_records() -> None:
     previous = {
         "generated_at_utc": "2026-08-12T20:00:00+00:00",
         "observations": [
-            {"id": "old-s1", "collection": "sentinel-1-grd", "datetime_utc": "2026-08-12T18:00:00Z"},
-            {"id": "old-s2", "collection": "sentinel-2-l2a", "datetime_utc": "2026-08-12T17:00:00Z"},
+            {
+                "id": "old-s1",
+                "collection": "sentinel-1-grd",
+                "datetime_utc": "2026-08-12T18:00:00Z",
+            },
+            {
+                "id": "old-s2",
+                "collection": "sentinel-2-l2a",
+                "datetime_utc": "2026-08-12T17:00:00Z",
+            },
         ],
         "aoi": {"id": "olszowka-gardeja-water-testbed"},
     }
@@ -68,7 +90,10 @@ def test_partial_refresh_preserves_failed_collection_records() -> None:
                 {
                     "id": "new-s1",
                     "bbox": AOI_BBOX,
-                    "properties": {"datetime": "2026-08-12T21:00:00Z", "platform": "sentinel-1"},
+                    "properties": {
+                        "datetime": "2026-08-12T21:00:00Z",
+                        "platform": "sentinel-1",
+                    },
                     "assets": {},
                     "links": [],
                 }
@@ -96,4 +121,8 @@ def test_field_report_is_priority_for_verification_not_confirmed_disaster() -> N
 
     assert report["priority"] == "critical_review_requested"
     assert report["verification_state"] == "requires_satellite_and_hydrological_verification"
-    assert any(target["local_name"] == "Jezioro Panieńskie" for target in report["targets"] if "local_name" in target)
+    assert any(
+        target["local_name"] == "Jezioro Panieńskie"
+        for target in report["targets"]
+        if "local_name" in target
+    )
