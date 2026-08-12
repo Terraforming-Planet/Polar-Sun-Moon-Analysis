@@ -7,11 +7,12 @@ PAGE = ROOT / "web" / "public" / "eclipse-live" / "index.html"
 def test_eclipse_live_uses_real_cloud_and_satellite_sources() -> None:
     source = PAGE.read_text(encoding="utf-8")
 
+    assert "mtg_fd:vis06_hrfi" in source
     assert "mtg_fd:rgb_geocolour" in source
     assert "view.eumetsat.int/geoserver/wms" in source
-    assert "EUMETSAT EUMETView" in source
     assert "NOAA GOES-19" in source
-    assert "SATELLITE_PHOTOGRAPHY = TRUE · SYNTHETIC = FALSE" in source
+    assert "RAW SATELLITE EVIDENCE" in source
+    assert "model_overlay" not in source
 
 
 def test_eclipse_live_has_olszowka_and_camera_presets() -> None:
@@ -29,8 +30,8 @@ def test_eclipse_live_has_olszowka_and_camera_presets() -> None:
 def test_eclipse_live_separates_nasa_model_from_observation() -> None:
     source = PAGE.read_text(encoding="utf-8")
 
-    assert "nasaUmbraPath" in source
-    assert "UMBRA · NASA GSFC MODEL" in source
-    assert "model centralnej umbry" in source
-    assert "nie fotografia" in source
+    assert "axisAt" in source
+    assert "UMBRA · NASA GSFC" in source
+    assert "PENUMBRA · NASA BESSEL l1 · MODEL" in source
+    assert "piksele satelitarne, nie render Cesium" in source
     assert "setInterval(poll,5000)" in source

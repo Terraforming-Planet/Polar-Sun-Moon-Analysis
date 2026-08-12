@@ -1,0 +1,125 @@
+name: Capture 2026 eclipse raw GOES-19 Band 2
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Short independent runs are safer than one six-hour sleeping runner.
+    # The date guard below makes this a one-day 2026 observation campaign.
+    - cron: '*/10 17-19 12 8 *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: goes19-band02-eclipse-2026-08-12
+  cancel-in-progress: false
+
+jobs:
+  capture-raw-visible:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Enforce event date
+        if: github.event_name == 'schedule'
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(date -u +%F)" = '2026-08-12'
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Capture official NOAA Band 2 visible frame
+        id: capture
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p eclipse-audit-band02
+          {
+            echo "run_started_utc=$(date -u +%FT%TZ)"
+            echo "repository=${GITHUB_REPOSITORY}"
+            echo "run_id=${GITHUB_RUN_ID}"
+            echo "run_attempt=${GITHUB_RUN_ATTEMPT}"
+            echo "event=${GITHUB_EVENT_NAME}"
+            echo "head_sha=${GITHUB_SHA}"
+            echo "python=$(python --version 2>&1)"
+          } | tee eclipse-audit-band02/session.log
+          python scripts/capture_goes19_band02_eclipse.py \
+            2>&1 | tee eclipse-audit-band02/capture.log
+
+      - name: Validate raw observation provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY' 2>&1 | tee eclipse-audit-band02/provenance.log
+          import json
+          from pathlib import Path
+
+          path = Path('web/public/eclipse/2026-08-12/goes19-band02/manifest.json')
+          data = json.loads(path.read_text(encoding='utf-8'))
+          assert data['source'] == 'NOAA NESDIS STAR GOES-19 ABI Full Disk Band 2'
+          assert data['product'] == 'ABI Band 2 Red Visible 0.64 um'
+          assert data['satellite_observation'] is True
+          assert data['synthetic'] is False
+          assert data['model_overlay'] is False
+          assert data['frames']
+          for frame in data['frames']:
+              assert frame['source_url'].startswith(
+                  'https://cdn.star.nesdis.noaa.gov/GOES19/ABI/FD/02/'
+              )
+              assert len(frame['sha256']) == 64
+          print(f"Validated {len(data['frames'])} raw visible frames.")
+          PY
+
+      - name: Publish new raw frame to main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add web/public/eclipse/2026-08-12/goes19-band02
+          if git diff --cached --quiet; then
+            echo 'No new NOAA Band 2 observation.' | tee -a eclipse-audit-band02/session.log
+            exit 0
+          fi
+          git commit -m 'data(eclipse): capture NOAA GOES-19 Band 2 frame'
+          for attempt in 1 2 3 4; do
+            echo "publish_attempt=${attempt}" | tee -a eclipse-audit-band02/session.log
+            if git fetch origin main \
+              && git rebase origin/main \
+              && git push origin HEAD:main; then
+              echo 'publish=success' | tee -a eclipse-audit-band02/session.log
+              exit 0
+            fi
+            git rebase --abort >/dev/null 2>&1 || true
+            sleep $((attempt * 4))
+          done
+          echo 'publish=failed' | tee -a eclipse-audit-band02/session.log
+          exit 1
+
+      - name: Preserve raw observation and complete logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: goes19-band02-eclipse-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 90
+          if-no-files-found: warn
+          path: |
+            eclipse-audit-band02/
+            web/public/eclipse/2026-08-12/goes19-band02/
+
+      - name: Summary
+        if: always()
+        shell: bash
+        run: |
+          echo '## GOES-19 ABI Band 2 raw visible eclipse record' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Source: NOAA NESDIS STAR, Full Disk Band 2, 0.64 um visible.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'No NASA model overlay is written into these raw satellite frames.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Every stored frame keeps observation time, source URL and SHA-256.' >> "$GITHUB_STEP_SUMMARY"
