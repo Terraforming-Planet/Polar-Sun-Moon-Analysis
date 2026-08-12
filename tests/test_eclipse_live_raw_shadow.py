@@ -19,7 +19,8 @@ def test_eclipse_live_separates_cesium_from_lunar_geometry() -> None:
     assert "viewer.scene.globe.enableLighting=false" in source
     assert "viewer.scene.sun.show=false" in source
     assert "viewer.scene.moon.show=false" in source
-    assert "czarna „kropka” Cesium została usunięta" in source
+    assert 'id="moon-disc"' in source
+    assert "function phaseGraphic(s)" in source
     assert "PENUMBRA · NASA BESSEL · MODEL" in source
     assert "UMBRA · NASA GSFC · MODEL" in source
     assert "deltaT:75.4" in source

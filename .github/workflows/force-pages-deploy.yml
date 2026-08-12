@@ -72,7 +72,7 @@ jobs:
           echo 'Published docs files:'
           find docs -maxdepth 2 -type f | sort | head -200
 
-      - name: Commit generated Pages files
+      - name: Commit generated Pages files with rebase retry
         shell: bash
         run: |
           set -euo pipefail
@@ -81,10 +81,24 @@ jobs:
           git add docs
           if git diff --cached --quiet; then
             echo 'No generated changes to commit.'
-          else
-            git commit -m "chore(pages): publish web build for ${GITHUB_SHA::7}"
-            git push origin HEAD:main
+            exit 0
           fi
+
+          git commit -m "chore(pages): publish web build for ${GITHUB_SHA::7}"
+          for attempt in 1 2 3 4; do
+            echo "pages_publish_attempt=${attempt}"
+            if git fetch origin main \
+              && git rebase origin/main \
+              && git push origin HEAD:main; then
+              echo 'pages_publish=success'
+              exit 0
+            fi
+            git rebase --abort >/dev/null 2>&1 || true
+            sleep $((attempt * 4))
+          done
+
+          echo 'pages_publish=failed after 4 attempts'
+          exit 1
 
   e2e:
     needs: build-and-publish
