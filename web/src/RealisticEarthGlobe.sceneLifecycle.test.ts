@@ -37,7 +37,8 @@ describe('RealisticEarthGlobe scene lifecycle', () => {
     expect(cesiumSource).toContain('pixelSize: Math.max(5, Math.min(12, 6 + (marker.radius ?? 1)))')
     expect(cesiumSource).toContain('color: Cesium.Color.fromCssColorString(markerCssColor(marker))')
     expect(cesiumSource).toContain('heightReference: Cesium.HeightReference.CLAMP_TO_GROUND')
-    expect(cesiumSource).toContain('markers.slice(0, constrainedDevice ? 250 : 500)')
+    expect(cesiumSource).toContain('const markerLimit = constrainedDevice ? 250 : 500')
+    expect(cesiumSource).toContain('markers.slice(0, markerLimit)')
   })
 
   it('uses tiled Cesium imagery and request-render mode in the scientific viewer', () => {
