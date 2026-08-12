@@ -2,9 +2,15 @@ name: Capture 2026 eclipse raw GOES-19 Band 2
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/capture-goes19-band02-eclipse-2026.yml'
+      - 'scripts/capture_goes19_band02_eclipse.py'
+      - 'web/public/eclipse-live/**'
   schedule:
-    # Short independent runs are safer than one six-hour sleeping runner.
-    # The date guard below makes this a one-day 2026 observation campaign.
+    # Short independent runs are safer than one long sleeping runner.
+    # The date guard below makes scheduled captures a one-day campaign.
     - cron: '*/10 17-19 12 8 *'
 
 permissions:
