@@ -34,3 +34,15 @@ def test_close_view_keeps_real_satellite_sources_separate() -> None:
     assert "GOES19/ABI/FD/02/1808x1808.jpg" in source
     assert "Prawdziwy obraz satelitarny Europy" in source
     assert "Surowe obrazy satelitarne pozostają osobno" in source
+
+
+def test_close_view_has_local_night_vision_without_touching_raw_images() -> None:
+    source = PAGE.read_text(encoding="utf-8")
+
+    assert 'id="night-toggle"' in source
+    assert 'id="night-overlay"' in source
+    assert ".night-vision .cesium canvas" in source
+    assert "function applyNightVision()" in source
+    assert "Noktowizor = filtr widoczności sceny" in source
+    assert "nie jest kamerą IR ani termowizją" in source
+    assert ".raw img{width:100%" in source
