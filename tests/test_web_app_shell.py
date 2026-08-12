@@ -1,6 +1,5 @@
 from pathlib import Path
 
-
 INDEX_HTML = Path(__file__).resolve().parents[1] / "web" / "index.html"
 
 
