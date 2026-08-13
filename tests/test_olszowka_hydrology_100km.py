@@ -30,4 +30,26 @@ def test_hydrology_module_uses_requested_scales_and_candidate_wording() -> None:
     assert "around:15000" in source
     assert "KANDYDAT POŁĄCZENIA DO INSPEKCJI" in source
     assert "nie potwierdzone uszkodzenie" in source
-    assert "uszkodzony dopływ/odpływ" in source
+    assert "nie dowodzi bezpośredniego połączenia" in source
+
+
+def test_hydrology_100km_is_resilient_and_blue_led() -> None:
+    source = HYDRO.read_text(encoding="utf-8")
+
+    assert "overpass.kumi.systems/api/interpreter" in source
+    assert "overpass.private.coffee/api/interpreter" in source
+    assert "regionalCells" in source
+    assert "PolylineGlowMaterialProperty" in source
+    assert "#24d6ff" in source
+    assert "#1687ff" in source
+    assert "GUGIK_HYDRO_WMS" in source
+
+
+def test_latest_satellite_view_uses_nasa_gibs_and_cdse_stac() -> None:
+    source = HYDRO.read_text(encoding="utf-8")
+
+    assert "gibs.earthdata.nasa.gov" in source
+    assert "VIIRS_NOAA21_CorrectedReflectance_TrueColor" in source
+    assert "stac.dataspace.copernicus.eu/v1/search" in source
+    assert "sentinel-2-l2a" in source
+    assert "Najnowszy satelita · NASA + CDSE" in source
