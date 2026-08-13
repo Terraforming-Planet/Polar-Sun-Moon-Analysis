@@ -32,3 +32,21 @@ def test_page_marks_local_water_report_as_verification_priority() -> None:
     assert "priorytet do weryfikacji" in source
     assert "nie automatycznie potwierdzona klęska żywiołowa" in source
     assert "tp-olszowka-pond-pin" in source
+
+
+def test_page_uses_stac_time_or_explicit_lookback_for_copernicus() -> None:
+    source = PAGE.read_text(encoding="utf-8")
+
+    assert "latestSentinel2Day" in source
+    assert "30-dniowe okno awaryjne" in source
+    assert "nie nazywamy jej bieżącą obserwacją" in source
+    assert "time:w.time" in source
+
+
+def test_page_validates_remote_urls_before_rendering_href_or_src() -> None:
+    source = PAGE.read_text(encoding="utf-8")
+
+    assert "function safeRemoteUrl" in source
+    assert "u.protocol==='https:'" in source
+    assert "const previewUrl=safeRemoteUrl(item.preview_url)" in source
+    assert "productUrl=safeRemoteUrl(item.product_url)" in source
