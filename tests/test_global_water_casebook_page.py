@@ -8,6 +8,8 @@ def test_casebook_page_loads_registry_and_keeps_safety_notice() -> None:
     source = PAGE.read_text(encoding="utf-8")
 
     assert "global-water-casebook.json" in source
+    assert "global-water-casebook-batch-07.json" in source
+    assert "global-water-casebook-batch-08.json" in source
     assert "analogia nie jest diagnozą" in source.lower()
     assert "Nie zalecamy samodzielnego przekopywania" in source
     assert "safeUrl" in source
