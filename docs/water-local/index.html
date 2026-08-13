@@ -4,56 +4,115 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#020711" />
-  <title>Terraforming Planet · Olszówka Water Observatory</title>
+  <title>Terraforming Planet · Olszówka / Gardeja Water Observatory</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cesium@1.126/Build/Cesium/Widgets/widgets.css" />
   <style>
-    :root{color-scheme:dark;font-family:Inter,system-ui,sans-serif;background:#020711;color:#eaf7ff}*{box-sizing:border-box}body{margin:0;background:#020711}.shell{max-width:1280px;margin:auto;padding:9px}.panel{border:1px solid #17415f;background:#071525;border-radius:12px;padding:12px;margin-bottom:10px}.hero{border-color:#20c8ff}.critical{border-color:#ff7b4a}.eyebrow{font-size:11px;letter-spacing:.1em;color:#64e5ff;font-weight:800}h1{font-size:clamp(30px,6vw,54px);line-height:.98;margin:6px 0 10px}h2{margin:.3rem 0 .7rem}.notice{border-left:4px solid #ffd24a;background:#302812;color:#fff3be;padding:9px;line-height:1.45}.alarm{border-left:4px solid #ff5f4a;background:#331512;color:#ffd8d0;padding:9px;line-height:1.45}.controls{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:9px 0}button,a.button{background:#0d2c46;color:#eaf7ff;border:1px solid #2d6f97;border-radius:8px;padding:9px 10px;text-decoration:none}.active{background:#126884;border-color:#6be2ff}.stage{height:min(70vh,720px);min-height:480px;position:relative;border-radius:10px;overflow:hidden;background:#000}.cesium{position:absolute;inset:0}.status{position:absolute;left:10px;bottom:10px;z-index:8;max-width:min(620px,92%);background:rgba(3,10,18,.9);border:1px solid #2a627f;border-radius:8px;padding:8px;font-size:12px;line-height:1.4}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}.card{border:1px solid #173754;border-radius:9px;padding:10px;background:#06111e}.card img{width:100%;display:block;background:#000;border-radius:7px;max-height:360px;object-fit:contain}.fact{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #173754;padding:6px 0}.fact span{color:#91acbf}.warn{color:#ffd36b}.bad{color:#ff8b7a}.tiny{font-size:12px;color:#a8bfd0;line-height:1.45}.target{padding:8px 0;border-bottom:1px solid #173754}.target:last-child{border-bottom:0}.pill{display:inline-block;border:1px solid #52697a;border-radius:999px;padding:2px 7px;font-size:10px;margin-right:5px}.pill.red{border-color:#ff6655;color:#ffb0a4}.pill.green{border-color:#51d89c;color:#9ff0c9}.raw-link{color:#65dcff}.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1 1 300px}@media(max-width:760px){.stage{height:560px;min-height:460px}button,a.button{font-size:12px;padding:8px}.status{font-size:11px}}
+    :root{color-scheme:dark;font-family:Inter,system-ui,sans-serif;background:#020711;color:#eaf7ff}
+    *{box-sizing:border-box}body{margin:0;background:#020711}.shell{max-width:1280px;margin:auto;padding:9px}
+    .panel{border:1px solid #17415f;background:#071525;border-radius:12px;padding:12px;margin-bottom:10px}
+    .hero{border-color:#20c8ff}.critical{border-color:#ff7b4a}.eyebrow{font-size:11px;letter-spacing:.1em;color:#64e5ff;font-weight:800}
+    h1{font-size:clamp(30px,6vw,54px);line-height:.98;margin:6px 0 10px}h2{margin:.3rem 0 .7rem}h3{margin:.25rem 0 .55rem}
+    .notice{border-left:4px solid #ffd24a;background:#302812;color:#fff3be;padding:9px;line-height:1.45}
+    .alarm{border-left:4px solid #ff5f4a;background:#331512;color:#ffd8d0;padding:9px;line-height:1.45}
+    .science{border-left:4px solid #45d6a6;background:#0b2b26;color:#c8ffef;padding:9px;line-height:1.45}
+    .controls{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:9px 0}
+    button,a.button{background:#0d2c46;color:#eaf7ff;border:1px solid #2d6f97;border-radius:8px;padding:9px 10px;text-decoration:none;cursor:pointer}
+    .active{background:#126884;border-color:#6be2ff}.stage{height:min(70vh,720px);min-height:480px;position:relative;border-radius:10px;overflow:hidden;background:#000}
+    .cesium{position:absolute;inset:0}.status{position:absolute;left:10px;bottom:10px;z-index:8;max-width:min(680px,92%);background:rgba(3,10,18,.92);border:1px solid #2a627f;border-radius:8px;padding:8px;font-size:12px;line-height:1.4}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}.card{border:1px solid #173754;border-radius:9px;padding:10px;background:#06111e}
+    .card img{width:100%;display:block;background:#000;border-radius:7px;max-height:360px;object-fit:contain}.fact{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #173754;padding:6px 0}
+    .fact span{color:#91acbf}.warn{color:#ffd36b}.bad{color:#ff8b7a}.good{color:#9ff0c9}.tiny{font-size:12px;color:#a8bfd0;line-height:1.5}
+    .target{padding:8px 0;border-bottom:1px solid #173754}.target:last-child{border-bottom:0}.pill{display:inline-block;border:1px solid #52697a;border-radius:999px;padding:2px 7px;font-size:10px;margin-right:5px}
+    .pill.red{border-color:#ff6655;color:#ffb0a4}.pill.green{border-color:#51d89c;color:#9ff0c9}.pill.yellow{border-color:#ffd24a;color:#ffe59c}.pill.blue{border-color:#5cb8ff;color:#a8d8ff}
+    .raw-link{color:#65dcff}.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1 1 300px}.flow{font-size:clamp(18px,3.5vw,30px);font-weight:800;line-height:1.25;color:#dff8ff}
+    .step{border-left:3px solid #2d6f97;padding-left:10px;margin:9px 0}.source-list a{display:block;margin:6px 0}
+    @media(max-width:760px){.stage{height:560px;min-height:460px}button,a.button{font-size:12px;padding:8px}.status{font-size:11px}}
   </style>
 </head>
 <body>
 <div class="shell">
   <section class="panel hero">
-    <div class="eyebrow">TERRAFORMING PLANET · OLSZÓWKA / GARDEJA · MULTI-SENSOR TESTBED</div>
+    <div class="eyebrow">TERRAFORMING PLANET · OLSZÓWKA / GARDEJA · MULTI-SENSOR HYDROLOGY TESTBED</div>
     <h1>Lokalne obserwatorium wody i nocy</h1>
-    <div class="notice"><b>Cel:</b> połączyć prawdziwe dane z wielu oficjalnych źródeł. Sentinel-1 radar działa w dzień, noc i przez chmury; Sentinel-2 daje wysoką szczegółowość optyczną podczas przelotów; NASA VIIRS DNB pokazuje radiancję nocną. Każdy sensor zachowuje własny rzeczywisty czas obserwacji.</div>
+    <div class="notice"><b>Cel:</b> połączyć prawdziwe dane z oficjalnych/publicznych źródeł i oddzielać obserwację od hipotezy. Sentinel-1 radar działa w dzień, noc i przez chmury; Sentinel-2 daje szczegółową obserwację optyczną podczas przelotów; NASA VIIRS DNB pokazuje radiancję nocną; EC JRC pozwala badać historię wód powierzchniowych. Każdy sensor zachowuje własny rzeczywisty czas obserwacji.</div>
   </section>
 
   <section class="panel critical">
     <div class="eyebrow">PRIORYTET TERENOWY · WYMAGA WERYFIKACJI SATELITARNEJ I HYDROLOGICZNEJ</div>
     <h2>Olszówka / Gardeja — lokalny alarm badawczy</h2>
-    <div class="alarm">Zgłoszenie terenowe obejmuje wieloletni zanik wody w obiekcie oznaczanym na mapach jako <b>Staw w lesie</b> (lokalna nazwa: <b>Jezioro Panieńskie</b>) oraz podejrzenie spadku poziomu / pogorszenia jakości wody w rejonie Jeziora Kuchnia. To jest <b>priorytet do weryfikacji</b>, nie automatycznie potwierdzona klęska żywiołowa.</div>
+    <div class="alarm">Zgłoszenie terenowe obejmuje wieloletni zanik wody w obiekcie oznaczanym na mapach jako <b>Staw w lesie</b> (lokalna nazwa: <b>Jezioro Panieńskie</b>), podejrzenie zmian poziomu / jakości w rejonie <b>Jeziora Kuchnia</b> oraz potrzebę porównania z <b>Jeziorem Kamień</b>, <b>Jeziorem Nogat</b> i małym, nieopisanym akwenem przy Kuchni. To jest <b>priorytet do weryfikacji</b>, nie automatycznie potwierdzona klęska żywiołowa ani potwierdzona niedrożność cieku.</div>
   </section>
 
   <section class="panel">
     <div class="controls">
-      <button id="day" class="active">🛰 Szczegółowa mapa referencyjna</button>
+      <button id="day" class="active">🗺 Czysta mapa hydrologiczna</button>
+      <button id="satellite-reference">🛰 Zdjęcia referencyjne · nie live</button>
       <button id="night-radiance">💡 NASA VIIRS DNB · radiancja nocna</button>
       <button id="night-enhanced">🌙 NASA VIIRS DNB · ENCC</button>
       <button id="copernicus">🌍 Copernicus · najnowszy dostępny przelot</button>
-      <button id="pin-pond">📍 Ustaw pin „Staw w lesie”</button>
+      <button id="pin-pond">📍 Pin Staw w lesie</button>
+      <button id="pin-small-lake">📍 Pin mały akwen przy Kuchni</button>
+      <button id="pin-kamien">📍 Pin Jezioro Kamień</button>
       <button id="home">🎯 Olszówka</button>
       <a class="button" href="../">← Główna strona</a>
     </div>
     <div class="stage"><div id="cesium" class="cesium"></div><div class="status" id="status">Ładowanie Cesium…</div></div>
-    <p class="tiny"><b>Test lamp:</b> tryby VIIRS DNB pokazują <u>rzeczywistą nocną radiancję</u> z sensora satelitarnego. Podbijamy wyłącznie kontrast wizualizacji. <b>Pojedyncza latarnia może być mniejsza niż piksel sensora</b>, więc nie oznaczamy niewidocznej lampy jako „wyłączonej”. Jasny piksel nad obszarem jest pomiarem radiancji, nie identyfikatorem konkretnej lampy.</p>
+    <p class="tiny"><b>Usunięcie czarnego pasa:</b> domyślna warstwa została przełączona na jednolite kafle OpenStreetMap, aby mozaika zdjęć z różnych dat nie wyglądała jak prawdziwy cień lub zjawisko terenowe. Archiwalne zdjęcia satelitarne są osobnym trybem referencyjnym i są wyraźnie oznaczone jako <b>nie live</b>.</p>
+    <p class="tiny"><b>Test lamp:</b> VIIRS DNB pokazuje <u>rzeczywistą nocną radiancję</u> z sensora satelitarnego. Podbijamy wyłącznie kontrast wizualizacji. <b>Pojedyncza latarnia może być mniejsza niż piksel sensora</b>, więc nie oznaczamy niewidocznej lampy jako „wyłączonej”. Jasny piksel nad obszarem jest pomiarem radiancji, nie identyfikatorem konkretnej lampy.</p>
   </section>
 
   <section class="panel"><div class="row">
     <div class="card"><h2>Obszary badawcze</h2>
-      <div class="target"><span class="pill red">PRIORYTET</span><b>Staw w lesie</b><div class="tiny">Lokalna nazwa mieszkańców: Jezioro Panieńskie. Dokładny pin ustaw ręcznie — nie zgadujemy współrzędnych.</div></div>
-      <div class="target"><span class="pill red">DO WERYFIKACJI</span><b>Jezioro Kuchnia</b><div class="tiny">53.58809°N, 19.01969°E · monitorowanie linii brzegowej i zasięgu wody.</div></div>
+      <div class="target"><span class="pill red">PRIORYTET</span><b>Staw w lesie / Jezioro Panieńskie</b><div class="tiny">Nazwa lokalna użytkownika. Dokładny pin jest ustawiany ręcznie — nie zgadujemy współrzędnych ani urzędowej geometrii.</div></div>
+      <div class="target"><span class="pill red">DO WERYFIKACJI</span><b>Jezioro Kuchnia</b><div class="tiny">53.58809°N, 19.01969°E · linia brzegowa, zasięg wody, roślinność i możliwe połączenia odpływowe.</div></div>
+      <div class="target"><span class="pill yellow">AOI UŻYTKOWNIKA</span><b>Mały akwen przy Jeziorze Kuchnia</b><div class="tiny">Na mapie widoczny jako odrębny zbiornik. Nie nadajemy mu zmyślonej nazwy urzędowej; dokładny pin ustaw ręcznie.</div></div>
+      <div class="target"><span class="pill blue">OFICJALNY WYKAZ GMINY</span><b>Jezioro Kamień</b><div class="tiny">Gmina Gardeja wykazuje Kamień w Gardei (5 ha, maks. głębokość 5 m). Pin ustaw ręcznie do czasu pobrania urzędowej geometrii.</div></div>
+      <div class="target"><span class="pill yellow">KONTROLA REGIONALNA</span><b>Jezioro Nogat</b><div class="tiny">Orientacyjny centroid publicznej mapy: 53.58220°N, 19.06920°E. Docelowo geometria ma zostać zastąpiona warstwą Hydroportal/Geoportal.</div></div>
       <div class="target"><span class="pill green">KONTROLA</span><b>Jezioro Czarne Dolne</b><div class="tiny">53.62940°N, 19.04310°E</div></div>
       <div class="target"><span class="pill green">KONTROLA</span><b>Jezioro Czarne Górne</b><div class="tiny">53.62810°N, 19.07390°E</div></div>
     </div>
     <div class="card"><h2>Źródła do analizy</h2>
       <div class="fact"><span>Noc / światła</span><b>NASA VIIRS DNB</b></div>
       <div class="fact"><span>Woda w nocy / chmury</span><b>Copernicus Sentinel-1 SAR</b></div>
-      <div class="fact"><span>Wysoka szczegółowość optyczna</span><b>Copernicus Sentinel-2 L2A</b></div>
-      <div class="fact"><span>Historia powierzchni wody</span><b>EC JRC Global Surface Water 1984–2021</b></div>
-      <p><a class="raw-link" href="https://worldview.earthdata.nasa.gov/" target="_blank" rel="noreferrer">NASA Worldview ↗</a></p>
-      <p><a class="raw-link" href="https://browser.dataspace.copernicus.eu/" target="_blank" rel="noreferrer">Copernicus Browser ↗</a></p>
+      <div class="fact"><span>Szczegółowość optyczna</span><b>Copernicus Sentinel-2 L2A</b></div>
+      <div class="fact"><span>Historia powierzchni wody</span><b>EC JRC Global Surface Water 1984–2024</b></div>
+      <div class="fact"><span>Hydrografia / susza / gospodarka wodna</span><b>Wody Polskie · Hydroportal</b></div>
+      <div class="fact"><span>Nazwy i lokalny wykaz cieków</span><b>Gmina Gardeja</b></div>
+      <div class="source-list">
+        <a class="raw-link" href="https://wody.isok.gov.pl/hydroportal.html" target="_blank" rel="noreferrer">Wody Polskie · Hydroportal ↗</a>
+        <a class="raw-link" href="https://www.gardeja.pl/asp/pl_start.asp?menu=6&amp;strona=1&amp;sub=3&amp;typ=14" target="_blank" rel="noreferrer">Gmina Gardeja · krajobraz, jeziora i rzeki ↗</a>
+        <a class="raw-link" href="https://global-surface-water.appspot.com/download" target="_blank" rel="noreferrer">EC JRC Global Surface Water ↗</a>
+        <a class="raw-link" href="https://worldview.earthdata.nasa.gov/" target="_blank" rel="noreferrer">NASA Worldview ↗</a>
+        <a class="raw-link" href="https://browser.dataspace.copernicus.eu/" target="_blank" rel="noreferrer">Copernicus Browser ↗</a>
+      </div>
     </div>
   </div></section>
+
+  <section class="panel">
+    <div class="eyebrow">LOKALNY UKŁAD HYDROLOGICZNY · FAKTY ODDZIELONE OD HIPOTEZ</div>
+    <h2>Gardęga i pozostałe cieki, które trzeba włączyć do modelu</h2>
+    <div class="science"><b>Potwierdzone publicznie:</b> Gmina Gardeja wymienia na swoim terenie rzeki <b>Gardęga</b> (dopływ Osy), <b>Wandówka</b> i <b>Cyganówka</b>. Wody Polskie dokumentowały też prace utrzymaniowe na Gardędze oraz na <b>Kanale Łąkowym</b> i <b>Cieku Polderowym</b>. Te obiekty stają się osobnymi warstwami/rekordami kontrolnymi; nie zakładamy bez dowodu, że każdy z nich zasila konkretne jezioro.</div>
+    <div class="grid" style="margin-top:10px">
+      <article class="card"><span class="pill blue">POTWIERDZONE</span><h3>Gardęga / Gardeja</h3><div class="flow">Jezioro Kuchnia → Gardęga → Osa</div><p class="tiny">Publiczny opis obwodu wodnego potwierdza odcinek Gardęgi od wypływu z Jeziora Kuchnia do ujścia do Osy. Kierunki i wszystkie wcześniejsze dopływy do Kuchni trzeba teraz odtworzyć z urzędowej geometrii Hydroportalu.</p></article>
+      <article class="card"><span class="pill blue">POTWIERDZONE W GMINIE</span><h3>Wandówka</h3><p class="tiny">Osobny ciek wymieniony przez Gminę Gardeja. Nie przypisujemy mu automatycznie zasilania Jeziora Kuchnia; badamy zlewnię, przecięcia rowów i kierunek spadku terenu.</p></article>
+      <article class="card"><span class="pill blue">POTWIERDZONE W GMINIE</span><h3>Cyganówka</h3><p class="tiny">Osobny lokalny ciek. Powiat Kwidzyński opisuje mały ciek Cyganówka w rejonie Cygan. Włączamy go do regionalnego bilansu i szukamy połączeń dopiero na geometrii hydrograficznej.</p></article>
+      <article class="card"><span class="pill yellow">INFRASTRUKTURA WODNA</span><h3>Kanał Łąkowy + Ciek Polderowy</h3><p class="tiny">Wody Polskie prowadziły na obu obiektach w gminie Gardeja prace utrzymaniowe. To ważny sygnał, żeby w diagnostyce nie ograniczać się do naturalnych rzek: rowy, kanały, przepusty i urządzenia melioracyjne mogą zmieniać lokalny czas retencji.</p></article>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="eyebrow">PLAN DIAGNOZY · NIE PRZESĄDZA PRZYCZYNY</div>
+    <h2>Skąd dochodzi woda i gdzie szukać problemu</h2>
+    <div class="grid">
+      <article class="card"><h3>1 · Zbuduj graf zlewni</h3><p class="tiny">Z Hydroportalu/Geoportalu pobierz geometrię Gardęgi, Osy, Wandówki, Cyganówki, Kanału Łąkowego, Cieku Polderowego, rowów, przepustów i urządzeń piętrzących. Połącz je z jeziorami jako skierowany graf: <b>dopływ → zbiornik → odpływ</b>. Kierunku nie zgadujemy z samego obrazu.</p></article>
+      <article class="card"><h3>2 · Historia 1984–2024</h3><p class="tiny">Dla każdego akwenu policz roczną i sezonową powierzchnię wody z EC JRC Global Surface Water. To pozwoli oddzielić trwały zanik od naturalnego sezonowego wahania i wskazać rok/okres początku zmiany.</p></article>
+      <article class="card"><h3>3 · Radar i optyka</h3><p class="tiny">Sentinel-1: zmiany powierzchni wody niezależnie od światła. Sentinel-2: NDWI/MNDWI, linia brzegowa, roślinność przybrzeżna, zmętnienie/barwa jako wskaźniki do dalszej weryfikacji. Każdy wynik ma timestamp i ID produktu.</p></article>
+      <article class="card"><h3>4 · Bilans wody</h3><p class="tiny">Porównaj opad, temperaturę/parowanie, wilgotność gleby, poziom wód gruntowych (jeśli istnieją oficjalne stacje) oraz zmianę powierzchni jeziora. Jeżeli kilka sąsiednich jezior spada jednocześnie, rośnie znaczenie suszy lub wód podziemnych; jeżeli jedno zachowuje się inaczej, rośnie znaczenie lokalnego połączenia/urządzenia.</p></article>
+      <article class="card"><h3>5 · Punkty podejrzane</h3><p class="tiny">Automatycznie flaguj: ujścia i wypływy, skrzyżowania ciek–droga, przepusty, rowy melioracyjne, odcinki o nagłej zmianie szerokości, miejsca silnego zarastania oraz połączenia pomiędzy małym akwenem, Kuchnią i pobliskimi obniżeniami. Flaga oznacza <b>miejsce do sprawdzenia</b>, nie „zapchany odpływ”.</p></article>
+      <article class="card"><h3>6 · Jakość wody</h3><p class="tiny">Dla Kamienia i innych kąpielisk dołącz oficjalne komunikaty sanitarne. Dla pozostałych jezior nie wyciągamy wniosku o jakości wyłącznie z koloru zdjęcia: barwa jest sygnałem do pomiaru chlorofilu, zawiesiny, temperatury, przewodności, tlenu i składników biogennych, gdy takie dane są publiczne.</p></article>
+    </div>
+    <div class="notice" style="margin-top:10px"><b>Najważniejsza hipoteza robocza:</b> problem może leżeć w jednym z czterech miejsc: (A) spadek zasilania opadowego/gruntowego, (B) szybszy odpływ przez sieć cieków i melioracji, (C) lokalna niedrożność lub zmiana urządzenia/przepustu, (D) zarastanie i sedymentacja płytkiego zbiornika. System ma je rozróżniać danymi, a nie wybierać jedną przyczynę z góry.</div>
+  </section>
 
   <section class="panel">
     <div class="eyebrow">NAJNOWSZE PRAWDZIWE PRODUKTY · COPERNICUS DATA SPACE STAC</div>
@@ -65,8 +124,9 @@
   <section class="panel"><h2>Logika badawcza do skalowania globalnego</h2><div class="grid">
     <article class="card"><b>1 · Radar</b><p class="tiny">Sentinel-1: wykrywanie powierzchni wody i zmian niezależnie od światła dziennego i części warunków pogodowych.</p></article>
     <article class="card"><b>2 · Optyka</b><p class="tiny">Sentinel-2: linia brzegowa, roślinność wodna, mętność / barwa jako wskaźniki do dalszej analizy, zawsze z timestampem konkretnego przelotu.</p></article>
-    <article class="card"><b>3 · Historia</b><p class="tiny">JRC Global Surface Water: trwały zanik, sezonowość i przesunięcia zasięgu.</p></article>
+    <article class="card"><b>3 · Historia</b><p class="tiny">JRC Global Surface Water 1984–2024: trwały zanik, sezonowość i przesunięcia zasięgu.</p></article>
     <article class="card"><b>4 · Noc</b><p class="tiny">VIIRS DNB: regionalna radiancja nocna jako kontekst infrastruktury, nie obraz pojedynczych lamp.</p></article>
+    <article class="card"><b>5 · Sieć rzeczna</b><p class="tiny">Hydroportal/Geoportal: graf dopływów, odpływów, kanałów i urządzeń wodnych. To warstwa rozstrzygająca kierunek przepływu, nie sama ortofotomapa.</p></article>
   </div></section>
 </div>
 
@@ -74,29 +134,134 @@
 <script src="https://cdn.jsdelivr.net/npm/cesium@1.126/Build/Cesium/Cesium.js"></script>
 <script>
 const NASA_WMTS='https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/wmts.cgi';
-const HIGH_RES='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+const OSM='https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+const SATELLITE_REFERENCE='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
 const CDSE_WMS='https://sh.dataspace.copernicus.eu/ogc/wms/d708f736-b553-4328-9b5e-39bdb444790c';
 const focus={lon:19.02,lat:53.61,height:42000};
 const today=new Date().toISOString().slice(0,10);let latestSentinel2Day=null;
 const status=document.getElementById('status');
 const viewer=new Cesium.Viewer('cesium',{animation:false,timeline:false,baseLayerPicker:false,geocoder:false,homeButton:false,sceneModePicker:false,navigationHelpButton:false,fullscreenButton:false,infoBox:false,selectionIndicator:false,imageryProvider:false,requestRenderMode:true,maximumRenderTimeChange:Infinity});
-viewer.scene.globe.maximumScreenSpaceError=window.innerWidth<=768?1.3:.5;viewer.scene.globe.tileCacheSize=window.innerWidth<=768?260:900;viewer.resolutionScale=window.innerWidth<=768?.78:1;viewer.scene.screenSpaceCameraController.minimumZoomDistance=20;viewer.scene.screenSpaceCameraController.maximumZoomDistance=2000000;viewer.scene.globe.enableLighting=false;viewer.scene.sun.show=false;viewer.scene.moon.show=false;viewer.camera.setView({destination:Cesium.Cartesian3.fromDegrees(focus.lon,focus.lat,focus.height)});
-const targets=[{id:'olszowka',label:'Olszówka',lon:18.99546,lat:53.61586,color:'#ffe539'},{id:'kuchnia',label:'Jezioro Kuchnia',lon:19.01969,lat:53.58809,color:'#ff7a59'},{id:'czarne-dolne',label:'Czarne Dolne',lon:19.04310,lat:53.62940,color:'#55e2a7'},{id:'czarne-gorne',label:'Czarne Górne',lon:19.07390,lat:53.62810,color:'#55e2a7'}];
-function addMarker(x){viewer.entities.add({id:x.id,position:Cesium.Cartesian3.fromDegrees(x.lon,x.lat),point:{pixelSize:10,color:Cesium.Color.fromCssColorString(x.color),outlineColor:Cesium.Color.BLACK,outlineWidth:2,heightReference:Cesium.HeightReference.CLAMP_TO_GROUND},label:{text:x.label,font:'13px sans-serif',fillColor:Cesium.Color.WHITE,outlineColor:Cesium.Color.BLACK,outlineWidth:3,style:Cesium.LabelStyle.FILL_AND_OUTLINE,pixelOffset:new Cesium.Cartesian2(0,-18),distanceDisplayCondition:new Cesium.DistanceDisplayCondition(0,120000)}})}targets.forEach(addMarker);
-const savedPond=localStorage.getItem('tp-olszowka-pond-pin');if(savedPond){try{const p=JSON.parse(savedPond);if(Number.isFinite(p.lon)&&Number.isFinite(p.lat))addMarker({id:'staw-w-lesie',label:'Staw w lesie / Jezioro Panieńskie',lon:p.lon,lat:p.lat,color:'#ff4e4e'})}catch{}}
-function setActive(id){document.querySelectorAll('.controls button').forEach(b=>b.classList.remove('active'));document.getElementById(id)?.classList.add('active')}function clearLayers(){viewer.imageryLayers.removeAll()}function addReference(alpha=1){const base=viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({url:HIGH_RES,minimumLevel:0,maximumLevel:23,credit:'Esri World Imagery'}));base.alpha=alpha;base.contrast=1.05;return base}
+viewer.scene.globe.maximumScreenSpaceError=window.innerWidth<=768?1.3:.5;
+viewer.scene.globe.tileCacheSize=window.innerWidth<=768?260:900;
+viewer.resolutionScale=window.innerWidth<=768?.78:1;
+viewer.scene.screenSpaceCameraController.minimumZoomDistance=20;
+viewer.scene.screenSpaceCameraController.maximumZoomDistance=2000000;
+viewer.scene.globe.enableLighting=false;viewer.scene.sun.show=false;viewer.scene.moon.show=false;
+viewer.camera.setView({destination:Cesium.Cartesian3.fromDegrees(focus.lon,focus.lat,focus.height)});
+
+const targets=[
+  {id:'olszowka',label:'Olszówka',lon:18.99546,lat:53.61586,color:'#ffe539'},
+  {id:'kuchnia',label:'Jezioro Kuchnia',lon:19.01969,lat:53.58809,color:'#ff7a59'},
+  {id:'nogat',label:'Jezioro Nogat · centroid orientacyjny',lon:19.06920,lat:53.58220,color:'#55b9ff'},
+  {id:'czarne-dolne',label:'Czarne Dolne',lon:19.04310,lat:53.62940,color:'#55e2a7'},
+  {id:'czarne-gorne',label:'Czarne Górne',lon:19.07390,lat:53.62810,color:'#55e2a7'}
+];
+function addMarker(x){
+  viewer.entities.add({
+    id:x.id,
+    position:Cesium.Cartesian3.fromDegrees(x.lon,x.lat),
+    point:{pixelSize:10,color:Cesium.Color.fromCssColorString(x.color),outlineColor:Cesium.Color.BLACK,outlineWidth:2,heightReference:Cesium.HeightReference.CLAMP_TO_GROUND},
+    label:{text:x.label,font:'13px sans-serif',fillColor:Cesium.Color.WHITE,outlineColor:Cesium.Color.BLACK,outlineWidth:3,style:Cesium.LabelStyle.FILL_AND_OUTLINE,pixelOffset:new Cesium.Cartesian2(0,-18),distanceDisplayCondition:new Cesium.DistanceDisplayCondition(0,120000)}
+  });
+}
+targets.forEach(addMarker);
+
+const manualPins={
+  'pin-pond':{storage:'tp-olszowka-pond-pin',id:'staw-w-lesie',label:'Staw w lesie / Jezioro Panieńskie',color:'#ff4e4e'},
+  'pin-small-lake':{storage:'tp-kuchnia-small-pin',id:'kuchnia-small',label:'Mały akwen przy Jeziorze Kuchnia · AOI użytkownika',color:'#ffb14e'},
+  'pin-kamien':{storage:'tp-kamien-pin',id:'jezioro-kamien',label:'Jezioro Kamień · pin użytkownika',color:'#4ed7ff'}
+};
+function loadManualPin(cfg){
+  const raw=localStorage.getItem(cfg.storage);
+  if(!raw)return;
+  try{const p=JSON.parse(raw);if(Number.isFinite(p.lon)&&Number.isFinite(p.lat))addMarker({...cfg,lon:p.lon,lat:p.lat})}catch{}
+}
+Object.values(manualPins).forEach(loadManualPin);
+
+function setActive(id){document.querySelectorAll('.controls button').forEach(b=>b.classList.remove('active'));document.getElementById(id)?.classList.add('active')}
+function clearLayers(){viewer.imageryLayers.removeAll()}
+function addCleanBase(alpha=1){
+  const base=viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({url:OSM,minimumLevel:0,maximumLevel:19,credit:'© OpenStreetMap contributors'}));
+  base.alpha=alpha;return base
+}
+function addSatelliteReference(alpha=1){
+  const base=viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({url:SATELLITE_REFERENCE,minimumLevel:0,maximumLevel:23,credit:'Esri World Imagery · reference only'}));
+  base.alpha=alpha;base.contrast=1.02;return base
+}
 function isoDayOffset(days){const d=new Date();d.setUTCDate(d.getUTCDate()+days);return d.toISOString().slice(0,10)}
 function copernicusWindow(){if(latestSentinel2Day)return {time:`${latestSentinel2Day}/${latestSentinel2Day}`,label:`przelot Sentinel-2 z ${latestSentinel2Day}`};return {time:`${isoDayOffset(-30)}/${today}`,label:'30-dniowe okno awaryjne — dokładny przelot nie został jeszcze odczytany ze STAC'}}
-function setLayer(mode){clearLayers();viewer.clock.currentTime=Cesium.JulianDate.fromIso8601(new Date().toISOString());
-  if(mode==='day'){addReference(1);status.innerHTML='<b>Mapa referencyjna wysokiej rozdzielczości</b><br>Nie jest obrazem live.'}
-  if(mode==='night-radiance'){addReference(.08);const l=viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({url:NASA_WMTS,layer:'VIIRS_SNPP_DayNightBand_At_Sensor_Radiance',style:'default',format:'image/png',tileMatrixSetID:'GoogleMapsCompatible_Level9',maximumLevel:9,dimensions:{Time:today},credit:'NASA VIIRS DNB At-Sensor Radiance'}));l.alpha=.96;l.brightness=1.45;l.contrast=1.7;l.gamma=.82;status.innerHTML='<b>NASA VIIRS DNB · At-Sensor Radiance</b><br>Prawdziwa nocna radiancja; kontrast jest tylko transformacją wizualizacji.'}
-  if(mode==='night-enhanced'){addReference(.06);const l=viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({url:NASA_WMTS,layer:'VIIRS_SNPP_DayNightBand_ENCC',style:'default',format:'image/png',tileMatrixSetID:'GoogleMapsCompatible_Level9',maximumLevel:9,dimensions:{Time:today},credit:'NASA VIIRS DNB ENCC'}));l.alpha=.98;l.brightness=1.35;l.contrast=1.55;status.innerHTML='<b>NASA VIIRS DNB · ENCC</b><br>Radiometrycznie przetworzony produkt nocny NASA.'}
-  if(mode==='copernicus'){addReference(.2);const w=copernicusWindow();const l=viewer.imageryLayers.addImageryProvider(new Cesium.WebMapServiceImageryProvider({url:CDSE_WMS,layers:'NATURAL-COLOR',rectangle:Cesium.Rectangle.fromDegrees(18.8,53.45,19.2,53.75),parameters:{transparent:true,format:'image/png',time:w.time,maxcc:100,showlogo:false},credit:'Copernicus Data Space'}));l.alpha=.95;status.innerHTML=`<b>Copernicus Data Space</b><br>Zapytanie WMS: ${w.label}. Jeśli warstwa nie ma sceny dla tego czasu, mapa referencyjna pozostaje widoczna; nie nazywamy jej bieżącą obserwacją.`}
-  viewer.scene.requestRender()}
-setLayer('day');['day','night-radiance','night-enhanced','copernicus'].forEach(id=>document.getElementById(id).onclick=()=>{setActive(id);setLayer(id)});document.getElementById('home').onclick=()=>viewer.camera.flyTo({destination:Cesium.Cartesian3.fromDegrees(focus.lon,focus.lat,focus.height),duration:1.1});
-let pinMode=false;document.getElementById('pin-pond').onclick=()=>{pinMode=!pinMode;document.getElementById('pin-pond').classList.toggle('active',pinMode);status.textContent=pinMode?'Dotknij dokładnego miejsca Stawu w lesie. Pin zostanie zapisany tylko lokalnie.':'Tryb ustawiania pinu wyłączony.'};viewer.screenSpaceEventHandler.setInputAction(click=>{if(!pinMode)return;const cart=viewer.camera.pickEllipsoid(click.position,viewer.scene.globe.ellipsoid);if(!cart)return;const c=Cesium.Cartographic.fromCartesian(cart),lon=Cesium.Math.toDegrees(c.longitude),lat=Cesium.Math.toDegrees(c.latitude);localStorage.setItem('tp-olszowka-pond-pin',JSON.stringify({lon,lat}));const old=viewer.entities.getById('staw-w-lesie');if(old)viewer.entities.remove(old);addMarker({id:'staw-w-lesie',label:'Staw w lesie / Jezioro Panieńskie',lon,lat,color:'#ff4e4e'});pinMode=false;document.getElementById('pin-pond').classList.remove('active');status.textContent=`Pin zapisany: ${lat.toFixed(6)}°N, ${lon.toFixed(6)}°E — ręczne oznaczenie terenowe.`;viewer.scene.requestRender()},Cesium.ScreenSpaceEventType.LEFT_CLICK);
-function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}function safeRemoteUrl(v){try{const u=new URL(String(v));return u.protocol==='https:'?u.href:null}catch{return null}}function ageText(v){if(!v)return 'brak czasu';const ms=Date.now()-Date.parse(v);if(!Number.isFinite(ms))return String(v);return `${Math.round(ms/360000)/10} h temu`}
-fetch('../data/hydrology/olszowka-multisensor.json?refresh='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject(new Error('HTTP '+r.status))).then(data=>{document.getElementById('manifest-time').textContent=data.generated_at_utc?new Date(data.generated_at_utc).toLocaleString('pl-PL',{timeZone:'UTC'})+' UTC':'brak czasu';const rows=Array.isArray(data.observations)?data.observations:[];const latest={};for(const item of rows){if(item&&typeof item==='object'&&!latest[item.collection])latest[item.collection]=item}const s2=latest['sentinel-2-l2a'];if(s2?.datetime_utc)latestSentinel2Day=String(s2.datetime_utc).slice(0,10);const wanted=['sentinel-1-grd','sentinel-2-l2a'];document.getElementById('observations').innerHTML=wanted.map(collection=>{const item=latest[collection];if(!item)return `<article class="card"><h3>${esc(collection)}</h3><p class="warn">Brak produktu w aktualnym manifeście.</p></article>`;const previewUrl=safeRemoteUrl(item.preview_url),productUrl=safeRemoteUrl(item.product_url);const preview=previewUrl?`<img src="${esc(previewUrl)}" alt="${esc(item.id)}" loading="lazy" />`:'';const cloud=item.cloud_cover_percent==null?'—':`${Number(item.cloud_cover_percent).toFixed(1)}%`;return `<article class="card"><span class="pill green">PRAWDZIWY PRODUKT</span><h3>${esc(collection)}</h3>${preview}<div class="fact"><span>Czas obserwacji</span><b>${esc(item.datetime_utc||'—')}</b></div><div class="fact"><span>Wiek</span><b>${esc(ageText(item.datetime_utc))}</b></div><div class="fact"><span>Zachmurzenie</span><b>${esc(cloud)}</b></div><p class="tiny">${esc(item.id)}</p>${productUrl?`<a class="raw-link" href="${esc(productUrl)}" target="_blank" rel="noreferrer">Metadane produktu ↗</a>`:''}</article>`}).join('')}).catch(err=>{document.getElementById('observations').innerHTML=`<article class="card"><p class="bad">Nie udało się odczytać manifestu: ${esc(err)}</p></article>`});setInterval(()=>location.reload(),15*60*1000);
+function setLayer(mode){
+  clearLayers();viewer.clock.currentTime=Cesium.JulianDate.fromIso8601(new Date().toISOString());
+  if(mode==='day'){addCleanBase(1);status.innerHTML='<b>Czysta mapa hydrologiczna · OSM</b><br>Jednolita warstwa nawigacyjna bez mozaiki zdjęć z różnych dat. Nie jest obrazem satelitarnym live.'}
+  if(mode==='satellite-reference'){addSatelliteReference(1);status.innerHTML='<b>Zdjęcia satelitarne referencyjne</b><br>Warstwa archiwalna / mozaikowa. Kafle mogą pochodzić z różnych dat; nie interpretuj granicy kafla jako cienia, suszy ani zmiany powierzchni wody.'}
+  if(mode==='night-radiance'){
+    addCleanBase(.10);
+    const l=viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({url:NASA_WMTS,layer:'VIIRS_SNPP_DayNightBand_At_Sensor_Radiance',style:'default',format:'image/png',tileMatrixSetID:'GoogleMapsCompatible_Level9',maximumLevel:9,dimensions:{Time:today},credit:'NASA VIIRS DNB At-Sensor Radiance'}));
+    l.alpha=.96;l.brightness=1.45;l.contrast=1.7;l.gamma=.82;
+    status.innerHTML='<b>NASA VIIRS DNB · At-Sensor Radiance</b><br>Prawdziwa nocna radiancja; kontrast jest tylko transformacją wizualizacji.'
+  }
+  if(mode==='night-enhanced'){
+    addCleanBase(.08);
+    const l=viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({url:NASA_WMTS,layer:'VIIRS_SNPP_DayNightBand_ENCC',style:'default',format:'image/png',tileMatrixSetID:'GoogleMapsCompatible_Level9',maximumLevel:9,dimensions:{Time:today},credit:'NASA VIIRS DNB ENCC'}));
+    l.alpha=.98;l.brightness=1.35;l.contrast=1.55;
+    status.innerHTML='<b>NASA VIIRS DNB · ENCC</b><br>Radiometrycznie przetworzony produkt nocny NASA.'
+  }
+  if(mode==='copernicus'){
+    addCleanBase(.14);
+    const w=copernicusWindow();
+    const l=viewer.imageryLayers.addImageryProvider(new Cesium.WebMapServiceImageryProvider({url:CDSE_WMS,layers:'NATURAL-COLOR',rectangle:Cesium.Rectangle.fromDegrees(18.8,53.45,19.2,53.75),parameters:{transparent:true,format:'image/png',time:w.time,maxcc:100,showlogo:false},credit:'Copernicus Data Space'}));
+    l.alpha=.95;
+    status.innerHTML=`<b>Copernicus Data Space</b><br>Zapytanie WMS: ${w.label}. Jeśli warstwa nie ma sceny dla tego czasu, czysta mapa bazowa pozostaje widoczna; nie nazywamy jej bieżącą obserwacją.`
+  }
+  viewer.scene.requestRender()
+}
+setLayer('day');
+['day','satellite-reference','night-radiance','night-enhanced','copernicus'].forEach(id=>document.getElementById(id).onclick=()=>{setActive(id);setLayer(id)});
+document.getElementById('home').onclick=()=>viewer.camera.flyTo({destination:Cesium.Cartesian3.fromDegrees(focus.lon,focus.lat,focus.height),duration:1.1});
+
+let pinTarget=null;
+Object.entries(manualPins).forEach(([buttonId,cfg])=>{
+  document.getElementById(buttonId).onclick=()=>{
+    pinTarget=pinTarget===buttonId?null:buttonId;
+    Object.keys(manualPins).forEach(id=>document.getElementById(id).classList.toggle('active',id===pinTarget));
+    status.textContent=pinTarget?`Dotknij dokładnego miejsca: ${cfg.label}. Pin zapisuje się tylko lokalnie w tej przeglądarce.`:'Tryb ustawiania pinu wyłączony.';
+  };
+});
+viewer.screenSpaceEventHandler.setInputAction(click=>{
+  if(!pinTarget)return;
+  const cfg=manualPins[pinTarget];
+  const cart=viewer.camera.pickEllipsoid(click.position,viewer.scene.globe.ellipsoid);if(!cart)return;
+  const c=Cesium.Cartographic.fromCartesian(cart),lon=Cesium.Math.toDegrees(c.longitude),lat=Cesium.Math.toDegrees(c.latitude);
+  localStorage.setItem(cfg.storage,JSON.stringify({lon,lat}));
+  const old=viewer.entities.getById(cfg.id);if(old)viewer.entities.remove(old);
+  addMarker({...cfg,lon,lat});
+  document.getElementById(pinTarget).classList.remove('active');pinTarget=null;
+  status.textContent=`Pin zapisany: ${lat.toFixed(6)}°N, ${lon.toFixed(6)}°E — ręczne oznaczenie AOI, nie urzędowa geometria.`;
+  viewer.scene.requestRender()
+},Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function safeRemoteUrl(v){try{const u=new URL(String(v));return u.protocol==='https:'?u.href:null}catch{return null}}
+function ageText(v){if(!v)return 'brak czasu';const ms=Date.now()-Date.parse(v);if(!Number.isFinite(ms))return String(v);return `${Math.round(ms/360000)/10} h temu`}
+fetch('../data/hydrology/olszowka-multisensor.json?refresh='+Date.now(),{cache:'no-store'})
+  .then(r=>r.ok?r.json():Promise.reject(new Error('HTTP '+r.status)))
+  .then(data=>{
+    document.getElementById('manifest-time').textContent=data.generated_at_utc?new Date(data.generated_at_utc).toLocaleString('pl-PL',{timeZone:'UTC'})+' UTC':'brak czasu';
+    const rows=Array.isArray(data.observations)?data.observations:[];const latest={};
+    for(const item of rows){if(item&&typeof item==='object'&&!latest[item.collection])latest[item.collection]=item}
+    const s2=latest['sentinel-2-l2a'];if(s2?.datetime_utc)latestSentinel2Day=String(s2.datetime_utc).slice(0,10);
+    const wanted=['sentinel-1-grd','sentinel-2-l2a'];
+    document.getElementById('observations').innerHTML=wanted.map(collection=>{
+      const item=latest[collection];
+      if(!item)return `<article class="card"><h3>${esc(collection)}</h3><p class="warn">Brak produktu w aktualnym manifeście.</p></article>`;
+      const previewUrl=safeRemoteUrl(item.preview_url),productUrl=safeRemoteUrl(item.product_url);
+      const preview=previewUrl?`<img src="${esc(previewUrl)}" alt="${esc(item.id)}" loading="lazy" />`:'';
+      const cloud=item.cloud_cover_percent==null?'—':`${Number(item.cloud_cover_percent).toFixed(1)}%`;
+      return `<article class="card"><span class="pill green">PRAWDZIWY PRODUKT</span><h3>${esc(collection)}</h3>${preview}<div class="fact"><span>Czas obserwacji</span><b>${esc(item.datetime_utc||'—')}</b></div><div class="fact"><span>Wiek</span><b>${esc(ageText(item.datetime_utc))}</b></div><div class="fact"><span>Zachmurzenie</span><b>${esc(cloud)}</b></div><p class="tiny">${esc(item.id)}</p>${productUrl?`<a class="raw-link" href="${esc(productUrl)}" target="_blank" rel="noreferrer">Metadane produktu ↗</a>`:''}</article>`
+    }).join('')
+  })
+  .catch(err=>{document.getElementById('observations').innerHTML=`<article class="card"><p class="bad">Nie udało się odczytać manifestu: ${esc(err)}</p></article>`});
+setInterval(()=>location.reload(),15*60*1000);
 </script>
 </body>
 </html>
