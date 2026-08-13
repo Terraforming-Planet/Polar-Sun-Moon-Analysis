@@ -9,6 +9,7 @@ BATCHES = [
     DATA_DIR / "global-water-casebook-batch-03.json",
     DATA_DIR / "global-water-casebook-batch-04.json",
     DATA_DIR / "global-water-casebook-batch-05.json",
+    DATA_DIR / "global-water-casebook-batch-06.json",
 ]
 PAGE = ROOT / "web" / "public" / "water-casebook" / "index.html"
 
@@ -40,7 +41,7 @@ def test_batches_add_ten_validated_cases_each_without_duplicate_ids() -> None:
 
     cases = _validated_cases()
     ids = [str(case["id"]) for case in cases]
-    assert len(cases) == 51
+    assert len(cases) == 61
     assert len(ids) == len(set(ids))
 
 
@@ -68,35 +69,35 @@ def test_all_incremental_batches_have_full_https_provenance() -> None:
 def test_latest_batch_expands_olszowka_relevant_mechanisms() -> None:
     text = json.dumps(_load(BATCHES[-1]), ensure_ascii=False).lower()
     for mechanism in (
-        "inflow",
-        "groundwater",
-        "sediment",
-        "water quality",
-        "wastewater",
         "connectivity",
-        "drought",
-        "restoration",
+        "sediment",
+        "phosphorus",
+        "water quality",
+        "wetland restoration",
         "monitoring",
+        "salinity",
+        "stormwater",
     ):
         assert mechanism in text
 
 
-def test_latest_batch_spans_multiple_continents_and_management_modes() -> None:
+def test_latest_batch_spans_multiple_regions_and_management_modes() -> None:
     batch = _load(BATCHES[-1])
     rows = batch["cases"]
     assert isinstance(rows, list)
     countries = {country for row in rows for country in row.get("countries", [])}
     expected_countries = {
-        "Peru",
-        "Canada",
         "United States",
+        "Canada",
+        "United Kingdom",
+        "Romania",
+        "Montenegro",
+        "Albania",
+        "Indonesia",
+        "Estonia",
+        "Russia",
+        "South Africa",
         "Australia",
-        "Vietnam",
-        "Philippines",
-        "Lebanon",
-        "China",
-        "North Macedonia",
-        "Bolivia",
     }
     assert expected_countries <= countries
     types = {row["case_type"] for row in rows}
