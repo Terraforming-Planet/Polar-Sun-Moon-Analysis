@@ -7,6 +7,7 @@ from collections.abc import Callable
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 STAC_SEARCH = "https://stac.dataspace.copernicus.eu/v1/search"
 AOI_BBOX = [18.94, 53.55, 19.10, 53.66]
@@ -38,28 +39,39 @@ def post_json(url: str, payload: dict[str, Any], timeout: float = 40.0) -> dict[
         return json.load(response)
 
 
+def safe_https_url(value: Any) -> str | None:
+    if not isinstance(value, str) or not value:
+        return None
+    parsed = urlparse(value)
+    if parsed.scheme != "https" or not parsed.netloc:
+        return None
+    return value
+
+
 def preview_url(item: dict[str, Any]) -> str | None:
     assets = item.get("assets") or {}
     for key in PREVIEW_KEYS:
-        href = (assets.get(key) or {}).get("href")
-        if isinstance(href, str) and href:
-            return href
-    for asset in assets.values():
+        asset = assets.get(key) if isinstance(assets, dict) else None
+        href = asset.get("href") if isinstance(asset, dict) else None
+        safe = safe_https_url(href)
+        if safe:
+            return safe
+    for asset in assets.values() if isinstance(assets, dict) else []:
         href = asset.get("href") if isinstance(asset, dict) else None
         media_type = asset.get("type") if isinstance(asset, dict) else None
-        if (
-            isinstance(href, str)
-            and isinstance(media_type, str)
-            and media_type.startswith("image/")
-        ):
-            return href
+        safe = safe_https_url(href)
+        if safe and isinstance(media_type, str) and media_type.startswith("image/"):
+            return safe
     return None
 
 
 def item_url(item: dict[str, Any]) -> str | None:
     for link in item.get("links") or []:
-        if link.get("rel") in {"self", "canonical"} and isinstance(link.get("href"), str):
-            return link["href"]
+        if not isinstance(link, dict) or link.get("rel") not in {"self", "canonical"}:
+            continue
+        safe = safe_https_url(link.get("href"))
+        if safe:
+            return safe
     return None
 
 
