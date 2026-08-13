@@ -1,168 +1,272 @@
 {
-  "schema_version": 1,
-  "generated_at_utc": "2026-08-13T00:05:00Z",
+  "schema_version": 2,
+  "generated_at_utc": "2026-08-13T00:30:00Z",
   "title": "Global Water Casebook — validated hydrology lessons",
-  "purpose": "Reference set for comparing water loss, degraded connectivity, sedimentation, diversion, groundwater pressure, drought and restoration patterns against the Olszówka/Gardeja testbed. Cases are not automatic diagnoses for Olszówka.",
+  "purpose": "Reference set for comparing water loss, degraded connectivity, sedimentation, diversion, groundwater pressure, drought, natural variability and restoration patterns against the Olszówka/Gardeja testbed. Cases are not automatic diagnoses for Olszówka.",
   "validation_policy": {
     "validated_case": "At least one official/public source supports the stated mechanism.",
     "candidate_case": "May be queued for later review but must not be presented as confirmed.",
     "intervention_notice": "Engineering actions require local hydrological, ecological, legal and safety assessment before any field work."
   },
   "targets": {
-    "validated_now": 11,
+    "validated_now": 21,
+    "candidate_now": 0,
     "next_milestones": [100, 1000, 10000]
   },
+  "candidate_queue": [],
   "cases": [
     {
       "id": "aral-sea",
       "name": "Aral Sea",
       "countries": ["Kazakhstan", "Uzbekistan"],
+      "record_status": "validated_case",
       "case_type": "inflow_diversion",
       "mechanisms": ["large-scale river diversion", "irrigation demand", "loss of delta inflow"],
       "observed_pattern": "Major shrinkage after diversion of the Amu Darya and Syr Darya for irrigation.",
       "management_lesson": "Track the complete inflow network and water abstractions; restoration can depend on targeted flow-management and hydraulic interventions rather than lake-only actions.",
-      "source_urls": [
-        "https://www.worldbank.org/en/results/2005/09/01/saving-a-corner-of-the-aral-sea",
-        "https://www.unep.org/resources/emerging-issues/changing-aral-sea"
-      ],
+      "source_urls": ["https://www.worldbank.org/en/results/2005/09/01/saving-a-corner-of-the-aral-sea", "https://www.unep.org/resources/emerging-issues/changing-aral-sea"],
       "evidence_class": "validated_public_source"
     },
     {
       "id": "lake-chad",
       "name": "Lake Chad",
       "countries": ["Chad", "Niger", "Nigeria", "Cameroon"],
+      "record_status": "validated_case",
       "case_type": "multi_factor_shrinkage",
       "mechanisms": ["reduced surface flow", "sedimentation", "silting", "climate variability", "water demand"],
       "observed_pattern": "Large long-term area and depth reduction accompanied by silting and sedimentation.",
       "management_lesson": "Separate climatic inflow decline from local channel silting and sediment transport; both can reduce effective storage and connectivity.",
-      "source_urls": [
-        "https://www.afdb.org/en/documents/multinational-lake-chad-basin-sustainable-development-programme-prodebalt-project-completion-report",
-        "https://science.nasa.gov/earth/earth-observatory/lake-chad/"
-      ],
-      "evidence_class": "validated_public_source"
+      "source_urls": ["https://www.afdb.org/en/documents/multinational-lake-chad-basin-sustainable-development-programme-prodebalt-project-completion-report"],
+      "evidence_class": "validated_official_source"
     },
     {
       "id": "hamoun-wetlands",
       "name": "Hamoun wetlands",
       "countries": ["Iran", "Afghanistan"],
+      "record_status": "validated_case",
       "case_type": "inflow_loss_plus_drought",
       "mechanisms": ["irrigation diversion", "reduced river flow", "dams", "drought", "urban pressure"],
       "observed_pattern": "Wetland collapse followed a combination of reduced Helmand River inflow and drought.",
       "management_lesson": "Do not classify a drying wetland as drought-only until upstream diversions, dams and river-flow losses are checked.",
-      "source_urls": [
-        "https://science.nasa.gov/earth/earth-observatory/from-wetland-to-wasteland-the-destruction-of-the-hamoun-oasis/"
-      ],
+      "source_urls": ["https://science.nasa.gov/earth/earth-observatory/from-wetland-to-wasteland-the-destruction-of-the-hamoun-oasis/"],
       "evidence_class": "validated_public_source"
     },
     {
       "id": "lake-poopo",
       "name": "Lake Poopó",
       "countries": ["Bolivia"],
+      "record_status": "validated_case",
       "case_type": "shallow_lake_drying",
       "mechanisms": ["drought", "water diversion", "high evaporation", "shallow basin sensitivity"],
       "observed_pattern": "A shallow lake effectively dried after recurrent drought and diversion of water sources.",
       "management_lesson": "Shallow lakes can cross critical thresholds quickly; inflow time series and shoreline recession should be monitored together.",
-      "source_urls": [
-        "https://science.nasa.gov/earth/earth-observatory/bolivias-lake-poopo-disappears-87363/"
-      ],
+      "source_urls": ["https://science.nasa.gov/earth/earth-observatory/bolivias-lake-poopo-disappears-87363/"],
       "evidence_class": "validated_public_source"
     },
     {
       "id": "lake-urmia",
       "name": "Lake Urmia",
       "countries": ["Iran"],
+      "record_status": "validated_case",
       "case_type": "damming_and_groundwater",
       "mechanisms": ["damming of inflow rivers", "groundwater pumping", "agricultural water demand", "drought"],
       "observed_pattern": "Severe shrinkage associated with blocked/reduced inflows and groundwater extraction.",
       "management_lesson": "Lake-surface monitoring should be paired with upstream dam inventory, groundwater pressure and agricultural demand.",
-      "source_urls": [
-        "https://www.jpl.nasa.gov/images/pia20637-lake-urmia-iran/",
-        "https://science.nasa.gov/earth/drying-lake-urmia-iran/"
-      ],
-      "evidence_class": "validated_public_source"
+      "source_urls": ["https://www.jpl.nasa.gov/images/pia20637-lake-urmia-iran/", "https://science.nasa.gov/earth/drying-lake-urmia-iran/"],
+      "evidence_class": "validated_official_source"
     },
     {
       "id": "poyang-lake",
       "name": "Poyang Lake",
       "countries": ["China"],
+      "record_status": "validated_case",
       "case_type": "river_lake_gradient_change",
       "mechanisms": ["reservoir regulation", "river-bed erosion", "changed lake-river gradient", "precipitation variability", "sand mining"],
       "observed_pattern": "Changes in downstream river level and reservoir regulation increased the lake-river gradient and promoted faster outflow during key periods.",
-      "management_lesson": "A lake can lose water because its receiving river is hydraulically lower; always inspect downstream controls and lake-river gradients, not only upstream supply.",
-      "source_urls": [
-        "https://www.nature.com/articles/srep18197"
-      ],
+      "management_lesson": "A lake can lose water because its receiving river is hydraulically lower; inspect downstream controls and lake-river gradients, not only upstream supply.",
+      "source_urls": ["https://www.nature.com/articles/srep18197"],
       "evidence_class": "validated_public_source"
     },
     {
       "id": "chilika-lagoon",
       "name": "Chilika Lagoon",
       "countries": ["India"],
+      "record_status": "validated_case",
       "case_type": "choked_inlet_and_siltation",
       "mechanisms": ["siltation", "shoal formation", "choked inlet channel", "mouth migration", "hydraulic head loss"],
       "observed_pattern": "Reduced tidal exchange and ecological degradation were linked to channel shoaling and a shifting lagoon mouth.",
-      "management_lesson": "This is a key benchmark for Olszówka: test whether narrow connections, culverts, channels or outlets have lost hydraulic capacity before blaming only climate.",
-      "source_urls": [
-        "https://www.chilika.com/eco-restoration.php"
-      ],
+      "management_lesson": "Test whether narrow connections, culverts, channels or outlets have lost hydraulic capacity before blaming only climate.",
+      "source_urls": ["https://www.chilika.com/eco-restoration.php"],
       "evidence_class": "validated_official_source"
     },
     {
       "id": "great-salt-lake",
       "name": "Great Salt Lake",
       "countries": ["United States"],
+      "record_status": "validated_case",
       "case_type": "basin_water_balance_decline",
       "mechanisms": ["water demand", "surface and groundwater diversions", "depletions", "declining lake levels"],
       "observed_pattern": "Declining levels are addressed through an integrated basin plan covering supply, demand, diversions, groundwater and water delivery to the lake.",
       "management_lesson": "Build the management model at watershed scale; the lake alone is not the system.",
-      "source_urls": [
-        "https://water.utah.gov/gsl-basin-integrated-plan/",
-        "https://greatsaltlake.utah.gov/great-salt-lake-strategic-plan-2"
-      ],
+      "source_urls": ["https://water.utah.gov/gsl-basin-integrated-plan/", "https://greatsaltlake.utah.gov/great-salt-lake-strategic-plan-2"],
       "evidence_class": "validated_official_source"
     },
     {
       "id": "salton-sea",
       "name": "Salton Sea",
       "countries": ["United States"],
+      "record_status": "validated_case",
       "case_type": "declining_inflow_and_water_quality",
       "mechanisms": ["declining inflow", "salinity concentration", "nutrient accumulation", "algal growth", "exposed lakebed"],
       "observed_pattern": "Reduced inflow caused recession while salinity and nutrient concentrations increased, degrading habitat and water quality.",
       "management_lesson": "Water quantity and quality must be monitored together; falling volume can concentrate pollutants and amplify ecological damage.",
-      "source_urls": [
-        "https://waterboards.ca.gov/saltonsea/"
-      ],
+      "source_urls": ["https://waterboards.ca.gov/saltonsea/"],
       "evidence_class": "validated_official_source"
     },
     {
       "id": "owens-lake",
       "name": "Owens Lake",
       "countries": ["United States"],
+      "record_status": "validated_case",
       "case_type": "river_diversion",
       "mechanisms": ["streamflow diversion", "aqueduct export", "evaporation exceeds inflow"],
       "observed_pattern": "Diversions changed the basin water budget and the lake became predominantly dry except during unusually wet periods.",
       "management_lesson": "Map every artificial diversion and export path when a terminal basin or wetland is losing water.",
-      "source_urls": [
-        "https://ca.water.usgs.gov/owens/report/hydro_system_2surface.html",
-        "https://pubs.usgs.gov/publication/ofr98132"
-      ],
+      "source_urls": ["https://ca.water.usgs.gov/owens/report/hydro_system_2surface.html", "https://pubs.usgs.gov/publication/ofr98132"],
       "evidence_class": "validated_official_source"
     },
     {
       "id": "sahara-african-humid-period",
       "name": "Sahara — African Humid Period context",
       "countries": ["Algeria", "Chad", "Libya", "Mali", "Mauritania", "Niger", "Sudan", "Tunisia", "regional"],
+      "record_status": "validated_case",
       "case_type": "paleohydroclimate_context",
       "mechanisms": ["orbital forcing", "stronger West African monsoon", "vegetation feedback", "dust feedback", "long-term aridification"],
       "observed_pattern": "During the African Humid Period, large areas of today's Sahara supported more vegetation, wetlands and lakes; later hydroclimate shifted toward much drier conditions.",
-      "management_lesson": "Topography and basin geometry determine where water persists when climate shifts. The Ounianga lakes show that groundwater-fed depressions can survive extreme desert evaporation, so groundwater connectivity must be treated as a separate layer from surface rainfall.",
-      "source_urls": [
-        "https://ntrs.nasa.gov/citations/20220008711",
-        "https://science.nasa.gov/earth/earth-observatory/ounianga-lakes-sahara-desert-chad-41425/",
-        "https://science.nasa.gov/earth/earth-observatory/water-for-a-desert-lake-in-algeria-153475/"
-      ],
+      "management_lesson": "Topography and basin geometry determine where water persists when climate shifts. Groundwater-fed desert depressions show why groundwater connectivity must be treated separately from surface rainfall.",
+      "source_urls": ["https://ntrs.nasa.gov/citations/20220008711", "https://science.nasa.gov/earth/earth-observatory/ounianga-lakes-sahara-desert-chad-41425/"],
       "evidence_class": "validated_public_source",
-      "comparison_notice": "This is a long-term paleoclimate benchmark, not a direct modern engineering analogue for Olszówka."
+      "comparison_notice": "Long-term paleoclimate benchmark, not a direct modern engineering analogue for Olszówka."
+    },
+    {
+      "id": "mono-lake",
+      "name": "Mono Lake",
+      "countries": ["United States"],
+      "record_status": "validated_case",
+      "case_type": "diversion_in_closed_basin",
+      "mechanisms": ["water diversion", "closed basin", "evaporation", "salinity response"],
+      "observed_pattern": "Water diversions beginning in 1941 lowered the lake level and exposed former submerged shoreline features.",
+      "management_lesson": "In an endorheic basin, small sustained reductions in inflow accumulate because evaporation is the only natural outlet.",
+      "source_urls": ["https://science.nasa.gov/earth/earth-observatory/mono-lake-california-8388/"],
+      "evidence_class": "validated_official_source"
+    },
+    {
+      "id": "lake-faguibine",
+      "name": "Lake Faguibine system",
+      "countries": ["Mali"],
+      "record_status": "validated_case",
+      "case_type": "hydraulic_disconnect_and_drought",
+      "mechanisms": ["drought", "sand-filled channels", "blocked hydraulic connectivity", "upstream irrigation", "hydropower demand"],
+      "observed_pattern": "After drought dried the lakes, sand filled channels connecting them to the Niger; later rainfall could not fully restore inflow.",
+      "management_lesson": "A return of rainfall does not guarantee recovery if connecting channels have lost conveyance capacity. This is a strong analogue for testing local bottlenecks near Olszówka.",
+      "source_urls": ["https://www.unep.org/news-and-stories/story/benefits-galore-if-malis-lake-faguibine-system-were-revived-0", "https://www.unep.org/resources/emerging-issues/saving-lake-faguibine"],
+      "evidence_class": "validated_official_source"
+    },
+    {
+      "id": "goose-lake",
+      "name": "Goose Lake",
+      "countries": ["United States"],
+      "record_status": "validated_case",
+      "case_type": "ephemeral_drought_and_diversion",
+      "mechanisms": ["drought", "low precipitation", "snowmelt variability", "irrigation diversion", "closed-basin sensitivity"],
+      "observed_pattern": "The lake repeatedly fills and dries; 2015 drying followed drought, while inflow also depends on irrigation diversions from feeder streams.",
+      "management_lesson": "Distinguish normal ephemeral behavior from structural decline by comparing multiple wet-dry cycles and upstream use.",
+      "source_urls": ["https://science.nasa.gov/earth/earth-observatory/goose-lake-dries-up-86358/"],
+      "evidence_class": "validated_official_source"
+    },
+    {
+      "id": "lake-aibi",
+      "name": "Lake Aibi",
+      "countries": ["China"],
+      "record_status": "validated_case",
+      "case_type": "upstream_diversion_and_restoration",
+      "mechanisms": ["upstream reservoirs", "irrigation canals", "lost feeder rivers", "water scarcity", "high evaporation", "watershed restoration"],
+      "observed_pattern": "Three of five feeder rivers dried after upstream diversion; lake area fell sharply and exposed saline surfaces became dust sources.",
+      "management_lesson": "Remote sensing plus basin water allocation can identify whether upstream consumption is preventing ecological inflow; restoration must protect an explicit environmental water share.",
+      "source_urls": ["https://www.worldbank.org/en/news/feature/2016/04/05/china-restoring-lake-aibi"],
+      "evidence_class": "validated_official_source"
+    },
+    {
+      "id": "puzhal-chennai",
+      "name": "Puzhal Lake / Chennai reservoir system",
+      "countries": ["India"],
+      "record_status": "validated_case",
+      "case_type": "monsoon_failure_reservoir_drought",
+      "mechanisms": ["weak monsoon", "low rainfall", "urban water demand", "reservoir depletion"],
+      "observed_pattern": "In 2019, Chennai's rain-fed reservoirs approached empty conditions after a very weak monsoon and nearly 200 rainless days.",
+      "management_lesson": "For rainfall-dependent reservoirs, compare storage against seasonal precipitation and demand before inferring a local channel blockage.",
+      "source_urls": ["https://science.nasa.gov/earth/earth-observatory/water-shortages-in-india-145242/"],
+      "evidence_class": "validated_official_source"
+    },
+    {
+      "id": "iraqi-marshlands",
+      "name": "Mesopotamian / Iraqi Marshlands",
+      "countries": ["Iraq"],
+      "record_status": "validated_case",
+      "case_type": "drainage_damming_and_reflooding",
+      "mechanisms": ["drainage works", "upstream dams", "drought", "desertification", "systematic reflooding", "wetland rehabilitation"],
+      "observed_pattern": "The marshlands were almost entirely destroyed after drainage and upstream damming, followed by monitoring, reflooding and rehabilitation efforts.",
+      "management_lesson": "Hydraulic reconnection can restore wetland area in some systems, but restoration must be monitored and managed at basin scale rather than performed as an isolated excavation.",
+      "source_urls": ["https://www.unep.org/ar/node/757", "https://www.unep.org/resources/report/support-environmental-management-iraqi-marshlands-2004-2009"],
+      "evidence_class": "validated_official_source"
+    },
+    {
+      "id": "walker-lake",
+      "name": "Walker Lake",
+      "countries": ["United States"],
+      "record_status": "validated_case",
+      "case_type": "irrigation_diversion_and_salinity",
+      "mechanisms": ["irrigation diversion", "reduced freshwater inflow", "closed basin", "salinity increase"],
+      "observed_pattern": "Much of the Walker River is diverted for agriculture before reaching the lake; reduced inflow accompanied major volume loss and rising salinity.",
+      "management_lesson": "A shrinking terminal lake can reveal both quantity and quality stress; quantify freshwater inflow needed to keep salinity within ecological thresholds.",
+      "source_urls": ["https://science.nasa.gov/earth/earth-observatory/disappearing-walker-lake-91921/"],
+      "evidence_class": "validated_official_source"
+    },
+    {
+      "id": "lake-mead",
+      "name": "Lake Mead",
+      "countries": ["United States"],
+      "record_status": "validated_case",
+      "case_type": "drought_plus_managed_outflow",
+      "mechanisms": ["drought", "snowpack decline", "human demand", "managed releases", "evaporation"],
+      "observed_pattern": "During prolonged drought, inflow fell while water use and regulated outflow continued, producing sustained reservoir decline.",
+      "management_lesson": "For managed reservoirs, compare inflow, mandated releases, evaporation and demand; shoreline change alone cannot identify the cause.",
+      "source_urls": ["https://science.nasa.gov/earth/earth-observatory/water-level-changes-in-lake-mead-45945/"],
+      "evidence_class": "validated_official_source"
+    },
+    {
+      "id": "lake-casitas",
+      "name": "Lake Casitas",
+      "countries": ["United States"],
+      "record_status": "validated_case",
+      "case_type": "drought_recovery_benchmark",
+      "mechanisms": ["multi-year drought", "low storage", "wet winters", "rapid recharge", "water-use restrictions"],
+      "observed_pattern": "Storage fell below 30 percent after repeated droughts, then rebounded to full capacity after two wetter-than-normal winters.",
+      "management_lesson": "Use recovery after wet periods as a diagnostic: if a basin does not rebound when precipitation returns, search for structural loss of inflow, drainage or groundwater connectivity.",
+      "source_urls": ["https://science.nasa.gov/earth/earth-observatory/rapid-rebound-for-lake-casitas-153670/"],
+      "evidence_class": "validated_official_source"
+    },
+    {
+      "id": "kati-thanda-lake-eyre",
+      "name": "Kati Thanda–Lake Eyre",
+      "countries": ["Australia"],
+      "record_status": "validated_case",
+      "case_type": "natural_ephemeral_basin",
+      "mechanisms": ["episodic river inflow", "extreme evaporation", "seasonal drying", "endorheic basin"],
+      "observed_pattern": "Exceptional upstream rains can fill the normally dry basin; when tributaries weaken, evaporation rapidly exceeds inflow and levels fall.",
+      "management_lesson": "Terrain and episodic upstream runoff can dominate lake behavior. A naturally ephemeral basin is a control case against falsely diagnosing every drying event as infrastructure failure.",
+      "source_urls": ["https://science.nasa.gov/earth/earth-observatory/lake-eyre-blushes/"],
+      "evidence_class": "validated_official_source"
     }
   ]
 }
