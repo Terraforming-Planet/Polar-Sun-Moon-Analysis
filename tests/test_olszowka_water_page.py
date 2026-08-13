@@ -11,8 +11,9 @@ def test_page_exposes_real_night_radiance_and_water_sources() -> None:
     assert "VIIRS_SNPP_DayNightBand_ENCC" in source
     assert "sentinel-1-grd" in source
     assert "sentinel-2-l2a" in source
-    assert "Global Surface Water 1984–2021" in source
+    assert "Global Surface Water 1984–2024" in source
     assert "Copernicus Data Space" in source
+    assert "Wody Polskie · Hydroportal" in source
 
 
 def test_page_does_not_claim_individual_lamps_are_resolved() -> None:
@@ -29,9 +30,36 @@ def test_page_marks_local_water_report_as_verification_priority() -> None:
     assert "Staw w lesie" in source
     assert "Jezioro Panieńskie" in source
     assert "Jezioro Kuchnia" in source
+    assert "Jezioro Kamień" in source
+    assert "Jezioro Nogat" in source
+    assert "Mały akwen przy Jeziorze Kuchnia" in source
     assert "priorytet do weryfikacji" in source
     assert "nie automatycznie potwierdzona klęska żywiołowa" in source
     assert "tp-olszowka-pond-pin" in source
+    assert "tp-kuchnia-small-pin" in source
+    assert "tp-kamien-pin" in source
+
+
+def test_page_uses_clean_basemap_and_separates_reference_imagery() -> None:
+    source = PAGE.read_text(encoding="utf-8")
+
+    assert "https://tile.openstreetmap.org/{z}/{x}/{y}.png" in source
+    assert 'id="satellite-reference"' in source
+    assert "mozaika zdjęć z różnych dat" in source
+    assert "nie interpretuj granicy kafla jako cienia" in source
+
+
+def test_page_exposes_verified_local_rivers_without_claiming_unverified_links() -> None:
+    source = PAGE.read_text(encoding="utf-8")
+
+    assert "Gardęga" in source
+    assert "Wandówka" in source
+    assert "Cyganówka" in source
+    assert "Kanał Łąkowy" in source
+    assert "Ciek Polderowy" in source
+    assert "nie zakładamy bez dowodu" in source
+    assert "miejsce do sprawdzenia" in source
+    assert "nie „zapchany odpływ”" in source
 
 
 def test_page_uses_stac_time_or_explicit_lookback_for_copernicus() -> None:

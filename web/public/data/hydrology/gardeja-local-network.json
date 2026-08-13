@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "scope": "Olszówka / Gardeja local hydrology research network",
+  "updated_utc": "2026-08-13T10:55:00Z",
+  "evidence_policy": {
+    "confirmed": "Named or described by an official/public source.",
+    "field_report": "User-observed condition that requires independent remote-sensing or hydrological verification.",
+    "candidate": "Feature visible in public mapping or inferred as a possible connection; do not treat as a confirmed hydrological link until official geometry/data verifies it."
+  },
+  "waterbodies": [
+    {
+      "id": "staw-w-lesie",
+      "display_name": "Staw w lesie",
+      "local_name": "Jezioro Panieńskie",
+      "status": "field_report",
+      "geometry_status": "manual_pin",
+      "research_priority": "critical_verification",
+      "questions": [
+        "When did persistent surface water begin to decline?",
+        "Is the loss seasonal or permanent?",
+        "Is the basin connected to a ditch, culvert, groundwater or another surface-water body?"
+      ]
+    },
+    {
+      "id": "jezioro-kuchnia",
+      "display_name": "Jezioro Kuchnia",
+      "status": "field_report",
+      "centroid": {"lat": 53.58809, "lon": 19.01969},
+      "research_priority": "critical_verification",
+      "questions": [
+        "Has shoreline or surface-water extent changed measurably?",
+        "Where are the verified inflow and outflow connections?",
+        "Are water-colour changes correlated with vegetation, sediment or hydrological conditions?"
+      ]
+    },
+    {
+      "id": "kuchnia-small-waterbody",
+      "display_name": "Mały akwen przy Jeziorze Kuchnia",
+      "status": "candidate",
+      "geometry_status": "manual_pin",
+      "official_name_status": "unknown",
+      "research_priority": "high"
+    },
+    {
+      "id": "jezioro-kamien-gardeja",
+      "display_name": "Jezioro Kamień",
+      "status": "confirmed",
+      "official_inventory": "Gmina Gardeja",
+      "area_ha": 5.0,
+      "maximum_depth_m": 5.0,
+      "geometry_status": "manual_pin_pending_official_geometry",
+      "research_priority": "regional_control"
+    },
+    {
+      "id": "jezioro-nogat",
+      "display_name": "Jezioro Nogat",
+      "status": "candidate",
+      "centroid": {"lat": 53.5822, "lon": 19.0692},
+      "geometry_status": "public_map_centroid_pending_hydroportal_verification",
+      "research_priority": "regional_control"
+    }
+  ],
+  "rivers_and_channels": [
+    {
+      "id": "gardega",
+      "display_name": "Gardęga / Gardeja",
+      "kind": "river",
+      "status": "confirmed",
+      "official_relation": "tributary_of_Osa",
+      "local_length_km_from_gmina_inventory": 10.9
+    },
+    {
+      "id": "wandowka",
+      "display_name": "Wandówka",
+      "kind": "river",
+      "status": "confirmed",
+      "local_length_km_from_gmina_inventory": 4.4,
+      "direct_connection_to_research_lakes": "not_yet_verified"
+    },
+    {
+      "id": "cyganowka",
+      "display_name": "Cyganówka",
+      "kind": "river",
+      "status": "confirmed",
+      "local_length_km_from_gmina_inventory": 19.8,
+      "direct_connection_to_research_lakes": "not_yet_verified"
+    },
+    {
+      "id": "kanal-lakowy",
+      "display_name": "Kanał Łąkowy",
+      "kind": "managed_channel",
+      "status": "confirmed_public_maintenance_record",
+      "direct_connection_to_research_lakes": "not_yet_verified"
+    },
+    {
+      "id": "ciek-polderowy",
+      "display_name": "Ciek Polderowy",
+      "kind": "managed_channel",
+      "status": "confirmed_public_maintenance_record",
+      "direct_connection_to_research_lakes": "not_yet_verified"
+    }
+  ],
+  "candidate_flow_chain": {
+    "display": "Jezioro Kuchnia -> Gardęga -> Osa",
+    "status": "public_description_pending_official_geometry_verification",
+    "rule": "Do not extend this chain upstream to Staw w lesie, Jezioro Kamień, Jezioro Nogat, Wandówka or Cyganówka without geometry/elevation evidence."
+  },
+  "investigation_plan": [
+    "Load official Hydroportal/Geoportal hydrography and water-management geometry for the local AOI.",
+    "Build a directed graph of lakes, rivers, ditches, channels, culverts and control structures using verified flow direction/elevation.",
+    "Measure annual and seasonal surface-water extent from EC JRC Global Surface Water 1984-2024.",
+    "Build Sentinel-1 water masks and Sentinel-2 shoreline/NDWI/MNDWI time series with product IDs and timestamps.",
+    "Compare lake changes with precipitation, evapotranspiration, soil moisture and available official groundwater observations.",
+    "Flag outlets, culverts, road crossings, abrupt channel-width changes and dense vegetation as inspection candidates, never as confirmed blockages from imagery alone.",
+    "Add official bathing-water and laboratory measurements when available; do not infer water quality solely from image colour."
+  ],
+  "hypotheses_to_test": [
+    "reduced_precipitation_or_groundwater_recharge",
+    "accelerated_drainage_through_river_or_melioration_network",
+    "local_flow_restriction_or_control_structure_change",
+    "sedimentation_and_vegetation_encroachment",
+    "water_quality_or_eutrophication_process"
+  ],
+  "sources": [
+    {
+      "name": "Gmina Gardeja - Krajobraz",
+      "url": "https://www.gardeja.pl/asp/pl_start.asp?menu=6&strona=1&sub=3&typ=14",
+      "supports": ["Jezioro Kamień", "Gardęga", "Wandówka", "Cyganówka"]
+    },
+    {
+      "name": "Wody Polskie - Hydroportal ISOK",
+      "url": "https://wody.isok.gov.pl/hydroportal.html",
+      "supports": ["official hydrology verification", "drought", "water management plans"]
+    },
+    {
+      "name": "Wody Polskie RZGW Gdańsk - river/channel maintenance record",
+      "url": "https://gdansk.wody.gov.pl/aktualnosci/861-jesienne-utrzymanie-rzek-i-kanalow-dobiega-konca",
+      "supports": ["Gardęga", "Kanał Łąkowy", "Ciek Polderowy"]
+    },
+    {
+      "name": "EC JRC Global Surface Water",
+      "url": "https://global-surface-water.appspot.com/download",
+      "supports": ["surface-water history 1984-2024"]
+    },
+    {
+      "name": "Copernicus Data Space Ecosystem",
+      "url": "https://browser.dataspace.copernicus.eu/",
+      "supports": ["Sentinel-1", "Sentinel-2"]
+    },
+    {
+      "name": "NASA Worldview / VIIRS DNB",
+      "url": "https://worldview.earthdata.nasa.gov/",
+      "supports": ["night-time radiance context"]
+    }
+  ]
+}
