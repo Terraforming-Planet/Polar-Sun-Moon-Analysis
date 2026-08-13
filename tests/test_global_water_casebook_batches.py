@@ -10,6 +10,8 @@ BATCHES = [
     DATA_DIR / "global-water-casebook-batch-04.json",
     DATA_DIR / "global-water-casebook-batch-05.json",
     DATA_DIR / "global-water-casebook-batch-06.json",
+    DATA_DIR / "global-water-casebook-batch-07.json",
+    DATA_DIR / "global-water-casebook-batch-08.json",
 ]
 PAGE = ROOT / "web" / "public" / "water-casebook" / "index.html"
 
@@ -41,7 +43,7 @@ def test_batches_add_ten_validated_cases_each_without_duplicate_ids() -> None:
 
     cases = _validated_cases()
     ids = [str(case["id"]) for case in cases]
-    assert len(cases) == 61
+    assert len(cases) == 81
     assert len(ids) == len(set(ids))
 
 
@@ -69,14 +71,15 @@ def test_all_incremental_batches_have_full_https_provenance() -> None:
 def test_latest_batch_expands_olszowka_relevant_mechanisms() -> None:
     text = json.dumps(_load(BATCHES[-1]), ensure_ascii=False).lower()
     for mechanism in (
-        "connectivity",
-        "sediment",
-        "phosphorus",
-        "water quality",
-        "wetland restoration",
-        "monitoring",
+        "hydraulic connectivity",
+        "water diversion",
+        "nitrogen",
         "salinity",
-        "stormwater",
+        "phosphorus",
+        "sediment",
+        "groundwater",
+        "restoration",
+        "monitoring",
     ):
         assert mechanism in text
 
@@ -88,16 +91,14 @@ def test_latest_batch_spans_multiple_regions_and_management_modes() -> None:
     countries = {country for row in rows for country in row.get("countries", [])}
     expected_countries = {
         "United States",
-        "Canada",
-        "United Kingdom",
-        "Romania",
-        "Montenegro",
-        "Albania",
-        "Indonesia",
-        "Estonia",
-        "Russia",
-        "South Africa",
-        "Australia",
+        "New Zealand",
+        "India",
+        "Switzerland",
+        "France",
+        "Germany",
+        "Austria",
+        "Hungary",
+        "China",
     }
     assert expected_countries <= countries
     types = {row["case_type"] for row in rows}
