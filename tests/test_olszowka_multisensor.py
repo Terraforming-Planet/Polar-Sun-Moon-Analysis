@@ -1,0 +1,157 @@
+from datetime import UTC, datetime
+
+from scripts.refresh_olszowka_multisensor import AOI_BBOX, STAC_SEARCH, build_manifest
+
+
+def test_build_manifest_uses_official_cdse_and_real_observation_metadata() -> None:
+    calls: list[tuple[str, dict[str, object]]] = []
+
+    def loader(url: str, payload: dict[str, object]) -> dict[str, object]:
+        calls.append((url, payload))
+        collection = str(payload["collections"][0])  # type: ignore[index]
+        return {
+            "features": [
+                {
+                    "id": f"{collection}-sample",
+                    "bbox": AOI_BBOX,
+                    "properties": {
+                        "datetime": "2026-08-12T20:00:00Z",
+                        "eo:cloud_cover": 12.5 if collection == "sentinel-2-l2a" else None,
+                        "platform": "sentinel",
+                    },
+                    "assets": {
+                        "thumbnail": {
+                            "href": "https://example.invalid/preview.png",
+                            "type": "image/png",
+                        }
+                    },
+                    "links": [
+                        {
+                            "rel": "self",
+                            "href": "https://stac.dataspace.copernicus.eu/v1/items/sample",
+                        }
+                    ],
+                }
+            ]
+        }
+
+    manifest = build_manifest(loader=loader, now=datetime(2026, 8, 13, tzinfo=UTC))
+
+    assert len(calls) == 2
+    assert all(url == STAC_SEARCH for url, _ in calls)
+    assert all(payload["bbox"] == AOI_BBOX for _, payload in calls)
+    collections = {item["collection"] for item in manifest["observations"]}
+    assert collections == {"sentinel-1-grd", "sentinel-2-l2a"}
+    assert all(item["synthetic"] is False for item in manifest["observations"])
+    assert all(str(item["preview_url"]).startswith("https://") for item in manifest["observations"])
+    assert all(str(item["product_url"]).startswith("https://") for item in manifest["observations"])
+    assert (
+        manifest["night_lights"]["gibs_layer_radiance"]
+        == "VIIRS_SNPP_DayNightBand_At_Sensor_Radiance"
+    )
+    assert manifest["historical_water"]["dataset"] == "Global Surface Water v1.4"
+
+
+def test_unsafe_remote_urls_are_removed_before_publication() -> None:
+    def loader(_url: str, payload: dict[str, object]) -> dict[str, object]:
+        collection = str(payload["collections"][0])  # type: ignore[index]
+        return {
+            "features": [
+                {
+                    "id": f"{collection}-unsafe",
+                    "bbox": AOI_BBOX,
+                    "properties": {"datetime": "2026-08-12T20:00:00Z"},
+                    "assets": {
+                        "thumbnail": {
+                            "href": "javascript:alert(document.domain)",
+                            "type": "image/png",
+                        }
+                    },
+                    "links": [{"rel": "self", "href": "data:text/html,bad"}],
+                }
+            ]
+        }
+
+    manifest = build_manifest(loader=loader, now=datetime(2026, 8, 13, tzinfo=UTC))
+
+    assert manifest["observations"]
+    assert all(item["preview_url"] is None for item in manifest["observations"])
+    assert all(item["product_url"] is None for item in manifest["observations"])
+
+
+def test_failed_refresh_preserves_previous_manifest() -> None:
+    previous = {
+        "generated_at_utc": "2026-08-12T20:00:00+00:00",
+        "observations": [{"id": "known-good"}],
+        "aoi": {"id": "olszowka-gardeja-water-testbed"},
+    }
+
+    def failing_loader(_url: str, _payload: dict[str, object]) -> dict[str, object]:
+        raise OSError("temporary catalogue outage")
+
+    assert build_manifest(loader=failing_loader, previous=previous) == previous
+
+
+def test_partial_refresh_preserves_failed_collection_records() -> None:
+    previous = {
+        "generated_at_utc": "2026-08-12T20:00:00+00:00",
+        "observations": [
+            {
+                "id": "old-s1",
+                "collection": "sentinel-1-grd",
+                "datetime_utc": "2026-08-12T18:00:00Z",
+            },
+            {
+                "id": "old-s2",
+                "collection": "sentinel-2-l2a",
+                "datetime_utc": "2026-08-12T17:00:00Z",
+            },
+        ],
+        "aoi": {"id": "olszowka-gardeja-water-testbed"},
+    }
+
+    def partial_loader(_url: str, payload: dict[str, object]) -> dict[str, object]:
+        collection = str(payload["collections"][0])  # type: ignore[index]
+        if collection == "sentinel-2-l2a":
+            raise OSError("temporary Sentinel-2 outage")
+        return {
+            "features": [
+                {
+                    "id": "new-s1",
+                    "bbox": AOI_BBOX,
+                    "properties": {
+                        "datetime": "2026-08-12T21:00:00Z",
+                        "platform": "sentinel-1",
+                    },
+                    "assets": {},
+                    "links": [],
+                }
+            ]
+        }
+
+    manifest = build_manifest(
+        loader=partial_loader,
+        now=datetime(2026, 8, 13, tzinfo=UTC),
+        previous=previous,
+    )
+
+    assert {item["id"] for item in manifest["observations"]} == {"new-s1", "old-s2"}
+    assert manifest["errors"] == [
+        {"collection": "sentinel-2-l2a", "error": "temporary Sentinel-2 outage"}
+    ]
+
+
+def test_field_report_is_priority_for_verification_not_confirmed_disaster() -> None:
+    def empty_loader(_url: str, _payload: dict[str, object]) -> dict[str, object]:
+        return {"features": []}
+
+    manifest = build_manifest(loader=empty_loader, now=datetime(2026, 8, 13, tzinfo=UTC))
+    report = manifest["field_report"]
+
+    assert report["priority"] == "critical_review_requested"
+    assert report["verification_state"] == "requires_satellite_and_hydrological_verification"
+    assert any(
+        target["local_name"] == "Jezioro Panieńskie"
+        for target in report["targets"]
+        if "local_name" in target
+    )

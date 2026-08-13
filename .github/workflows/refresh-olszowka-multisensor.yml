@@ -1,0 +1,102 @@
+name: Refresh Olszowka multisensor water observatory
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: olszowka-multisensor-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Refresh official Copernicus catalogue
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .artifacts/olszowka
+          {
+            echo "session_started_utc=$(date -u +%FT%TZ)"
+            echo "workflow_run=${GITHUB_RUN_ID}"
+            echo "commit=${GITHUB_SHA}"
+            python scripts/refresh_olszowka_multisensor.py
+          } 2>&1 | tee .artifacts/olszowka/session.log
+          cp web/public/data/hydrology/olszowka-multisensor.json .artifacts/olszowka/manifest.json
+
+      - name: Validate generated JSON
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('web/public/data/hydrology/olszowka-multisensor.json')
+          data = json.loads(path.read_text(encoding='utf-8'))
+          assert data['aoi']['id'] == 'olszowka-gardeja-water-testbed'
+          assert data['night_lights']['gibs_layer_radiance'] == 'VIIRS_SNPP_DayNightBand_At_Sensor_Radiance'
+          assert {source['collection'] for source in data['sources']} == {'sentinel-1-grd', 'sentinel-2-l2a'}
+          print('validation=ok observations=', len(data.get('observations', [])))
+          PY
+          } 2>&1 | tee -a .artifacts/olszowka/session.log
+
+      - name: Commit only when observation state changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add web/public/data/hydrology/olszowka-multisensor.json
+            if git diff --cached --quiet; then
+              echo 'No new satellite catalogue state.'
+              exit 0
+            fi
+            git commit -m 'data(hydrology): refresh Olszowka multisensor catalogue'
+            for attempt in 1 2 3 4; do
+              echo "publish_attempt=${attempt}"
+              if git fetch origin main && git rebase origin/main && git push origin HEAD:main; then
+                echo "publish=success attempt=${attempt}"
+                exit 0
+              fi
+              git rebase --abort >/dev/null 2>&1 || true
+              sleep $((attempt * 4))
+            done
+            echo 'publish=failed after retries'
+            exit 1
+          } 2>&1 | tee .artifacts/olszowka/publication.log | tee -a .artifacts/olszowka/session.log
+
+      - name: Finalize session log
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "session_finished_utc=$(date -u +%FT%TZ)"
+            echo "job_status=${{ job.status }}"
+          } | tee -a .artifacts/olszowka/session.log
+
+      - name: Upload full refresh logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: olszowka-multisensor-${{ github.run_id }}
+          path: .artifacts/olszowka
+          if-no-files-found: warn
+          retention-days: 90

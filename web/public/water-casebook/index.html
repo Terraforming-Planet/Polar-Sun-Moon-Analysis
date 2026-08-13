@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Global Water Casebook · Terraforming Planet</title>
+  <style>
+    :root{color-scheme:dark;--bg:#030b15;--panel:#0b1b2d;--line:#214665;--text:#eef7ff;--muted:#9cb5c9;--accent:#33c6e8;--warn:#f2c14e}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+    main{max-width:1180px;margin:auto;padding:18px}.hero,.card,.notice{background:linear-gradient(180deg,#0d2137,#081727);border:1px solid var(--line);border-radius:14px}
+    .hero{padding:22px;margin-bottom:16px}.hero h1{font-size:clamp(32px,6vw,64px);line-height:.95;margin:8px 0 12px}.eyebrow{font-size:12px;letter-spacing:.14em;color:#6be1f1;font-weight:800}.muted{color:var(--muted)}
+    .notice{padding:13px 15px;border-left:4px solid var(--warn);margin:12px 0}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.toolbar input,.toolbar select,.toolbar a{background:#0b263d;color:var(--text);border:1px solid #2a5777;border-radius:9px;padding:10px 12px;text-decoration:none}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}.card{padding:16px}.card h2{margin:6px 0 4px;font-size:22px}.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#123552;border:1px solid #2d6b93;font-size:11px;font-weight:800}.mechanisms{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0}.mechanisms span{font-size:11px;border:1px solid #2b4f68;border-radius:999px;padding:4px 7px;color:#c8ddec}.links a{display:block;color:#79ddf2;margin-top:7px;overflow-wrap:anywhere}.stats{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px}.stats b{font-size:22px}.footer{margin:28px 0;color:#728da3;font-size:12px}.critical{color:#ffd66b}
+  </style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <div class="eyebrow">TERRAFORMING PLANET · GLOBAL WATER LESSONS</div>
+    <h1>Global Water Casebook</h1>
+    <p>Porównujemy przypadki zaniku wody, odcięcia dopływów, zamulenia, zmian odpływu, presji na wody gruntowe, jakości wody i udanych działań naprawczych. Celem jest zbudowanie wzorca do analizy Olszówki/Gardei i później innych zbiorników na świecie.</p>
+    <div class="notice"><b>Ważne:</b> analogia nie jest diagnozą. Każdy przypadek terenowy wymaga weryfikacji satelitarnej, hydrologicznej i prawnej. Nie zalecamy samodzielnego przekopywania dopływów, odpływów ani rowów.</div>
+    <div class="stats"><div><b id="count">—</b><br><span class="muted">zweryfikowanych przypadków</span></div><div><b>100 → 1 000 → 10 000</b><br><span class="muted">kolejne kamienie milowe zbioru</span></div></div>
+  </section>
+
+  <div class="toolbar">
+    <input id="search" type="search" placeholder="Szukaj: zamulenie, dopływ, Sahara…" />
+    <select id="type"><option value="">Wszystkie mechanizmy</option></select>
+    <a href="../water-local/">← Olszówka multi-sensor</a>
+    <a href="../">← Główna strona</a>
+  </div>
+
+  <section id="grid" class="grid" aria-live="polite"></section>
+  <p id="error" class="notice" hidden>Nie udało się wczytać części casebooka. Wyświetlam wyłącznie prawidłowo pobrane, zweryfikowane rekordy.</p>
+  <div class="footer">Źródła są zapisane przy każdym przypadku. „Sahara — African Humid Period” jest benchmarkiem paleoklimatycznym, a nie bezpośrednim odpowiednikiem współczesnego problemu Olszówki. Rekordy `candidate_case` nie są mieszane ze zweryfikowanymi przypadkami.</div>
+</main>
+<script>
+const CASEBOOK_FILES=['../data/hydrology/global-water-casebook.json','../data/hydrology/global-water-casebook-batch-03.json','../data/hydrology/global-water-casebook-batch-04.json','../data/hydrology/global-water-casebook-batch-05.json','../data/hydrology/global-water-casebook-batch-06.json','../data/hydrology/global-water-casebook-batch-07.json','../data/hydrology/global-water-casebook-batch-08.json','../data/hydrology/global-water-casebook-batch-09.json'];
+const safeUrl = value => { try { const u=new URL(value); return u.protocol==='https:' ? u.href : null } catch { return null } }
+const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+let cases=[]
+function render(){
+  const q=document.querySelector('#search').value.trim().toLowerCase(); const type=document.querySelector('#type').value;
+  const visible=cases.filter(item=>{const hay=[item.name,...(item.countries||[]),item.case_type,...(item.mechanisms||[]),item.observed_pattern,item.management_lesson].join(' ').toLowerCase();return (!q||hay.includes(q))&&(!type||item.case_type===type)})
+  document.querySelector('#grid').innerHTML=visible.map(item=>`<article class="card">
+    <span class="badge">${esc(item.case_type)}</span><h2>${esc(item.name)}</h2><div class="muted">${esc((item.countries||[]).join(' · '))}</div>
+    <div class="mechanisms">${(item.mechanisms||[]).map(x=>`<span>${esc(x)}</span>`).join('')}</div>
+    <p><b>Wzorzec:</b> ${esc(item.observed_pattern)}</p><p><b>Lekcja zarządzania wodą:</b> ${esc(item.management_lesson)}</p>
+    ${item.comparison_notice?`<p class="critical">${esc(item.comparison_notice)}</p>`:''}
+    <div class="links">${(item.source_urls||[]).map(url=>safeUrl(url)).filter(Boolean).map(url=>`<a href="${esc(url)}" target="_blank" rel="noreferrer">Źródło publiczne/oficjalne ↗</a>`).join('')}</div>
+  </article>`).join('') || '<p class="muted">Brak wyników dla filtra.</p>'
+}
+Promise.allSettled(CASEBOOK_FILES.map(url=>fetch(url,{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject(new Error(`${url}: ${r.status}`))))).then(results=>{
+  const loaded=results.filter(result=>result.status==='fulfilled').map(result=>result.value);
+  if(results.some(result=>result.status==='rejected'))document.querySelector('#error').hidden=false;
+  const merged=loaded.flatMap(data=>Array.isArray(data.cases)?data.cases:[]).filter(item=>item&&item.record_status==='validated_case');
+  const byId=new Map();for(const item of merged){if(item.id&&!byId.has(item.id))byId.set(item.id,item)}cases=[...byId.values()];
+  document.querySelector('#count').textContent=cases.length;
+  const types=[...new Set(cases.map(x=>x.case_type).filter(Boolean))].sort(); document.querySelector('#type').insertAdjacentHTML('beforeend',types.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('')); render();
+})
+document.querySelector('#search').addEventListener('input',render);document.querySelector('#type').addEventListener('change',render)
+</script>
+</body>
+</html>

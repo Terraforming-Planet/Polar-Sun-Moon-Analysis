@@ -7,9 +7,11 @@ describe('HydrologyPanel navigation and evidence', () => {
   it('keeps project links and exposes official drought sources', () => {
     const html = renderToStaticMarkup(<HydrologyPanel baseUrl="/Polar-Sun-Moon-Analysis/" />)
 
+    expect(html).toContain('href="/Polar-Sun-Moon-Analysis/water-local/"')
     expect(html).toContain('href="/Polar-Sun-Moon-Analysis/flood-map/"')
     expect(html).toContain('href="/Polar-Sun-Moon-Analysis/copernicus/"')
     expect(html).toContain('drought.emergency.copernicus.eu')
+    expect(html).toContain('ALARM · Olszówka multi-sensor')
     expect(html).toContain('Otwórz mapę powodzi Sentinel-1')
     expect(html).toContain('Copernicus Drought Observatories')
   })
@@ -23,6 +25,9 @@ describe('HydrologyPanel navigation and evidence', () => {
     expect(html).toContain('koniec czerwca 2026')
     expect(html).toContain('połowa lipca 2026')
     expect(html).toContain('nie zamieniamy opisowych regionów na zmyślone punkty')
+    expect(html).toContain('Olszówka / Gardeja — lokalny poligon krytyczny')
+    expect(html).toContain('Sentinel-1 i Sentinel-2')
+    expect(html).toContain('NASA VIIRS DNB')
   })
 })
 
