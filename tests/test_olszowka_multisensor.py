@@ -43,11 +43,40 @@ def test_build_manifest_uses_official_cdse_and_real_observation_metadata() -> No
     collections = {item["collection"] for item in manifest["observations"]}
     assert collections == {"sentinel-1-grd", "sentinel-2-l2a"}
     assert all(item["synthetic"] is False for item in manifest["observations"])
+    assert all(str(item["preview_url"]).startswith("https://") for item in manifest["observations"])
+    assert all(str(item["product_url"]).startswith("https://") for item in manifest["observations"])
     assert (
         manifest["night_lights"]["gibs_layer_radiance"]
         == "VIIRS_SNPP_DayNightBand_At_Sensor_Radiance"
     )
     assert manifest["historical_water"]["dataset"] == "Global Surface Water v1.4"
+
+
+def test_unsafe_remote_urls_are_removed_before_publication() -> None:
+    def loader(_url: str, payload: dict[str, object]) -> dict[str, object]:
+        collection = str(payload["collections"][0])  # type: ignore[index]
+        return {
+            "features": [
+                {
+                    "id": f"{collection}-unsafe",
+                    "bbox": AOI_BBOX,
+                    "properties": {"datetime": "2026-08-12T20:00:00Z"},
+                    "assets": {
+                        "thumbnail": {
+                            "href": "javascript:alert(document.domain)",
+                            "type": "image/png",
+                        }
+                    },
+                    "links": [{"rel": "self", "href": "data:text/html,bad"}],
+                }
+            ]
+        }
+
+    manifest = build_manifest(loader=loader, now=datetime(2026, 8, 13, tzinfo=UTC))
+
+    assert manifest["observations"]
+    assert all(item["preview_url"] is None for item in manifest["observations"])
+    assert all(item["product_url"] is None for item in manifest["observations"])
 
 
 def test_failed_refresh_preserves_previous_manifest() -> None:
