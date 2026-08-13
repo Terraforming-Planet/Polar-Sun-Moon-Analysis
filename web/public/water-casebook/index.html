@@ -35,7 +35,7 @@
   <div class="footer">Źródła są zapisane przy każdym przypadku. „Sahara — African Humid Period” jest benchmarkiem paleoklimatycznym, a nie bezpośrednim odpowiednikiem współczesnego problemu Olszówki. Rekordy `candidate_case` nie są mieszane ze zweryfikowanymi przypadkami.</div>
 </main>
 <script>
-const CASEBOOK_FILES=['../data/hydrology/global-water-casebook.json','../data/hydrology/global-water-casebook-batch-03.json'];
+const CASEBOOK_FILES=['../data/hydrology/global-water-casebook.json','../data/hydrology/global-water-casebook-batch-03.json','../data/hydrology/global-water-casebook-batch-04.json'];
 const safeUrl = value => { try { const u=new URL(value); return u.protocol==='https:' ? u.href : null } catch { return null } }
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
 let cases=[]
