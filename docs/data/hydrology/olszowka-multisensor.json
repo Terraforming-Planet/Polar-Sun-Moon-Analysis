@@ -1,0 +1,76 @@
+{
+  "generated_at_utc": null,
+  "aoi": {
+    "id": "olszowka-gardeja-water-testbed",
+    "label": "Olszówka · Gardeja · lokalny poligon hydrologiczny",
+    "bbox_wgs84": [18.94, 53.55, 19.1, 53.66],
+    "focus_wgs84": [19.02, 53.61]
+  },
+  "observations": [],
+  "sources": [
+    {
+      "collection": "sentinel-1-grd",
+      "provider": "Copernicus Data Space Ecosystem",
+      "catalogue_url": "https://stac.dataspace.copernicus.eu/v1/",
+      "search_window_days": 21,
+      "evidence_class": "official_public_catalogue"
+    },
+    {
+      "collection": "sentinel-2-l2a",
+      "provider": "Copernicus Data Space Ecosystem",
+      "catalogue_url": "https://stac.dataspace.copernicus.eu/v1/",
+      "search_window_days": 45,
+      "evidence_class": "official_public_catalogue"
+    }
+  ],
+  "night_lights": {
+    "provider": "NASA Earthdata / VIIRS Day-Night Band",
+    "gibs_layer_radiance": "VIIRS_SNPP_DayNightBand_At_Sensor_Radiance",
+    "gibs_layer_enhanced": "VIIRS_SNPP_DayNightBand_ENCC",
+    "worldview_url": "https://worldview.earthdata.nasa.gov/",
+    "evidence_class": "nighttime_radiance_observation",
+    "notice": "Warstwa DNB może pokazać regionalną radiancję nocną, ale nie gwarantuje rozróżnienia pojedynczej lampy. Kontrast w Cesium jest wyłącznie transformacją wizualizacji."
+  },
+  "historical_water": {
+    "provider": "EC JRC / Copernicus Programme",
+    "dataset": "Global Surface Water v1.4",
+    "temporal_extent": "1984-2021",
+    "source_url": "https://global-surface-water.appspot.com/",
+    "notice": "Warstwa historyczna służy do porównania zaniku i zmian zasięgu wód, nie do bieżącego alarmu."
+  },
+  "field_report": {
+    "priority": "critical_review_requested",
+    "verification_state": "requires_satellite_and_hydrological_verification",
+    "targets": [
+      {
+        "id": "staw-w-lesie-panienskie",
+        "label": "Staw w lesie",
+        "local_name": "Jezioro Panieńskie",
+        "coordinate_status": "pending_verified_pin",
+        "reported_issue": "wieloletni zanik wody / silne wysuszenie"
+      },
+      {
+        "id": "jezioro-kuchnia",
+        "label": "Jezioro Kuchnia",
+        "latitude": 53.58809,
+        "longitude": 19.01969,
+        "reported_issue": "spadek poziomu i pogorszenie jakości wody — do weryfikacji"
+      },
+      {
+        "id": "czarne-dolne",
+        "label": "Jezioro Czarne Dolne",
+        "latitude": 53.6294,
+        "longitude": 19.0431,
+        "reported_issue": "zbiornik kontrolny dla lokalnego bilansu wodnego"
+      },
+      {
+        "id": "czarne-gorne",
+        "label": "Jezioro Czarne Górne",
+        "latitude": 53.6281,
+        "longitude": 19.0739,
+        "reported_issue": "zbiornik kontrolny dla lokalnego bilansu wodnego"
+      }
+    ]
+  },
+  "errors": []
+}
