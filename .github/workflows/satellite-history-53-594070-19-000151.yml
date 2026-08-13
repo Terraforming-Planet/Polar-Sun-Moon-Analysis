@@ -1,0 +1,229 @@
+name: Real Landsat history 53.594070 19.000151
+
+on:
+  push:
+    branches:
+      - satellite-history-53-594070-19-000151
+    paths:
+      - .github/workflows/satellite-history-53-594070-19-000151.yml
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: satellite-history-53-594070-19-000151
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install geospatial dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pystac-client planetary-computer rasterio pillow numpy pyproj
+
+      - name: Download and render official USGS Landsat Collection 2 data
+        env:
+          GDAL_DISABLE_READDIR_ON_OPEN: EMPTY_DIR
+          CPL_VSIL_CURL_ALLOWED_EXTENSIONS: .TIF,.tif
+        run: |
+          python - <<'PY'
+          import json
+          import math
+          from datetime import date, datetime
+          from pathlib import Path
+
+          import numpy as np
+          import planetary_computer
+          import rasterio
+          from PIL import Image
+          from pyproj import Transformer
+          from pystac_client import Client
+          from rasterio.windows import from_bounds
+
+          LAT = 53.594070
+          LON = 19.000151
+          TARGET_YEARS = [2000, 2007, 2013, 2020, 2026]
+          HALF_SIZE_M = 4500.0  # 9 x 9 km crop, native Landsat 30 m pixels
+          OUT = Path('satellite_history/53.594070_19.000151')
+          OUT.mkdir(parents=True, exist_ok=True)
+
+          # Prefer sensors that avoid Landsat-7 SLC-off gaps after 2003.
+          SENSOR_PREF = {
+              2000: ['landsat-7', 'landsat-5'],
+              2007: ['landsat-5'],
+              2013: ['landsat-8'],
+              2020: ['landsat-8'],
+              2026: ['landsat-9', 'landsat-8'],
+          }
+
+          catalog = Client.open(
+              'https://planetarycomputer.microsoft.com/api/stac/v1',
+              modifier=planetary_computer.sign_inplace,
+          )
+
+          def date_range_for(year: int) -> str:
+              end = date(year, 9, 30)
+              if year == 2026:
+                  end = min(end, date.today())
+              return f'{year}-05-01/{end.isoformat()}'
+
+          def cloud_score(item):
+              return float(item.properties.get('eo:cloud_cover') or 100.0)
+
+          def point_window(src, half_size_m=HALF_SIZE_M):
+              transformer = Transformer.from_crs('EPSG:4326', src.crs, always_xy=True)
+              x, y = transformer.transform(LON, LAT)
+              return from_bounds(
+                  x - half_size_m,
+                  y - half_size_m,
+                  x + half_size_m,
+                  y + half_size_m,
+                  transform=src.transform,
+              ).round_offsets().round_lengths()
+
+          def local_clear_fraction(item):
+              # Landsat Collection 2 QA_PIXEL bit 6 = Clear; bit 0 = Fill.
+              qa = item.assets.get('qa_pixel')
+              if qa is None:
+                  return max(0.0, 1.0 - cloud_score(item) / 100.0)
+              try:
+                  with rasterio.Env(GDAL_DISABLE_READDIR_ON_OPEN='EMPTY_DIR'):
+                      with rasterio.open(qa.href) as src:
+                          w = point_window(src)
+                          arr = src.read(1, window=w, boundless=False)
+                  valid = (arr & 1) == 0
+                  if not np.any(valid):
+                      return 0.0
+                  clear = ((arr >> 6) & 1).astype(bool)
+                  return float(np.mean(clear[valid]))
+              except Exception as exc:
+                  print(f'QA read failed for {item.id}: {exc}')
+                  return max(0.0, 1.0 - cloud_score(item) / 100.0)
+
+          def choose_item(year: int):
+              # Small bbox only guides catalog search; the final crop is centered exactly on the coordinate.
+              dlat = 0.08
+              dlon = 0.12
+              search = catalog.search(
+                  collections=['landsat-c2-l2'],
+                  bbox=[LON - dlon, LAT - dlat, LON + dlon, LAT + dlat],
+                  datetime=date_range_for(year),
+                  max_items=200,
+              )
+              items = list(search.items())
+              prefs = SENSOR_PREF[year]
+              filtered = [i for i in items if str(i.properties.get('platform', '')).lower() in prefs]
+              if not filtered:
+                  raise RuntimeError(f'No preferred Landsat scenes found for {year}; got {len(items)} total')
+
+              # Inspect the clearest scene-level candidates locally around the requested point.
+              filtered.sort(key=cloud_score)
+              candidates = filtered[:12]
+              target_day = datetime(year, 7, 15)
+              scored = []
+              for item in candidates:
+                  clear = local_clear_fraction(item)
+                  dt = datetime.fromisoformat(item.datetime.replace('Z', '+00:00')).replace(tzinfo=None)
+                  day_distance = abs((dt - target_day).days)
+                  sensor_rank = prefs.index(str(item.properties.get('platform', '')).lower())
+                  # Local cloud is dominant, then scene cloud, then same-season proximity and sensor preference.
+                  score = (1.0 - clear) * 1000.0 + cloud_score(item) * 0.4 + day_distance * 0.03 + sensor_rank * 1.5
+                  scored.append((score, -clear, item))
+                  print(year, item.id, 'scene_cloud=', cloud_score(item), 'local_clear=', round(clear, 4), 'score=', round(score, 3))
+              scored.sort(key=lambda x: (x[0], x[1]))
+              return scored[0][2], -scored[0][1]
+
+          def scale_band(item, key, arr):
+              asset = item.assets[key]
+              rb = asset.extra_fields.get('raster:bands') or []
+              if rb:
+                  scale = float(rb[0].get('scale', 1.0))
+                  offset = float(rb[0].get('offset', 0.0))
+              else:
+                  scale, offset = 2.75e-5, -0.2
+              return arr.astype(np.float32) * scale + offset
+
+          def render_item(item, clear_fraction):
+              arrays = []
+              transform = None
+              crs = None
+              width = height = None
+              for key in ['red', 'green', 'blue']:
+                  if key not in item.assets:
+                      raise RuntimeError(f'{item.id} has no {key} asset; keys={list(item.assets)}')
+                  with rasterio.Env(GDAL_DISABLE_READDIR_ON_OPEN='EMPTY_DIR'):
+                      with rasterio.open(item.assets[key].href) as src:
+                          w = point_window(src)
+                          raw = src.read(1, window=w, boundless=False)
+                          if transform is None:
+                              transform = src.window_transform(w)
+                              crs = src.crs
+                              width, height = raw.shape[1], raw.shape[0]
+                          arrays.append(scale_band(item, key, raw))
+
+              rgb = np.stack(arrays, axis=-1)
+              # Fixed reflectance stretch for comparable natural-color images across years.
+              low, high = 0.015, 0.30
+              rgb = np.clip((rgb - low) / (high - low), 0.0, 1.0)
+              rgb = np.power(rgb, 1.0 / 2.2)
+              rgb8 = np.rint(rgb * 255.0).astype(np.uint8)
+
+              acquired = item.datetime[:10]
+              platform = str(item.properties.get('platform', 'landsat')).replace('_', '-').lower()
+              fname = f'{acquired}_{platform}_USGS_Landsat_C2_SR_53.594070_19.000151.png'
+              fpath = OUT / fname
+              Image.fromarray(rgb8, mode='RGB').save(fpath, optimize=True)
+
+              return {
+                  'file': str(fpath),
+                  'date': acquired,
+                  'platform': item.properties.get('platform'),
+                  'item_id': item.id,
+                  'scene_cloud_cover_percent': cloud_score(item),
+                  'local_clear_fraction': round(float(clear_fraction), 6),
+                  'source_dataset': 'USGS Landsat Collection 2 Level-2 Surface Reflectance',
+                  'source_stac_via': item.get_links('via')[0].target if item.get_links('via') else None,
+                  'delivery_mirror': 'Microsoft Planetary Computer (USGS Landsat C2 mirror)',
+                  'coordinate': [LAT, LON],
+                  'crop_size_m': int(HALF_SIZE_M * 2),
+                  'native_pixel_size_m': 30,
+                  'width_pixels': int(width),
+                  'height_pixels': int(height),
+                  'crs': str(crs),
+                  'transform': [float(v) for v in transform[:6]],
+                  'processing': 'RGB natural-color from red/green/blue surface-reflectance bands; fixed reflectance stretch 0.015-0.30 and gamma 2.2; no AI generation or enhancement',
+              }
+
+          manifest = {
+              'requested_coordinate': {'lat': LAT, 'lon': LON},
+              'target_years': TARGET_YEARS,
+              'generated_utc': datetime.utcnow().isoformat(timespec='seconds') + 'Z',
+              'images': [],
+          }
+
+          for year in TARGET_YEARS:
+              item, clear = choose_item(year)
+              meta = render_item(item, clear)
+              manifest['images'].append(meta)
+              print('SELECTED', year, json.dumps(meta, ensure_ascii=False))
+
+          (OUT / 'manifest.json').write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding='utf-8')
+          print('Generated files:')
+          for p in sorted(OUT.glob('*')):
+              print(p, p.stat().st_size)
+          PY
+
+      - name: Commit generated imagery to this working branch
+        run: |
+          git config user.name "terraforming-planet-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add satellite_history/53.594070_19.000151
+          git commit -m "Add five real Landsat snapshots for 53.594070 19.000151 [skip ci]"
+          git push origin HEAD:satellite-history-53-594070-19-000151
