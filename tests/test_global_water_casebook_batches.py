@@ -86,7 +86,19 @@ def test_latest_batch_spans_multiple_continents_and_management_modes() -> None:
     rows = batch["cases"]
     assert isinstance(rows, list)
     countries = {country for row in rows for country in row.get("countries", [])}
-    assert {"Peru", "Canada", "United States", "Australia", "Vietnam", "Philippines", "Lebanon", "China", "North Macedonia", "Bolivia"} <= countries
+    expected_countries = {
+        "Peru",
+        "Canada",
+        "United States",
+        "Australia",
+        "Vietnam",
+        "Philippines",
+        "Lebanon",
+        "China",
+        "North Macedonia",
+        "Bolivia",
+    }
+    assert expected_countries <= countries
     types = {row["case_type"] for row in rows}
     assert len(types) == 10
 
