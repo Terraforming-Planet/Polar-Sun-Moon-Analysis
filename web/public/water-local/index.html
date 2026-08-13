@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#020711" />
   <title>Terraforming Planet · Olszówka / Gardeja Water Observatory</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cesium@1.126/Build/Cesium/Widgets/widgets.css" />
+  <link rel="stylesheet" href="water-local.css" />
   <style>
     :root{color-scheme:dark;font-family:Inter,system-ui,sans-serif;background:#020711;color:#eaf7ff}
     *{box-sizing:border-box}body{margin:0;background:#020711}.shell{max-width:1280px;margin:auto;padding:9px}
@@ -17,7 +18,7 @@
     .science{border-left:4px solid #45d6a6;background:#0b2b26;color:#c8ffef;padding:9px;line-height:1.45}
     .controls{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:9px 0}
     button,a.button{background:#0d2c46;color:#eaf7ff;border:1px solid #2d6f97;border-radius:8px;padding:9px 10px;text-decoration:none;cursor:pointer}
-    .active{background:#126884;border-color:#6be2ff}.stage{height:min(70vh,720px);min-height:480px;position:relative;border-radius:10px;overflow:hidden;background:#000}
+    button:disabled{opacity:.45;cursor:not-allowed}.active{background:#126884;border-color:#6be2ff}.stage{height:min(70vh,720px);min-height:480px;position:relative;border-radius:10px;overflow:hidden;background:#071525}
     .cesium{position:absolute;inset:0}.status{position:absolute;left:10px;bottom:10px;z-index:8;max-width:min(680px,92%);background:rgba(3,10,18,.92);border:1px solid #2a627f;border-radius:8px;padding:8px;font-size:12px;line-height:1.4}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}.card{border:1px solid #173754;border-radius:9px;padding:10px;background:#06111e}
     .card img{width:100%;display:block;background:#000;border-radius:7px;max-height:360px;object-fit:contain}.fact{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #173754;padding:6px 0}
@@ -25,7 +26,7 @@
     .target{padding:8px 0;border-bottom:1px solid #173754}.target:last-child{border-bottom:0}.pill{display:inline-block;border:1px solid #52697a;border-radius:999px;padding:2px 7px;font-size:10px;margin-right:5px}
     .pill.red{border-color:#ff6655;color:#ffb0a4}.pill.green{border-color:#51d89c;color:#9ff0c9}.pill.yellow{border-color:#ffd24a;color:#ffe59c}.pill.blue{border-color:#5cb8ff;color:#a8d8ff}
     .raw-link{color:#65dcff}.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1 1 300px}.flow{font-size:clamp(18px,3.5vw,30px);font-weight:800;line-height:1.25;color:#dff8ff}
-    .step{border-left:3px solid #2d6f97;padding-left:10px;margin:9px 0}.source-list a{display:block;margin:6px 0}
+    .step{border-left:3px solid #2d6f97;padding-left:10px;margin:9px 0}.source-list a{display:block;margin:6px 0}.list{max-height:360px;overflow:auto}.result{padding:7px 0;border-bottom:1px solid #173754}
     @media(max-width:760px){.stage{height:560px;min-height:460px}button,a.button{font-size:12px;padding:8px}.status{font-size:11px}}
   </style>
 </head>
@@ -46,10 +47,11 @@
   <section class="panel">
     <div class="controls">
       <button id="day" class="active">🗺 Czysta mapa hydrologiczna</button>
-      <button id="satellite-reference">🛰 Zdjęcia referencyjne · nie live</button>
+      <button id="satellite-reference" disabled title="Wyłączone: archiwalna mozaika mogła wyglądać jak czarny prostokąt/cień">🛰 Zdjęcia referencyjne · wyłączone</button>
       <button id="night-radiance">💡 NASA VIIRS DNB · radiancja nocna</button>
       <button id="night-enhanced">🌙 NASA VIIRS DNB · ENCC</button>
       <button id="copernicus">🌍 Copernicus · najnowszy dostępny przelot</button>
+      <button id="hydrology-100km">💧 Jeziora i rzeki · 100 km</button>
       <button id="pin-pond">📍 Pin Staw w lesie</button>
       <button id="pin-small-lake">📍 Pin mały akwen przy Kuchni</button>
       <button id="pin-kamien">📍 Pin Jezioro Kamień</button>
@@ -57,8 +59,18 @@
       <a class="button" href="../">← Główna strona</a>
     </div>
     <div class="stage"><div id="cesium" class="cesium"></div><div class="status" id="status">Ładowanie Cesium…</div></div>
-    <p class="tiny"><b>Usunięcie czarnego pasa:</b> domyślna warstwa została przełączona na jednolite kafle OpenStreetMap, aby mozaika zdjęć z różnych dat nie wyglądała jak prawdziwy cień lub zjawisko terenowe. Archiwalne zdjęcia satelitarne są osobnym trybem referencyjnym i są wyraźnie oznaczone jako <b>nie live</b>.</p>
+    <p class="tiny"><b>Czarny prostokąt usunięty z aktywnych trybów:</b> domyślną warstwą jest jednolita mapa OpenStreetMap. Archiwalna mozaika zdjęć referencyjnych została wyłączona, aby granica kafla ani różnica dat nie wyglądała jak prawdziwy cień, susza lub zjawisko terenowe.</p>
     <p class="tiny"><b>Test lamp:</b> VIIRS DNB pokazuje <u>rzeczywistą nocną radiancję</u> z sensora satelitarnego. Podbijamy wyłącznie kontrast wizualizacji. <b>Pojedyncza latarnia może być mniejsza niż piksel sensora</b>, więc nie oznaczamy niewidocznej lampy jako „wyłączonej”. Jasny piksel nad obszarem jest pomiarem radiancji, nie identyfikatorem konkretnej lampy.</p>
+  </section>
+
+  <section class="panel">
+    <div class="eyebrow">HYDROLOGIA REGIONALNA · 100 KM</div>
+    <h2>Jeziora, rzeki i kandydaci połączeń</h2>
+    <div class="science"><b>Warstwa referencyjna:</b> przycisk „Jeziora i rzeki · 100 km” pobiera z publicznego OSM/Overpass nazwane jeziora, zbiorniki, rzeki, strumienie i kanały do 100 km oraz dokładniejszą geometrię cieków lokalnych do 15 km. Hydroportal/Wody Polskie pozostaje źródłem rozstrzygającym dla urzędowej geometrii i urządzeń wodnych.</div>
+    <div id="hydrology-summary" class="grid" style="margin-top:10px">
+      <article class="card"><h3>Warstwa czeka na uruchomienie</h3><p class="tiny">Naciśnij „Jeziora i rzeki · 100 km”. System nie nazywa automatycznie żadnego miejsca uszkodzonym lub zapchanym dopływem/odpływem.</p></article>
+      <article class="card"><h3>Roboczy kierunek odpływu</h3><div class="flow">Jezioro Kuchnia → Gardęga → Osa → Wisła</div><p class="tiny">Łańcuch służy do budowy modelu zlewni. Dokładny przebieg, kierunki i połączenia lokalne muszą być porównane z Hydroportalem i danymi wysokościowymi.</p></article>
+    </div>
   </section>
 
   <section class="panel"><div class="row">
@@ -135,7 +147,6 @@
 <script>
 const NASA_WMTS='https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/wmts.cgi';
 const OSM='https://tile.openstreetmap.org/{z}/{x}/{y}.png';
-const SATELLITE_REFERENCE='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
 const CDSE_WMS='https://sh.dataspace.copernicus.eu/ogc/wms/d708f736-b553-4328-9b5e-39bdb444790c';
 const focus={lon:19.02,lat:53.61,height:42000};
 const today=new Date().toISOString().slice(0,10);let latestSentinel2Day=null;
@@ -184,16 +195,11 @@ function addCleanBase(alpha=1){
   const base=viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({url:OSM,minimumLevel:0,maximumLevel:19,credit:'© OpenStreetMap contributors'}));
   base.alpha=alpha;return base
 }
-function addSatelliteReference(alpha=1){
-  const base=viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({url:SATELLITE_REFERENCE,minimumLevel:0,maximumLevel:23,credit:'Esri World Imagery · reference only'}));
-  base.alpha=alpha;base.contrast=1.02;return base
-}
 function isoDayOffset(days){const d=new Date();d.setUTCDate(d.getUTCDate()+days);return d.toISOString().slice(0,10)}
 function copernicusWindow(){if(latestSentinel2Day)return {time:`${latestSentinel2Day}/${latestSentinel2Day}`,label:`przelot Sentinel-2 z ${latestSentinel2Day}`};return {time:`${isoDayOffset(-30)}/${today}`,label:'30-dniowe okno awaryjne — dokładny przelot nie został jeszcze odczytany ze STAC'}}
 function setLayer(mode){
   clearLayers();viewer.clock.currentTime=Cesium.JulianDate.fromIso8601(new Date().toISOString());
   if(mode==='day'){addCleanBase(1);status.innerHTML='<b>Czysta mapa hydrologiczna · OSM</b><br>Jednolita warstwa nawigacyjna bez mozaiki zdjęć z różnych dat. Nie jest obrazem satelitarnym live.'}
-  if(mode==='satellite-reference'){addSatelliteReference(1);status.innerHTML='<b>Zdjęcia satelitarne referencyjne</b><br>Warstwa archiwalna / mozaikowa. Kafle mogą pochodzić z różnych dat; nie interpretuj granicy kafla jako cienia, suszy ani zmiany powierzchni wody.'}
   if(mode==='night-radiance'){
     addCleanBase(.10);
     const l=viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({url:NASA_WMTS,layer:'VIIRS_SNPP_DayNightBand_At_Sensor_Radiance',style:'default',format:'image/png',tileMatrixSetID:'GoogleMapsCompatible_Level9',maximumLevel:9,dimensions:{Time:today},credit:'NASA VIIRS DNB At-Sensor Radiance'}));
@@ -216,7 +222,7 @@ function setLayer(mode){
   viewer.scene.requestRender()
 }
 setLayer('day');
-['day','satellite-reference','night-radiance','night-enhanced','copernicus'].forEach(id=>document.getElementById(id).onclick=()=>{setActive(id);setLayer(id)});
+['day','night-radiance','night-enhanced','copernicus'].forEach(id=>document.getElementById(id).onclick=()=>{setActive(id);setLayer(id)});
 document.getElementById('home').onclick=()=>viewer.camera.flyTo({destination:Cesium.Cartesian3.fromDegrees(focus.lon,focus.lat,focus.height),duration:1.1});
 
 let pinTarget=null;
@@ -263,5 +269,6 @@ fetch('../data/hydrology/olszowka-multisensor.json?refresh='+Date.now(),{cache:'
   .catch(err=>{document.getElementById('observations').innerHTML=`<article class="card"><p class="bad">Nie udało się odczytać manifestu: ${esc(err)}</p></article>`});
 setInterval(()=>location.reload(),15*60*1000);
 </script>
+<script src="hydrology-100km.js"></script>
 </body>
 </html>
