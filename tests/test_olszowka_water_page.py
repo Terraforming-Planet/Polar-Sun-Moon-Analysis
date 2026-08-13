@@ -40,13 +40,16 @@ def test_page_marks_local_water_report_as_verification_priority() -> None:
     assert "tp-kamien-pin" in source
 
 
-def test_page_uses_clean_basemap_and_separates_reference_imagery() -> None:
+def test_page_uses_clean_basemap_and_disables_reference_mosaic() -> None:
     source = PAGE.read_text(encoding="utf-8")
 
     assert "https://tile.openstreetmap.org/{z}/{x}/{y}.png" in source
-    assert 'id="satellite-reference"' in source
-    assert "mozaika zdjęć z różnych dat" in source
-    assert "nie interpretuj granicy kafla jako cienia" in source
+    assert 'id="satellite-reference" disabled' in source
+    assert "Czarny prostokąt usunięty z aktywnych trybów" in source
+    assert "granica kafla" in source
+    assert "cień" in source
+    assert "SATELLITE_REFERENCE" not in source
+    assert "addSatelliteReference" not in source
 
 
 def test_page_exposes_verified_local_rivers_without_claiming_unverified_links() -> None:
