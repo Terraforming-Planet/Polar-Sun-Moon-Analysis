@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "experiment_id": "experiment_001_pond_forest_kuchnia",
   "updated": "2026-08-14",
   "aoi": {
@@ -8,19 +8,10 @@
     "imagery_width_m": 2000,
     "imagery_height_m": 2000
   },
-  "period": {
-    "start_year": 1990,
-    "end_year": 2026
-  },
+  "period": {"start_year": 1990, "end_year": 2026},
   "season_policy": {
-    "spring": {
-      "preferred_month": 5,
-      "fallback_months_in_order": [4, 6]
-    },
-    "autumn": {
-      "preferred_month": 9,
-      "fallback_months_in_order": [10, 11]
-    },
+    "spring": {"preferred_month": 5, "fallback_months_in_order": [4, 6]},
+    "autumn": {"preferred_month": 9, "fallback_months_in_order": [10, 11]},
     "rules": {
       "record_real_acquisition_date": true,
       "record_real_acquisition_month": true,
@@ -33,60 +24,20 @@
   "analysis_policy": {
     "common_cross_era_grid_m": 30,
     "preserve_native_resolution_in_metadata": true,
-    "png_visual_inspection_is_not_final_area_measurement": true,
+    "display_segmentation_is_visible_footprint_not_metre_perfect_spectral_water": true,
     "no_generative_gap_filling": true,
     "no_ai_super_resolution_presented_as_real_detail": true
   },
   "source_slots": [
-    {
-      "slot": 1,
-      "agency": "NASA / USGS",
-      "mission": "Landsat 5/7/8/9",
-      "role": "long-term optical baseline",
-      "status": "active"
-    },
-    {
-      "slot": 2,
-      "agency": "ESA / Copernicus",
-      "mission": "Sentinel-2",
-      "role": "higher-resolution optical cross-check and recent baseline",
-      "status": "active"
-    },
-    {
-      "slot": 3,
-      "agency": "ESA / Copernicus",
-      "mission": "Sentinel-1 RTC",
-      "role": "radar cross-check under different observation physics",
-      "status": "active_with_small_forested_pond_limitations"
-    },
-    {
-      "slot": 4,
-      "agency": "NASA",
-      "mission": "Terra ASTER",
-      "product": "AST_L1T V004",
-      "role": "independent historical optical validation",
-      "status": "catalog_verified_pixels_require_scene_level_qa_before_evidence_admission",
-      "official_catalog": "NASA Earthdata CMR",
-      "catalog_hits_spring_autumn": 77
-    }
+    {"slot": 1, "agency": "NASA / USGS", "mission": "Landsat 5/7/8/9", "role": "long-term optical baseline", "status": "active"},
+    {"slot": 2, "agency": "ESA / Copernicus", "mission": "Sentinel-2", "role": "higher-resolution optical cross-check and recent baseline", "status": "active"},
+    {"slot": 3, "agency": "ESA / Copernicus", "mission": "Sentinel-1 RTC", "role": "radar cross-check under different observation physics", "status": "active_with_small_forested_pond_limitations"},
+    {"slot": 4, "agency": "NASA", "mission": "Terra ASTER", "product": "AST_L1T V004", "role": "independent historical optical validation", "status": "catalog_verified_pixels_require_scene_level_qa_before_evidence_admission", "official_catalog": "NASA Earthdata CMR", "catalog_hits_spring_autumn": 77}
   ],
   "supplementary_candidates": [
-    {
-      "agency": "JAXA",
-      "mission": "ALOS",
-      "sensors": ["AVNIR-2", "PALSAR"],
-      "status": "candidate_for_years_with_useful_public_products"
-    },
-    {
-      "agency": "Roscosmos",
-      "status": "not_admitted_without_exact_public_official_product",
-      "requirements": ["official source", "public access", "exact AOI and acquisition date", "sensor and processing level", "reproducible retrieval", "usable QA"]
-    },
-    {
-      "agency": "CNSA",
-      "status": "not_admitted_without_exact_public_official_product",
-      "requirements": ["official source", "public access", "exact AOI and acquisition date", "sensor and processing level", "reproducible retrieval", "usable QA"]
-    }
+    {"agency": "JAXA", "mission": "ALOS", "sensors": ["AVNIR-2", "PALSAR"], "status": "candidate_for_years_with_useful_public_products"},
+    {"agency": "Roscosmos", "status": "not_admitted_without_exact_public_official_product", "requirements": ["official source", "public access", "exact AOI and acquisition date", "sensor and processing level", "reproducible retrieval", "usable QA"]},
+    {"agency": "CNSA", "status": "not_admitted_without_exact_public_official_product", "requirements": ["official source", "public access", "exact AOI and acquisition date", "sensor and processing level", "reproducible retrieval", "usable QA"]}
   ],
   "quality_gates": [
     "acquisition year must match record year",
@@ -99,10 +50,19 @@
   ],
   "known_review_years": [1993, 1995, 1997, 2002, 2010, 2012, 2013, 2014, 2023],
   "scientific_status": {
-    "older_vs_newer_visible_water_change": "observed_and_requires_quantitative_confirmation",
-    "working_visual_loss_estimate_m2": 25000,
-    "working_visual_loss_estimate_is_final": false,
+    "state_transition_conclusion": "supported_by_multi_year_visible_footprint_consensus",
+    "recommended_historical_visible_footprint_m2": 17722.2,
+    "recommended_historical_visible_footprint_ha": 1.7722,
+    "conservative_lower_m2": 16269.3,
+    "repeat_supported_upper_m2": 21642.0,
+    "broad_union_upper_m2": 23978.3,
+    "1990_overlap_fraction_of_central_consensus": 0.92528,
+    "former_25000_m2_estimate_status": "retained_only_as_earlier_upper_visual_hypothesis_not_central_result",
+    "2026_state": "no_comparable_persistent_dark_water_footprint_visible_may_and_august_seed_diagnostics_non_water_like",
+    "2026_exact_residual_open_water_m2": null,
+    "exact_loss_percent_status": "uncertainty_gated_do_not_force",
     "cause_of_change": "not_established",
-    "final_gate": "manual basin or visible-water polygon validation plus common-grid uncertainty analysis"
+    "seasonal_endpoint_status": "spring_strict_spectral_endpoint_not_quantifiable_autumn_2026_not_yet_observed_as_of_2026_08_14",
+    "next_scientific_gate": "manual basin/visible-water polygon review and additional independent ASTER/ALOS scene-level QA"
   }
 }
