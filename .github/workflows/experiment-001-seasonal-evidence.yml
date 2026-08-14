@@ -39,7 +39,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install numpy pillow requests rasterio pyproj
 
-      - name: Build corrected spring, autumn and error archive
+      - name: Build corrected spring and autumn evidence
         run: python tools/build_experiment_001_seasonal_evidence.py
 
       - name: Validate Experiment 001 imagery integrity
@@ -76,8 +76,13 @@ jobs:
         run: |
           git config user.name "Terraforming Planet"
           git config user.email "kontakt@teslaeco.pl"
-          # The suspect-image archive is committed by its own workflow and remains authoritative.
-          # Stage only seasonal evidence + generated experiment summary to avoid overwriting that archive.
+
+          # Error copies are maintained by the standalone archive workflow.
+          # The seasonal generator recreates them locally, so restore the authoritative
+          # tracked archive and remove any local untracked copies before rebasing.
+          git restore --worktree --source=HEAD experiments/experiment_001_pond_forest_kuchnia/errors/do_wyjasnienia || true
+          git clean -fd experiments/experiment_001_pond_forest_kuchnia/errors/do_wyjasnienia || true
+
           git add experiments/experiment_001_pond_forest_kuchnia/seasonal_evidence
           git add experiments/experiment_001_pond_forest_kuchnia/EXPERIMENT_001_REPORT.md
           git add experiments/experiment_001_pond_forest_kuchnia/experiment.json
