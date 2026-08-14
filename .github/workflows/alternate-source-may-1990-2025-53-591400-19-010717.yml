@@ -1,0 +1,55 @@
+name: Alternate source May satellite series 1990-2025
+
+on:
+  push:
+    branches:
+      - annual-best-53-591400-19-010717
+    paths:
+      - 'tools/build_alternate_source_may_1990_2025_53_591400_19_010717.py'
+      - '.github/workflows/alternate-source-may-1990-2025-53-591400-19-010717.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: annual-best-53-591400-19-010717
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install geospatial dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pillow requests numpy rasterio pyproj
+
+      - name: Build 36 alternate-source May images
+        run: python tools/build_alternate_source_may_1990_2025_53_591400_19_010717.py
+
+      - name: Validate completeness
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('satellite_alternate_source_may_1990_2025/53.591400_19.010717/manifest.json')
+          data = json.loads(p.read_text())
+          print('COUNT_OK', data['count_ok'], 'OF', data['count_requested'])
+          if data['count_ok'] != 36:
+              raise SystemExit(f"Incomplete pack: {data['count_ok']}/36")
+          PY
+
+      - name: Commit generated alternate-source pack
+        run: |
+          git config user.name "Terraforming Planet"
+          git config user.email "kontakt@teslaeco.pl"
+          git add satellite_alternate_source_may_1990_2025/53.591400_19.010717
+          git diff --cached --quiet && echo "No generated changes to commit" && exit 0
+          git commit -m "Add alternate-source May 1990-2025 36-year satellite pack"
+          git push
