@@ -1,0 +1,26 @@
+name: Probe third source Sentinel-1
+
+on:
+  push:
+    branches:
+      - annual-best-53-591400-19-010717
+    paths:
+      - 'tools/probe_third_source_sentinel1_pc.py'
+      - '.github/workflows/probe-third-source-sentinel1.yml'
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: annual-best-53-591400-19-010717
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install probe dependencies
+        run: python -m pip install requests pystac-client planetary-computer rasterio
+      - name: Probe Sentinel-1 assets
+        run: python tools/probe_third_source_sentinel1_pc.py
