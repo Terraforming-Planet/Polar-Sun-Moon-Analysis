@@ -21,6 +21,11 @@ jobs:
         with:
           ref: annual-best-53-591400-19-010717
           fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            tools
+            satellite_third_source_sentinel1_rtc_may_2015_2025
+          sparse-checkout-cone-mode: true
 
       - uses: actions/setup-python@v5
         with:
