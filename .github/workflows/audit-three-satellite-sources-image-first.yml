@@ -1,0 +1,68 @@
+name: Audit three satellite sources image-first
+
+on:
+  push:
+    branches:
+      - annual-best-53-591400-19-010717
+    paths:
+      - 'tools/audit_three_satellite_sources_image_first.py'
+      - '.github/workflows/audit-three-satellite-sources-image-first.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: annual-best-53-591400-19-010717
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            tools
+            satellite_may_1990_2026
+            satellite_alternate_source_may_1990_2025
+            satellite_third_source_sentinel1_rtc_may_2015_2025
+            satellite_three_source_forensic_audit
+          sparse-checkout-cone-mode: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install audit dependencies
+        run: python -m pip install --upgrade pillow numpy
+
+      - name: Run image-first forensic audit
+        run: python tools/audit_three_satellite_sources_image_first.py
+
+      - name: Validate forensic outputs
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('satellite_three_source_forensic_audit/53.591400_19.010717')
+          p=root/'three_source_image_first_forensic_audit.json'
+          d=json.loads(p.read_text(encoding='utf-8'))
+          assert d['sources']['source1']['count']==37
+          assert d['sources']['source2']['count']==36
+          assert d['sources']['source3']['count']==11
+          assert len(d['source1_vs_source2_same_year'])==36
+          assert (root/'same_year_optical_crosscheck.csv').exists()
+          assert (root/'AUDIT_SUMMARY.md').exists()
+          assert (root/'SUSPICIOUS_AND_OVERLAP_IMAGE_FIRST_CONTACT_SHEET.jpg').stat().st_size>100000
+          print('VALIDATED',d['summary'])
+          PY
+
+      - name: Commit forensic report
+        run: |
+          git config user.name "Terraforming Planet"
+          git config user.email "kontakt@teslaeco.pl"
+          git add satellite_three_source_forensic_audit/53.591400_19.010717
+          git diff --cached --quiet && echo "No audit changes" && exit 0
+          git commit -m "Add image-first three-source satellite forensic audit"
+          git push
