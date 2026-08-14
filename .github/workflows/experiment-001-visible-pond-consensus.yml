@@ -1,0 +1,60 @@
+name: Experiment 001 visible pond consensus
+
+on:
+  push:
+    branches:
+      - annual-best-53-591400-19-010717
+    paths:
+      - 'tools/measure_experiment_001_visible_pond_consensus.py'
+      - '.github/workflows/experiment-001-visible-pond-consensus.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: annual-best-53-591400-19-010717
+          fetch-depth: 20
+          filter: blob:none
+          sparse-checkout: |
+            tools
+            satellite_may_1990_2026
+            experiments
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install numpy pillow scipy opencv-python-headless
+      - name: Build multi-year visible footprint consensus
+        run: python tools/measure_experiment_001_visible_pond_consensus.py
+      - name: Validate result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('experiments/experiment_001_pond_forest_kuchnia/measurements_visible_pond_consensus')
+          d=json.loads((root/'visible_pond_consensus_measurement.json').read_text(encoding='utf-8'))
+          r=d['recommended_working_measurement']
+          print('VISIBLE_POND_CONSENSUS',r)
+          assert 12000 <= r['persistent_historical_visible_footprint_m2'] <= 25000, r
+          assert r['conservative_lower_m2'] <= r['persistent_historical_visible_footprint_m2'] <= r['repeat_supported_upper_m2']
+          assert r['1990_overlap_fraction'] >= 0.80
+          assert len(d['historical_consensus_years'])==7
+          assert (root/'2000_historical_consensus_overlay.png').stat().st_size>10000
+          assert (root/'2026_historical_consensus_on_recent_basin.png').stat().st_size>10000
+          PY
+      - name: Commit measurement
+        run: |
+          git config user.name "Terraforming Planet"
+          git config user.email "kontakt@teslaeco.pl"
+          git add experiments/experiment_001_pond_forest_kuchnia/measurements_visible_pond_consensus
+          git diff --cached --quiet && echo "No visible-consensus changes" && exit 0
+          git commit -m "Add Experiment 001 multi-year visible pond footprint measurement"
+          git pull --rebase origin annual-best-53-591400-19-010717
+          git push origin HEAD:annual-best-53-591400-19-010717
