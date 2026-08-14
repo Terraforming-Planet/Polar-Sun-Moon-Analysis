@@ -1,0 +1,55 @@
+name: Experiment 001 Lake Kuchnia May endpoints
+
+on:
+  push:
+    branches:
+      - annual-best-53-591400-19-010717
+    paths:
+      - 'tools/measure_experiment_001_lake_kuchnia_may_endpoints.py'
+      - '.github/workflows/experiment-001-lake-kuchnia-may-endpoints.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: annual-best-53-591400-19-010717
+          fetch-depth: 20
+          sparse-checkout: |
+            tools
+            experiments
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install numpy pillow requests rasterio pyproj scipy
+      - run: python tools/measure_experiment_001_lake_kuchnia_may_endpoints.py
+      - name: Validate candidate outputs before manual visual check
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('experiments/experiment_001_pond_forest_kuchnia/measurements_lake_kuchnia_5km_may')
+          d=json.loads((root/'lake_kuchnia_may_1990_vs_2026.json').read_text(encoding='utf-8'))
+          assert len(d['records'])==2
+          for r in d['records']:
+              assert 100000 <= r['area_m2'] <= 1500000, (r['date'],r['area_m2'])
+              assert r['measurement_item_id']==r['item_id']
+              assert Path(r['overlay']).stat().st_size>10000
+          print('CANDIDATE',d['comparison_result'])
+          PY
+      - name: Commit candidate masks for visual review
+        run: |
+          git config user.name "Terraforming Planet"
+          git config user.email "kontakt@teslaeco.pl"
+          git add experiments/experiment_001_pond_forest_kuchnia/measurements_lake_kuchnia_5km_may
+          git diff --cached --quiet && echo "No lake candidate changes" && exit 0
+          git commit -m "Add May 1990-2026 Lake Kuchnia 5km candidate masks"
+          git pull --rebase origin annual-best-53-591400-19-010717
+          git push origin HEAD:annual-best-53-591400-19-010717
