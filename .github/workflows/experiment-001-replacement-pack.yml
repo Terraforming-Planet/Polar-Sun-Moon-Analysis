@@ -1,0 +1,63 @@
+name: Experiment 001 replacement pack
+
+on:
+  push:
+    branches:
+      - annual-best-53-591400-19-010717
+    paths:
+      - 'tools/package_experiment_001_replacements.py'
+      - '.github/workflows/experiment-001-replacement-pack.yml'
+      - 'experiments/experiment_001_pond_forest_kuchnia/seasonal_evidence/spring/manifest.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  pack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: annual-best-53-591400-19-010717
+          fetch-depth: 20
+          filter: blob:none
+          sparse-checkout: |
+            tools
+            experiments
+          sparse-checkout-cone-mode: true
+      - name: Check spring set
+        id: ready
+        run: |
+          test -f experiments/experiment_001_pond_forest_kuchnia/seasonal_evidence/spring/manifest.json && echo ready=true >> "$GITHUB_OUTPUT" || echo ready=false >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-python@v5
+        if: steps.ready.outputs.ready == 'true'
+        with:
+          python-version: '3.11'
+      - name: Build replacement ZIP
+        if: steps.ready.outputs.ready == 'true'
+        run: python tools/package_experiment_001_replacements.py
+      - name: Validate
+        if: steps.ready.outputs.ready == 'true'
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('experiments/experiment_001_pond_forest_kuchnia/corrections/replacement_set_for_rejected_optical_years')
+          d=json.loads((root/'manifest.json').read_text(encoding='utf-8'))
+          assert d['replaced_years']==[1993,1995,2002,2010,2012,2013]
+          assert len({r['sha256_native'] for r in d['records']})==6
+          assert len(list(root.glob('*.zip')))==1
+          print('VERIFIED_REPLACEMENTS',[(r['year'],r['replacement_date']) for r in d['records']])
+          PY
+      - name: Commit
+        if: steps.ready.outputs.ready == 'true'
+        run: |
+          git config user.name "Terraforming Planet"
+          git config user.email "kontakt@teslaeco.pl"
+          git add experiments/experiment_001_pond_forest_kuchnia/corrections
+          git diff --cached --quiet && echo "No replacement changes" && exit 0
+          git commit -m "Add verified replacement pack for rejected Experiment 001 years"
+          git pull --rebase origin annual-best-53-591400-19-010717
+          git push origin HEAD:annual-best-53-591400-19-010717
