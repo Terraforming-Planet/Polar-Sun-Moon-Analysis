@@ -5,7 +5,7 @@ on:
     branches:
       - annual-best-53-591400-19-010717
     paths:
-      - 'tools/measure_experiment_001_seasonal_water.py'
+      - 'tools/measure_experiment_001_seasonal_water_v2.py'
       - '.github/workflows/experiment-001-seasonal-measurements.yml'
       - 'experiments/experiment_001_pond_forest_kuchnia/seasonal_evidence/spring/manifest.json'
       - 'experiments/experiment_001_pond_forest_kuchnia/seasonal_evidence/autumn/manifest.json'
@@ -50,17 +50,9 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install numpy pillow requests rasterio pyproj scipy
 
-      - name: Apply token endpoint correction and measure
+      - name: Measure corrected pond and Lake Kuchnia geometry
         if: steps.ready.outputs.ready == 'true'
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('tools/measure_experiment_001_seasonal_water.py')
-          s=p.read_text(encoding='utf-8')
-          s=s.replace("PC_TOKEN=PC_STAC.replace('/stac/v1','')+'/api/sas/v1/token/{collection}'", "PC_TOKEN='https://planetarycomputer.microsoft.com/api/sas/v1/token/{collection}'")
-          p.write_text(s,encoding='utf-8')
-          PY
-          python tools/measure_experiment_001_seasonal_water.py
+        run: python tools/measure_experiment_001_seasonal_water_v2.py
 
       - name: Validate endpoint outputs
         if: steps.ready.outputs.ready == 'true'
@@ -71,7 +63,13 @@ jobs:
           root=Path('experiments/experiment_001_pond_forest_kuchnia/measurements')
           data=json.loads((root/'seasonal_water_measurements.json').read_text(encoding='utf-8'))
           assert len(data['records']) >= 40, len(data['records'])
+          seed=data['pond_seed']
+          # Geometry guard: disappearing pond must be the western/northern forest feature,
+          # not the former mistaken seed close to Lake Kuchnia's western bay.
+          assert seed['offset_from_aoi_center_m']['west'] >= 600
+          assert seed['offset_from_aoi_center_m']['north'] >= 300
           ep=json.loads((root/'endpoint_1990_vs_2026.json').read_text(encoding='utf-8'))
+          print('POND_SEED',seed)
           print('ENDPOINTS',ep)
           assert any(x['object']=='forest_pond' for x in ep)
           assert any(x['object']=='lake_kuchnia' for x in ep)
@@ -81,11 +79,10 @@ jobs:
       - name: Commit measurements
         if: steps.ready.outputs.ready == 'true'
         run: |
-          git checkout -- tools/measure_experiment_001_seasonal_water.py
           git config user.name "Terraforming Planet"
           git config user.email "kontakt@teslaeco.pl"
           git add experiments/experiment_001_pond_forest_kuchnia/measurements
           git diff --cached --quiet && echo "No measurement changes" && exit 0
-          git commit -m "Measure Experiment 001 spring-autumn water area on common 30m grid"
+          git commit -m "Measure Experiment 001 with corrected pond geometry on common 30m grid"
           git pull --rebase origin annual-best-53-591400-19-010717
           git push origin HEAD:annual-best-53-591400-19-010717
