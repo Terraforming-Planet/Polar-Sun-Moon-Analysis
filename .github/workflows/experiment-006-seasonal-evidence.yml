@@ -1,0 +1,96 @@
+name: Experiment 006 Jezioro Wieczno seasonal evidence
+
+on:
+  push:
+    branches:
+      - experiment-006-jezioro-wieczno-53-270125-18-789994
+    paths:
+      - 'tools/build_experiment_006_seasonal_evidence.py'
+      - '.github/workflows/experiment-006-seasonal-evidence.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment-006-jezioro-wieczno-53-270125-18-789994
+          fetch-depth: 20
+          filter: blob:none
+          sparse-checkout: |
+            tools
+            experiments
+          sparse-checkout-cone-mode: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install geospatial dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pillow requests rasterio pyproj
+
+      - name: Build Test 006 Jezioro Wieczno imagery 1990-2026
+        run: python tools/build_experiment_006_seasonal_evidence.py
+
+      - name: Validate Test 006 package
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from datetime import date
+          from pathlib import Path
+          exp=Path('experiments/experiment_006_jezioro_wieczno')
+          s=json.loads((exp/'BUILD_SUMMARY.json').read_text())
+          assert s['experiment']==6
+          assert s['object']=='Jezioro Wieczno'
+          assert s['center']=={'lat':53.270125,'lon':18.789994}
+          assert s['frame_width_m']==7000 and s['frame_height_m']==9000
+          assert s['spring_count_ok']>=30 and s['autumn_count_ok']>=30
+          assert Path(s['combined_zip']).exists()
+          for season in ('spring','autumn'):
+              root=exp/'seasonal_evidence'/season
+              m=json.loads((root/'manifest.json').read_text())
+              assert len(m['records'])==37
+              seen={}
+              for r in m['records']:
+                  if r.get('status')!='ok':
+                      continue
+                  p=root/'images'/r['files'][0]
+                  h=hashlib.sha256(p.read_bytes()).hexdigest()
+                  assert h not in seen, (season, seen.get(h), r['year'])
+                  seen[h]=r['year']
+          if date.today()<date(2026,9,1):
+              a=json.loads((exp/'seasonal_evidence/autumn/manifest.json').read_text())
+              r=next(x for x in a['records'] if x['year']==2026)
+              assert r.get('status')!='ok'
+          print('EXPERIMENT_006_WIECZNO_VALIDATED')
+          PY
+
+      - name: Upload Test 006 archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: TEST006_JEZIORO_WIECZNO_1990_2026
+          path: |
+            experiments/experiment_006_jezioro_wieczno/TEST006_JEZIORO_WIECZNO_1990_2026_FULL_VIEW_7x9km_53.270125_18.789994.zip
+            experiments/experiment_006_jezioro_wieczno/seasonal_evidence/spring/TEST006_SPRING_1990_2026_37_YEARS_7x9km_53.270125_18.789994.zip
+            experiments/experiment_006_jezioro_wieczno/seasonal_evidence/autumn/TEST006_AUTUMN_1990_2026_37_YEARS_7x9km_53.270125_18.789994.zip
+            experiments/experiment_006_jezioro_wieczno/BUILD_SUMMARY.json
+            experiments/experiment_006_jezioro_wieczno/EXPERIMENT_006_REPORT.md
+            experiments/experiment_006_jezioro_wieczno/EVIDENCE_POLICY.json
+          retention-days: 90
+
+      - name: Commit Test 006 evidence outputs
+        run: |
+          git config user.name "Terraforming Planet"
+          git config user.email "kontakt@teslaeco.pl"
+          git add experiments/experiment_006_jezioro_wieczno
+          git diff --cached --quiet && echo "No Test 006 evidence changes" && exit 0
+          git commit -m "Build Test 006 Jezioro Wieczno satellite dataset 1990-2026"
+          git pull --rebase origin experiment-006-jezioro-wieczno-53-270125-18-789994
+          git push origin HEAD:experiment-006-jezioro-wieczno-53-270125-18-789994
