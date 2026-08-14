@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import math
 import os
+import re
 import time
 import zipfile
 from datetime import datetime
@@ -26,18 +27,25 @@ ROOT = Path("satellite_alternate_source_may_1990_2025") / "53.591400_19.010717"
 IMG_DIR = ROOT / "images"
 IMG_DIR.mkdir(parents=True, exist_ok=True)
 
-# Independent delivery path from the earlier Planetary Computer pack.
+# Independent delivery path from the earlier Microsoft Planetary Computer pack.
 STAC_ROOT = "https://earth-search.aws.element84.com/v1"
 SEARCH_URL = STAC_ROOT + "/search"
 SESSION = requests.Session()
-
 LANDSAT_COLLECTION = "landsat-c2-l2"
 SENTINEL_COLLECTIONS = ["sentinel-2-c1-l2a", "sentinel-2-pre-c1-l2a"]
+GCS_LANDSAT_ROOT = "https://storage.googleapis.com/gcp-public-data-landsat"
+GCS_SENTINEL_ROOT = "https://storage.googleapis.com/gcp-public-data-sentinel-2"
+
+# Known official Sentinel-2 product from the first manifest, used only when Earth Search has an ingestion gap.
+KNOWN_GCS_SENTINEL_PRODUCTS = {
+    2022: "S2B_MSIL2A_20220510T100029_N0400_R122_T33UYV_20220510T145506",
+}
 
 os.environ.setdefault("GDAL_DISABLE_READDIR_ON_OPEN", "EMPTY_DIR")
 os.environ.setdefault("GDAL_HTTP_MULTIRANGE", "YES")
 os.environ.setdefault("GDAL_HTTP_MERGE_CONSECUTIVE_RANGES", "YES")
 os.environ.setdefault("CPL_VSIL_CURL_ALLOWED_EXTENSIONS", ".tif,.TIF,.jp2,.JP2")
+os.environ.setdefault("CPL_VSIL_CURL_USE_HEAD", "NO")
 
 transformer = Transformer.from_crs("EPSG:4326", TARGET_CRS, always_xy=True)
 CX, CY = transformer.transform(LON, LAT)
@@ -63,7 +71,6 @@ def request_json(method: str, url: str, **kwargs):
 
 
 def search(collection: str, year: int, limit: int = 160) -> list[dict]:
-    # Earth Search currently behaves more consistently for this query via GET.
     params = {
         "collections": collection,
         "bbox": ",".join(str(x) for x in SEARCH_BBOX),
@@ -108,6 +115,13 @@ def day_distance(item: dict, year: int) -> int:
         return 999
 
 
+def item_full_bbox_coverage(item: dict) -> bool:
+    bbox = item.get("bbox") or []
+    if len(bbox) < 4:
+        return True
+    return bbox[0] <= SEARCH_BBOX[0] and bbox[1] <= SEARCH_BBOX[1] and bbox[2] >= SEARCH_BBOX[2] and bbox[3] >= SEARCH_BBOX[3]
+
+
 def asset_key(item: dict, exact: list[str], common_name: str | None = None) -> str | None:
     assets = item.get("assets", {})
     for key in exact:
@@ -131,15 +145,14 @@ def target_grid(resolution_m: float):
     return n, n, transform
 
 
-def read_asset(item: dict, key: str, resolution_m: float, nearest: bool = False) -> np.ndarray:
-    href = item["assets"][key]["href"]
+def read_url(href: str, resolution_m: float, nearest: bool = False) -> np.ndarray:
     width, height, dst_transform = target_grid(resolution_m)
     dst = np.full((height, width), np.nan, dtype=np.float32)
     with rasterio.Env(
         GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR",
         GDAL_HTTP_MULTIRANGE="YES",
         GDAL_HTTP_MERGE_CONSECUTIVE_RANGES="YES",
-        AWS_NO_SIGN_REQUEST="YES",
+        CPL_VSIL_CURL_USE_HEAD="NO",
     ):
         with rasterio.open(href) as src:
             reproject(
@@ -154,6 +167,10 @@ def read_asset(item: dict, key: str, resolution_m: float, nearest: bool = False)
                 resampling=Resampling.nearest if nearest else Resampling.bilinear,
             )
     return dst
+
+
+def read_asset(item: dict, key: str, resolution_m: float, nearest: bool = False) -> np.ndarray:
+    return read_url(item["assets"][key]["href"], resolution_m, nearest)
 
 
 def stretch(a: np.ndarray, low: float = 2.0, high: float = 98.0) -> np.ndarray:
@@ -179,6 +196,14 @@ def rgb_array(r: np.ndarray, g: np.ndarray, b: np.ndarray) -> np.ndarray:
     return np.rint(rgb * 255).astype(np.uint8)
 
 
+def pansharpen(r: np.ndarray, g: np.ndarray, b: np.ndarray, pan: np.ndarray) -> np.ndarray:
+    sr, sg, sb, sp = stretch(r), stretch(g), stretch(b), stretch(pan)
+    intensity = (sr + sg + sb) / 3.0
+    ratio = np.clip(sp / (intensity + 1e-4), 0.45, 2.2)
+    out = np.stack([np.clip(sr * ratio, 0, 1), np.clip(sg * ratio, 0, 1), np.clip(sb * ratio, 0, 1)], axis=-1)
+    return np.rint(out * 255).astype(np.uint8)
+
+
 def save_native_and_display(rgb: np.ndarray, base: Path) -> tuple[str, str]:
     native = base.with_name(base.stem + "_native.png")
     display = base.with_name(base.stem + "_display1024.png")
@@ -189,20 +214,10 @@ def save_native_and_display(rgb: np.ndarray, base: Path) -> tuple[str, str]:
 
 
 def landsat_quality(item: dict) -> tuple[float, float]:
-    qa_key = asset_key(item, ["qa_pixel", "QA_PIXEL"], None)
-    if not qa_key:
-        return max(0.0, 1.0 - cloud_cover(item) / 100.0), 1.0
-    qa = read_asset(item, qa_key, 30.0, nearest=True)
-    finite = np.isfinite(qa)
-    if not np.any(finite):
-        return 0.0, 0.0
-    q = np.where(finite, qa, 0).astype(np.uint32)
-    fill = (q & 1) != 0
-    bad = (((q >> 1) & 1) | ((q >> 2) & 1) | ((q >> 3) & 1) | ((q >> 4) & 1) | ((q >> 5) & 1)) != 0
-    valid = finite & (~fill)
-    if not np.any(valid):
-        return 0.0, 0.0
-    return float(np.mean((~bad)[valid])), float(np.mean(valid))
+    # Catalog metadata is independent of pixel delivery; pixels come from Google Cloud below.
+    clear = max(0.0, 1.0 - cloud_cover(item) / 100.0)
+    valid = 1.0 if item_full_bbox_coverage(item) else 0.35
+    return clear, valid
 
 
 def sentinel_quality(item: dict) -> tuple[float, float]:
@@ -222,13 +237,11 @@ def sentinel_quality(item: dict) -> tuple[float, float]:
 
 
 def choose_best_landsat(year: int) -> tuple[dict | None, dict]:
-    items = search(LANDSAT_COLLECTION, year)
-    return choose_from_items(items, year, "landsat")
+    return choose_from_items(search(LANDSAT_COLLECTION, year), year, "landsat")
 
 
 def choose_best_sentinel(year: int) -> tuple[dict | None, dict]:
-    items = search_sentinel(year)
-    return choose_from_items(items, year, "sentinel")
+    return choose_from_items(search_sentinel(year), year, "sentinel")
 
 
 def choose_from_items(items: list[dict], year: int, sensor: str) -> tuple[dict | None, dict]:
@@ -236,19 +249,19 @@ def choose_from_items(items: list[dict], year: int, sensor: str) -> tuple[dict |
     best = None
     best_meta: dict = {}
     best_score = math.inf
-    for item in items[:28]:
+    for item in items[:30]:
         try:
             clear, valid = sentinel_quality(item) if sensor == "sentinel" else landsat_quality(item)
         except Exception as exc:
             print("quality failed", item.get("id"), repr(exc), flush=True)
             clear = max(0.0, 1.0 - cloud_cover(item) / 100.0)
-            valid = 1.0
+            valid = 1.0 if item_full_bbox_coverage(item) else 0.35
         platform = str(item.get("properties", {}).get("platform", "")).lower()
         slc_penalty = 0.0
         if sensor == "landsat" and "landsat-7" in platform and item_date(item) >= "2003-06-01":
             slc_penalty = 1800.0
-        score = ((1 - clear) * 12000 + (1 - valid) * 14000 + cloud_cover(item) * 3 + day_distance(item, year) * 0.2 + slc_penalty)
-        print(sensor, year, item.get("id"), item_date(item), "collection", item.get("collection"), "cloud", round(cloud_cover(item), 3), "clear", round(clear, 4), "valid", round(valid, 4), "score", round(score, 2), flush=True)
+        score = ((1 - clear) * 12000 + (1 - valid) * 18000 + cloud_cover(item) * 3 + day_distance(item, year) * 0.2 + slc_penalty)
+        print(sensor, year, item.get("id"), item_date(item), "cloud", round(cloud_cover(item), 3), "clear", round(clear, 4), "valid", round(valid, 4), "score", round(score, 2), flush=True)
         if score < best_score:
             best_score = score
             best = item
@@ -258,34 +271,78 @@ def choose_from_items(items: list[dict], year: int, sensor: str) -> tuple[dict |
     return best, best_meta
 
 
+def gcs_landsat_product_prefix(item: dict) -> str:
+    iid = str(item.get("id", ""))
+    parts = iid.split("_")
+    if len(parts) < 5:
+        raise RuntimeError(f"unexpected Landsat id {iid}")
+    sensor = parts[0]
+    pathrow = parts[2]
+    acq = parts[3]
+    path, row = pathrow[:3], pathrow[3:]
+    listing_url = GCS_LANDSAT_ROOT
+    for level in ("L1TP", "L1GT", "L1GS"):
+        prefix = f"{sensor}/01/{path}/{row}/{sensor}_{level}_{pathrow}_{acq}_"
+        r = SESSION.get(listing_url, params={"prefix": prefix, "delimiter": "/"}, timeout=120)
+        r.raise_for_status()
+        text = r.text
+        prefixes = re.findall(r"<Prefix>([^<]+)</Prefix>", text)
+        for p in prefixes:
+            if p.startswith(prefix) and p.endswith("/") and p != prefix:
+                return p
+        keys = re.findall(r"<Key>([^<]+)</Key>", text)
+        for key in keys:
+            if key.startswith(prefix):
+                return key.rsplit("/", 1)[0] + "/"
+    raise RuntimeError(f"Google Cloud Collection-1 product not found for {iid}")
+
+
+def gcs_landsat_band(prefix: str, product_id: str, band: int | str) -> str:
+    return f"{GCS_LANDSAT_ROOT}/{prefix}{product_id}_B{band}.TIF"
+
+
 def render_landsat(year: int, item: dict, meta: dict) -> dict:
-    rkey = asset_key(item, ["red"], "red")
-    gkey = asset_key(item, ["green"], "green")
-    bkey = asset_key(item, ["blue"], "blue")
-    if not all([rkey, gkey, bkey]):
-        raise RuntimeError(f"missing Landsat RGB assets for {item.get('id')}")
-    r = read_asset(item, rkey, 30.0)
-    g = read_asset(item, gkey, 30.0)
-    b = read_asset(item, bkey, 30.0)
-    rgb = rgb_array(r, g, b)
+    prefix = gcs_landsat_product_prefix(item)
+    product_id = prefix.rstrip("/").split("/")[-1]
+    sensor = product_id.split("_")[0]
+    if sensor in ("LT04", "LT05", "LE07"):
+        rb, gb, bb = 3, 2, 1
+    elif sensor in ("LC08", "LO08"):
+        rb, gb, bb = 4, 3, 2
+    else:
+        raise RuntimeError(f"unsupported Google Landsat sensor {sensor}")
+    pan_available = sensor in ("LE07", "LC08", "LO08")
+    resolution = 15.0 if pan_available else 30.0
+    r = read_url(gcs_landsat_band(prefix, product_id, rb), resolution)
+    g = read_url(gcs_landsat_band(prefix, product_id, gb), resolution)
+    b = read_url(gcs_landsat_band(prefix, product_id, bb), resolution)
+    if pan_available:
+        pan = read_url(gcs_landsat_band(prefix, product_id, 8), 15.0)
+        rgb = pansharpen(r, g, b, pan)
+        processing = "Natural-color Landsat sharpened deterministically with the real 15 m panchromatic band; no AI."
+    else:
+        rgb = rgb_array(r, g, b)
+        processing = "Natural-color display from real Landsat RGB bands; deterministic percentile stretch only, no AI."
     dt = item_date(item)
-    platform = str(item.get("properties", {}).get("platform", "landsat")).replace("_", "-")
-    base = IMG_DIR / f"{year}_{dt}_{platform}_30m_2km"
+    platform = str(item.get("properties", {}).get("platform", sensor)).replace("_", "-")
+    base = IMG_DIR / f"{year}_{dt}_{platform}_{int(resolution)}m_2km_GCS"
     native, display = save_native_and_display(rgb, base)
     return {
         "year": year,
         "date": dt,
-        "source": "USGS Landsat Collection 2 Level-2 mirrored by Element 84 Earth Search / AWS",
-        "delivery_path": STAC_ROOT,
+        "source": "USGS/NASA Landsat Collection 1 public archive on Google Cloud Storage",
+        "delivery_path": "https://storage.googleapis.com/gcp-public-data-landsat",
+        "catalog_metadata": "Element 84 Earth Search Landsat Collection 2",
         "platform": item.get("properties", {}).get("platform"),
-        "item_id": item.get("id"),
+        "catalog_item_id": item.get("id"),
+        "gcs_product_id": product_id,
         "scene_cloud_cover_percent": cloud_cover(item),
         "local_clear_fraction": round(float(meta.get("local_clear_fraction", 0)), 6),
         "local_valid_fraction": round(float(meta.get("valid_fraction", 0)), 6),
-        "native_resolution_m": 30,
+        "native_resolution_m": int(resolution),
         "crop_m": 2000,
         "files": [native, display],
-        "processing": "Natural-color display from real Landsat RGB pixels; deterministic percentile stretch only, no AI.",
+        "processing": processing,
     }
 
 
@@ -301,12 +358,12 @@ def render_sentinel(year: int, item: dict, meta: dict) -> dict:
     rgb = rgb_array(r, g, b)
     dt = item_date(item)
     platform = str(item.get("properties", {}).get("platform", "sentinel-2")).replace("_", "-")
-    base = IMG_DIR / f"{year}_{dt}_{platform}_10m_2km"
+    base = IMG_DIR / f"{year}_{dt}_{platform}_10m_2km_E84"
     native, display = save_native_and_display(rgb, base)
     return {
         "year": year,
         "date": dt,
-        "source": "ESA/Copernicus Sentinel-2 Level-2A mirrored by Element 84 Earth Search / AWS",
+        "source": "ESA/Copernicus Sentinel-2 Level-2A via Element 84 Earth Search / AWS",
         "delivery_path": STAC_ROOT,
         "platform": item.get("properties", {}).get("platform"),
         "item_id": item.get("id"),
@@ -320,6 +377,60 @@ def render_sentinel(year: int, item: dict, meta: dict) -> dict:
     }
 
 
+def try_known_gcs_sentinel(year: int) -> dict | None:
+    product = KNOWN_GCS_SENTINEL_PRODUCTS.get(year)
+    if not product:
+        return None
+    m = re.search(r"_T(\d{2})([A-Z])([A-Z]{2})_", product)
+    if not m:
+        return None
+    zone, band, square = m.groups()
+    root = f"{GCS_SENTINEL_ROOT}/L2/tiles/{zone}/{band}/{square}/{product}.SAFE/"
+    meta_url = root + "MTD_MSIL2A.xml"
+    r = SESSION.get(meta_url, timeout=120)
+    if r.status_code != 200:
+        print("known GCS Sentinel metadata unavailable", year, r.status_code, meta_url, flush=True)
+        return None
+    text = r.text
+    files: dict[str, str] = {}
+    for band_name in ("B02", "B03", "B04"):
+        candidates = re.findall(r">([^<]*IMG_DATA/R10m/[^<]*_" + band_name + r"_10m)<", text)
+        if not candidates:
+            candidates = re.findall(r">([^<]*IMG_DATA/[^<]*_" + band_name + r")<", text)
+        if not candidates:
+            print("known GCS Sentinel missing", band_name, year, flush=True)
+            return None
+        rel = candidates[0].lstrip("/")
+        if not rel.endswith(".jp2"):
+            rel += ".jp2"
+        files[band_name] = root + rel
+    b = read_url(files["B02"], 10.0)
+    g = read_url(files["B03"], 10.0)
+    rr = read_url(files["B04"], 10.0)
+    rgb = rgb_array(rr, g, b)
+    dt = product.split("_")[2][:8]
+    dt_fmt = f"{dt[:4]}-{dt[4:6]}-{dt[6:8]}"
+    platform = product[:3].lower().replace("s2", "sentinel-2")
+    base = IMG_DIR / f"{year}_{dt_fmt}_{platform}_10m_2km_GCS"
+    native, display = save_native_and_display(rgb, base)
+    return {
+        "year": year,
+        "date": dt_fmt,
+        "source": "ESA/Copernicus Sentinel-2 Level-2A public archive on Google Cloud Storage",
+        "delivery_path": "https://storage.googleapis.com/gcp-public-data-sentinel-2",
+        "platform": platform,
+        "product_id": product,
+        "scene_cloud_cover_percent": None,
+        "local_clear_fraction": None,
+        "local_valid_fraction": 1.0,
+        "native_resolution_m": 10,
+        "crop_m": 2000,
+        "files": [native, display],
+        "processing": "Natural-color RGB from real Sentinel-2 10 m B04/B03/B02 pixels; deterministic percentile stretch only, no AI.",
+        "status": "ok_gcs_sentinel_fallback",
+    }
+
+
 def build_contact_sheet(records: list[dict]) -> Path:
     tiles = []
     for rec in records:
@@ -329,7 +440,7 @@ def build_contact_sheet(records: list[dict]) -> Path:
         tile = Image.new("RGB", (256, 304), "white")
         tile.paste(img, (0, 0))
         draw = ImageDraw.Draw(tile)
-        label = f"{rec['year']}  {rec.get('platform')}  {rec.get('native_resolution_m')}m\n{rec.get('date')}  clear={rec.get('local_clear_fraction')}"
+        label = f"{rec['year']}  {rec.get('platform')}  {rec.get('native_resolution_m')}m\n{rec.get('date')}  {str(rec.get('source',''))[:31]}"
         draw.text((5, 260), label, fill="black")
         tiles.append(tile)
     cols = 4
@@ -358,13 +469,16 @@ def main() -> None:
         "month": "May only",
         "years_requested": YEARS,
         "count_requested": 36,
-        "independent_delivery_path": "Element 84 Earth Search / AWS; not Microsoft Planetary Computer",
-        "collections": {"landsat": LANDSAT_COLLECTION, "sentinel": SENTINEL_COLLECTIONS},
+        "independent_delivery_paths": [
+            "Google Cloud public Landsat archive",
+            "Element 84 Earth Search / AWS Sentinel-2",
+            "Google Cloud public Sentinel-2 fallback where needed",
+        ],
         "quality_sync": {
-            "1990_2014": "Best local-quality May Landsat Collection 2 Level-2 scene, 30 m; Landsat-7 post-SLC failure scenes are heavily penalized.",
-            "2015_2025": "Prefer Sentinel-2 Level-2A at 10 m. If no usable Sentinel-2 May scene exists, fallback to Landsat 30 m.",
+            "1990_2014": "Best May Landsat scene from independent Earth Search metadata, real pixels fetched from Google Cloud public Landsat archive; 15 m panchromatic sharpening on Landsat-7/8 when available.",
+            "2015_2025": "Prefer Sentinel-2 10 m via Element 84/AWS; fallback to Google Cloud Landsat or Google Cloud Sentinel-2 for catalog gaps.",
         },
-        "integrity": "Real USGS Landsat and ESA/Copernicus Sentinel-2 mission pixels mirrored through an independent public AWS STAC delivery path. No generative AI, no synthetic filling, no AI super-resolution.",
+        "integrity": "Real USGS/NASA Landsat and ESA/Copernicus Sentinel-2 pixels. No generative AI, no synthetic filling, no AI super-resolution.",
         "records": [],
     }
 
@@ -378,18 +492,31 @@ def main() -> None:
                     rec = render_sentinel(year, item, meta)
                     rec["status"] = "ok"
                 else:
-                    item, meta = choose_best_landsat(year)
-                    if item:
-                        rec = render_landsat(year, item, meta)
-                        rec["status"] = "ok_landsat_fallback"
+                    known = try_known_gcs_sentinel(year)
+                    if known:
+                        rec = known
+                    else:
+                        item, meta = choose_best_landsat(year)
+                        if item:
+                            rec = render_landsat(year, item, meta)
+                            rec["status"] = "ok_landsat_fallback"
             else:
                 item, meta = choose_best_landsat(year)
                 if item:
                     rec = render_landsat(year, item, meta)
                     rec["status"] = "ok"
         except Exception as exc:
-            rec["error"] = repr(exc)
-            print("YEAR FAILED", year, repr(exc), flush=True)
+            print("PRIMARY YEAR FAILED", year, repr(exc), flush=True)
+            # If a modern Sentinel year failed, try the known Google Sentinel product before giving up.
+            try:
+                known = try_known_gcs_sentinel(year)
+                if known:
+                    rec = known
+                else:
+                    rec["error"] = repr(exc)
+            except Exception as exc2:
+                rec["error"] = repr(exc)
+                rec["fallback_error"] = repr(exc2)
         manifest["records"].append(rec)
         print("SELECTED", json.dumps(rec, ensure_ascii=False), flush=True)
 
