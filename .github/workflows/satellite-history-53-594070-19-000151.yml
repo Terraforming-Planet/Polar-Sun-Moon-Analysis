@@ -44,6 +44,13 @@ jobs:
           GDAL_HTTP_MERGE_CONSECUTIVE_RANGES: 'YES'
         run: python tools/fix_add_satellite_packs_2km.py
 
+      - name: Add USGS Level-1 PAN15 and retry ALOS mosaics
+        env:
+          GDAL_DISABLE_READDIR_ON_OPEN: EMPTY_DIR
+          GDAL_HTTP_MULTIRANGE: 'YES'
+          GDAL_HTTP_MERGE_CONSECUTIVE_RANGES: 'YES'
+        run: python tools/build_highres_landsat_alos_2km.py
+
       - name: Commit generated packs
         run: |
           git config user.name "terraforming-planet-bot"
