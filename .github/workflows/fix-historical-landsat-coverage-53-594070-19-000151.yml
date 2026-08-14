@@ -1,0 +1,103 @@
+name: Fix historical Landsat coverage 53.594070 19.000151
+
+on:
+  push:
+    branches: [satellite-history-53-594070-19-000151]
+    paths:
+      - .github/workflows/fix-historical-landsat-coverage-53-594070-19-000151.yml
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: satellite-history-53-594070-19-000151
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests rasterio pillow numpy pyproj
+      - name: Replace 2000 and 2007 with full-coverage WRS 190/023 scenes
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import datetime
+          from pathlib import Path
+          import numpy as np, rasterio, requests
+          from PIL import Image
+          from pyproj import Transformer
+          from rasterio.windows import from_bounds
+
+          LAT, LON = 53.594070, 19.000151
+          OUT = Path('satellite_history/53.594070_19.000151')
+          SEARCH = 'https://planetarycomputer.microsoft.com/api/stac/v1/search'
+          TOKEN = requests.get('https://planetarycomputer.microsoft.com/api/sas/v1/token/landsat-c2-l2', timeout=60).json()['token']
+          prefs = {2000: ['landsat-7','landsat-5'], 2007: ['landsat-5']}
+
+          def signed(href): return href + ('&' if '?' in href else '?') + TOKEN
+          def cloud(i):
+              try: return float(i['properties'].get('eo:cloud_cover',100))
+              except: return 100.0
+          def crop(href):
+              with rasterio.Env(GDAL_DISABLE_READDIR_ON_OPEN='EMPTY_DIR'):
+                  with rasterio.open(signed(href)) as src:
+                      x,y = Transformer.from_crs('EPSG:4326',src.crs,always_xy=True).transform(LON,LAT)
+                      w = from_bounds(x-4500,y-4500,x+4500,y+4500,transform=src.transform).round_offsets().round_lengths()
+                      return src.read(1,window=w,boundless=False)
+          def quality(i):
+              qa=crop(i['assets']['qa_pixel']['href']); valid=(qa&1)==0
+              cov=float(valid.mean())
+              clear=float((((qa>>6)&1).astype(bool))[valid].mean()) if valid.any() else 0.0
+              return cov,clear
+          def choose(year):
+              body={'collections':['landsat-c2-l2'],'bbox':[LON-.14,LAT-.10,LON+.14,LAT+.10],
+                    'datetime':f'{year}-05-01/{year}-09-30','limit':100}
+              items=requests.post(SEARCH,json=body,timeout=120).json()['features']
+              items=[i for i in items if i['properties'].get('platform') in prefs[year] and '_190023_' in i['id']]
+              if not items: raise RuntimeError(f'No WRS 190/023 scenes for {year}')
+              ranked=[]
+              for i in sorted(items,key=cloud)[:12]:
+                  cov,clr=quality(i)
+                  d=abs((datetime.fromisoformat(i['properties']['datetime'].replace('Z','+00:00')).replace(tzinfo=None)-datetime(year,7,15)).days)
+                  ranked.append(((1-cov)*10000+(1-clr)*1000+cloud(i)*.4+d*.03,i,cov,clr))
+                  print(year,i['id'],'coverage',cov,'clear',clr,'cloud',cloud(i),flush=True)
+              ranked.sort(key=lambda x:x[0]); return ranked[0][1:]
+          def render(year,item,cov,clr):
+              arr=[]
+              for k in ['red','green','blue']:
+                  a=crop(item['assets'][k]['href']).astype(np.float32)*2.75e-5-.2
+                  arr.append(a)
+              rgb=np.stack(arr,-1); rgb=np.clip((rgb-.015)/(.30-.015),0,1); rgb=np.power(rgb,1/2.2)
+              rgb=(rgb*255).round().astype(np.uint8)
+              date=item['properties']['datetime'][:10]; plat=item['properties']['platform']
+              for old in OUT.glob(f'{year}_*.png'): old.unlink()
+              name=f'{year}_{date}_{plat}_USGS_Landsat_C2_SR_53.594070_19.000151.png'
+              Image.fromarray(rgb,'RGB').save(OUT/name,optimize=True)
+              return {'requested_year':year,'file':str(OUT/name),'date':date,'platform':plat,'item_id':item['id'],
+                      'scene_cloud_cover_percent':cloud(item),'local_clear_fraction':round(clr,6),
+                      'local_valid_coverage_fraction':round(cov,6),'source_dataset':'USGS Landsat Collection 2 Level-2 Surface Reflectance',
+                      'stac_collection':'landsat-c2-l2','delivery_catalog':'Microsoft Planetary Computer STAC',
+                      'coordinate':{'lat':LAT,'lon':LON},'crop_size_m':9000,'native_pixel_size_m':30,
+                      'processing':'Natural-color RGB directly from Landsat Collection 2 Level-2 red/green/blue surface-reflectance bands; fixed display stretch and gamma only; no AI or synthetic content.'}
+
+          manifest=json.loads((OUT/'manifest.json').read_text())
+          for year in [2000,2007]:
+              item,cov,clr=choose(year)
+              if cov<.95: raise RuntimeError(f'{year} coverage only {cov:.3%}')
+              meta=render(year,item,cov,clr)
+              manifest['images']=[x for x in manifest['images'] if x.get('requested_year')!=year]+[meta]
+          manifest['images']=sorted(manifest['images'],key=lambda x:x['requested_year'])
+          manifest['generated_utc']=datetime.utcnow().isoformat(timespec='seconds')+'Z'
+          (OUT/'manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
+          PY
+      - name: Commit corrected images
+        run: |
+          git config user.name "terraforming-planet-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A satellite_history/53.594070_19.000151
+          git commit -m "Fix 2000 and 2007 Landsat crop coverage [skip ci]"
+          git push origin HEAD:satellite-history-53-594070-19-000151
