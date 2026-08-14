@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: annual-best-53-591400-19-010717
-          fetch-depth: 1
+          fetch-depth: 20
           filter: blob:none
           sparse-checkout: |
             tools
@@ -79,4 +79,5 @@ jobs:
           git add experiments/experiment_001_pond_forest_kuchnia
           git diff --cached --quiet && echo "No evidence changes" && exit 0
           git commit -m "Build Experiment 001 spring and autumn water-loss evidence"
-          git push
+          git pull --rebase origin annual-best-53-591400-19-010717
+          git push origin HEAD:annual-best-53-591400-19-010717
