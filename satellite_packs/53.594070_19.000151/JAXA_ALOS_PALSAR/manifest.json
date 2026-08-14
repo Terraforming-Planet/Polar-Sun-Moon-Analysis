@@ -8,29 +8,231 @@
   "crop": "2 km x 2 km",
   "years": [
     {
-      "year": 2000,
-      "status": "not_found"
-    },
-    {
-      "year": 2005,
-      "status": "not_found"
-    },
-    {
       "year": 2010,
       "status": "not_found"
     },
     {
       "year": 2015,
-      "status": "not_found"
+      "status": "not_found",
+      "read_error": "HTTPError('504 Server Error: Gateway Time-out for url: https://planetarycomputer.microsoft.com/api/sas/v1/token/alos-palsar-mosaic')"
     },
     {
       "year": 2020,
-      "status": "not_found"
-    },
-    {
-      "year": 2026,
-      "status": "not_found"
+      "status": "not_found",
+      "read_error": "HTTPError('504 Server Error: Gateway Time-out for url: https://planetarycomputer.microsoft.com/api/sas/v1/token/alos-palsar-mosaic')"
     }
   ],
-  "note": "Real SAR radar pixels, normally 25 m. Water often appears dark. Not optical photography."
+  "note": "SAR radar, real annual mosaic pixels. Time selection uses item metadata/ID because annual mosaics may not expose a normal datetime.",
+  "inventory_sample": [
+    {
+      "id": "N54E019_21_F02DAR_MOS",
+      "year": 2021,
+      "datetime": "2021-01-01",
+      "assets": [
+        "HH",
+        "HV",
+        "date",
+        "mask",
+        "linci",
+        "metadata",
+        "tilejson",
+        "rendered_preview"
+      ]
+    },
+    {
+      "id": "N54E018_21_F02DAR_MOS",
+      "year": 2021,
+      "datetime": "2021-01-01",
+      "assets": [
+        "HH",
+        "HV",
+        "date",
+        "mask",
+        "linci",
+        "metadata",
+        "tilejson",
+        "rendered_preview"
+      ]
+    },
+    {
+      "id": "N54E019_20_F02DAR_MOS",
+      "year": 2020,
+      "datetime": "2020-01-01",
+      "assets": [
+        "HH",
+        "HV",
+        "date",
+        "mask",
+        "linci",
+        "metadata",
+        "tilejson",
+        "rendered_preview"
+      ]
+    },
+    {
+      "id": "N54E018_20_F02DAR_MOS",
+      "year": 2020,
+      "datetime": "2020-01-01",
+      "assets": [
+        "HH",
+        "HV",
+        "date",
+        "mask",
+        "linci",
+        "metadata",
+        "tilejson",
+        "rendered_preview"
+      ]
+    },
+    {
+      "id": "N54E019_19_F02DAR_MOS",
+      "year": 2019,
+      "datetime": "2019-01-01",
+      "assets": [
+        "HH",
+        "HV",
+        "date",
+        "mask",
+        "linci",
+        "metadata",
+        "tilejson",
+        "rendered_preview"
+      ]
+    },
+    {
+      "id": "N54E018_19_F02DAR_MOS",
+      "year": 2019,
+      "datetime": "2019-01-01",
+      "assets": [
+        "HH",
+        "HV",
+        "date",
+        "mask",
+        "linci",
+        "metadata",
+        "tilejson",
+        "rendered_preview"
+      ]
+    },
+    {
+      "id": "N54E019_18_F02DAR_MOS",
+      "year": 2018,
+      "datetime": "2018-01-01",
+      "assets": [
+        "HH",
+        "HV",
+        "date",
+        "mask",
+        "linci",
+        "metadata",
+        "tilejson",
+        "rendered_preview"
+      ]
+    },
+    {
+      "id": "N54E018_18_F02DAR_MOS",
+      "year": 2018,
+      "datetime": "2018-01-01",
+      "assets": [
+        "HH",
+        "HV",
+        "date",
+        "mask",
+        "linci",
+        "metadata",
+        "tilejson",
+        "rendered_preview"
+      ]
+    },
+    {
+      "id": "N54E019_17_F02DAR_MOS",
+      "year": 2017,
+      "datetime": "2017-01-01",
+      "assets": [
+        "HH",
+        "HV",
+        "date",
+        "mask",
+        "linci",
+        "metadata",
+        "tilejson",
+        "rendered_preview"
+      ]
+    },
+    {
+      "id": "N54E018_17_F02DAR_MOS",
+      "year": 2017,
+      "datetime": "2017-01-01",
+      "assets": [
+        "HH",
+        "HV",
+        "date",
+        "mask",
+        "linci",
+        "metadata",
+        "tilejson",
+        "rendered_preview"
+      ]
+    },
+    {
+      "id": "N54E019_16_F02DAR_MOS",
+      "year": 2016,
+      "datetime": "2016-01-01",
+      "assets": [
+        "HH",
+        "HV",
+        "date",
+        "mask",
+        "linci",
+        "metadata",
+        "tilejson",
+        "rendered_preview"
+      ]
+    },
+    {
+      "id": "N54E018_16_F02DAR_MOS",
+      "year": 2016,
+      "datetime": "2016-01-01",
+      "assets": [
+        "HH",
+        "HV",
+        "date",
+        "mask",
+        "linci",
+        "metadata",
+        "tilejson",
+        "rendered_preview"
+      ]
+    },
+    {
+      "id": "N54E019_15_F02DAR_MOS",
+      "year": 2015,
+      "datetime": "2015-01-01",
+      "assets": [
+        "HH",
+        "HV",
+        "date",
+        "mask",
+        "linci",
+        "metadata",
+        "tilejson",
+        "rendered_preview"
+      ]
+    },
+    {
+      "id": "N54E018_15_F02DAR_MOS",
+      "year": 2015,
+      "datetime": "2015-01-01",
+      "assets": [
+        "HH",
+        "HV",
+        "date",
+        "mask",
+        "linci",
+        "metadata",
+        "tilejson",
+        "rendered_preview"
+      ]
+    }
+  ]
 }
