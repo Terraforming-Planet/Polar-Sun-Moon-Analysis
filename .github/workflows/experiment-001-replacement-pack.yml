@@ -27,7 +27,7 @@ jobs:
             tools
             experiments
           sparse-checkout-cone-mode: true
-      - name: Check spring set
+      - name: Check corrected spring set is committed
         id: ready
         run: |
           test -f experiments/experiment_001_pond_forest_kuchnia/seasonal_evidence/spring/manifest.json && echo ready=true >> "$GITHUB_OUTPUT" || echo ready=false >> "$GITHUB_OUTPUT"
@@ -38,7 +38,7 @@ jobs:
       - name: Build replacement ZIP
         if: steps.ready.outputs.ready == 'true'
         run: python tools/package_experiment_001_replacements.py
-      - name: Validate
+      - name: Validate six distinct replacement images
         if: steps.ready.outputs.ready == 'true'
         run: |
           python - <<'PY'
@@ -49,7 +49,7 @@ jobs:
           assert d['replaced_years']==[1993,1995,2002,2010,2012,2013]
           assert len({r['sha256_native'] for r in d['records']})==6
           assert len(list(root.glob('*.zip')))==1
-          print('VERIFIED_REPLACEMENTS',[(r['year'],r['replacement_date']) for r in d['records']])
+          print('VERIFIED_REPLACEMENTS',[(r['year'],r['replacement_date'],r['sha256_native']) for r in d['records']])
           PY
       - name: Commit
         if: steps.ready.outputs.ready == 'true'
