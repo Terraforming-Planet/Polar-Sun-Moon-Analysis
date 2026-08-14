@@ -1,0 +1,41 @@
+{
+  "experiment_id": "001",
+  "year": 2026,
+  "role": "late_summer_proxy_only_not_autumn",
+  "observation": {
+    "year": 2026,
+    "date": "2026-08-07",
+    "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+    "platform": "Sentinel-2B",
+    "item_id": "S2B_MSIL2A_20260807T100029_R122_T33UYV_20260807T135548",
+    "scene_cloud_cover_percent": 46.4973,
+    "local_clear_fraction": 1.0,
+    "local_valid_fraction": 1.0,
+    "native_resolution_m": 10,
+    "crop_m": 2000,
+    "files": [
+      "2026_2026-08-07_Sentinel-2B_10m_2km_native.png",
+      "2026_2026-08-07_Sentinel-2B_10m_2km_display1024.png"
+    ],
+    "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+    "status": "ok",
+    "requested_context": "late_summer_2026_proxy_for_future_autumn_gap",
+    "selected_month": 8,
+    "selected_month_name": "August",
+    "is_autumn_observation": false,
+    "must_not_be_used_as_autumn_2026": true,
+    "reason": "September-November 2026 had not occurred as of 2026-08-14; user allowed another month if explicitly documented.",
+    "selection_quality_score": 1.001751,
+    "image_integrity": {
+      "sha256": "c5d2205439353345073c6dfd1274e14b54952662daefe887b4f8db35a612cea4",
+      "visual_std": 48.6663,
+      "near_black_fraction": 0.02121,
+      "near_white_fraction": 0.018829,
+      "dark_row_fraction": 0.0,
+      "dark_col_fraction": 0.0,
+      "broken_visual": false
+    }
+  },
+  "rejected_candidates": [],
+  "integrity_policy": "real official/public pixels; image-first check; no AI filling/super-resolution"
+}
