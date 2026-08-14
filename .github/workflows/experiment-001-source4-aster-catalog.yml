@@ -1,0 +1,54 @@
+name: Experiment 001 source4 NASA ASTER catalog
+
+on:
+  push:
+    branches:
+      - annual-best-53-591400-19-010717
+    paths:
+      - 'tools/catalog_experiment_001_nasa_aster.py'
+      - '.github/workflows/experiment-001-source4-aster-catalog.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  catalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: annual-best-53-591400-19-010717
+          fetch-depth: 20
+          sparse-checkout: |
+            tools
+            experiments
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install requests
+      - name: Query NASA CMR ASTER catalog
+        run: python tools/catalog_experiment_001_nasa_aster.py
+      - name: Validate catalog
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('experiments/experiment_001_pond_forest_kuchnia/source4/nasa_aster/nasa_aster_scene_catalog.json')
+          d=json.loads(p.read_text(encoding='utf-8'))
+          assert len(d['years'])==27
+          print('TOTAL_AST_L1T_HITS',d['total_catalog_hits'])
+          print('SPRING_YEARS',d['years_with_spring_scene'])
+          print('AUTUMN_YEARS',d['years_with_autumn_scene'])
+          PY
+      - name: Commit catalog
+        run: |
+          git config user.name "Terraforming Planet"
+          git config user.email "kontakt@teslaeco.pl"
+          git add experiments/experiment_001_pond_forest_kuchnia/source4/nasa_aster
+          git diff --cached --quiet && echo "No catalog changes" && exit 0
+          git commit -m "Catalog NASA ASTER scenes for Experiment 001"
+          git pull --rebase origin annual-best-53-591400-19-010717
+          git push origin HEAD:annual-best-53-591400-19-010717
