@@ -1,0 +1,1761 @@
+{
+  "experiment": "Experiment 006 - Jezioro Wieczno water and shoreline monitoring",
+  "center": {
+    "lat": 53.270125,
+    "lon": 18.789994
+  },
+  "crop": "2 km x 2 km centered exactly on coordinate for imagery; measurement stage uses larger AOI where needed",
+  "season": "spring",
+  "preferred_month": 5,
+  "fallback_months": [
+    4,
+    6
+  ],
+  "years_requested": [
+    1990,
+    1991,
+    1992,
+    1993,
+    1994,
+    1995,
+    1996,
+    1997,
+    1998,
+    1999,
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "filename_rule": "every image filename begins YYYY_YYYY-MM-DD_...",
+  "integrity_policy": "real public satellite pixels only; no AI filling/super-resolution; image-first broken-image check; exact cross-year SHA duplicate rejected",
+  "records": [
+    {
+      "year": 1990,
+      "date": "1990-05-02",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19900502_02_T1",
+      "scene_cloud_cover_percent": 1.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1990_1990-05-02_landsat-5_30m_7x9km_native.png",
+        "1990_1990-05-02_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "058bf7efc346d2e090b2f99ea7a05324806c466f3997777326ff3a0bd6ca3c37",
+        "visual_std": 62.3167,
+        "near_black_fraction": 0.025848,
+        "near_white_fraction": 0.012238,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.9995,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1991,
+      "date": "1991-05-30",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19910530_02_T1",
+      "scene_cloud_cover_percent": 14.0,
+      "local_clear_fraction": 0.998598,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1991_1991-05-30_landsat-5_30m_7x9km_native.png",
+        "1991_1991-05-30_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "b504be6c11a2dcd9a36d9a69919a89c16cef2d4e3ac224072fd32847d25602be",
+        "visual_std": 56.8133,
+        "near_black_fraction": 0.023956,
+        "near_white_fraction": 0.01265,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.992061,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1992,
+      "date": "1992-05-16",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19920516_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1992_1992-05-16_landsat-5_30m_7x9km_native.png",
+        "1992_1992-05-16_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "01e0689824988cd6d0f7162cc535af9cc977027940dacba6704a4076fb9ee5a9",
+        "visual_std": 62.0243,
+        "near_black_fraction": 0.021851,
+        "near_white_fraction": 0.013611,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1993,
+      "date": "1993-05-10",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19930510_02_T1",
+      "scene_cloud_cover_percent": 6.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1993_1993-05-10_landsat-5_30m_7x9km_native.png",
+        "1993_1993-05-10_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "bfb2f6ecc4802fcdcb2ab2340751d112b660cfb77437685b910e0b584057d4fd",
+        "visual_std": 62.2493,
+        "near_black_fraction": 0.016357,
+        "near_white_fraction": 0.011169,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.997,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1994,
+      "date": "1994-05-06",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19940506_02_T1",
+      "scene_cloud_cover_percent": 4.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1994_1994-05-06_landsat-5_30m_7x9km_native.png",
+        "1994_1994-05-06_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "035bba06010a6342053a9285770af3dd3ecce43510351b2fa8b44f142308f0ca",
+        "visual_std": 62.2978,
+        "near_black_fraction": 0.02034,
+        "near_white_fraction": 0.013763,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.998,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1995,
+      "date": "1995-04-23",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19950423_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 0.999971,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1995_1995-04-23_landsat-5_30m_7x9km_native.png",
+        "1995_1995-04-23_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "7bbe90a503997ef2b59ce76d9e9be18c84a50e9afb2e2b60264c56afe84e6fae",
+        "visual_std": 57.7202,
+        "near_black_fraction": 0.021088,
+        "near_white_fraction": 0.013123,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 4,
+      "selected_month_name": "April",
+      "is_fallback_month": true,
+      "preferred_month": 5,
+      "selection_quality_score": 0.949981,
+      "fallback_reason": "preferred month had no sufficiently reliable candidate",
+      "rejected_candidates": [
+        {
+          "month": 5,
+          "item_id": "LT05_L2SP_189023_19950509_02_T1",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.46711072961373395
+        }
+      ]
+    },
+    {
+      "year": 1996,
+      "date": "1996-05-18",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19960518_02_T1",
+      "scene_cloud_cover_percent": 11.0,
+      "local_clear_fraction": 0.991845,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1996_1996-05-18_landsat-5_30m_7x9km_native.png",
+        "1996_1996-05-18_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "e9690a3320ca187a54b822ee313c4b9d493b764e2a616703700c8f5b61fa3b2b",
+        "visual_std": 58.5629,
+        "near_black_fraction": 0.026367,
+        "near_white_fraction": 0.013367,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.989036,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1997,
+      "date": "1997-05-14",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19970514_02_T1",
+      "scene_cloud_cover_percent": 7.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1997_1997-05-14_landsat-5_30m_7x9km_native.png",
+        "1997_1997-05-14_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "46cc066147a99e7728215c946dd09ab17f98d4bbde5b03ea6e4c3ef78fbffe62",
+        "visual_std": 60.9321,
+        "near_black_fraction": 0.034348,
+        "near_white_fraction": 0.012756,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.9965,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1998,
+      "date": "1998-05-17",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19980517_02_T1",
+      "scene_cloud_cover_percent": 11.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1998_1998-05-17_landsat-5_30m_7x9km_native.png",
+        "1998_1998-05-17_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "f754880c8e0d98dc76c3c9fd4e7b4aefa2411d145e2283e8b14f8249d2a5829b",
+        "visual_std": 55.2606,
+        "near_black_fraction": 0.031967,
+        "near_white_fraction": 0.012344,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.9945,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1999,
+      "date": "1999-05-20",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19990520_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1999_1999-05-20_landsat-5_30m_7x9km_native.png",
+        "1999_1999-05-20_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "62627e38fd47680aede304a30498c979ad0f890d5f6101e37f584f99d9c283b6",
+        "visual_std": 61.2508,
+        "near_black_fraction": 0.038757,
+        "near_white_fraction": 0.013168,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2000,
+      "date": "2000-05-13",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_20000513_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2000_2000-05-13_landsat-5_30m_7x9km_native.png",
+        "2000_2000-05-13_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "ec1290127b842b4a42cfd3f3387436af49ca814fe62319105086a2895d05506c",
+        "visual_std": 57.0361,
+        "near_black_fraction": 0.023361,
+        "near_white_fraction": 0.013535,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2001,
+      "date": "2001-05-08",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20010508_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2001_2001-05-08_landsat-7_30m_7x9km_native.png",
+        "2001_2001-05-08_landsat-7_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "d9736e4ee418b4957b10c3837ca387b183c50a388005f6719b2debe5414c6813",
+        "visual_std": 63.8391,
+        "near_black_fraction": 0.029022,
+        "near_white_fraction": 0.015961,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2002,
+      "date": "2002-05-04",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_189023_20020504_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2002_2002-05-04_landsat-7_30m_7x9km_native.png",
+        "2002_2002-05-04_landsat-7_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "2a2125bbfa65861423fda6fa450cbcc8e009d17df6d7f3e20d2195e9a2266b2a",
+        "visual_std": 60.4946,
+        "near_black_fraction": 0.031982,
+        "near_white_fraction": 0.015152,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2003,
+      "date": "2003-05-30",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20030530_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2003_2003-05-30_landsat-7_30m_7x9km_native.png",
+        "2003_2003-05-30_landsat-7_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "687b3217c6135d1aa8b2e02c688792495a61e7c0b9162eb3ff9865ce80b12d46",
+        "visual_std": 54.0014,
+        "near_black_fraction": 0.015289,
+        "near_white_fraction": 0.018356,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2004,
+      "date": "2004-05-01",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20040501_02_T1",
+      "scene_cloud_cover_percent": 2.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2004_2004-05-01_landsat-5_30m_7x9km_native.png",
+        "2004_2004-05-01_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "f0ce17256289140b997dffcff6fe74378ac9014da05e7dd6cda64e33a7461b21",
+        "visual_std": 62.2272,
+        "near_black_fraction": 0.023956,
+        "near_white_fraction": 0.013504,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.999,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2005,
+      "date": "2005-05-20",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20050520_02_T1",
+      "scene_cloud_cover_percent": 4.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2005_2005-05-20_landsat-5_30m_7x9km_native.png",
+        "2005_2005-05-20_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "60ec9ffcf2e003d526ca5bce47b92889d9407809010e1f5124ac86f5d219603c",
+        "visual_std": 57.3293,
+        "near_black_fraction": 0.035858,
+        "near_white_fraction": 0.014282,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.998,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2006,
+      "date": "2006-05-07",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20060507_02_T1",
+      "scene_cloud_cover_percent": 5.0,
+      "local_clear_fraction": 0.999413,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2006_2006-05-07_landsat-5_30m_7x9km_native.png",
+        "2006_2006-05-07_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "6b98dfca201cff4cbef584b343db220085813207dfada21c473411f2002494eb",
+        "visual_std": 57.9115,
+        "near_black_fraction": 0.017273,
+        "near_white_fraction": 0.013382,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.997107,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2007,
+      "date": "2007-05-25",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20070525_02_T1",
+      "scene_cloud_cover_percent": 3.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 0.799328,
+      "native_resolution_m": 30,
+      "files": [
+        "2007_2007-05-25_landsat-7_30m_7x9km_native.png",
+        "2007_2007-05-25_landsat-7_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "8e21fc9680ef9764e1ef1bb018938c6f65df70658117c16edcf980319349b2c1",
+        "visual_std": 52.6968,
+        "near_black_fraction": 0.185776,
+        "near_white_fraction": 0.012466,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.942312,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2008,
+      "date": "2008-05-28",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20080528_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2008_2008-05-28_landsat-5_30m_7x9km_native.png",
+        "2008_2008-05-28_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "c3578f7d6df2ad1b9cd8b6d83480609dfd8a5fefc1b84b4c84ffdb201d660caa",
+        "visual_std": 56.9839,
+        "near_black_fraction": 0.026505,
+        "near_white_fraction": 0.016418,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2009,
+      "date": "2009-05-15",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20090515_02_T1",
+      "scene_cloud_cover_percent": 8.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2009_2009-05-15_landsat-5_30m_7x9km_native.png",
+        "2009_2009-05-15_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "24ec649d8a44c11ca773200d85df2673df48881e0fee9efa036aa20ab620045a",
+        "visual_std": 59.9751,
+        "near_black_fraction": 0.022247,
+        "near_white_fraction": 0.00975,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.996,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2010,
+      "date": "2010-06-10",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_20100610_02_T1",
+      "scene_cloud_cover_percent": 33.0,
+      "local_clear_fraction": 0.999471,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2010_2010-06-10_landsat-5_30m_7x9km_native.png",
+        "2010_2010-06-10_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "43ec1385aef5ffa3de00e5fe39307551563f67fa177c528d740e2e3342d4b4b8",
+        "visual_std": 57.5347,
+        "near_black_fraction": 0.013275,
+        "near_white_fraction": 0.017197,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 6,
+      "selected_month_name": "June",
+      "is_fallback_month": true,
+      "preferred_month": 5,
+      "selection_quality_score": 0.983145,
+      "fallback_reason": "preferred month had no sufficiently reliable candidate",
+      "rejected_candidates": [
+        {
+          "month": 5,
+          "item_id": "LT05_L2SP_189023_20100502_02_T1",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.6791361945636625
+        },
+        {
+          "month": 4,
+          "item_id": "LT05_L2SP_189023_20100416_02_T1",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.7018615164520745
+        }
+      ]
+    },
+    {
+      "year": 2011,
+      "date": "2011-05-20",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20110520_02_T1",
+      "scene_cloud_cover_percent": 27.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 0.805722,
+      "native_resolution_m": 30,
+      "files": [
+        "2011_2011-05-20_landsat-7_30m_7x9km_native.png",
+        "2011_2011-05-20_landsat-7_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "7691775f7f26f0e8172a7a8d1cc5318680145d5f7e7bc0c8cc06803b197b7790",
+        "visual_std": 63.0178,
+        "near_black_fraction": 0.169724,
+        "near_white_fraction": 0.011368,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.932102,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2012,
+      "date": "2012-05-22",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20120522_02_T1",
+      "scene_cloud_cover_percent": 4.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 0.775408,
+      "native_resolution_m": 30,
+      "files": [
+        "2012_2012-05-22_landsat-7_30m_7x9km_native.png",
+        "2012_2012-05-22_landsat-7_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "20d768854f88ff9f19fa03bd3387780f632ca9f467836145cbad70a56f92c1f2",
+        "visual_std": 57.002,
+        "near_black_fraction": 0.220642,
+        "near_white_fraction": 0.012512,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.935114,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2013,
+      "date": "2013-05-17",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-8",
+      "item_id": "LC08_L2SP_190023_20130517_02_T1",
+      "scene_cloud_cover_percent": 19.49,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2013_2013-05-17_landsat-8_30m_7x9km_native.png",
+        "2013_2013-05-17_landsat-8_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "847852ba32eeb9c94a045c9996150579013a04bff89bbb7c1e84624426b59bdb",
+        "visual_std": 62.8032,
+        "near_black_fraction": 0.025818,
+        "near_white_fraction": 0.016159,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.990255,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2014,
+      "date": "2014-05-20",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-8",
+      "item_id": "LC08_L2SP_190023_20140520_02_T1",
+      "scene_cloud_cover_percent": 9.54,
+      "local_clear_fraction": 0.96186,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2014_2014-05-20_landsat-8_30m_7x9km_native.png",
+        "2014_2014-05-20_landsat-8_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "a4583491f88939907a043e001de277053aafd6262cce7de4801ec92e5f1e95b8",
+        "visual_std": 58.2618,
+        "near_black_fraction": 0.025009,
+        "near_white_fraction": 0.016083,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.969676,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2015,
+      "date": "2015-05-07",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-8",
+      "item_id": "LC08_L2SP_190023_20150507_02_T1",
+      "scene_cloud_cover_percent": 5.64,
+      "local_clear_fraction": 0.969557,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2015_2015-05-07_landsat-8_30m_7x9km_native.png",
+        "2015_2015-05-07_landsat-8_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "3687a28489ceee590df385d3ab9b310bc4a6deac66e25824e9719de4e205e9fc",
+        "visual_std": 57.2277,
+        "near_black_fraction": 0.031113,
+        "near_white_fraction": 0.014404,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.976783,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2016,
+      "date": "2016-05-23",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20160523T095032_R079_T33UYV_20210211T133807",
+      "scene_cloud_cover_percent": 0.460278,
+      "local_clear_fraction": 0.999283,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2016_2016-05-23_Sentinel-2A_10m_7x9km_native.png",
+        "2016_2016-05-23_Sentinel-2A_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "d7ce05ad0f25f0c3a54822b80b81214668d29492d24d0869c3d5daada5d0f04f",
+        "visual_std": 59.9601,
+        "near_black_fraction": 0.027267,
+        "near_white_fraction": 0.01033,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.024289,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2017,
+      "date": "2017-05-18",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20170518T095031_R079_T34UCE_20210209T162325",
+      "scene_cloud_cover_percent": 0.055662,
+      "local_clear_fraction": 0.999276,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2017_2017-05-18_Sentinel-2A_10m_7x9km_native.png",
+        "2017_2017-05-18_Sentinel-2A_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "e93d50fea83d2d139dc0d74504785f9082819b46fc08500377b8e86519158880",
+        "visual_std": 65.6607,
+        "near_black_fraction": 0.037872,
+        "near_white_fraction": 0.009491,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.024487,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2018,
+      "date": "2018-05-08",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20180508T095029_R079_T34UCE_20201012T072713",
+      "scene_cloud_cover_percent": 0.059469,
+      "local_clear_fraction": 0.999384,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2018_2018-05-08_Sentinel-2B_10m_7x9km_native.png",
+        "2018_2018-05-08_Sentinel-2B_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "78e2295706a1ce29d1c256d8914aae232541e970dc8efae35401412bb21e0dbe",
+        "visual_std": 59.7967,
+        "near_black_fraction": 0.04126,
+        "near_white_fraction": 0.013336,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.024558,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2019,
+      "date": "2019-05-01",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20190501T100031_R122_T33UYV_20201006T083634",
+      "scene_cloud_cover_percent": 2.765254,
+      "local_clear_fraction": 0.999886,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2019_2019-05-01_Sentinel-2A_10m_7x9km_native.png",
+        "2019_2019-05-01_Sentinel-2A_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "cbed381aac665561928b8be336ddd40c9271c1a89b293a6a0bfa24bba303acd8",
+        "visual_std": 61.8399,
+        "near_black_fraction": 0.042816,
+        "near_white_fraction": 0.007996,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.023541,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2020,
+      "date": "2020-05-30",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20200530T100029_R122_T34UCE_20200911T133222",
+      "scene_cloud_cover_percent": 24.841454,
+      "local_clear_fraction": 0.998959,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2020_2020-05-30_Sentinel-2B_10m_7x9km_native.png",
+        "2020_2020-05-30_Sentinel-2B_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "9dbfac61b96f8516ebc315947f4c68a7677e6c2479fc16da378f58f3064f5074",
+        "visual_std": 65.8927,
+        "near_black_fraction": 0.057983,
+        "near_white_fraction": 0.008286,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.011882,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2021,
+      "date": "2021-05-12",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20210512T095029_R079_T34UCE_20210606T070040",
+      "scene_cloud_cover_percent": 0.104802,
+      "local_clear_fraction": 0.998724,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2021_2021-05-12_Sentinel-2B_10m_7x9km_native.png",
+        "2021_2021-05-12_Sentinel-2B_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "c8130408bb0e3a62ff3cf666fa626f50ee2ed8420ddbb0eab33e49ffd5a7a482",
+        "visual_std": 64.9428,
+        "near_black_fraction": 0.043274,
+        "near_white_fraction": 0.01236,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.024093,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2022,
+      "date": "2022-05-02",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20220502T095031_R079_T33UYV_20220503T023437",
+      "scene_cloud_cover_percent": 5.472676,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2022_2022-05-02_Sentinel-2A_10m_7x9km_native.png",
+        "2022_2022-05-02_Sentinel-2A_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "c6ae0a5f6130d6ff644967848f5cdd63a6bed914eb39d9b0151764b0f5f90441",
+        "visual_std": 61.3339,
+        "near_black_fraction": 0.042877,
+        "near_white_fraction": 0.010895,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.022264,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2023,
+      "date": "2023-05-30",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20230530T100031_R122_T33UYV_20230530T153352",
+      "scene_cloud_cover_percent": 0.739762,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2023_2023-05-30_Sentinel-2A_10m_7x9km_native.png",
+        "2023_2023-05-30_Sentinel-2A_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "273db6b69435a11c22295fbb7200d1dc34838861c9fdbd75c512619302050966",
+        "visual_std": 63.8389,
+        "near_black_fraction": 0.0457,
+        "near_white_fraction": 0.008545,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.02463,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2024,
+      "date": "2024-05-01",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20240501T095031_R079_T33UYV_20240501T154122",
+      "scene_cloud_cover_percent": 0.510306,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2024_2024-05-01_Sentinel-2A_10m_7x9km_native.png",
+        "2024_2024-05-01_Sentinel-2A_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "a5c4032d5b8a69c19c9bcef901fdec1c98e6965f371ee4836a25b4209bb7004c",
+        "visual_std": 66.5071,
+        "near_black_fraction": 0.04155,
+        "near_white_fraction": 0.005615,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.024745,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2025,
+      "date": "2025-05-06",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2C",
+      "item_id": "S2C_MSIL2A_20250506T095051_R079_T33UYV_20250506T121455",
+      "scene_cloud_cover_percent": 0.252054,
+      "local_clear_fraction": 0.999587,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2025_2025-05-06_Sentinel-2C_10m_7x9km_native.png",
+        "2025_2025-05-06_Sentinel-2C_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "5c0850634bc2bbead5fe085cc500f4557a9a8ecd98b12e2cf616411ddfa6464e",
+        "visual_std": 65.3259,
+        "near_black_fraction": 0.032684,
+        "near_white_fraction": 0.007553,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.024597,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2026,
+      "date": "2026-05-01",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2C",
+      "item_id": "S2C_MSIL2A_20260501T095031_R079_T33UYV_20260501T132213",
+      "scene_cloud_cover_percent": 0.000367,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2026_2026-05-01_Sentinel-2C_10m_7x9km_native.png",
+        "2026_2026-05-01_Sentinel-2C_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Wieczno",
+          "lat": 53.270125,
+          "lon": 18.789994
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "5bb4f65b1ee1237def8e4d071b793e20a5c43cf87a5c34fb46357324c66bb3ae",
+        "visual_std": 60.2126,
+        "near_black_fraction": 0.024429,
+        "near_white_fraction": 0.009445,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.025,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    }
+  ],
+  "count_ok": 37,
+  "count_missing_or_rejected": 0,
+  "targets": [
+    {
+      "name": "Jezioro Wieczno",
+      "lat": 53.270125,
+      "lon": 18.789994
+    }
+  ],
+  "aoi": {
+    "width_m": 7000,
+    "height_m": 9000,
+    "orientation": "portrait_north_up",
+    "purpose": "whole Jezioro Wieczno, northern basin near Pluznica, southern wetlands and surrounding landscape visible in every annual frame"
+  },
+  "dataset_role": "independent TerraWater lake comparison case",
+  "test_number": 6,
+  "object_name": "Jezioro Wieczno",
+  "zip": "experiments/experiment_006_jezioro_wieczno/seasonal_evidence/spring/TEST006_SPRING_1990_2026_37_YEARS_7x9km_53.270125_18.789994.zip"
+}
