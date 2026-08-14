@@ -7,6 +7,7 @@ on:
     paths:
       - .github/workflows/annual-best-53-591400-19-010717.yml
       - tools/build_annual_best_53_591400_19_010717.py
+      - tools/build_arcgis_ps15_annual_53_591400_19_010717.py
   workflow_dispatch:
 
 permissions:
@@ -30,21 +31,17 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests numpy pillow pyproj rasterio
 
-      - name: Build 27 annual real satellite images
-        env:
-          GDAL_DISABLE_READDIR_ON_OPEN: EMPTY_DIR
-          GDAL_HTTP_MULTIRANGE: 'YES'
-          GDAL_HTTP_MERGE_CONSECUTIVE_RANGES: 'YES'
-        run: python tools/build_annual_best_53_591400_19_010717.py
+      - name: Build 15m Landsat historical pack and combined high-res series
+        run: python tools/build_arcgis_ps15_annual_53_591400_19_010717.py
 
-      - name: Commit generated annual pack
+      - name: Commit generated high-res pack
         run: |
           git config user.name "terraforming-planet-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add satellite_annual_best/53.591400_19.010717
+          git add satellite_annual_best_highres/53.591400_19.010717
           if git diff --cached --quiet; then
             echo "No generated changes"
           else
-            git commit -m "Add annual best 2000-2026 satellite pack for 53.591400 19.010717 [skip ci]"
+            git commit -m "Add higher-resolution annual satellite series for 53.591400 19.010717 [skip ci]"
             git push origin HEAD:annual-best-53-591400-19-010717
           fi
