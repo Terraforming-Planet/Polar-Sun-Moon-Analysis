@@ -1,0 +1,132 @@
+{
+  "experiment_id": "001",
+  "object": "Lake Kuchnia",
+  "comparison": "May 1990 versus May 2026 only",
+  "aoi": "5 km x 5 km around Experiment 001 center; original 2 km crop is explicitly rejected for full-lake totals because it truncates the lake",
+  "method": "exact products; original L2 green/NIR/SWIR; scene-adaptive local clustering in NDWI/MNDWI space; connected main-lake component; common 30 m grid",
+  "records": [
+    {
+      "year": 1990,
+      "date": "1990-05-02",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19900502_02_T1",
+      "measurement_item_id": "LT05_L2SP_190023_19900502_02_T1",
+      "measurement_grid_m": 30.0,
+      "area_m2": 606600.0,
+      "area_ha": 60.66,
+      "boundary_low_m2": 378900.0,
+      "boundary_high_m2": 851400.0,
+      "clear_fraction_roi": 1.0,
+      "bands": [
+        "green",
+        "nir08",
+        "swir16"
+      ],
+      "cluster_centers_standardized": [
+        [
+          -0.7971991665428119,
+          -1.9154582879062536
+        ],
+        [
+          -0.04591146305830097,
+          3.1407495473747513
+        ],
+        [
+          -0.3038387148172633,
+          0.025827414009899706
+        ],
+        [
+          2.0026875951296192,
+          0.6781719538864366
+        ],
+        [
+          3.888920688612979,
+          14.657997798228063
+        ]
+      ],
+      "cluster_scores": [
+        -2.7126574544490656,
+        3.0948380843164505,
+        -0.27801130080736364,
+        2.6808595490160556,
+        18.546918486841044
+      ],
+      "selected_water_clusters": [
+        1,
+        4
+      ],
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements_lake_kuchnia_5km_may/1990_1990-05-02_landsat-5_lake_5km_adaptive.png"
+    },
+    {
+      "year": 2026,
+      "date": "2026-05-01",
+      "platform": "Sentinel-2C",
+      "item_id": "S2C_MSIL2A_20260501T095031_R079_T33UYV_20260501T132213",
+      "measurement_item_id": "S2C_MSIL2A_20260501T095031_R079_T33UYV_20260501T132213",
+      "measurement_grid_m": 30.0,
+      "area_m2": 699300.0,
+      "area_ha": 69.93,
+      "boundary_low_m2": 462600.0,
+      "boundary_high_m2": 954900.0,
+      "clear_fraction_roi": 1.0,
+      "bands": [
+        "B03",
+        "B08",
+        "B11"
+      ],
+      "cluster_centers_standardized": [
+        [
+          0.42041401592837807,
+          -3.205208956436665
+        ],
+        [
+          0.07775003315265624,
+          -0.3423106561301894
+        ],
+        [
+          -2.184897040623981,
+          0.8981537783475955
+        ],
+        [
+          2.511314023130335,
+          1.2816475135367278
+        ],
+        [
+          7.128953595516616,
+          10.232493833750048
+        ]
+      ],
+      "cluster_scores": [
+        -2.7847949405082866,
+        -0.26456062297753313,
+        -1.2867432622763855,
+        3.792961536667063,
+        17.361447429266665
+      ],
+      "selected_water_clusters": [
+        3,
+        4
+      ],
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements_lake_kuchnia_5km_may/2026_2026-05-01_Sentinel-2C_lake_5km_adaptive.png"
+    }
+  ],
+  "comparison_result": {
+    "from": "1990-05-02",
+    "to": "2026-05-01",
+    "area_from_m2": 606600.0,
+    "area_to_m2": 699300.0,
+    "difference_m2": -92700.0,
+    "difference_ha": -9.27,
+    "difference_percent": -15.281899109792285,
+    "from_boundary_range_m2": [
+      378900.0,
+      851400.0
+    ],
+    "to_boundary_range_m2": [
+      462600.0,
+      954900.0
+    ]
+  },
+  "status": "candidate_measurement_masks_must_be_visually_validated",
+  "rejected_related_result": "2026-08-07 adaptive classifier over-expanded into non-lake terrain (~1.75 km²) and is explicitly rejected for Lake Kuchnia area analysis."
+}
