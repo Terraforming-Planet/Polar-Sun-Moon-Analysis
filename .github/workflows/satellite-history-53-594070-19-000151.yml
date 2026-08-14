@@ -38,6 +38,7 @@ jobs:
         run: |
           python - <<'PY'
           import json
+          import time
           from datetime import date, datetime
           from pathlib import Path
 
@@ -56,7 +57,7 @@ jobs:
           OUT.mkdir(parents=True, exist_ok=True)
 
           STAC_SEARCH = 'https://planetarycomputer.microsoft.com/api/stac/v1/search'
-          SIGN_URL = 'https://planetarycomputer.microsoft.com/api/sas/v1/sign'
+          TOKEN_URL = 'https://planetarycomputer.microsoft.com/api/sas/v1/token/landsat-c2-l2'
 
           SENSOR_PREF = {
               2000: ['landsat-7', 'landsat-5'],
@@ -67,16 +68,31 @@ jobs:
           }
 
           session = requests.Session()
-          sign_cache = {}
+
+          def request_json(method, url, **kwargs):
+              last = None
+              for attempt in range(6):
+                  r = session.request(method, url, timeout=120, **kwargs)
+                  last = r
+                  if r.status_code != 429:
+                      r.raise_for_status()
+                      return r.json()
+                  wait = int(r.headers.get('Retry-After', 2 ** attempt))
+                  print(f'HTTP 429 from {url}; retrying in {wait}s', flush=True)
+                  time.sleep(wait)
+              last.raise_for_status()
+
+          token_info = request_json('GET', TOKEN_URL)
+          SAS_TOKEN = token_info['token']
+          TOKEN_EXPIRY = token_info.get('msft:expiry')
+          print('Obtained one Landsat collection SAS token; expiry=', TOKEN_EXPIRY, flush=True)
 
           def signed(href):
-              if '?' in href and ('sig=' in href or 'se=' in href):
-                  return href
-              if href not in sign_cache:
-                  r = session.get(SIGN_URL, params={'href': href}, timeout=60)
-                  r.raise_for_status()
-                  sign_cache[href] = r.json()['href']
-              return sign_cache[href]
+              if '?' in href:
+                  if 'sig=' in href or 'se=' in href:
+                      return href
+                  return href + '&' + SAS_TOKEN
+              return href + '?' + SAS_TOKEN
 
           def end_date_for(year):
               if year == 2026:
@@ -90,14 +106,13 @@ jobs:
                   'datetime': f'{year}-05-01/{end_date_for(year).isoformat()}',
                   'limit': 100,
               }
-              r = session.post(STAC_SEARCH, json=payload, timeout=120)
-              r.raise_for_status()
-              items = r.json().get('features', [])
+              result = request_json('POST', STAC_SEARCH, json=payload)
+              items = result.get('features', [])
               if not items:
-                  payload['datetime'] = f'{year}-01-01/{min(date(year, 12, 31), date.today() if year == 2026 else date(year, 12, 31)).isoformat()}'
-                  r = session.post(STAC_SEARCH, json=payload, timeout=120)
-                  r.raise_for_status()
-                  items = r.json().get('features', [])
+                  end = min(date(year, 12, 31), date.today()) if year == 2026 else date(year, 12, 31)
+                  payload['datetime'] = f'{year}-01-01/{end.isoformat()}'
+                  result = request_json('POST', STAC_SEARCH, json=payload)
+                  items = result.get('features', [])
               return items
 
           def platform(item):
@@ -125,19 +140,29 @@ jobs:
                   transform=src.transform,
               ).round_offsets().round_lengths()
 
+          def open_crop(href):
+              with rasterio.Env(
+                  GDAL_DISABLE_READDIR_ON_OPEN='EMPTY_DIR',
+                  GDAL_HTTP_MULTIRANGE='YES',
+                  GDAL_HTTP_MERGE_CONSECUTIVE_RANGES='YES',
+              ):
+                  with rasterio.open(signed(href)) as src:
+                      w = point_window(src)
+                      arr = src.read(1, window=w, boundless=False)
+                      meta = {
+                          'crs': str(src.crs),
+                          'transform': [float(v) for v in src.window_transform(w)[:6]],
+                          'width': int(arr.shape[1]),
+                          'height': int(arr.shape[0]),
+                      }
+              return arr, meta
+
           def local_clear_fraction(item):
               qa = item.get('assets', {}).get('qa_pixel')
               if not qa:
                   return max(0.0, 1.0 - cloud_score(item) / 100.0)
               try:
-                  with rasterio.Env(
-                      GDAL_DISABLE_READDIR_ON_OPEN='EMPTY_DIR',
-                      GDAL_HTTP_MULTIRANGE='YES',
-                      GDAL_HTTP_MERGE_CONSECUTIVE_RANGES='YES',
-                  ):
-                      with rasterio.open(signed(qa['href'])) as src:
-                          w = point_window(src)
-                          arr = src.read(1, window=w, boundless=False)
+                  arr, _ = open_crop(qa['href'])
                   if arr.size == 0:
                       return 0.0
                   valid = (arr & 1) == 0
@@ -154,8 +179,10 @@ jobs:
               prefs = SENSOR_PREF[year]
               items = [i for i in all_items if platform(i) in prefs]
               if not items:
-                  raise RuntimeError(f'No preferred Landsat scenes for {year}; total STAC matches={len(all_items)}; platforms={sorted(set(platform(i) for i in all_items))}')
-
+                  raise RuntimeError(
+                      f'No preferred Landsat scenes for {year}; total STAC matches={len(all_items)}; '
+                      f'platforms={sorted(set(platform(i) for i in all_items))}'
+                  )
               items.sort(key=cloud_score)
               candidates = items[:8]
               target_day = datetime(int(year), 7, 15)
@@ -166,7 +193,11 @@ jobs:
                   sensor_rank = prefs.index(platform(item))
                   score = (1.0 - clear) * 1000.0 + cloud_score(item) * 0.4 + day_distance * 0.03 + sensor_rank * 1.5
                   ranked.append((score, -clear, cloud_score(item), item))
-                  print(year, item.get('id'), 'platform=', platform(item), 'scene_cloud=', cloud_score(item), 'local_clear=', round(clear, 4), 'score=', round(score, 3), flush=True)
+                  print(
+                      year, item.get('id'), 'platform=', platform(item),
+                      'scene_cloud=', cloud_score(item), 'local_clear=', round(clear, 4),
+                      'score=', round(score, 3), flush=True
+                  )
               ranked.sort(key=lambda x: (x[0], x[1], x[2]))
               chosen = ranked[0][3]
               return chosen, -ranked[0][1]
@@ -175,21 +206,7 @@ jobs:
               asset = item.get('assets', {}).get(key)
               if not asset:
                   raise RuntimeError(f"{item.get('id')} missing asset {key}; keys={sorted(item.get('assets', {}))}")
-              with rasterio.Env(
-                  GDAL_DISABLE_READDIR_ON_OPEN='EMPTY_DIR',
-                  GDAL_HTTP_MULTIRANGE='YES',
-                  GDAL_HTTP_MERGE_CONSECUTIVE_RANGES='YES',
-              ):
-                  with rasterio.open(signed(asset['href'])) as src:
-                      w = point_window(src)
-                      raw = src.read(1, window=w, boundless=False)
-                      meta = {
-                          'crs': str(src.crs),
-                          'transform': [float(v) for v in src.window_transform(w)[:6]],
-                          'width': int(raw.shape[1]),
-                          'height': int(raw.shape[0]),
-                      }
-              return raw, meta
+              return open_crop(asset['href'])
 
           def render_item(item, clear_fraction, requested_year):
               bands = []
@@ -235,13 +252,14 @@ jobs:
                   'height_pixels': raster_meta['height'],
                   'crs': raster_meta['crs'],
                   'transform': raster_meta['transform'],
-                  'processing': 'Natural-color RGB derived directly from Landsat Collection 2 Level-2 surface-reflectance red/green/blue bands using the documented reflectance scale/offset, fixed display stretch and gamma only; no AI generation, interpolation or synthetic content.',
+                  'processing': 'Natural-color RGB derived directly from Landsat Collection 2 Level-2 surface-reflectance red/green/blue bands using documented reflectance scale/offset, fixed display stretch and gamma only; no AI generation, interpolation or synthetic content.',
               }
 
           manifest = {
               'requested_coordinate': {'lat': LAT, 'lon': LON},
               'target_years': TARGET_YEARS,
               'generated_utc': datetime.utcnow().isoformat(timespec='seconds') + 'Z',
+              'token_expiry_used_for_download': TOKEN_EXPIRY,
               'images': [],
           }
 
