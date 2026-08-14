@@ -25,25 +25,91 @@ def sanity(record: dict) -> list[str]:
     return warnings
 
 
-def endpoint(rows: list[dict], season: str, obj: str) -> dict | None:
-    by={r['year']:r for r in rows if r['season']==season and not r.get('measurement_sanity_warnings')}
-    if 1990 not in by or 2026 not in by:
-        return None
-    a=float(by[1990][obj]['area_m2']); b=float(by[2026][obj]['area_m2'])
+def _relevant_endpoint_warnings(record: dict, obj: str) -> list[str]:
+    """Return only warnings that invalidate this object's endpoint comparison.
+
+    A warning produced for Lake Kuchnia must not silently remove the forest-pond
+    endpoint (and vice versa). A strict zero at the forest pond is retained and
+    reported explicitly as non-quantifiable rather than filtered out.
+    """
+    warnings=list(record.get('measurement_sanity_warnings') or [])
+    relevant=[]
+    for warning in warnings:
+        if warning == 'low_clear_fraction_measurement_aoi':
+            relevant.append(warning)
+        elif obj == 'lake_kuchnia' and warning.startswith('lake_kuchnia_mask_'):
+            relevant.append(warning)
+    return relevant
+
+
+def endpoint(rows: list[dict], season: str, obj: str) -> dict:
+    by={r['year']:r for r in rows if r['season']==season}
+    missing=[year for year in (1990,2026) if year not in by]
+    if missing:
+        available={}
+        for year in (1990,2026):
+            if year in by:
+                available[str(year)]={
+                    'date':by[year].get('date'),
+                    'area_m2':by[year][obj].get('area_m2'),
+                    'warnings':_relevant_endpoint_warnings(by[year],obj),
+                }
+        return {
+            'season':season,
+            'object':obj,
+            'status':'endpoint_pending_missing_observation',
+            'missing_years':missing,
+            'available_endpoint_observations':available,
+            'reason':'No value is invented for a missing endpoint year. A different month may be used only as a separately documented proxy/fallback with its real acquisition date and season label.',
+        }
+
+    start=by[1990]; end=by[2026]
+    blocked={
+        '1990':_relevant_endpoint_warnings(start,obj),
+        '2026':_relevant_endpoint_warnings(end,obj),
+    }
+    blocked={year:warnings for year,warnings in blocked.items() if warnings}
+    a=float(start[obj]['area_m2']); b=float(end[obj]['area_m2'])
+
+    if blocked:
+        return {
+            'season':season,
+            'object':obj,
+            'status':'not_quantifiable_sanity_gate_failed',
+            'area_1990_m2':a,
+            'area_2026_m2':b,
+            'blocking_warnings':blocked,
+            'reason':'Endpoint values were measured but fail object-specific sanity gates. Do not calculate or publish a loss percentage until the flagged masks are reviewed.',
+        }
+
     if obj=='forest_pond' and (a <= 0 or b < 0):
         return {
-            'season':season,'object':obj,'status':'not_quantifiable_by_current_strict_spectral_classifier',
-            'area_1990_m2':a,'area_2026_m2':b,
+            'season':season,
+            'object':obj,
+            'status':'not_quantifiable_by_current_strict_spectral_classifier',
+            'area_1990_m2':a,
+            'area_2026_m2':b,
             'reason':'Current connected MNDWI/NDWI classifier did not produce a valid historical start area. Do not force a percentage; use manually verified basin polygon / visible-water workflow.'
         }
+
+    if a <= 0:
+        return {
+            'season':season,
+            'object':obj,
+            'status':'not_quantifiable_zero_or_invalid_start_area',
+            'area_1990_m2':a,
+            'area_2026_m2':b,
+            'reason':'A percentage loss requires a positive, sanity-checked 1990 start area. No percentage is emitted.',
+        }
+
     loss=a-b
     return {
         'season':season,'object':obj,
         'area_1990_m2':a,'area_2026_m2':b,
         'loss_1990_to_2026_m2':loss,'loss_ha':loss/10000.0,
-        'loss_percent':loss/a*100.0 if a>0 else None,
-        '1990_uncertainty_m2':[by[1990][obj]['low_m2'],by[1990][obj]['high_m2']],
-        '2026_uncertainty_m2':[by[2026][obj]['low_m2'],by[2026][obj]['high_m2']],
+        'loss_percent':loss/a*100.0,
+        '1990_uncertainty_m2':[start[obj]['low_m2'],start[obj]['high_m2']],
+        '2026_uncertainty_m2':[end[obj]['low_m2'],end[obj]['high_m2']],
         'status':'preliminary_exact-product_common30m_measurement_manual_mask_validation_required'
     }
 
@@ -71,8 +137,7 @@ def main() -> None:
     endpoints=[]
     for season in ('spring','autumn'):
         for obj in ('forest_pond','lake_kuchnia'):
-            e=endpoint(rows,season,obj)
-            if e: endpoints.append(e)
+            endpoints.append(endpoint(rows,season,obj))
 
     output={
         'experiment_id':'001',
@@ -105,7 +170,7 @@ def main() -> None:
     summary=['# Experiment 001 — seasonal spectral measurement v3','', '**Exact product IDs are mandatory.** Cross-era measurement grid: **30 m**.','',f'Measured records: **{len(rows)}**. Failures: **{len(failures)}**.','', '## Endpoint status']
     for e in endpoints:
         summary.append(f"- {e['season']} / {e['object']}: `{e['status']}` — 1990={e.get('area_1990_m2')} m², 2026={e.get('area_2026_m2')} m², loss={e.get('loss_1990_to_2026_m2')} m², percent={e.get('loss_percent')}")
-    summary += ['', 'The forest-pond numerical result is not promoted to CONFIRMED if the strict spectral classifier cannot recover a valid historical open-water start area. A manually verified basin/visible-water polygon measurement is the next gate.']
+    summary += ['', 'The forest-pond numerical result is not promoted to CONFIRMED if the strict spectral classifier cannot recover a valid historical open-water start area. Missing 2026 autumn data remain explicitly pending rather than being invented or silently substituted. A separately labelled late-summer proxy may be analyzed independently.', '', 'A manually verified basin/visible-water polygon measurement is the next gate.']
     (OUT/'README.md').write_text('\n'.join(summary)+'\n',encoding='utf-8')
     print('ENDPOINTS',json.dumps(endpoints,ensure_ascii=False),flush=True)
     print('FAILURES',len(failures),flush=True)
