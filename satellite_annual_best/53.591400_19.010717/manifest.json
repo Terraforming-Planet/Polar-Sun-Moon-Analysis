@@ -1,0 +1,531 @@
+{
+  "center": {
+    "lat": 53.5914,
+    "lon": 19.010717
+  },
+  "crop": "2 km x 2 km centered exactly on coordinate",
+  "years_requested": [
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "count_requested": 27,
+  "selection_policy": {
+    "2000_2014": "Prefer clear full-coverage Landsat scene with native 15 m PAN when available; penalize local clouds, fill and SLC-off gaps. Fallback to Landsat Collection 2 Level-2 30 m.",
+    "2015_2026": "Prefer Sentinel-2 L2A 10 m scene with best local SCL clear fraction, full coverage and low scene cloud cover, primarily May-Sep."
+  },
+  "integrity": "All images derive from real satellite pixels from official USGS/ESA missions exposed through public STAC. No generative AI, synthetic filling or AI super-resolution. Files ending display1024 are only visual resizes and contain no additional ground detail.",
+  "records": [
+    {
+      "year": 2000,
+      "date": "2000-05-13",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_20000513_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "crop_m": 2000,
+      "files": [
+        "2000_2000-05-13_landsat-5_30m_2km_native.png",
+        "2000_2000-05-13_landsat-5_30m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2001,
+      "date": "2001-05-24",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20010524_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "crop_m": 2000,
+      "files": [
+        "2001_2001-05-24_landsat-7_30m_2km_native.png",
+        "2001_2001-05-24_landsat-7_30m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2002,
+      "date": "2002-08-24",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_189023_20020824_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "crop_m": 2000,
+      "files": [
+        "2002_2002-08-24_landsat-7_30m_2km_native.png",
+        "2002_2002-08-24_landsat-7_30m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2003,
+      "date": "2003-05-30",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20030530_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "crop_m": 2000,
+      "files": [
+        "2003_2003-05-30_landsat-7_30m_2km_native.png",
+        "2003_2003-05-30_landsat-7_30m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2004,
+      "date": "2004-05-01",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20040501_02_T1",
+      "scene_cloud_cover_percent": 2.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "crop_m": 2000,
+      "files": [
+        "2004_2004-05-01_landsat-5_30m_2km_native.png",
+        "2004_2004-05-01_landsat-5_30m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2005,
+      "date": "2005-08-31",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_20050831_02_T2",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "crop_m": 2000,
+      "files": [
+        "2005_2005-08-31_landsat-5_30m_2km_native.png",
+        "2005_2005-08-31_landsat-5_30m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2006,
+      "date": "2006-09-12",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20060912_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "crop_m": 2000,
+      "files": [
+        "2006_2006-09-12_landsat-5_30m_2km_native.png",
+        "2006_2006-09-12_landsat-5_30m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2007,
+      "date": "2007-06-11",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20070611_02_T1",
+      "scene_cloud_cover_percent": 9.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "crop_m": 2000,
+      "files": [
+        "2007_2007-06-11_landsat-5_30m_2km_native.png",
+        "2007_2007-06-11_landsat-5_30m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2008,
+      "date": "2008-05-28",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20080528_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "crop_m": 2000,
+      "files": [
+        "2008_2008-05-28_landsat-5_30m_2km_native.png",
+        "2008_2008-05-28_landsat-5_30m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2009,
+      "date": "2009-09-20",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20090920_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "crop_m": 2000,
+      "files": [
+        "2009_2009-09-20_landsat-5_30m_2km_native.png",
+        "2009_2009-09-20_landsat-5_30m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2010,
+      "date": "2010-09-23",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20100923_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "crop_m": 2000,
+      "files": [
+        "2010_2010-09-23_landsat-5_30m_2km_native.png",
+        "2010_2010-09-23_landsat-5_30m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2011,
+      "date": "2011-06-06",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20110606_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "crop_m": 2000,
+      "files": [
+        "2011_2011-06-06_landsat-5_30m_2km_native.png",
+        "2011_2011-06-06_landsat-5_30m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2012,
+      "date": "2012-09-11",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20120911_02_T1",
+      "scene_cloud_cover_percent": 2.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 0.800178,
+      "native_resolution_m": 30,
+      "crop_m": 2000,
+      "files": [
+        "2012_2012-09-11_landsat-7_30m_2km_native.png",
+        "2012_2012-09-11_landsat-7_30m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2013,
+      "date": "2013-09-06",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-8",
+      "item_id": "LC08_L2SP_190023_20130906_02_T1",
+      "scene_cloud_cover_percent": 0.01,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "crop_m": 2000,
+      "files": [
+        "2013_2013-09-06_landsat-8_30m_2km_native.png",
+        "2013_2013-09-06_landsat-8_30m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2014,
+      "date": "2014-09-18",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-8",
+      "item_id": "LC08_L2SP_189023_20140918_02_T1",
+      "scene_cloud_cover_percent": 0.02,
+      "local_clear_fraction": 0.999332,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "crop_m": 2000,
+      "files": [
+        "2014_2014-09-18_landsat-8_30m_2km_native.png",
+        "2014_2014-09-18_landsat-8_30m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2015,
+      "date": "2015-08-10",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20150810T100016_R122_T34UCE_20210411T195233",
+      "scene_cloud_cover_percent": 0.06699,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "crop_m": 2000,
+      "files": [
+        "2015_2015-08-10_Sentinel-2A_10m_2km_native.png",
+        "2015_2015-08-10_Sentinel-2A_10m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2016,
+      "date": "2016-05-23",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20160523T095032_R079_T33UYV_20210211T133807",
+      "scene_cloud_cover_percent": 0.460278,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "crop_m": 2000,
+      "files": [
+        "2016_2016-05-23_Sentinel-2A_10m_2km_native.png",
+        "2016_2016-05-23_Sentinel-2A_10m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2017,
+      "date": "2017-05-18",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20170518T095031_R079_T34UCE_20210209T162325",
+      "scene_cloud_cover_percent": 0.055662,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "crop_m": 2000,
+      "files": [
+        "2017_2017-05-18_Sentinel-2A_10m_2km_native.png",
+        "2017_2017-05-18_Sentinel-2A_10m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2018,
+      "date": "2018-06-07",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20180607T095029_R079_T34UCE_20201026T183411",
+      "scene_cloud_cover_percent": 0.05233,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "crop_m": 2000,
+      "files": [
+        "2018_2018-06-07_Sentinel-2B_10m_2km_native.png",
+        "2018_2018-06-07_Sentinel-2B_10m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2019,
+      "date": "2019-06-30",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20190630T100031_R122_T34UCE_20201006T081602",
+      "scene_cloud_cover_percent": 0.078437,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "crop_m": 2000,
+      "files": [
+        "2019_2019-06-30_Sentinel-2A_10m_2km_native.png",
+        "2019_2019-06-30_Sentinel-2A_10m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2020,
+      "date": "2020-08-15",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20200815T095039_R079_T34UCE_20200818T105337",
+      "scene_cloud_cover_percent": 0.05668,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "crop_m": 2000,
+      "files": [
+        "2020_2020-08-15_Sentinel-2B_10m_2km_native.png",
+        "2020_2020-08-15_Sentinel-2B_10m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2021,
+      "date": "2021-06-14",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20210614T100029_R122_T34UCE_20210623T234559",
+      "scene_cloud_cover_percent": 0.107691,
+      "local_clear_fraction": 0.9995,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "crop_m": 2000,
+      "files": [
+        "2021_2021-06-14_Sentinel-2B_10m_2km_native.png",
+        "2021_2021-06-14_Sentinel-2B_10m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2022,
+      "date": "2022-08-05",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20220805T094549_R079_T34UCE_20240712T160416",
+      "scene_cloud_cover_percent": 6.404793,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "crop_m": 2000,
+      "files": [
+        "2022_2022-08-05_Sentinel-2B_10m_2km_native.png",
+        "2022_2022-08-05_Sentinel-2B_10m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2023,
+      "date": "2023-09-12",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20230912T095609_R122_T33UYV_20241103T122113",
+      "scene_cloud_cover_percent": 0.123749,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "crop_m": 2000,
+      "files": [
+        "2023_2023-09-12_Sentinel-2B_10m_2km_native.png",
+        "2023_2023-09-12_Sentinel-2B_10m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2024,
+      "date": "2024-08-14",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20240814T094549_R079_T33UYV_20240814T123852",
+      "scene_cloud_cover_percent": 0.000281,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "crop_m": 2000,
+      "files": [
+        "2024_2024-08-14_Sentinel-2B_10m_2km_native.png",
+        "2024_2024-08-14_Sentinel-2B_10m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2025,
+      "date": "2025-09-26",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2C",
+      "item_id": "S2C_MSIL2A_20250926T100041_R122_T33UYV_20250926T152116",
+      "scene_cloud_cover_percent": 0.012366,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "crop_m": 2000,
+      "files": [
+        "2025_2025-09-26_Sentinel-2C_10m_2km_native.png",
+        "2025_2025-09-26_Sentinel-2C_10m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "status": "ok"
+    },
+    {
+      "year": 2026,
+      "date": "2026-05-26",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20260526T095019_R079_T33UYV_20260526T121818",
+      "scene_cloud_cover_percent": 1.510684,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "crop_m": 2000,
+      "files": [
+        "2026_2026-05-26_Sentinel-2B_10m_2km_native.png",
+        "2026_2026-05-26_Sentinel-2B_10m_2km_display1024.png"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "status": "ok"
+    }
+  ],
+  "count_ok": 27
+}
