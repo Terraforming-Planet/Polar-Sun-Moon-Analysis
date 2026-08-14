@@ -1,34 +1,83 @@
 {
-  "source": "USGS Landsat Collection 2 Level-1 via Microsoft Planetary Computer",
-  "crop": "2 km x 2 km",
+  "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer",
   "center": [
     53.59407,
     19.000151
   ],
+  "crop": "2 km x 2 km",
   "years": [
     {
       "year": 2000,
-      "status": "not_found"
+      "status": "ok",
+      "date": "2000-08-25",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20000825_02_T1",
+      "cloud": 2.0,
+      "valid_fraction": 1.0,
+      "files": [
+        "2000_2000-08-25_landsat-7_USGS_Landsat_C2_L2_RGB30m_2km.png"
+      ]
     },
     {
       "year": 2005,
-      "status": "not_found"
+      "status": "ok",
+      "date": "2005-08-31",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_20050831_02_T2",
+      "cloud": 0.0,
+      "valid_fraction": 1.0,
+      "files": [
+        "2005_2005-08-31_landsat-5_USGS_Landsat_C2_L2_RGB30m_2km.png"
+      ]
     },
     {
       "year": 2010,
-      "status": "not_found"
+      "status": "ok",
+      "date": "2010-07-12",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_20100712_02_T1",
+      "cloud": 3.0,
+      "valid_fraction": 1.0,
+      "files": [
+        "2010_2010-07-12_landsat-5_USGS_Landsat_C2_L2_RGB30m_2km.png"
+      ]
     },
     {
       "year": 2015,
-      "status": "not_found"
+      "status": "ok",
+      "date": "2015-07-03",
+      "platform": "landsat-8",
+      "item_id": "LC08_L2SP_189023_20150703_02_T1",
+      "cloud": 0.0,
+      "valid_fraction": 1.0,
+      "files": [
+        "2015_2015-07-03_landsat-8_USGS_Landsat_C2_L2_RGB30m_2km.png"
+      ]
     },
     {
       "year": 2020,
-      "status": "not_found"
+      "status": "ok",
+      "date": "2020-08-08",
+      "platform": "landsat-8",
+      "item_id": "LC08_L2SP_190023_20200808_02_T1",
+      "cloud": 3.82,
+      "valid_fraction": 1.0,
+      "files": [
+        "2020_2020-08-08_landsat-8_USGS_Landsat_C2_L2_RGB30m_2km.png"
+      ]
     },
     {
       "year": 2026,
-      "status": "not_found"
+      "status": "ok",
+      "date": "2026-07-16",
+      "platform": "landsat-9",
+      "item_id": "LC09_L2SP_190023_20260716_02_T1",
+      "cloud": 0.29,
+      "valid_fraction": 1.0,
+      "files": [
+        "2026_2026-07-16_landsat-9_USGS_Landsat_C2_L2_RGB30m_2km.png"
+      ]
     }
-  ]
+  ],
+  "note": "Real 30 m surface-reflectance pixels, true-color RGB; no AI."
 }

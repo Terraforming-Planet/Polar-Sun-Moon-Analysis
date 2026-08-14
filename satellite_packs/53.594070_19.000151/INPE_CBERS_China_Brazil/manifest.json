@@ -1,11 +1,16 @@
 {
-  "source": "JAXA ALOS/ALOS-2 PALSAR Annual Mosaic via Microsoft Planetary Computer",
-  "collection": "alos-palsar-mosaic",
+  "source": "INPE official STAC \u2014 CBERS China-Brazil Earth Resources Satellite",
   "center": [
     53.59407,
     19.000151
   ],
   "crop": "2 km x 2 km",
+  "collections": {
+    "CBERS2_CCD": "CB2-CCD-L2-DN-1",
+    "CBERS2B_CCD": "CB2B-CCD-L2-DN-1",
+    "CBERS4_PAN5M": "CB4-PAN5M-L4-DN-1",
+    "CBERS4A_WPM_FUSED": "CB4A-WPM-PCA-FUSED-1"
+  },
   "years": [
     {
       "year": 2000,
@@ -32,5 +37,5 @@
       "status": "not_found"
     }
   ],
-  "note": "Real SAR radar pixels, normally 25 m. Water often appears dark. Not optical photography."
+  "note": "Included only if official INPE catalogue contains a scene covering the Poland coordinate. No substitution or fabricated image."
 }
