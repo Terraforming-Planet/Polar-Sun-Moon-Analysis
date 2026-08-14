@@ -1,4 +1,4 @@
-name: Experiment 003 Jezioro Nogat seasonal evidence
+name: Experiment 003 Jezioro Nogat full-lake evidence
 
 on:
   push:
@@ -36,16 +36,17 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install numpy pillow requests rasterio pyproj
 
-      - name: Build Test 003 Jezioro Nogat imagery 1990-2026
+      - name: Delete cropped dataset and rebuild Test 003 full-lake imagery 1990-2026
         run: python tools/build_experiment_003_seasonal_evidence.py
 
-      - name: Validate Test 003 package
+      - name: Validate corrected Test 003 full-lake package
         run: |
           python - <<'PY'
           import hashlib
           import json
           from datetime import date
           from pathlib import Path
+          from PIL import Image
 
           exp = Path('experiments/experiment_003_jezioro_nogat')
           summary = json.loads((exp/'BUILD_SUMMARY.json').read_text(encoding='utf-8'))
@@ -53,16 +54,27 @@ jobs:
           assert summary['experiment'] == 3
           assert summary['object'] == 'Jezioro Nogat'
           assert summary['center'] == {'lat': 53.578593, 'lon': 19.068364}
+          assert summary['frame_width_m'] == 4000
+          assert summary['frame_height_m'] == 6000
+          assert summary['frame_orientation'] == 'portrait_north_up'
+          assert summary['previous_2km_dataset'] == 'deleted_and_rejected'
           assert summary['spring_count_ok'] >= 30, summary
           assert summary['autumn_count_ok'] >= 30, summary
 
           combined = Path(summary['combined_zip'])
           assert combined.exists() and combined.stat().st_size > 100000
+          assert 'FULL_LAKE_4x6km' in combined.name
+
+          # The old cropped Test 003 archives must be gone.
+          assert not (exp/'TEST003_JEZIORO_NOGAT_1990_2026_53.578593_19.068364.zip').exists()
 
           for season in ('spring', 'autumn'):
               root = exp/'seasonal_evidence'/season
               manifest = json.loads((root/'manifest.json').read_text(encoding='utf-8'))
               assert manifest['center'] == {'lat': 53.578593, 'lon': 19.068364}
+              assert manifest['aoi']['width_m'] == 4000
+              assert manifest['aoi']['height_m'] == 6000
+              assert manifest['aoi']['orientation'] == 'portrait_north_up'
               assert len(manifest['records']) == 37
               assert manifest.get('no_experiment_002_imagery_reused') is True
               seen = {}
@@ -70,11 +82,21 @@ jobs:
                   if rec.get('status') != 'ok':
                       continue
                   assert str(rec['date']).startswith(str(rec['year']) + '-')
+                  assert rec['crop_width_m'] == 4000
+                  assert rec['crop_height_m'] == 6000
+                  assert all('4x6km' in f for f in rec['files'])
+                  assert all('_2km_' not in f for f in rec['files'])
                   native = root/'images'/rec['files'][0]
-                  assert native.exists()
+                  display = root/'images'/rec['files'][1]
+                  assert native.exists() and display.exists()
+                  with Image.open(display) as im:
+                      assert im.size == (800, 1200), (rec['year'], im.size)
                   sha = hashlib.sha256(native.read_bytes()).hexdigest()
                   assert sha not in seen, f"duplicate satellite image: {seen.get(sha)} and {rec['year']}"
                   seen[sha] = rec['year']
+
+              zips = list(root.glob('TEST003_*_4x6km_53.578593_19.068364.zip'))
+              assert len(zips) == 1 and zips[0].stat().st_size > 100000
 
           # 14 Aug 2026: September-November 2026 is still in the future.
           if date.today() < date(2026, 9, 1):
@@ -84,28 +106,28 @@ jobs:
 
           assert (exp/'EVIDENCE_POLICY.json').exists()
           assert (exp/'EXPERIMENT_003_REPORT.md').exists()
-          print('EXPERIMENT_003_JEZIORO_NOGAT_VALIDATED')
+          print('EXPERIMENT_003_FULL_LAKE_4X6KM_VALIDATED')
           PY
 
-      - name: Upload downloadable Test 003 archive
+      - name: Upload corrected Test 003 full-lake archive
         uses: actions/upload-artifact@v4
         with:
-          name: TEST003_JEZIORO_NOGAT_1990_2026_53.578593_19.068364
+          name: TEST003_JEZIORO_NOGAT_FULL_LAKE_1990_2026_53.578593_19.068364
           path: |
-            experiments/experiment_003_jezioro_nogat/TEST003_JEZIORO_NOGAT_1990_2026_53.578593_19.068364.zip
-            experiments/experiment_003_jezioro_nogat/seasonal_evidence/spring/TEST003_SPRING_1990_2026_37_YEARS_2km_53.578593_19.068364.zip
-            experiments/experiment_003_jezioro_nogat/seasonal_evidence/autumn/TEST003_AUTUMN_1990_2026_37_YEARS_2km_53.578593_19.068364.zip
+            experiments/experiment_003_jezioro_nogat/TEST003_JEZIORO_NOGAT_1990_2026_FULL_LAKE_4x6km_53.578593_19.068364.zip
+            experiments/experiment_003_jezioro_nogat/seasonal_evidence/spring/TEST003_SPRING_1990_2026_37_YEARS_4x6km_53.578593_19.068364.zip
+            experiments/experiment_003_jezioro_nogat/seasonal_evidence/autumn/TEST003_AUTUMN_1990_2026_37_YEARS_4x6km_53.578593_19.068364.zip
             experiments/experiment_003_jezioro_nogat/BUILD_SUMMARY.json
             experiments/experiment_003_jezioro_nogat/EXPERIMENT_003_REPORT.md
             experiments/experiment_003_jezioro_nogat/EVIDENCE_POLICY.json
           retention-days: 90
 
-      - name: Commit Test 003 evidence outputs
+      - name: Commit corrected Test 003 evidence outputs
         run: |
           git config user.name "Terraforming Planet"
           git config user.email "kontakt@teslaeco.pl"
-          git add experiments/experiment_003_jezioro_nogat
+          git add -A experiments/experiment_003_jezioro_nogat
           git diff --cached --quiet && echo "No Test 003 evidence changes" && exit 0
-          git commit -m "Build Test 003 Jezioro Nogat satellite dataset 1990-2026"
+          git commit -m "Replace cropped Test 003 with full-lake 4x6 km dataset"
           git pull --rebase origin experiment-003-jezioro-nogat-53-578593-19-068364
           git push origin HEAD:experiment-003-jezioro-nogat-53-578593-19-068364
