@@ -5,7 +5,7 @@ import math
 import os
 import time
 import zipfile
-from datetime import date, datetime
+from datetime import datetime
 from pathlib import Path
 
 import numpy as np
@@ -31,6 +31,9 @@ STAC_ROOT = "https://earth-search.aws.element84.com/v1"
 SEARCH_URL = STAC_ROOT + "/search"
 SESSION = requests.Session()
 
+LANDSAT_COLLECTION = "landsat-c2-l2"
+SENTINEL_COLLECTIONS = ["sentinel-2-c1-l2a", "sentinel-2-pre-c1-l2a"]
+
 os.environ.setdefault("GDAL_DISABLE_READDIR_ON_OPEN", "EMPTY_DIR")
 os.environ.setdefault("GDAL_HTTP_MULTIRANGE", "YES")
 os.environ.setdefault("GDAL_HTTP_MERGE_CONSECUTIVE_RANGES", "YES")
@@ -48,6 +51,8 @@ def request_json(method: str, url: str, **kwargs):
         r = SESSION.request(method, url, timeout=120, **kwargs)
         last = r
         if r.status_code not in (429, 500, 502, 503, 504):
+            if r.status_code >= 400:
+                print("HTTP ERROR", r.status_code, url, r.text[:1200], flush=True)
             r.raise_for_status()
             return r.json()
         wait = min(30, int(r.headers.get("Retry-After", 2 ** attempt)))
@@ -58,14 +63,30 @@ def request_json(method: str, url: str, **kwargs):
 
 
 def search(collection: str, year: int, limit: int = 160) -> list[dict]:
-    payload = {
-        "collections": [collection],
-        "bbox": SEARCH_BBOX,
-        "datetime": f"{year}-05-01/{year}-05-31",
-        "limit": limit,
+    # Earth Search currently behaves more consistently for this query via GET.
+    params = {
+        "collections": collection,
+        "bbox": ",".join(str(x) for x in SEARCH_BBOX),
+        "datetime": f"{year}-05-01T00:00:00Z/{year}-05-31T23:59:59Z",
+        "limit": str(limit),
     }
-    data = request_json("POST", SEARCH_URL, json=payload)
+    data = request_json("GET", SEARCH_URL, params=params)
     return data.get("features", [])
+
+
+def search_sentinel(year: int) -> list[dict]:
+    items: list[dict] = []
+    seen: set[str] = set()
+    for collection in SENTINEL_COLLECTIONS:
+        try:
+            for item in search(collection, year):
+                iid = str(item.get("id"))
+                if iid not in seen:
+                    seen.add(iid)
+                    items.append(item)
+        except requests.HTTPError as exc:
+            print("Sentinel collection unavailable", collection, year, repr(exc), flush=True)
+    return items
 
 
 def item_date(item: dict) -> str:
@@ -118,6 +139,7 @@ def read_asset(item: dict, key: str, resolution_m: float, nearest: bool = False)
         GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR",
         GDAL_HTTP_MULTIRANGE="YES",
         GDAL_HTTP_MERGE_CONSECUTIVE_RANGES="YES",
+        AWS_NO_SIGN_REQUEST="YES",
     ):
         with rasterio.open(href) as src:
             reproject(
@@ -199,18 +221,24 @@ def sentinel_quality(item: dict) -> tuple[float, float]:
     return float(np.mean((~bad)[valid])), float(np.mean(valid))
 
 
-def choose_best(collection: str, year: int, sensor: str) -> tuple[dict | None, dict]:
-    items = search(collection, year)
+def choose_best_landsat(year: int) -> tuple[dict | None, dict]:
+    items = search(LANDSAT_COLLECTION, year)
+    return choose_from_items(items, year, "landsat")
+
+
+def choose_best_sentinel(year: int) -> tuple[dict | None, dict]:
+    items = search_sentinel(year)
+    return choose_from_items(items, year, "sentinel")
+
+
+def choose_from_items(items: list[dict], year: int, sensor: str) -> tuple[dict | None, dict]:
     items.sort(key=lambda i: (cloud_cover(i), day_distance(i, year)))
     best = None
     best_meta: dict = {}
     best_score = math.inf
     for item in items[:28]:
         try:
-            if sensor == "sentinel":
-                clear, valid = sentinel_quality(item)
-            else:
-                clear, valid = landsat_quality(item)
+            clear, valid = sentinel_quality(item) if sensor == "sentinel" else landsat_quality(item)
         except Exception as exc:
             print("quality failed", item.get("id"), repr(exc), flush=True)
             clear = max(0.0, 1.0 - cloud_cover(item) / 100.0)
@@ -220,7 +248,7 @@ def choose_best(collection: str, year: int, sensor: str) -> tuple[dict | None, d
         if sensor == "landsat" and "landsat-7" in platform and item_date(item) >= "2003-06-01":
             slc_penalty = 1800.0
         score = ((1 - clear) * 12000 + (1 - valid) * 14000 + cloud_cover(item) * 3 + day_distance(item, year) * 0.2 + slc_penalty)
-        print(sensor, year, item.get("id"), item_date(item), "cloud", round(cloud_cover(item), 3), "clear", round(clear, 4), "valid", round(valid, 4), "score", round(score, 2), flush=True)
+        print(sensor, year, item.get("id"), item_date(item), "collection", item.get("collection"), "cloud", round(cloud_cover(item), 3), "clear", round(clear, 4), "valid", round(valid, 4), "score", round(score, 2), flush=True)
         if score < best_score:
             best_score = score
             best = item
@@ -248,7 +276,7 @@ def render_landsat(year: int, item: dict, meta: dict) -> dict:
         "year": year,
         "date": dt,
         "source": "USGS Landsat Collection 2 Level-2 mirrored by Element 84 Earth Search / AWS",
-        "delivery_path": "https://earth-search.aws.element84.com/v1",
+        "delivery_path": STAC_ROOT,
         "platform": item.get("properties", {}).get("platform"),
         "item_id": item.get("id"),
         "scene_cloud_cover_percent": cloud_cover(item),
@@ -279,7 +307,7 @@ def render_sentinel(year: int, item: dict, meta: dict) -> dict:
         "year": year,
         "date": dt,
         "source": "ESA/Copernicus Sentinel-2 Level-2A mirrored by Element 84 Earth Search / AWS",
-        "delivery_path": "https://earth-search.aws.element84.com/v1",
+        "delivery_path": STAC_ROOT,
         "platform": item.get("properties", {}).get("platform"),
         "item_id": item.get("id"),
         "scene_cloud_cover_percent": cloud_cover(item),
@@ -331,6 +359,7 @@ def main() -> None:
         "years_requested": YEARS,
         "count_requested": 36,
         "independent_delivery_path": "Element 84 Earth Search / AWS; not Microsoft Planetary Computer",
+        "collections": {"landsat": LANDSAT_COLLECTION, "sentinel": SENTINEL_COLLECTIONS},
         "quality_sync": {
             "1990_2014": "Best local-quality May Landsat Collection 2 Level-2 scene, 30 m; Landsat-7 post-SLC failure scenes are heavily penalized.",
             "2015_2025": "Prefer Sentinel-2 Level-2A at 10 m. If no usable Sentinel-2 May scene exists, fallback to Landsat 30 m.",
@@ -344,17 +373,17 @@ def main() -> None:
         rec: dict = {"year": year, "status": "not_found"}
         try:
             if year >= 2015:
-                item, meta = choose_best("sentinel-2-l2a", year, "sentinel")
+                item, meta = choose_best_sentinel(year)
                 if item:
                     rec = render_sentinel(year, item, meta)
                     rec["status"] = "ok"
                 else:
-                    item, meta = choose_best("landsat-c2-l2", year, "landsat")
+                    item, meta = choose_best_landsat(year)
                     if item:
                         rec = render_landsat(year, item, meta)
                         rec["status"] = "ok_landsat_fallback"
             else:
-                item, meta = choose_best("landsat-c2-l2", year, "landsat")
+                item, meta = choose_best_landsat(year)
                 if item:
                     rec = render_landsat(year, item, meta)
                     rec["status"] = "ok"
