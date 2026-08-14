@@ -1,0 +1,64 @@
+name: Third source Sentinel-1 RTC water 2015-2025
+
+on:
+  push:
+    branches:
+      - annual-best-53-591400-19-010717
+    paths:
+      - 'tools/build_third_source_sentinel1_rtc_water_2015_2025.py'
+      - '.github/workflows/third-source-sentinel1-rtc-water-2015-2025.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: annual-best-53-591400-19-010717
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install scientific geospatial dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy scipy pillow rasterio pyproj pystac-client planetary-computer
+
+      - name: Build Sentinel-1 RTC third-source pack and measurements
+        run: python tools/build_third_source_sentinel1_rtc_water_2015_2025.py
+
+      - name: Validate third-source outputs
+        run: |
+          python - <<'PY'
+          import csv
+          import json
+          from pathlib import Path
+          root = Path('satellite_third_source_sentinel1_rtc_may_2015_2025/53.591400_19.010717')
+          manifest = json.loads((root / 'manifest.json').read_text(encoding='utf-8'))
+          print('COUNT_OK', manifest['count_ok'], 'OF', manifest['count_requested'])
+          if manifest['count_ok'] < 10:
+              raise SystemExit(f"Too few annual Sentinel-1 RTC results: {manifest['count_ok']}/{manifest['count_requested']}")
+          rows = list(csv.DictReader((root / 'measurements_open_water_radar.csv').open(encoding='utf-8')))
+          print('MEASUREMENT_ROWS', len(rows))
+          if len(rows) != manifest['count_requested'] * 2:
+              raise SystemExit(f"Expected {manifest['count_requested'] * 2} measurement rows, got {len(rows)}")
+          zips = list(root.glob('THIRD_SOURCE_SENTINEL1_RTC_*.zip'))
+          if len(zips) != 1 or zips[0].stat().st_size < 100_000:
+              raise SystemExit('Missing or unexpectedly small output ZIP')
+          PY
+
+      - name: Commit generated third-source pack
+        run: |
+          git config user.name "Terraforming Planet"
+          git config user.email "kontakt@teslaeco.pl"
+          git add satellite_third_source_sentinel1_rtc_may_2015_2025/53.591400_19.010717
+          git diff --cached --quiet && echo "No generated changes to commit" && exit 0
+          git commit -m "Add Sentinel-1 RTC third-source water verification pack"
+          git push
