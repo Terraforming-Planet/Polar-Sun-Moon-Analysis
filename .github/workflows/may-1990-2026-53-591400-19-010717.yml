@@ -35,10 +35,7 @@ jobs:
           GDAL_DISABLE_READDIR_ON_OPEN: EMPTY_DIR
           GDAL_HTTP_MULTIRANGE: 'YES'
           GDAL_HTTP_MERGE_CONSECUTIVE_RANGES: 'YES'
-        run: |
-          cd tools
-          python build_may_1990_2026_53_591400_19_010717.py
-          cd ..
+        run: python tools/build_may_1990_2026_53_591400_19_010717.py
 
       - name: Commit generated May pack
         run: |
