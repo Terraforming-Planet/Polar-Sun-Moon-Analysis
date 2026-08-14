@@ -76,7 +76,11 @@ jobs:
         run: |
           git config user.name "Terraforming Planet"
           git config user.email "kontakt@teslaeco.pl"
-          git add experiments/experiment_001_pond_forest_kuchnia
+          # The suspect-image archive is committed by its own workflow and remains authoritative.
+          # Stage only seasonal evidence + generated experiment summary to avoid overwriting that archive.
+          git add experiments/experiment_001_pond_forest_kuchnia/seasonal_evidence
+          git add experiments/experiment_001_pond_forest_kuchnia/EXPERIMENT_001_REPORT.md
+          git add experiments/experiment_001_pond_forest_kuchnia/experiment.json
           git diff --cached --quiet && echo "No evidence changes" && exit 0
           git commit -m "Build Experiment 001 spring and autumn water-loss evidence"
           git pull --rebase origin annual-best-53-591400-19-010717
