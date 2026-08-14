@@ -5,7 +5,6 @@ on:
     branches:
       - annual-best-53-591400-19-010717
     paths:
-      - 'tools/probe_third_source_sentinel1_pc.py'
       - '.github/workflows/probe-third-source-sentinel1.yml'
   workflow_dispatch:
 
@@ -14,17 +13,35 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: annual-best-53-591400-19-010717
-          filter: blob:none
-          sparse-checkout: |
-            tools
-          sparse-checkout-cone-mode: true
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Install probe dependencies
         run: python -m pip install requests pystac-client planetary-computer rasterio
       - name: Probe Sentinel-1 assets
-        run: python tools/probe_third_source_sentinel1_pc.py
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import planetary_computer
+          import pystac_client
+          import rasterio
+          lat=53.591400; lon=19.010717
+          bbox=[lon-0.03,lat-0.03,lon+0.03,lat+0.03]
+          catalog=pystac_client.Client.open('https://planetarycomputer.microsoft.com/api/stac/v1', modifier=planetary_computer.sign_inplace)
+          items=list(catalog.search(collections=['sentinel-1-grd'],bbox=bbox,datetime='2021-05-01/2021-05-31',max_items=3).items())
+          print('COUNT',len(items))
+          for item in items[:1]:
+              print('ITEM',item.id)
+              print('PROPS',json.dumps({k:item.properties.get(k) for k in ['datetime','platform','sar:instrument_mode','sat:orbit_state','sar:polarizations','s1:resolution']},default=str))
+              print('ASSETS',sorted(item.assets))
+              for key,asset in item.assets.items():
+                  print('ASSET',key,asset.media_type,asset.roles,asset.href[:260])
+              for key in ['vv','vh','hh','hv']:
+                  if key in item.assets:
+                      try:
+                          with rasterio.open(item.assets[key].href) as src:
+                              print('RASTER_OK',key,src.width,src.height,str(src.crs),src.dtypes,src.nodata)
+                      except Exception as exc:
+                          print('RASTER_FAIL',key,repr(exc))
+          PY
