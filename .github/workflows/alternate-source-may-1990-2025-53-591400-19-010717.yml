@@ -6,6 +6,7 @@ on:
       - annual-best-53-591400-19-010717
     paths:
       - 'tools/build_alternate_source_may_1990_2025_53_591400_19_010717.py'
+      - 'tools/fill_alt_source_2022_legacy_sentinel.py'
       - '.github/workflows/alternate-source-may-1990-2025-53-591400-19-010717.yml'
   workflow_dispatch:
 
@@ -32,6 +33,9 @@ jobs:
 
       - name: Build 36 alternate-source May images
         run: python tools/build_alternate_source_may_1990_2025_53_591400_19_010717.py
+
+      - name: Fill 2022 from legacy Sentinel-2 COG archive if needed
+        run: python tools/fill_alt_source_2022_legacy_sentinel.py
 
       - name: Validate completeness
         run: |
