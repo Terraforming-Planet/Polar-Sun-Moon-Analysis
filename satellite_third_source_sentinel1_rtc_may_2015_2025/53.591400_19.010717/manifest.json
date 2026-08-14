@@ -1,0 +1,1159 @@
+{
+  "title": "Third independent sensor verification - Sentinel-1 RTC May 2015-2025",
+  "center": {
+    "lat": 53.5914,
+    "lon": 19.010717
+  },
+  "secondary_seed": {
+    "name": "Staw w lesie",
+    "lat": 53.59407,
+    "lon": 19.000151
+  },
+  "years_requested": [
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "count_requested": 11,
+  "count_ok": 11,
+  "source": "ESA/Copernicus Sentinel-1 C-band SAR RTC",
+  "delivery": "Microsoft Planetary Computer STAC/API",
+  "preferred_track": {
+    "orbit_state": "descending",
+    "relative_orbit": 124
+  },
+  "resolution": "10 m analysis grid; 100 m2 per pixel",
+  "integrity": "Real radar pixels only. No generative AI, no synthetic filling, no AI super-resolution.",
+  "measurement_definition": "Radar-dark, connected open-water proxy around fixed seed coordinates. This is an independent SAR verification, not a cadastral/survey measurement.",
+  "measurement_method": {
+    "channels": "RTC VV and VH converted to dB",
+    "temporal": "May temporal median from up to 3 acquisitions on the most consistent repeat orbit track",
+    "speckle_reduction": "3x3 median filter",
+    "segmentation": "adaptive Otsu threshold in a fixed local ROI with conservative radar-dark caps (VV <= min(Otsu,-12 dB), VH <= min(Otsu,-17 dB))",
+    "object_selection": "8-connected component nearest each fixed water-body seed; maximum seed distance and component size guards",
+    "pixel_area": "100 m2 at 10 m grid",
+    "reported_uncertainty": "edge_pixel_uncertainty_m2 is a pixel-edge discretization indicator only; it does not include all SAR classification uncertainty"
+  },
+  "important_limitations": [
+    "Sentinel-1 does not provide this May time series back to 1990; this independent sensor check starts in 2015.",
+    "SAR open-water detection can be affected by wind roughening, emergent/flooded vegetation, forest canopy, speckle, incidence geometry and very small water bodies.",
+    "A zero result means no connected radar-dark open-water component was detected at the fixed seed under this method; it is not proof that the ground contained absolutely no moisture or water under vegetation.",
+    "Percent changes use the first year with a positive, confidently connected radar-open-water result for each body as its SAR baseline."
+  ],
+  "outputs": {
+    "measurements_csv": "measurements_open_water_radar.csv",
+    "contact_sheet": "CONTACT_SHEET_SENTINEL1_RTC_MAY_2015_2025.jpg",
+    "images_directory": "images"
+  },
+  "records": [
+    {
+      "year": 2015,
+      "date_start": "2015-05-06",
+      "date_end": "2015-05-30",
+      "source": "ESA/Copernicus Sentinel-1 RTC, delivered by Microsoft Planetary Computer",
+      "collection": "sentinel-1-rtc",
+      "sensor_type": "C-band SAR radar",
+      "processing_level": "radiometrically terrain-corrected (RTC)",
+      "native_pixel_spacing_m": 10,
+      "analysis_grid": {
+        "crs": "EPSG:32634",
+        "resolution_m": 10.0,
+        "width": 200,
+        "height": 200,
+        "pixel_area_m2": 100.0
+      },
+      "crop": "2 km x 2 km centered on 53.591400, 19.010717",
+      "platforms": [
+        "SENTINEL-1A"
+      ],
+      "orbit_state": "descending",
+      "relative_orbit": 124,
+      "preferred_track": {
+        "orbit_state": "descending",
+        "relative_orbit": 124
+      },
+      "selection_mode": "preferred_track",
+      "acquisitions_used": 3,
+      "acquisitions": [
+        {
+          "id": "S1A_IW_GRDH_1SDV_20150518T045944_20150518T050009_005971_007B27_rtc",
+          "date": "2015-05-18",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        },
+        {
+          "id": "S1A_IW_GRDH_1SDV_20150506T045944_20150506T050009_005796_007731_rtc",
+          "date": "2015-05-06",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        },
+        {
+          "id": "S1A_IW_GRDH_1SDV_20150530T045947_20150530T050012_006146_007FBC_rtc",
+          "date": "2015-05-30",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        }
+      ],
+      "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
+      "measurements": {
+        "jezioro_kuchnia": {
+          "area_m2": 71700.0,
+          "area_ha": 7.17,
+          "water_pixels": 717,
+          "seed_distance_m": 31.622776601683796,
+          "vv_threshold_db": -12.0,
+          "vh_threshold_db": -17.18219355116288,
+          "vv_otsu_db": -11.64116154874365,
+          "vh_otsu_db": -17.18219355116288,
+          "boundary_pixels": 16,
+          "edge_pixel_uncertainty_m2": 800.0,
+          "confidence": "medium",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": 0.0,
+          "change_vs_baseline_percent": 0.0
+        },
+        "staw_w_lesie": {
+          "area_m2": 1700.0,
+          "area_ha": 0.17,
+          "water_pixels": 17,
+          "seed_distance_m": 0.0,
+          "vv_threshold_db": -12.0,
+          "vh_threshold_db": -17.0,
+          "vv_otsu_db": -8.777064812680086,
+          "vh_otsu_db": -14.200788322091102,
+          "boundary_pixels": 8,
+          "edge_pixel_uncertainty_m2": 400.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": 0.0,
+          "change_vs_baseline_percent": 0.0
+        }
+      },
+      "files": {
+        "vv_native": "images/2015_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2015_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2015_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2015_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2015_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2015_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
+      },
+      "status": "ok"
+    },
+    {
+      "year": 2016,
+      "date_start": "2016-05-12",
+      "date_end": "2016-05-24",
+      "source": "ESA/Copernicus Sentinel-1 RTC, delivered by Microsoft Planetary Computer",
+      "collection": "sentinel-1-rtc",
+      "sensor_type": "C-band SAR radar",
+      "processing_level": "radiometrically terrain-corrected (RTC)",
+      "native_pixel_spacing_m": 10,
+      "analysis_grid": {
+        "crs": "EPSG:32634",
+        "resolution_m": 10.0,
+        "width": 200,
+        "height": 200,
+        "pixel_area_m2": 100.0
+      },
+      "crop": "2 km x 2 km centered on 53.591400, 19.010717",
+      "platforms": [
+        "SENTINEL-1A"
+      ],
+      "orbit_state": "descending",
+      "relative_orbit": 124,
+      "preferred_track": {
+        "orbit_state": "descending",
+        "relative_orbit": 124
+      },
+      "selection_mode": "preferred_track",
+      "acquisitions_used": 2,
+      "acquisitions": [
+        {
+          "id": "S1A_IW_GRDH_1SDV_20160512T045951_20160512T050020_011221_010F75_rtc",
+          "date": "2016-05-12",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        },
+        {
+          "id": "S1A_IW_GRDH_1SDV_20160524T045952_20160524T050021_011396_01152F_rtc",
+          "date": "2016-05-24",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        }
+      ],
+      "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
+      "measurements": {
+        "jezioro_kuchnia": {
+          "area_m2": 69500.0,
+          "area_ha": 6.95,
+          "water_pixels": 695,
+          "seed_distance_m": 36.05551275463989,
+          "vv_threshold_db": -12.327794255117576,
+          "vh_threshold_db": -17.030995818376546,
+          "vv_otsu_db": -12.327794255117576,
+          "vh_otsu_db": -17.030995818376546,
+          "boundary_pixels": 20,
+          "edge_pixel_uncertainty_m2": 1000.0,
+          "confidence": "medium",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": -2200.0,
+          "change_vs_baseline_percent": -3.0683403068340307
+        },
+        "staw_w_lesie": {
+          "area_m2": 1800.0,
+          "area_ha": 0.18,
+          "water_pixels": 18,
+          "seed_distance_m": 0.0,
+          "vv_threshold_db": -12.0,
+          "vh_threshold_db": -17.0,
+          "vv_otsu_db": -8.65488414565722,
+          "vh_otsu_db": -14.623035334050655,
+          "boundary_pixels": 4,
+          "edge_pixel_uncertainty_m2": 200.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": 100.0,
+          "change_vs_baseline_percent": 5.88235294117647
+        }
+      },
+      "files": {
+        "vv_native": "images/2016_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2016_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2016_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2016_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2016_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2016_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
+      },
+      "status": "ok"
+    },
+    {
+      "year": 2017,
+      "date_start": "2017-05-07",
+      "date_end": "2017-05-19",
+      "source": "ESA/Copernicus Sentinel-1 RTC, delivered by Microsoft Planetary Computer",
+      "collection": "sentinel-1-rtc",
+      "sensor_type": "C-band SAR radar",
+      "processing_level": "radiometrically terrain-corrected (RTC)",
+      "native_pixel_spacing_m": 10,
+      "analysis_grid": {
+        "crs": "EPSG:32634",
+        "resolution_m": 10.0,
+        "width": 200,
+        "height": 200,
+        "pixel_area_m2": 100.0
+      },
+      "crop": "2 km x 2 km centered on 53.591400, 19.010717",
+      "platforms": [
+        "SENTINEL-1A",
+        "SENTINEL-1B"
+      ],
+      "orbit_state": "descending",
+      "relative_orbit": 124,
+      "preferred_track": {
+        "orbit_state": "descending",
+        "relative_orbit": 124
+      },
+      "selection_mode": "preferred_track",
+      "acquisitions_used": 3,
+      "acquisitions": [
+        {
+          "id": "S1B_IW_GRDH_1SDV_20170513T045913_20170513T045938_005575_009C37_rtc",
+          "date": "2017-05-13",
+          "platform": "SENTINEL-1B",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        },
+        {
+          "id": "S1A_IW_GRDH_1SDV_20170519T050013_20170519T050038_016646_01BA02_rtc",
+          "date": "2017-05-19",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        },
+        {
+          "id": "S1A_IW_GRDH_1SDV_20170507T050013_20170507T050038_016471_01B4A7_rtc",
+          "date": "2017-05-07",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        }
+      ],
+      "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
+      "measurements": {
+        "jezioro_kuchnia": {
+          "area_m2": 74100.0,
+          "area_ha": 7.41,
+          "water_pixels": 741,
+          "seed_distance_m": 40.0,
+          "vv_threshold_db": -13.25898361161353,
+          "vh_threshold_db": -17.323085101644207,
+          "vv_otsu_db": -13.25898361161353,
+          "vh_otsu_db": -17.323085101644207,
+          "boundary_pixels": 6,
+          "edge_pixel_uncertainty_m2": 300.0,
+          "confidence": "medium",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": 2400.0,
+          "change_vs_baseline_percent": 3.3472803347280333
+        },
+        "staw_w_lesie": {
+          "area_m2": 1700.0,
+          "area_ha": 0.17,
+          "water_pixels": 17,
+          "seed_distance_m": 0.0,
+          "vv_threshold_db": -12.0,
+          "vh_threshold_db": -17.0,
+          "vv_otsu_db": -9.101223069429398,
+          "vh_otsu_db": -13.902748480935891,
+          "boundary_pixels": 2,
+          "edge_pixel_uncertainty_m2": 100.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": 0.0,
+          "change_vs_baseline_percent": 0.0
+        }
+      },
+      "files": {
+        "vv_native": "images/2017_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2017_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2017_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2017_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2017_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2017_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
+      },
+      "status": "ok"
+    },
+    {
+      "year": 2018,
+      "date_start": "2018-05-08",
+      "date_end": "2018-05-20",
+      "source": "ESA/Copernicus Sentinel-1 RTC, delivered by Microsoft Planetary Computer",
+      "collection": "sentinel-1-rtc",
+      "sensor_type": "C-band SAR radar",
+      "processing_level": "radiometrically terrain-corrected (RTC)",
+      "native_pixel_spacing_m": 10,
+      "analysis_grid": {
+        "crs": "EPSG:32634",
+        "resolution_m": 10.0,
+        "width": 200,
+        "height": 200,
+        "pixel_area_m2": 100.0
+      },
+      "crop": "2 km x 2 km centered on 53.591400, 19.010717",
+      "platforms": [
+        "SENTINEL-1A",
+        "SENTINEL-1B"
+      ],
+      "orbit_state": "descending",
+      "relative_orbit": 124,
+      "preferred_track": {
+        "orbit_state": "descending",
+        "relative_orbit": 124
+      },
+      "selection_mode": "preferred_track",
+      "acquisitions_used": 3,
+      "acquisitions": [
+        {
+          "id": "S1A_IW_GRDH_1SDV_20180514T050019_20180514T050044_021896_025D35_rtc",
+          "date": "2018-05-14",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        },
+        {
+          "id": "S1B_IW_GRDH_1SDV_20180520T045916_20180520T045945_011000_014253_rtc",
+          "date": "2018-05-20",
+          "platform": "SENTINEL-1B",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        },
+        {
+          "id": "S1B_IW_GRDH_1SDV_20180508T045915_20180508T045945_010825_013CAB_rtc",
+          "date": "2018-05-08",
+          "platform": "SENTINEL-1B",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        }
+      ],
+      "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
+      "measurements": {
+        "jezioro_kuchnia": {
+          "area_m2": 75100.0,
+          "area_ha": 7.51,
+          "water_pixels": 751,
+          "seed_distance_m": 40.0,
+          "vv_threshold_db": -13.130091929733757,
+          "vh_threshold_db": -18.065745426416402,
+          "vv_otsu_db": -13.130091929733757,
+          "vh_otsu_db": -18.065745426416402,
+          "boundary_pixels": 10,
+          "edge_pixel_uncertainty_m2": 500.0,
+          "confidence": "medium",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": 3400.0,
+          "change_vs_baseline_percent": 4.741980474198047
+        },
+        "staw_w_lesie": {
+          "area_m2": 2500.0,
+          "area_ha": 0.25,
+          "water_pixels": 25,
+          "seed_distance_m": 0.0,
+          "vv_threshold_db": -12.0,
+          "vh_threshold_db": -17.0,
+          "vv_otsu_db": -9.19991700053215,
+          "vh_otsu_db": -14.730000999569894,
+          "boundary_pixels": 0,
+          "edge_pixel_uncertainty_m2": 100.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": 800.0,
+          "change_vs_baseline_percent": 47.05882352941176
+        }
+      },
+      "files": {
+        "vv_native": "images/2018_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2018_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2018_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2018_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2018_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2018_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
+      },
+      "status": "ok"
+    },
+    {
+      "year": 2019,
+      "date_start": "2019-05-09",
+      "date_end": "2019-05-21",
+      "source": "ESA/Copernicus Sentinel-1 RTC, delivered by Microsoft Planetary Computer",
+      "collection": "sentinel-1-rtc",
+      "sensor_type": "C-band SAR radar",
+      "processing_level": "radiometrically terrain-corrected (RTC)",
+      "native_pixel_spacing_m": 10,
+      "analysis_grid": {
+        "crs": "EPSG:32634",
+        "resolution_m": 10.0,
+        "width": 200,
+        "height": 200,
+        "pixel_area_m2": 100.0
+      },
+      "crop": "2 km x 2 km centered on 53.591400, 19.010717",
+      "platforms": [
+        "SENTINEL-1A",
+        "SENTINEL-1B"
+      ],
+      "orbit_state": "descending",
+      "relative_orbit": 124,
+      "preferred_track": {
+        "orbit_state": "descending",
+        "relative_orbit": 124
+      },
+      "selection_mode": "preferred_track",
+      "acquisitions_used": 3,
+      "acquisitions": [
+        {
+          "id": "S1B_IW_GRDH_1SDV_20190515T045922_20190515T045951_016250_01E955_rtc",
+          "date": "2019-05-15",
+          "platform": "SENTINEL-1B",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        },
+        {
+          "id": "S1A_IW_GRDH_1SDV_20190509T050014_20190509T050039_027146_030F5B_rtc",
+          "date": "2019-05-09",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        },
+        {
+          "id": "S1A_IW_GRDH_1SDV_20190521T050015_20190521T050040_027321_0314D7_rtc",
+          "date": "2019-05-21",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        }
+      ],
+      "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
+      "measurements": {
+        "jezioro_kuchnia": {
+          "area_m2": 70700.0,
+          "area_ha": 7.07,
+          "water_pixels": 707,
+          "seed_distance_m": 36.05551275463989,
+          "vv_threshold_db": -12.371508709862848,
+          "vh_threshold_db": -17.501646695733072,
+          "vv_otsu_db": -12.371508709862848,
+          "vh_otsu_db": -17.501646695733072,
+          "boundary_pixels": 16,
+          "edge_pixel_uncertainty_m2": 800.0,
+          "confidence": "medium",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": -1000.0,
+          "change_vs_baseline_percent": -1.394700139470014
+        },
+        "staw_w_lesie": {
+          "area_m2": 800.0,
+          "area_ha": 0.08,
+          "water_pixels": 8,
+          "seed_distance_m": 28.284271247461902,
+          "vv_threshold_db": -12.0,
+          "vh_threshold_db": -17.0,
+          "vv_otsu_db": -8.386386431753635,
+          "vh_otsu_db": -14.142601141333579,
+          "boundary_pixels": 8,
+          "edge_pixel_uncertainty_m2": 400.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": -900.0,
+          "change_vs_baseline_percent": -52.94117647058824
+        }
+      },
+      "files": {
+        "vv_native": "images/2019_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2019_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2019_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2019_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2019_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2019_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
+      },
+      "status": "ok"
+    },
+    {
+      "year": 2020,
+      "date_start": "2020-05-09",
+      "date_end": "2020-05-21",
+      "source": "ESA/Copernicus Sentinel-1 RTC, delivered by Microsoft Planetary Computer",
+      "collection": "sentinel-1-rtc",
+      "sensor_type": "C-band SAR radar",
+      "processing_level": "radiometrically terrain-corrected (RTC)",
+      "native_pixel_spacing_m": 10,
+      "analysis_grid": {
+        "crs": "EPSG:32634",
+        "resolution_m": 10.0,
+        "width": 200,
+        "height": 200,
+        "pixel_area_m2": 100.0
+      },
+      "crop": "2 km x 2 km centered on 53.591400, 19.010717",
+      "platforms": [
+        "SENTINEL-1A",
+        "SENTINEL-1B"
+      ],
+      "orbit_state": "descending",
+      "relative_orbit": 124,
+      "preferred_track": {
+        "orbit_state": "descending",
+        "relative_orbit": 124
+      },
+      "selection_mode": "preferred_track",
+      "acquisitions_used": 3,
+      "acquisitions": [
+        {
+          "id": "S1A_IW_GRDH_1SDV_20200515T050021_20200515T050046_032571_03C5C4_rtc",
+          "date": "2020-05-15",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        },
+        {
+          "id": "S1B_IW_GRDH_1SDV_20200509T045928_20200509T045957_021500_028D23_rtc",
+          "date": "2020-05-09",
+          "platform": "SENTINEL-1B",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        },
+        {
+          "id": "S1B_IW_GRDH_1SDV_20200521T045939_20200521T050004_021675_029252_rtc",
+          "date": "2020-05-21",
+          "platform": "SENTINEL-1B",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        }
+      ],
+      "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
+      "measurements": {
+        "jezioro_kuchnia": {
+          "area_m2": 3000.0,
+          "area_ha": 0.3,
+          "water_pixels": 30,
+          "seed_distance_m": 42.426406871192846,
+          "vv_threshold_db": -12.809536738569538,
+          "vh_threshold_db": -17.937445946931845,
+          "vv_otsu_db": -12.809536738569538,
+          "vh_otsu_db": -17.937445946931845,
+          "boundary_pixels": 5,
+          "edge_pixel_uncertainty_m2": 250.0,
+          "confidence": "medium",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": -68700.0,
+          "change_vs_baseline_percent": -95.81589958158996
+        },
+        "staw_w_lesie": {
+          "area_m2": 2000.0,
+          "area_ha": 0.2,
+          "water_pixels": 20,
+          "seed_distance_m": 10.0,
+          "vv_threshold_db": -12.0,
+          "vh_threshold_db": -17.0,
+          "vv_otsu_db": -9.229003363102674,
+          "vh_otsu_db": -14.824457213282585,
+          "boundary_pixels": 8,
+          "edge_pixel_uncertainty_m2": 400.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": 300.0,
+          "change_vs_baseline_percent": 17.647058823529413
+        }
+      },
+      "files": {
+        "vv_native": "images/2020_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2020_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2020_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2020_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2020_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2020_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
+      },
+      "status": "ok"
+    },
+    {
+      "year": 2021,
+      "date_start": "2021-05-10",
+      "date_end": "2021-05-22",
+      "source": "ESA/Copernicus Sentinel-1 RTC, delivered by Microsoft Planetary Computer",
+      "collection": "sentinel-1-rtc",
+      "sensor_type": "C-band SAR radar",
+      "processing_level": "radiometrically terrain-corrected (RTC)",
+      "native_pixel_spacing_m": 10,
+      "analysis_grid": {
+        "crs": "EPSG:32634",
+        "resolution_m": 10.0,
+        "width": 200,
+        "height": 200,
+        "pixel_area_m2": 100.0
+      },
+      "crop": "2 km x 2 km centered on 53.591400, 19.010717",
+      "platforms": [
+        "SENTINEL-1A",
+        "SENTINEL-1B"
+      ],
+      "orbit_state": "descending",
+      "relative_orbit": 124,
+      "preferred_track": {
+        "orbit_state": "descending",
+        "relative_orbit": 124
+      },
+      "selection_mode": "preferred_track",
+      "acquisitions_used": 3,
+      "acquisitions": [
+        {
+          "id": "S1B_IW_GRDH_1SDV_20210516T045954_20210516T050023_026925_03377C_rtc",
+          "date": "2021-05-16",
+          "platform": "SENTINEL-1B",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        },
+        {
+          "id": "S1A_IW_GRDH_1SDV_20210510T050026_20210510T050051_037821_0476C8_rtc",
+          "date": "2021-05-10",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        },
+        {
+          "id": "S1A_IW_GRDH_1SDV_20210522T050027_20210522T050052_037996_047C0F_rtc",
+          "date": "2021-05-22",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        }
+      ],
+      "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
+      "measurements": {
+        "jezioro_kuchnia": {
+          "area_m2": 77800.0,
+          "area_ha": 7.78,
+          "water_pixels": 778,
+          "seed_distance_m": 31.622776601683796,
+          "vv_threshold_db": -12.923121268004179,
+          "vh_threshold_db": -17.405310782889526,
+          "vv_otsu_db": -12.923121268004179,
+          "vh_otsu_db": -17.405310782889526,
+          "boundary_pixels": 6,
+          "edge_pixel_uncertainty_m2": 300.0,
+          "confidence": "medium",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": 6100.0,
+          "change_vs_baseline_percent": 8.507670850767084
+        },
+        "staw_w_lesie": {
+          "area_m2": 900.0,
+          "area_ha": 0.09,
+          "water_pixels": 9,
+          "seed_distance_m": 22.360679774997898,
+          "vv_threshold_db": -12.0,
+          "vh_threshold_db": -17.0,
+          "vv_otsu_db": -7.937817511459191,
+          "vh_otsu_db": -13.634130421777563,
+          "boundary_pixels": 0,
+          "edge_pixel_uncertainty_m2": 100.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": -800.0,
+          "change_vs_baseline_percent": -47.05882352941176
+        }
+      },
+      "files": {
+        "vv_native": "images/2021_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2021_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2021_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2021_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2021_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2021_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
+      },
+      "status": "ok"
+    },
+    {
+      "year": 2022,
+      "date_start": "2022-05-05",
+      "date_end": "2022-05-29",
+      "source": "ESA/Copernicus Sentinel-1 RTC, delivered by Microsoft Planetary Computer",
+      "collection": "sentinel-1-rtc",
+      "sensor_type": "C-band SAR radar",
+      "processing_level": "radiometrically terrain-corrected (RTC)",
+      "native_pixel_spacing_m": 10,
+      "analysis_grid": {
+        "crs": "EPSG:32634",
+        "resolution_m": 10.0,
+        "width": 200,
+        "height": 200,
+        "pixel_area_m2": 100.0
+      },
+      "crop": "2 km x 2 km centered on 53.591400, 19.010717",
+      "platforms": [
+        "SENTINEL-1A"
+      ],
+      "orbit_state": "descending",
+      "relative_orbit": 124,
+      "preferred_track": {
+        "orbit_state": "descending",
+        "relative_orbit": 124
+      },
+      "selection_mode": "preferred_track",
+      "acquisitions_used": 3,
+      "acquisitions": [
+        {
+          "id": "S1A_IW_GRDH_1SDV_20220517T050025_20220517T050050_043246_052A2D_rtc",
+          "date": "2022-05-17",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        },
+        {
+          "id": "S1A_IW_GRDH_1SDV_20220505T050025_20220505T050050_043071_0524AE_rtc",
+          "date": "2022-05-05",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        },
+        {
+          "id": "S1A_IW_GRDH_1SDV_20220529T050027_20220529T050052_043421_052F5A_rtc",
+          "date": "2022-05-29",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        }
+      ],
+      "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
+      "measurements": {
+        "jezioro_kuchnia": {
+          "area_m2": 70400.0,
+          "area_ha": 7.04,
+          "water_pixels": 704,
+          "seed_distance_m": 36.05551275463989,
+          "vv_threshold_db": -12.439943428710109,
+          "vh_threshold_db": -17.272018608947594,
+          "vv_otsu_db": -12.439943428710109,
+          "vh_otsu_db": -17.272018608947594,
+          "boundary_pixels": 23,
+          "edge_pixel_uncertainty_m2": 1150.0,
+          "confidence": "medium",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": -1300.0,
+          "change_vs_baseline_percent": -1.813110181311018
+        },
+        "staw_w_lesie": {
+          "area_m2": 1000.0,
+          "area_ha": 0.1,
+          "water_pixels": 10,
+          "seed_distance_m": 28.284271247461902,
+          "vv_threshold_db": -12.0,
+          "vh_threshold_db": -17.0,
+          "vv_otsu_db": -8.578745311746996,
+          "vh_otsu_db": -13.983850971857704,
+          "boundary_pixels": 10,
+          "edge_pixel_uncertainty_m2": 500.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": -700.0,
+          "change_vs_baseline_percent": -41.17647058823529
+        }
+      },
+      "files": {
+        "vv_native": "images/2022_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2022_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2022_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2022_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2022_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2022_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
+      },
+      "status": "ok"
+    },
+    {
+      "year": 2023,
+      "date_start": "2023-05-12",
+      "date_end": "2023-05-24",
+      "source": "ESA/Copernicus Sentinel-1 RTC, delivered by Microsoft Planetary Computer",
+      "collection": "sentinel-1-rtc",
+      "sensor_type": "C-band SAR radar",
+      "processing_level": "radiometrically terrain-corrected (RTC)",
+      "native_pixel_spacing_m": 10,
+      "analysis_grid": {
+        "crs": "EPSG:32634",
+        "resolution_m": 10.0,
+        "width": 200,
+        "height": 200,
+        "pixel_area_m2": 100.0
+      },
+      "crop": "2 km x 2 km centered on 53.591400, 19.010717",
+      "platforms": [
+        "SENTINEL-1A"
+      ],
+      "orbit_state": "descending",
+      "relative_orbit": 124,
+      "preferred_track": {
+        "orbit_state": "descending",
+        "relative_orbit": 124
+      },
+      "selection_mode": "preferred_track",
+      "acquisitions_used": 2,
+      "acquisitions": [
+        {
+          "id": "S1A_IW_GRDH_1SDV_20230512T050031_20230512T050056_048496_05D564_rtc",
+          "date": "2023-05-12",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        },
+        {
+          "id": "S1A_IW_GRDH_1SDV_20230524T050032_20230524T050057_048671_05DA94_rtc",
+          "date": "2023-05-24",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        }
+      ],
+      "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
+      "measurements": {
+        "jezioro_kuchnia": {
+          "area_m2": 2900.0,
+          "area_ha": 0.29,
+          "water_pixels": 29,
+          "seed_distance_m": 36.05551275463989,
+          "vv_threshold_db": -12.0,
+          "vh_threshold_db": -17.306586021383605,
+          "vv_otsu_db": -11.778982650165771,
+          "vh_otsu_db": -17.306586021383605,
+          "boundary_pixels": 8,
+          "edge_pixel_uncertainty_m2": 400.0,
+          "confidence": "medium",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": -68800.0,
+          "change_vs_baseline_percent": -95.95536959553695
+        },
+        "staw_w_lesie": {
+          "area_m2": 1400.0,
+          "area_ha": 0.14,
+          "water_pixels": 14,
+          "seed_distance_m": 28.284271247461902,
+          "vv_threshold_db": -12.0,
+          "vh_threshold_db": -17.0,
+          "vv_otsu_db": -8.373168140649788,
+          "vh_otsu_db": -14.38801184296608,
+          "boundary_pixels": 0,
+          "edge_pixel_uncertainty_m2": 100.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": -300.0,
+          "change_vs_baseline_percent": -17.647058823529413
+        }
+      },
+      "files": {
+        "vv_native": "images/2023_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2023_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2023_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2023_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2023_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2023_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
+      },
+      "status": "ok"
+    },
+    {
+      "year": 2024,
+      "date_start": "2024-05-06",
+      "date_end": "2024-05-30",
+      "source": "ESA/Copernicus Sentinel-1 RTC, delivered by Microsoft Planetary Computer",
+      "collection": "sentinel-1-rtc",
+      "sensor_type": "C-band SAR radar",
+      "processing_level": "radiometrically terrain-corrected (RTC)",
+      "native_pixel_spacing_m": 10,
+      "analysis_grid": {
+        "crs": "EPSG:32634",
+        "resolution_m": 10.0,
+        "width": 200,
+        "height": 200,
+        "pixel_area_m2": 100.0
+      },
+      "crop": "2 km x 2 km centered on 53.591400, 19.010717",
+      "platforms": [
+        "SENTINEL-1A"
+      ],
+      "orbit_state": "descending",
+      "relative_orbit": 124,
+      "preferred_track": {
+        "orbit_state": "descending",
+        "relative_orbit": 124
+      },
+      "selection_mode": "preferred_track",
+      "acquisitions_used": 3,
+      "acquisitions": [
+        {
+          "id": "S1A_IW_GRDH_1SDV_20240518T050036_20240518T050101_053921_068DDA_rtc",
+          "date": "2024-05-18",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        },
+        {
+          "id": "S1A_IW_GRDH_1SDV_20240506T050036_20240506T050101_053746_0687BD_rtc",
+          "date": "2024-05-06",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        },
+        {
+          "id": "S1A_IW_GRDH_1SDV_20240530T050035_20240530T050100_054096_0693ED_rtc",
+          "date": "2024-05-30",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        }
+      ],
+      "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
+      "measurements": {
+        "jezioro_kuchnia": {
+          "area_m2": 73600.0,
+          "area_ha": 7.36,
+          "water_pixels": 736,
+          "seed_distance_m": 31.622776601683796,
+          "vv_threshold_db": -12.0,
+          "vh_threshold_db": -17.0,
+          "vv_otsu_db": -11.929191971197724,
+          "vh_otsu_db": -16.92750659018755,
+          "boundary_pixels": 18,
+          "edge_pixel_uncertainty_m2": 900.0,
+          "confidence": "medium",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": 1900.0,
+          "change_vs_baseline_percent": 2.6499302649930265
+        },
+        "staw_w_lesie": {
+          "area_m2": 800.0,
+          "area_ha": 0.08,
+          "water_pixels": 8,
+          "seed_distance_m": 22.360679774997898,
+          "vv_threshold_db": -12.0,
+          "vh_threshold_db": -17.0,
+          "vv_otsu_db": -7.524953555936615,
+          "vh_otsu_db": -13.846503008405367,
+          "boundary_pixels": 8,
+          "edge_pixel_uncertainty_m2": 400.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": -900.0,
+          "change_vs_baseline_percent": -52.94117647058824
+        }
+      },
+      "files": {
+        "vv_native": "images/2024_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2024_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2024_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2024_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2024_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2024_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
+      },
+      "status": "ok"
+    },
+    {
+      "year": 2025,
+      "date_start": "2025-05-07",
+      "date_end": "2025-05-19",
+      "source": "ESA/Copernicus Sentinel-1 RTC, delivered by Microsoft Planetary Computer",
+      "collection": "sentinel-1-rtc",
+      "sensor_type": "C-band SAR radar",
+      "processing_level": "radiometrically terrain-corrected (RTC)",
+      "native_pixel_spacing_m": 10,
+      "analysis_grid": {
+        "crs": "EPSG:32634",
+        "resolution_m": 10.0,
+        "width": 200,
+        "height": 200,
+        "pixel_area_m2": 100.0
+      },
+      "crop": "2 km x 2 km centered on 53.591400, 19.010717",
+      "platforms": [
+        "SENTINEL-1A",
+        "sentinel-1c"
+      ],
+      "orbit_state": "descending",
+      "relative_orbit": 124,
+      "preferred_track": {
+        "orbit_state": "descending",
+        "relative_orbit": 124
+      },
+      "selection_mode": "preferred_track",
+      "acquisitions_used": 3,
+      "acquisitions": [
+        {
+          "id": "S1A_IW_GRDH_1SDV_20250513T050028_20250513T050053_059171_07578E_rtc",
+          "date": "2025-05-13",
+          "platform": "SENTINEL-1A",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        },
+        {
+          "id": "S1C_IW_GRDH_1SDV_20250519T045917_20250519T045942_002395_rtc",
+          "date": "2025-05-19",
+          "platform": "sentinel-1c",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        },
+        {
+          "id": "S1C_IW_GRDH_1SDV_20250507T045917_20250507T045942_002220_rtc",
+          "date": "2025-05-07",
+          "platform": "sentinel-1c",
+          "orbit_state": "descending",
+          "relative_orbit": 124,
+          "valid_fraction": 1.0
+        }
+      ],
+      "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
+      "measurements": {
+        "jezioro_kuchnia": {
+          "area_m2": 1900.0,
+          "area_ha": 0.19,
+          "water_pixels": 19,
+          "seed_distance_m": 36.05551275463989,
+          "vv_threshold_db": -14.519049038117137,
+          "vh_threshold_db": -19.192074078321458,
+          "vv_otsu_db": -14.519049038117137,
+          "vh_otsu_db": -19.192074078321458,
+          "boundary_pixels": 19,
+          "edge_pixel_uncertainty_m2": 950.0,
+          "confidence": "medium",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": -69800.0,
+          "change_vs_baseline_percent": -97.35006973500697
+        },
+        "staw_w_lesie": {
+          "area_m2": 9500.0,
+          "area_ha": 0.95,
+          "water_pixels": 95,
+          "seed_distance_m": 10.0,
+          "vv_threshold_db": -12.0,
+          "vh_threshold_db": -17.0,
+          "vv_otsu_db": -9.769909925758833,
+          "vh_otsu_db": -15.67169502476851,
+          "boundary_pixels": 14,
+          "edge_pixel_uncertainty_m2": 700.0,
+          "confidence": "medium",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": 7800.0,
+          "change_vs_baseline_percent": 458.8235294117647
+        }
+      },
+      "files": {
+        "vv_native": "images/2025_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2025_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2025_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2025_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2025_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2025_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
+      },
+      "status": "ok"
+    }
+  ]
+}
