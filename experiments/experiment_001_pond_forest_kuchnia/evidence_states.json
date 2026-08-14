@@ -1,0 +1,47 @@
+{
+  "experiment_id": "001",
+  "updated": "2026-08-14",
+  "statements": [
+    {
+      "id": "obs-pond-state-change",
+      "state": "OBSERVED",
+      "statement": "Historical satellite imagery shows a substantially larger persistent open-water feature in the corrected forest-pond basin than recent imagery."
+    },
+    {
+      "id": "obs-recent-low-water",
+      "state": "OBSERVED",
+      "statement": "Recent imagery shows little or no open-water footprint comparable with the older persistent pond feature."
+    },
+    {
+      "id": "derived-working-loss",
+      "state": "DERIVED",
+      "statement": "Working image-based loss estimate is approximately 25,000 m² (2.5 ha), near 100%.",
+      "confidence": "provisional",
+      "limitations": "Awaiting corrected common-grid spectral endpoint measurement, manually verified pond polygon and uncertainty bounds."
+    },
+    {
+      "id": "candidate-drought",
+      "state": "CANDIDATE_CAUSE",
+      "statement": "Drought/precipitation deficit may contribute.",
+      "verification_required": "meteorological and hydrological time series"
+    },
+    {
+      "id": "candidate-drainage-connectivity",
+      "state": "CANDIDATE_CAUSE",
+      "statement": "Drainage, channel connectivity, blocked/altered inflows or outflows, or retention/routing changes may contribute.",
+      "verification_required": "authoritative geodata, flow/level evidence, field verification and intervention records"
+    },
+    {
+      "id": "candidate-groundwater",
+      "state": "CANDIDATE_CAUSE",
+      "statement": "Groundwater change may contribute.",
+      "verification_required": "groundwater monitoring and hydrogeological evidence"
+    },
+    {
+      "id": "alarm-status",
+      "state": "VERIFICATION_REQUIRED",
+      "statement": "If corrected measurements confirm near-total disappearance of a previously persistent hectare-scale pond, flag as a high-priority environmental monitoring anomaly requiring investigation.",
+      "note": "The alarm does not establish cause, fault or a required intervention."
+    }
+  ]
+}
