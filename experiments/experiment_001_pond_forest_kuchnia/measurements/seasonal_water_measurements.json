@@ -1,0 +1,3464 @@
+{
+  "experiment_id": "001",
+  "method": "Exact manifest product IDs; original L2 spectral bands; MNDWI+NDWI; common 30 m grid; threshold sensitivity plus boundary uncertainty.",
+  "aoi_center": {
+    "lat": 53.5914,
+    "lon": 19.010717
+  },
+  "pond_seed": {
+    "lat": 53.594594924468765,
+    "lon": 19.000139648687053,
+    "offset_from_aoi_center_m": {
+      "west": 690,
+      "north": 375
+    },
+    "status": "image-first corrected seed; final polygon boundary still requires manual verification"
+  },
+  "exact_product_selection_required": true,
+  "records": [
+    {
+      "season": "spring",
+      "year": 1990,
+      "date": "1990-05-02",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 900.0,
+        "area_ha": 0.09,
+        "low_m2": 0.0,
+        "high_m2": 8100.0,
+        "threshold_areas_m2": {
+          "-0.05": 900.0,
+          "0.0": 900.0,
+          "0.05": 900.0,
+          "0.1": 900.0,
+          "0.15": 900.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_1990_1990-05-02_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_190023_19900502_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_190023_19900502_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 1991,
+      "date": "1991-05-30",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 0.973208,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 900.0,
+        "area_ha": 0.09,
+        "low_m2": 0.0,
+        "high_m2": 8100.0,
+        "threshold_areas_m2": {
+          "-0.05": 900.0,
+          "0.0": 900.0,
+          "0.05": 900.0,
+          "0.1": 900.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 322200.0,
+        "area_ha": 32.22,
+        "low_m2": 179100.0,
+        "high_m2": 476100.0,
+        "threshold_areas_m2": {
+          "-0.05": 322200.0,
+          "0.0": 322200.0,
+          "0.05": 322200.0,
+          "0.1": 321300.0,
+          "0.15": 321300.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_1991_1991-05-30_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_19910530_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_19910530_02_T1",
+      "measurement_sanity_warnings": []
+    },
+    {
+      "season": "spring",
+      "year": 1992,
+      "date": "1992-05-16",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_1992_1992-05-16_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_19920516_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_19920516_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 1993,
+      "date": "1993-05-10",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_1993_1993-05-10_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_190023_19930510_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_190023_19930510_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 1994,
+      "date": "1994-05-06",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 900.0,
+        "area_ha": 0.09,
+        "low_m2": 0.0,
+        "high_m2": 8100.0,
+        "threshold_areas_m2": {
+          "-0.05": 900.0,
+          "0.0": 900.0,
+          "0.05": 900.0,
+          "0.1": 900.0,
+          "0.15": 900.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_1994_1994-05-06_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_19940506_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_19940506_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 1995,
+      "date": "1995-04-23",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 4,
+      "fallback_month": true,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 354600.0,
+        "area_ha": 35.46,
+        "low_m2": 157500.0,
+        "high_m2": 549000.0,
+        "threshold_areas_m2": {
+          "-0.05": 355500.0,
+          "0.0": 355500.0,
+          "0.05": 354600.0,
+          "0.1": 354600.0,
+          "0.15": 351900.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_1995_1995-04-23_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_19950423_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_19950423_02_T1",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 1996,
+      "date": "1996-05-27",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_1996_1996-05-27_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_19960527_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_19960527_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 1997,
+      "date": "1997-04-19",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 4,
+      "fallback_month": true,
+      "clear_fraction_measurement_aoi": 0.616401,
+      "confidence": "low",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 393300.0,
+        "area_ha": 39.33,
+        "low_m2": 212400.0,
+        "high_m2": 578700.0,
+        "threshold_areas_m2": {
+          "-0.05": 399600.0,
+          "0.0": 396900.0,
+          "0.05": 393300.0,
+          "0.1": 383400.0,
+          "0.15": 373500.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_1997_1997-04-19_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_190023_19970419_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_190023_19970419_02_T1",
+      "measurement_sanity_warnings": [
+        "low_clear_fraction_measurement_aoi",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 1998,
+      "date": "1998-05-17",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 900.0,
+        "area_ha": 0.09,
+        "low_m2": 0.0,
+        "high_m2": 8100.0,
+        "threshold_areas_m2": {
+          "-0.05": 900.0,
+          "0.0": 900.0,
+          "0.05": 900.0,
+          "0.1": 900.0,
+          "0.15": 900.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_1998_1998-05-17_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_19980517_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_19980517_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 1999,
+      "date": "1999-05-20",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 900.0,
+        "area_ha": 0.09,
+        "low_m2": 0.0,
+        "high_m2": 8100.0,
+        "threshold_areas_m2": {
+          "-0.05": 900.0,
+          "0.0": 900.0,
+          "0.05": 900.0,
+          "0.1": 900.0,
+          "0.15": 900.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_1999_1999-05-20_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_19990520_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_19990520_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2000,
+      "date": "2000-05-13",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 297900.0,
+        "area_ha": 29.79,
+        "low_m2": 135000.0,
+        "high_m2": 457200.0,
+        "threshold_areas_m2": {
+          "-0.05": 297900.0,
+          "0.0": 297900.0,
+          "0.05": 297900.0,
+          "0.1": 297900.0,
+          "0.15": 297900.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2000_2000-05-13_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_190023_20000513_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_190023_20000513_02_T1",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2001,
+      "date": "2001-05-08",
+      "platform": "landsat-7",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 5400.0,
+        "area_ha": 0.54,
+        "low_m2": 0.0,
+        "high_m2": 22500.0,
+        "threshold_areas_m2": {
+          "-0.05": 5400.0,
+          "0.0": 5400.0,
+          "0.05": 5400.0,
+          "0.1": 5400.0,
+          "0.15": 5400.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2001_2001-05-08_common30m_water_mask.png",
+      "measurement_item_id": "LE07_L2SP_190023_20010508_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LE07_L2SP_190023_20010508_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2002,
+      "date": "2002-05-04",
+      "platform": "landsat-7",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2002_2002-05-04_common30m_water_mask.png",
+      "measurement_item_id": "LE07_L2SP_189023_20020504_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LE07_L2SP_189023_20020504_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2003,
+      "date": "2003-05-30",
+      "platform": "landsat-7",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2003_2003-05-30_common30m_water_mask.png",
+      "measurement_item_id": "LE07_L2SP_190023_20030530_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LE07_L2SP_190023_20030530_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2004,
+      "date": "2004-05-01",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 900.0,
+        "area_ha": 0.09,
+        "low_m2": 0.0,
+        "high_m2": 8100.0,
+        "threshold_areas_m2": {
+          "-0.05": 900.0,
+          "0.0": 900.0,
+          "0.05": 900.0,
+          "0.1": 900.0,
+          "0.15": 900.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2004_2004-05-01_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_20040501_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_20040501_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2005,
+      "date": "2005-05-20",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 900.0,
+        "area_ha": 0.09,
+        "low_m2": 0.0,
+        "high_m2": 8100.0,
+        "threshold_areas_m2": {
+          "-0.05": 900.0,
+          "0.0": 900.0,
+          "0.05": 900.0,
+          "0.1": 900.0,
+          "0.15": 900.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2005_2005-05-20_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_20050520_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_20050520_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2006,
+      "date": "2006-05-07",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 0.999638,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2006_2006-05-07_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_20060507_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_20060507_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2007,
+      "date": "2007-05-01",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 0.66202,
+      "confidence": "low",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 355500.0,
+        "area_ha": 35.55,
+        "low_m2": 205200.0,
+        "high_m2": 518400.0,
+        "threshold_areas_m2": {
+          "-0.05": 355500.0,
+          "0.0": 355500.0,
+          "0.05": 355500.0,
+          "0.1": 355500.0,
+          "0.15": 354600.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2007_2007-05-01_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_190023_20070501_02_T2",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_190023_20070501_02_T2",
+      "measurement_sanity_warnings": [
+        "low_clear_fraction_measurement_aoi",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2008,
+      "date": "2008-05-28",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 900.0,
+        "area_ha": 0.09,
+        "low_m2": 0.0,
+        "high_m2": 8100.0,
+        "threshold_areas_m2": {
+          "-0.05": 900.0,
+          "0.0": 900.0,
+          "0.05": 900.0,
+          "0.1": 900.0,
+          "0.15": 900.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2008_2008-05-28_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_20080528_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_20080528_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2009,
+      "date": "2009-05-15",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 0.88559,
+      "confidence": "medium",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 900.0,
+        "area_ha": 0.09,
+        "low_m2": 0.0,
+        "high_m2": 8100.0,
+        "threshold_areas_m2": {
+          "-0.05": 900.0,
+          "0.0": 900.0,
+          "0.05": 900.0,
+          "0.1": 900.0,
+          "0.15": 900.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2009_2009-05-15_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_20090515_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_20090515_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2010,
+      "date": "2010-06-18",
+      "platform": "landsat-7",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 6,
+      "fallback_month": true,
+      "clear_fraction_measurement_aoi": 0.789102,
+      "confidence": "low",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 1800.0,
+        "area_ha": 0.18,
+        "low_m2": 0.0,
+        "high_m2": 10800.0,
+        "threshold_areas_m2": {
+          "-0.05": 1800.0,
+          "0.0": 1800.0,
+          "0.05": 1800.0,
+          "0.1": 1800.0,
+          "0.15": 1800.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2010_2010-06-18_common30m_water_mask.png",
+      "measurement_item_id": "LE07_L2SP_190023_20100618_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LE07_L2SP_190023_20100618_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "low_clear_fraction_measurement_aoi",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2011,
+      "date": "2011-04-19",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 4,
+      "fallback_month": true,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 324900.0,
+        "area_ha": 32.49,
+        "low_m2": 165600.0,
+        "high_m2": 485100.0,
+        "threshold_areas_m2": {
+          "-0.05": 335700.0,
+          "0.0": 331200.0,
+          "0.05": 324900.0,
+          "0.1": 306000.0,
+          "0.15": 269100.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2011_2011-04-19_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_20110419_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_20110419_02_T1",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2012,
+      "date": "2012-05-22",
+      "platform": "landsat-7",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 0.765387,
+      "confidence": "low",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 153900.0,
+        "area_ha": 15.39,
+        "low_m2": 72900.0,
+        "high_m2": 261900.0,
+        "threshold_areas_m2": {
+          "-0.05": 153900.0,
+          "0.0": 153900.0,
+          "0.05": 153900.0,
+          "0.1": 153900.0,
+          "0.15": 153900.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2012_2012-05-22_common30m_water_mask.png",
+      "measurement_item_id": "LE07_L2SP_190023_20120522_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LE07_L2SP_190023_20120522_02_T1",
+      "measurement_sanity_warnings": [
+        "low_clear_fraction_measurement_aoi",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2013,
+      "date": "2013-05-17",
+      "platform": "landsat-8",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 303300.0,
+        "area_ha": 30.33,
+        "low_m2": 160200.0,
+        "high_m2": 459900.0,
+        "threshold_areas_m2": {
+          "-0.05": 303300.0,
+          "0.0": 303300.0,
+          "0.05": 303300.0,
+          "0.1": 303300.0,
+          "0.15": 302400.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2013_2013-05-17_common30m_water_mask.png",
+      "measurement_item_id": "LC08_L2SP_190023_20130517_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LC08_L2SP_190023_20130517_02_T1",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2014,
+      "date": "2014-05-20",
+      "platform": "landsat-8",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 0.968139,
+      "confidence": "medium",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2014_2014-05-20_common30m_water_mask.png",
+      "measurement_item_id": "LC08_L2SP_190022_20140520_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LC08_L2SP_190022_20140520_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2015,
+      "date": "2015-05-07",
+      "platform": "landsat-8",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 371700.0,
+        "area_ha": 37.17,
+        "low_m2": 215100.0,
+        "high_m2": 542700.0,
+        "threshold_areas_m2": {
+          "-0.05": 371700.0,
+          "0.0": 371700.0,
+          "0.05": 371700.0,
+          "0.1": 371700.0,
+          "0.15": 370800.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2015_2015-05-07_common30m_water_mask.png",
+      "measurement_item_id": "LC08_L2SP_190023_20150507_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LC08_L2SP_190023_20150507_02_T1",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2016,
+      "date": "2016-05-23",
+      "platform": "Sentinel-2A",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 351000.0,
+        "area_ha": 35.1,
+        "low_m2": 206100.0,
+        "high_m2": 505800.0,
+        "threshold_areas_m2": {
+          "-0.05": 351900.0,
+          "0.0": 351900.0,
+          "0.05": 351000.0,
+          "0.1": 349200.0,
+          "0.15": 344700.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2016_2016-05-23_common30m_water_mask.png",
+      "measurement_item_id": "S2A_MSIL2A_20160523T095032_R079_T33UYV_20210211T133807",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2A_MSIL2A_20160523T095032_R079_T33UYV_20210211T133807",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2017,
+      "date": "2017-05-18",
+      "platform": "Sentinel-2A",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 310500.0,
+        "area_ha": 31.05,
+        "low_m2": 170100.0,
+        "high_m2": 463500.0,
+        "threshold_areas_m2": {
+          "-0.05": 318600.0,
+          "0.0": 317700.0,
+          "0.05": 310500.0,
+          "0.1": 304200.0,
+          "0.15": 288000.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2017_2017-05-18_common30m_water_mask.png",
+      "measurement_item_id": "S2A_MSIL2A_20170518T095031_R079_T34UCE_20210209T162325",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2A_MSIL2A_20170518T095031_R079_T34UCE_20210209T162325",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2018,
+      "date": "2018-05-08",
+      "platform": "Sentinel-2B",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 287100.0,
+        "area_ha": 28.71,
+        "low_m2": 11700.0,
+        "high_m2": 435600.0,
+        "threshold_areas_m2": {
+          "-0.05": 312300.0,
+          "0.0": 302400.0,
+          "0.05": 287100.0,
+          "0.1": 261000.0,
+          "0.15": 11700.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2018_2018-05-08_common30m_water_mask.png",
+      "measurement_item_id": "S2B_MSIL2A_20180508T095029_R079_T34UCE_20201012T072713",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2B_MSIL2A_20180508T095029_R079_T34UCE_20201012T072713",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2019,
+      "date": "2019-05-01",
+      "platform": "Sentinel-2A",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 340200.0,
+        "area_ha": 34.02,
+        "low_m2": 183600.0,
+        "high_m2": 511200.0,
+        "threshold_areas_m2": {
+          "-0.05": 343800.0,
+          "0.0": 342900.0,
+          "0.05": 340200.0,
+          "0.1": 331200.0,
+          "0.15": 306000.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2019_2019-05-01_common30m_water_mask.png",
+      "measurement_item_id": "S2A_MSIL2A_20190501T100031_R122_T33UYV_20201006T083634",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2A_MSIL2A_20190501T100031_R122_T33UYV_20201006T083634",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2020,
+      "date": "2020-05-07",
+      "platform": "Sentinel-2B",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 0.995655,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 342000.0,
+        "area_ha": 34.2,
+        "low_m2": 196200.0,
+        "high_m2": 500400.0,
+        "threshold_areas_m2": {
+          "-0.05": 351900.0,
+          "0.0": 346500.0,
+          "0.05": 342000.0,
+          "0.1": 336600.0,
+          "0.15": 332100.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2020_2020-05-07_common30m_water_mask.png",
+      "measurement_item_id": "S2B_MSIL2A_20200507T095029_R079_T33UYV_20200920T222553",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2B_MSIL2A_20200507T095029_R079_T33UYV_20200920T222553",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2021,
+      "date": "2021-05-12",
+      "platform": "Sentinel-2B",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 339300.0,
+        "area_ha": 33.93,
+        "low_m2": 191700.0,
+        "high_m2": 498600.0,
+        "threshold_areas_m2": {
+          "-0.05": 355500.0,
+          "0.0": 350100.0,
+          "0.05": 339300.0,
+          "0.1": 332100.0,
+          "0.15": 321300.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2021_2021-05-12_common30m_water_mask.png",
+      "measurement_item_id": "S2B_MSIL2A_20210512T095029_R079_T34UCE_20210606T070040",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2B_MSIL2A_20210512T095029_R079_T34UCE_20210606T070040",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2022,
+      "date": "2022-05-10",
+      "platform": "Sentinel-2B",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 1800.0,
+        "area_ha": 0.18,
+        "low_m2": 0.0,
+        "high_m2": 381600.0,
+        "threshold_areas_m2": {
+          "-0.05": 381600.0,
+          "0.0": 345600.0,
+          "0.05": 1800.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2022_2022-05-10_common30m_water_mask.png",
+      "measurement_item_id": "S2B_MSIL2A_20220510T100029_R122_T33UYV_20240612T220829",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2B_MSIL2A_20220510T100029_R122_T33UYV_20240612T220829",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2023,
+      "date": "2023-05-30",
+      "platform": "Sentinel-2A",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 352800.0,
+        "area_ha": 35.28,
+        "low_m2": 0.0,
+        "high_m2": 512100.0,
+        "threshold_areas_m2": {
+          "-0.05": 377100.0,
+          "0.0": 376200.0,
+          "0.05": 352800.0,
+          "0.1": 291600.0,
+          "0.15": 0.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2023_2023-05-30_common30m_water_mask.png",
+      "measurement_item_id": "S2A_MSIL2A_20230530T100031_R122_T33UYV_20230530T153352",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2A_MSIL2A_20230530T100031_R122_T33UYV_20230530T153352",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2024,
+      "date": "2024-05-01",
+      "platform": "Sentinel-2A",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 363600.0,
+        "threshold_areas_m2": {
+          "-0.05": 363600.0,
+          "0.0": 336600.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2024_2024-05-01_common30m_water_mask.png",
+      "measurement_item_id": "S2A_MSIL2A_20240501T095031_R079_T33UYV_20240501T154122",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2A_MSIL2A_20240501T095031_R079_T33UYV_20240501T154122",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2025,
+      "date": "2025-05-06",
+      "platform": "Sentinel-2C",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 1800.0,
+        "area_ha": 0.18,
+        "low_m2": 0.0,
+        "high_m2": 369900.0,
+        "threshold_areas_m2": {
+          "-0.05": 369900.0,
+          "0.0": 336600.0,
+          "0.05": 1800.0,
+          "0.1": 900.0,
+          "0.15": 0.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2025_2025-05-06_common30m_water_mask.png",
+      "measurement_item_id": "S2C_MSIL2A_20250506T095051_R079_T33UYV_20250506T121455",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2C_MSIL2A_20250506T095051_R079_T33UYV_20250506T121455",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "spring",
+      "year": 2026,
+      "date": "2026-05-01",
+      "platform": "Sentinel-2C",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 5,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 362700.0,
+        "threshold_areas_m2": {
+          "-0.05": 362700.0,
+          "0.0": 298800.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/spring_2026_2026-05-01_common30m_water_mask.png",
+      "measurement_item_id": "S2C_MSIL2A_20260501T095031_R079_T33UYV_20260501T132213",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2C_MSIL2A_20260501T095031_R079_T33UYV_20260501T132213",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 1990,
+      "date": "1990-10-25",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 10,
+      "fallback_month": true,
+      "clear_fraction_measurement_aoi": 0.994207,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 900.0,
+        "area_ha": 0.09,
+        "low_m2": 0.0,
+        "high_m2": 8100.0,
+        "threshold_areas_m2": {
+          "-0.05": 900.0,
+          "0.0": 900.0,
+          "0.05": 900.0,
+          "0.1": 900.0,
+          "0.15": 900.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 410400.0,
+        "area_ha": 41.04,
+        "low_m2": 239400.0,
+        "high_m2": 590400.0,
+        "threshold_areas_m2": {
+          "-0.05": 414900.0,
+          "0.0": 412200.0,
+          "0.05": 410400.0,
+          "0.1": 409500.0,
+          "0.15": 404100.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_1990_1990-10-25_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_190023_19901025_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_190023_19901025_02_T1",
+      "measurement_sanity_warnings": []
+    },
+    {
+      "season": "autumn",
+      "year": 1991,
+      "date": "1991-09-26",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 900.0,
+        "area_ha": 0.09,
+        "low_m2": 0.0,
+        "high_m2": 8100.0,
+        "threshold_areas_m2": {
+          "-0.05": 900.0,
+          "0.0": 900.0,
+          "0.05": 900.0,
+          "0.1": 900.0,
+          "0.15": 900.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 362700.0,
+        "area_ha": 36.27,
+        "low_m2": 199800.0,
+        "high_m2": 539100.0,
+        "threshold_areas_m2": {
+          "-0.05": 362700.0,
+          "0.0": 362700.0,
+          "0.05": 362700.0,
+          "0.1": 362700.0,
+          "0.15": 362700.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_1991_1991-09-26_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_190023_19910926_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_190023_19910926_02_T1",
+      "measurement_sanity_warnings": []
+    },
+    {
+      "season": "autumn",
+      "year": 1992,
+      "date": "1992-10-14",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 10,
+      "fallback_month": true,
+      "clear_fraction_measurement_aoi": 0.617306,
+      "confidence": "low",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 262800.0,
+        "area_ha": 26.28,
+        "low_m2": 78300.0,
+        "high_m2": 441900.0,
+        "threshold_areas_m2": {
+          "-0.05": 262800.0,
+          "0.0": 262800.0,
+          "0.05": 262800.0,
+          "0.1": 262800.0,
+          "0.15": 262800.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_1992_1992-10-14_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_190022_19921014_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_190022_19921014_02_T1",
+      "measurement_sanity_warnings": [
+        "low_clear_fraction_measurement_aoi",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 1993,
+      "date": "1993-09-08",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 0.652426,
+      "confidence": "low",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 315900.0,
+        "area_ha": 31.59,
+        "low_m2": 167400.0,
+        "high_m2": 486000.0,
+        "threshold_areas_m2": {
+          "-0.05": 315900.0,
+          "0.0": 315900.0,
+          "0.05": 315900.0,
+          "0.1": 315900.0,
+          "0.15": 315900.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_1993_1993-09-08_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_19930908_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_19930908_02_T1",
+      "measurement_sanity_warnings": [
+        "low_clear_fraction_measurement_aoi",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 1994,
+      "date": "1994-10-20",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 10,
+      "fallback_month": true,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 360900.0,
+        "area_ha": 36.09,
+        "low_m2": 202500.0,
+        "high_m2": 533700.0,
+        "threshold_areas_m2": {
+          "-0.05": 360900.0,
+          "0.0": 360900.0,
+          "0.05": 360900.0,
+          "0.1": 360900.0,
+          "0.15": 360900.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_1994_1994-10-20_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_190023_19941020_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_190023_19941020_02_T1",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 1995,
+      "date": "1995-11-17",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 11,
+      "fallback_month": true,
+      "clear_fraction_measurement_aoi": 0.993845,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 114300.0,
+        "area_ha": 11.43,
+        "low_m2": 31500.0,
+        "high_m2": 188100.0,
+        "threshold_areas_m2": {
+          "-0.05": 115200.0,
+          "0.0": 115200.0,
+          "0.05": 114300.0,
+          "0.1": 111600.0,
+          "0.15": 107100.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_1995_1995-11-17_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_19951117_02_T2",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_19951117_02_T2",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 1996,
+      "date": "1996-09-23",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 385200.0,
+        "area_ha": 38.52,
+        "low_m2": 222300.0,
+        "high_m2": 558000.0,
+        "threshold_areas_m2": {
+          "-0.05": 385200.0,
+          "0.0": 385200.0,
+          "0.05": 385200.0,
+          "0.1": 385200.0,
+          "0.15": 385200.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_1996_1996-09-23_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_190023_19960923_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_190023_19960923_02_T1",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 1997,
+      "date": "1997-09-03",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 0.999638,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 11700.0,
+        "area_ha": 1.17,
+        "low_m2": 0.0,
+        "high_m2": 32400.0,
+        "threshold_areas_m2": {
+          "-0.05": 11700.0,
+          "0.0": 11700.0,
+          "0.05": 11700.0,
+          "0.1": 11700.0,
+          "0.15": 11700.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_1997_1997-09-03_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_19970903_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_19970903_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 1998,
+      "date": "1998-09-06",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 372600.0,
+        "area_ha": 37.26,
+        "low_m2": 212400.0,
+        "high_m2": 543600.0,
+        "threshold_areas_m2": {
+          "-0.05": 372600.0,
+          "0.0": 372600.0,
+          "0.05": 372600.0,
+          "0.1": 372600.0,
+          "0.15": 372600.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_1998_1998-09-06_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_19980906_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_19980906_02_T1",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 1999,
+      "date": "1999-09-08",
+      "platform": "landsat-7",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 4500.0,
+        "area_ha": 0.45,
+        "low_m2": 0.0,
+        "high_m2": 20700.0,
+        "threshold_areas_m2": {
+          "-0.05": 4500.0,
+          "0.0": 4500.0,
+          "0.05": 4500.0,
+          "0.1": 4500.0,
+          "0.15": 4500.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_1999_1999-09-08_common30m_water_mask.png",
+      "measurement_item_id": "LE07_L2SP_190023_19990908_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LE07_L2SP_190023_19990908_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2000,
+      "date": "2000-09-18",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 0.97013,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 1800.0,
+        "area_ha": 0.18,
+        "low_m2": 0.0,
+        "high_m2": 10800.0,
+        "threshold_areas_m2": {
+          "-0.05": 3600.0,
+          "0.0": 1800.0,
+          "0.05": 1800.0,
+          "0.1": 900.0,
+          "0.15": 900.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2000_2000-09-18_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_190023_20000918_02_T2",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_190023_20000918_02_T2",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2001,
+      "date": "2001-10-24",
+      "platform": "landsat-7",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 10,
+      "fallback_month": true,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 327600.0,
+        "area_ha": 32.76,
+        "low_m2": 177300.0,
+        "high_m2": 495000.0,
+        "threshold_areas_m2": {
+          "-0.05": 327600.0,
+          "0.0": 327600.0,
+          "0.05": 327600.0,
+          "0.1": 327600.0,
+          "0.15": 326700.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2001_2001-10-24_common30m_water_mask.png",
+      "measurement_item_id": "LE07_L2SP_189023_20011024_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LE07_L2SP_189023_20011024_02_T1",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2002,
+      "date": "2002-09-25",
+      "platform": "landsat-7",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 336600.0,
+        "area_ha": 33.66,
+        "low_m2": 187200.0,
+        "high_m2": 498600.0,
+        "threshold_areas_m2": {
+          "-0.05": 336600.0,
+          "0.0": 336600.0,
+          "0.05": 336600.0,
+          "0.1": 336600.0,
+          "0.15": 336600.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2002_2002-09-25_common30m_water_mask.png",
+      "measurement_item_id": "LE07_L2SP_189023_20020925_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LE07_L2SP_189023_20020925_02_T1",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2003,
+      "date": "2003-09-28",
+      "platform": "landsat-7",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 0.75,
+      "confidence": "low",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 190800.0,
+        "area_ha": 19.08,
+        "low_m2": 94500.0,
+        "high_m2": 298800.0,
+        "threshold_areas_m2": {
+          "-0.05": 190800.0,
+          "0.0": 190800.0,
+          "0.05": 190800.0,
+          "0.1": 190800.0,
+          "0.15": 190800.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2003_2003-09-28_common30m_water_mask.png",
+      "measurement_item_id": "LE07_L2SP_189023_20030928_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LE07_L2SP_189023_20030928_02_T1",
+      "measurement_sanity_warnings": [
+        "low_clear_fraction_measurement_aoi",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2004,
+      "date": "2004-09-06",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 301500.0,
+        "area_ha": 30.15,
+        "low_m2": 152100.0,
+        "high_m2": 463500.0,
+        "threshold_areas_m2": {
+          "-0.05": 301500.0,
+          "0.0": 301500.0,
+          "0.05": 301500.0,
+          "0.1": 301500.0,
+          "0.15": 301500.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2004_2004-09-06_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_20040906_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_20040906_02_T1",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2005,
+      "date": "2005-09-09",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 311400.0,
+        "area_ha": 31.14,
+        "low_m2": 164700.0,
+        "high_m2": 468900.0,
+        "threshold_areas_m2": {
+          "-0.05": 311400.0,
+          "0.0": 311400.0,
+          "0.05": 311400.0,
+          "0.1": 311400.0,
+          "0.15": 311400.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2005_2005-09-09_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_20050909_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_20050909_02_T1",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2006,
+      "date": "2006-09-12",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 3600.0,
+        "area_ha": 0.36,
+        "low_m2": 0.0,
+        "high_m2": 16200.0,
+        "threshold_areas_m2": {
+          "-0.05": 3600.0,
+          "0.0": 3600.0,
+          "0.05": 3600.0,
+          "0.1": 3600.0,
+          "0.15": 3600.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2006_2006-09-12_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_20060912_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_20060912_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2007,
+      "date": "2007-09-06",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 222300.0,
+        "area_ha": 22.23,
+        "low_m2": 82800.0,
+        "high_m2": 359100.0,
+        "threshold_areas_m2": {
+          "-0.05": 222300.0,
+          "0.0": 222300.0,
+          "0.05": 222300.0,
+          "0.1": 222300.0,
+          "0.15": 222300.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2007_2007-09-06_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_190023_20070906_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_190023_20070906_02_T1",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2008,
+      "date": "2008-09-25",
+      "platform": "landsat-7",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 0.750181,
+      "confidence": "low",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 193500.0,
+        "area_ha": 19.35,
+        "low_m2": 90900.0,
+        "high_m2": 307800.0,
+        "threshold_areas_m2": {
+          "-0.05": 193500.0,
+          "0.0": 193500.0,
+          "0.05": 193500.0,
+          "0.1": 193500.0,
+          "0.15": 193500.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2008_2008-09-25_common30m_water_mask.png",
+      "measurement_item_id": "LE07_L2SP_189023_20080925_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LE07_L2SP_189023_20080925_02_T1",
+      "measurement_sanity_warnings": [
+        "low_clear_fraction_measurement_aoi",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2009,
+      "date": "2009-09-20",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 299700.0,
+        "area_ha": 29.97,
+        "low_m2": 139500.0,
+        "high_m2": 455400.0,
+        "threshold_areas_m2": {
+          "-0.05": 299700.0,
+          "0.0": 299700.0,
+          "0.05": 299700.0,
+          "0.1": 299700.0,
+          "0.15": 297900.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2009_2009-09-20_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_20090920_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_20090920_02_T1",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2010,
+      "date": "2010-09-23",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 1800.0,
+        "area_ha": 0.18,
+        "low_m2": 0.0,
+        "high_m2": 12600.0,
+        "threshold_areas_m2": {
+          "-0.05": 1800.0,
+          "0.0": 1800.0,
+          "0.05": 1800.0,
+          "0.1": 1800.0,
+          "0.15": 1800.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2010_2010-09-23_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_189023_20100923_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_189023_20100923_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2011,
+      "date": "2011-10-03",
+      "platform": "landsat-5",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 10,
+      "fallback_month": true,
+      "clear_fraction_measurement_aoi": 0.891926,
+      "confidence": "medium",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2011_2011-10-03_common30m_water_mask.png",
+      "measurement_item_id": "LT05_L2SP_190023_20111003_02_T2",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LT05_L2SP_190023_20111003_02_T2",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2012,
+      "date": "2012-09-11",
+      "platform": "landsat-7",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 0.784033,
+      "confidence": "low",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 1800.0,
+        "area_ha": 0.18,
+        "low_m2": 0.0,
+        "high_m2": 10800.0,
+        "threshold_areas_m2": {
+          "-0.05": 1800.0,
+          "0.0": 1800.0,
+          "0.05": 1800.0,
+          "0.1": 1800.0,
+          "0.15": 1800.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2012_2012-09-11_common30m_water_mask.png",
+      "measurement_item_id": "LE07_L2SP_190023_20120911_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LE07_L2SP_190023_20120911_02_T1",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "low_clear_fraction_measurement_aoi",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2013,
+      "date": "2013-09-06",
+      "platform": "landsat-8",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 330300.0,
+        "area_ha": 33.03,
+        "low_m2": 184500.0,
+        "high_m2": 490500.0,
+        "threshold_areas_m2": {
+          "-0.05": 330300.0,
+          "0.0": 330300.0,
+          "0.05": 330300.0,
+          "0.1": 330300.0,
+          "0.15": 330300.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2013_2013-09-06_common30m_water_mask.png",
+      "measurement_item_id": "LC08_L2SP_190023_20130906_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LC08_L2SP_190023_20130906_02_T1",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2014,
+      "date": "2014-09-18",
+      "platform": "landsat-8",
+      "display_native_resolution_m": 30,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 0.999819,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 318600.0,
+        "area_ha": 31.86,
+        "low_m2": 179100.0,
+        "high_m2": 471600.0,
+        "threshold_areas_m2": {
+          "-0.05": 318600.0,
+          "0.0": 318600.0,
+          "0.05": 318600.0,
+          "0.1": 318600.0,
+          "0.15": 318600.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2014_2014-09-18_common30m_water_mask.png",
+      "measurement_item_id": "LC08_L2SP_189023_20140918_02_T1",
+      "measurement_collection": "landsat-c2-l2",
+      "source_manifest_item_id": "LC08_L2SP_189023_20140918_02_T1",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2015,
+      "date": "2015-09-19",
+      "platform": "Sentinel-2A",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 313200.0,
+        "area_ha": 31.32,
+        "low_m2": 172800.0,
+        "high_m2": 465300.0,
+        "threshold_areas_m2": {
+          "-0.05": 317700.0,
+          "0.0": 315900.0,
+          "0.05": 313200.0,
+          "0.1": 306900.0,
+          "0.15": 300600.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2015_2015-09-19_common30m_water_mask.png",
+      "measurement_item_id": "S2A_MSIL2A_20150919T100016_R122_T34UCE_20210412T111447",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2A_MSIL2A_20150919T100016_R122_T34UCE_20210412T111447",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2016,
+      "date": "2016-09-03",
+      "platform": "Sentinel-2A",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 40500.0,
+        "area_ha": 4.05,
+        "low_m2": 9900.0,
+        "high_m2": 78300.0,
+        "threshold_areas_m2": {
+          "-0.05": 48600.0,
+          "0.0": 45900.0,
+          "0.05": 40500.0,
+          "0.1": 34200.0,
+          "0.15": 29700.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2016_2016-09-03_common30m_water_mask.png",
+      "measurement_item_id": "S2A_MSIL2A_20160903T100032_R122_T33UYV_20210212T210307",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2A_MSIL2A_20160903T100032_R122_T33UYV_20210212T210307",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2017,
+      "date": "2017-09-28",
+      "platform": "Sentinel-2A",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 900.0,
+        "area_ha": 0.09,
+        "low_m2": 0.0,
+        "high_m2": 8100.0,
+        "threshold_areas_m2": {
+          "-0.05": 900.0,
+          "0.0": 900.0,
+          "0.05": 900.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2017_2017-09-28_common30m_water_mask.png",
+      "measurement_item_id": "S2A_MSIL2A_20170928T100021_R122_T34UCE_20210202T110615",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2A_MSIL2A_20170928T100021_R122_T34UCE_20210202T110615",
+      "measurement_sanity_warnings": [
+        "lake_kuchnia_mask_implausibly_small_review_required",
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2018,
+      "date": "2018-09-03",
+      "platform": "Sentinel-2A",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 0.995293,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 330300.0,
+        "area_ha": 33.03,
+        "low_m2": 188100.0,
+        "high_m2": 483300.0,
+        "threshold_areas_m2": {
+          "-0.05": 333900.0,
+          "0.0": 333900.0,
+          "0.05": 330300.0,
+          "0.1": 328500.0,
+          "0.15": 324000.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2018_2018-09-03_common30m_water_mask.png",
+      "measurement_item_id": "S2A_MSIL2A_20180903T100021_R122_T34UCE_20201011T075930",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2A_MSIL2A_20180903T100021_R122_T34UCE_20201011T075930",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2019,
+      "date": "2019-09-13",
+      "platform": "Sentinel-2B",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 0.979725,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 274500.0,
+        "area_ha": 27.45,
+        "low_m2": 153900.0,
+        "high_m2": 407700.0,
+        "threshold_areas_m2": {
+          "-0.05": 288900.0,
+          "0.0": 282600.0,
+          "0.05": 274500.0,
+          "0.1": 270000.0,
+          "0.15": 263700.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2019_2019-09-13_common30m_water_mask.png",
+      "measurement_item_id": "S2B_MSIL2A_20190913T100029_R122_T33UYV_20201004T124800",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2B_MSIL2A_20190913T100029_R122_T33UYV_20201004T124800",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2020,
+      "date": "2020-09-12",
+      "platform": "Sentinel-2A",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 0.995293,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 342900.0,
+        "area_ha": 34.29,
+        "low_m2": 186300.0,
+        "high_m2": 504900.0,
+        "threshold_areas_m2": {
+          "-0.05": 342900.0,
+          "0.0": 342900.0,
+          "0.05": 342900.0,
+          "0.1": 342900.0,
+          "0.15": 342900.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2020_2020-09-12_common30m_water_mask.png",
+      "measurement_item_id": "S2A_MSIL2A_20200912T100031_R122_T33UYV_20200918T134152",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2A_MSIL2A_20200912T100031_R122_T33UYV_20200918T134152",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2021,
+      "date": "2021-09-27",
+      "platform": "Sentinel-2A",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 0.999819,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 296100.0,
+        "area_ha": 29.61,
+        "low_m2": 159300.0,
+        "high_m2": 445500.0,
+        "threshold_areas_m2": {
+          "-0.05": 307800.0,
+          "0.0": 301500.0,
+          "0.05": 296100.0,
+          "0.1": 287100.0,
+          "0.15": 276300.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2021_2021-09-27_common30m_water_mask.png",
+      "measurement_item_id": "S2A_MSIL2A_20210927T100031_R122_T33UYV_20210927T175724",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2A_MSIL2A_20210927T100031_R122_T33UYV_20210927T175724",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2022,
+      "date": "2022-09-04",
+      "platform": "Sentinel-2B",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 312300.0,
+        "area_ha": 31.23,
+        "low_m2": 0.0,
+        "high_m2": 462600.0,
+        "threshold_areas_m2": {
+          "-0.05": 358200.0,
+          "0.0": 351900.0,
+          "0.05": 312300.0,
+          "0.1": 133200.0,
+          "0.15": 0.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2022_2022-09-04_common30m_water_mask.png",
+      "measurement_item_id": "S2B_MSIL2A_20220904T094549_R079_T33UYV_20240731T165745",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2B_MSIL2A_20220904T094549_R079_T33UYV_20240731T165745",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2023,
+      "date": "2023-09-12",
+      "platform": "Sentinel-2B",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 288900.0,
+        "area_ha": 28.89,
+        "low_m2": 0.0,
+        "high_m2": 432900.0,
+        "threshold_areas_m2": {
+          "-0.05": 353700.0,
+          "0.0": 347400.0,
+          "0.05": 288900.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2023_2023-09-12_common30m_water_mask.png",
+      "measurement_item_id": "S2B_MSIL2A_20230912T095609_R122_T33UYV_20241103T122113",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2B_MSIL2A_20230912T095609_R122_T33UYV_20241103T122113",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2024,
+      "date": "2024-09-08",
+      "platform": "Sentinel-2A",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 900.0,
+        "area_ha": 0.09,
+        "low_m2": 0.0,
+        "high_m2": 342000.0,
+        "threshold_areas_m2": {
+          "-0.05": 342000.0,
+          "0.0": 297000.0,
+          "0.05": 900.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2024_2024-09-08_common30m_water_mask.png",
+      "measurement_item_id": "S2A_MSIL2A_20240908T095031_R079_T33UYV_20240908T133147",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2A_MSIL2A_20240908T095031_R079_T33UYV_20240908T133147",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    },
+    {
+      "season": "autumn",
+      "year": 2025,
+      "date": "2025-09-26",
+      "platform": "Sentinel-2C",
+      "display_native_resolution_m": 10,
+      "measurement_grid_m": 30,
+      "selected_month": 9,
+      "fallback_month": false,
+      "clear_fraction_measurement_aoi": 1.0,
+      "confidence": "high",
+      "pond_geometry_status": "image-first corrected seed; manual polygon boundary verification still required before final claim",
+      "forest_pond": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 0.0,
+        "threshold_areas_m2": {
+          "-0.05": 0.0,
+          "0.0": 0.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "lake_kuchnia": {
+        "area_m2": 0.0,
+        "area_ha": 0.0,
+        "low_m2": 0.0,
+        "high_m2": 329400.0,
+        "threshold_areas_m2": {
+          "-0.05": 329400.0,
+          "0.0": 900.0,
+          "0.05": 0.0,
+          "0.1": 0.0,
+          "0.15": 0.0
+        }
+      },
+      "overlay": "experiments/experiment_001_pond_forest_kuchnia/measurements/masks/autumn_2025_2025-09-26_common30m_water_mask.png",
+      "measurement_item_id": "S2C_MSIL2A_20250926T100041_R122_T33UYV_20250926T152116",
+      "measurement_collection": "sentinel-2-l2a",
+      "source_manifest_item_id": "S2C_MSIL2A_20250926T100041_R122_T33UYV_20250926T152116",
+      "measurement_sanity_warnings": [
+        "strict_spectral_classifier_found_no_connected_open_water_at_forest_pond_seed_do_not_interpret_as_proof_of_absence"
+      ]
+    }
+  ],
+  "endpoint_comparisons": [
+    {
+      "season": "spring",
+      "object": "forest_pond",
+      "status": "not_quantifiable_by_current_strict_spectral_classifier",
+      "area_1990_m2": 0.0,
+      "area_2026_m2": 0.0,
+      "reason": "Current connected MNDWI/NDWI classifier did not produce a valid historical start area. Do not force a percentage; use manually verified basin polygon / visible-water workflow."
+    },
+    {
+      "season": "spring",
+      "object": "lake_kuchnia",
+      "status": "not_quantifiable_sanity_gate_failed",
+      "area_1990_m2": 900.0,
+      "area_2026_m2": 0.0,
+      "blocking_warnings": {
+        "1990": [
+          "lake_kuchnia_mask_implausibly_small_review_required"
+        ]
+      },
+      "reason": "Endpoint values were measured but fail object-specific sanity gates. Do not calculate or publish a loss percentage until the flagged masks are reviewed."
+    },
+    {
+      "season": "autumn",
+      "object": "forest_pond",
+      "status": "endpoint_pending_missing_observation",
+      "missing_years": [
+        2026
+      ],
+      "available_endpoint_observations": {
+        "1990": {
+          "date": "1990-10-25",
+          "area_m2": 900.0,
+          "warnings": []
+        }
+      },
+      "reason": "No value is invented for a missing endpoint year. A different month may be used only as a separately documented proxy/fallback with its real acquisition date and season label."
+    },
+    {
+      "season": "autumn",
+      "object": "lake_kuchnia",
+      "status": "endpoint_pending_missing_observation",
+      "missing_years": [
+        2026
+      ],
+      "available_endpoint_observations": {
+        "1990": {
+          "date": "1990-10-25",
+          "area_m2": 410400.0,
+          "warnings": []
+        }
+      },
+      "reason": "No value is invented for a missing endpoint year. A different month may be used only as a separately documented proxy/fallback with its real acquisition date and season label."
+    }
+  ],
+  "failures": [],
+  "interpretation": "A strict spectral zero at the small forest pond is not automatically evidence of physical absence, especially under canopy/mixed 30m pixels. The working ~2.5 ha visual-footprint estimate remains provisional until a manually verified basin polygon workflow is completed."
+}

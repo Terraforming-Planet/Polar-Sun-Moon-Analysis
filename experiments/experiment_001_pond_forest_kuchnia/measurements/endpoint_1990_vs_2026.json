@@ -1,0 +1,55 @@
+[
+  {
+    "season": "spring",
+    "object": "forest_pond",
+    "status": "not_quantifiable_by_current_strict_spectral_classifier",
+    "area_1990_m2": 0.0,
+    "area_2026_m2": 0.0,
+    "reason": "Current connected MNDWI/NDWI classifier did not produce a valid historical start area. Do not force a percentage; use manually verified basin polygon / visible-water workflow."
+  },
+  {
+    "season": "spring",
+    "object": "lake_kuchnia",
+    "status": "not_quantifiable_sanity_gate_failed",
+    "area_1990_m2": 900.0,
+    "area_2026_m2": 0.0,
+    "blocking_warnings": {
+      "1990": [
+        "lake_kuchnia_mask_implausibly_small_review_required"
+      ]
+    },
+    "reason": "Endpoint values were measured but fail object-specific sanity gates. Do not calculate or publish a loss percentage until the flagged masks are reviewed."
+  },
+  {
+    "season": "autumn",
+    "object": "forest_pond",
+    "status": "endpoint_pending_missing_observation",
+    "missing_years": [
+      2026
+    ],
+    "available_endpoint_observations": {
+      "1990": {
+        "date": "1990-10-25",
+        "area_m2": 900.0,
+        "warnings": []
+      }
+    },
+    "reason": "No value is invented for a missing endpoint year. A different month may be used only as a separately documented proxy/fallback with its real acquisition date and season label."
+  },
+  {
+    "season": "autumn",
+    "object": "lake_kuchnia",
+    "status": "endpoint_pending_missing_observation",
+    "missing_years": [
+      2026
+    ],
+    "available_endpoint_observations": {
+      "1990": {
+        "date": "1990-10-25",
+        "area_m2": 410400.0,
+        "warnings": []
+      }
+    },
+    "reason": "No value is invented for a missing endpoint year. A different month may be used only as a separately documented proxy/fallback with its real acquisition date and season label."
+  }
+]
