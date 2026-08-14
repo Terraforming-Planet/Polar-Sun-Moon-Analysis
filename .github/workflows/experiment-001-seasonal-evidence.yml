@@ -1,0 +1,82 @@
+name: Experiment 001 seasonal evidence
+
+on:
+  push:
+    branches:
+      - annual-best-53-591400-19-010717
+    paths:
+      - 'tools/build_experiment_001_seasonal_evidence.py'
+      - '.github/workflows/experiment-001-seasonal-evidence.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: annual-best-53-591400-19-010717
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            tools
+            satellite_may_1990_2026
+            satellite_alternate_source_may_1990_2025
+            satellite_three_source_forensic_audit
+            experiments
+          sparse-checkout-cone-mode: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install geospatial dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pillow requests rasterio pyproj
+
+      - name: Build corrected spring, autumn and error archive
+        run: python tools/build_experiment_001_seasonal_evidence.py
+
+      - name: Validate Experiment 001 imagery integrity
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+
+          exp=Path('experiments/experiment_001_pond_forest_kuchnia')
+          assert (exp/'EXPERIMENT_001_REPORT.md').exists()
+          assert (exp/'errors/do_wyjasnienia/rejected_images_manifest.json').exists()
+
+          for season in ('spring','autumn'):
+              root=exp/'seasonal_evidence'/season
+              man=json.loads((root/'manifest.json').read_text(encoding='utf-8'))
+              print(season, man['count_ok'], '/ 37')
+              assert man['count_ok'] >= 30, f'{season}: too few scenes'
+              seen={}
+              for rec in man['records']:
+                  if rec.get('status')!='ok':
+                      continue
+                  assert str(rec.get('date','')).startswith(str(rec['year'])+'-')
+                  native=root/'images'/rec['files'][0]
+                  assert native.name.startswith(f"{rec['year']}_{rec['date']}_")
+                  sha=hashlib.sha256(native.read_bytes()).hexdigest()
+                  assert sha not in seen, f'cross-year exact duplicate {season}: {seen.get(sha)} and {rec["year"]}'
+                  seen[sha]=rec['year']
+              zips=list(root.glob('*.zip'))
+              assert len(zips)==1 and zips[0].stat().st_size>100000
+          print('EXPERIMENT_001_IMAGERY_VALIDATED')
+          PY
+
+      - name: Commit evidence outputs
+        run: |
+          git config user.name "Terraforming Planet"
+          git config user.email "kontakt@teslaeco.pl"
+          git add experiments/experiment_001_pond_forest_kuchnia
+          git diff --cached --quiet && echo "No evidence changes" && exit 0
+          git commit -m "Build Experiment 001 spring and autumn water-loss evidence"
+          git push
