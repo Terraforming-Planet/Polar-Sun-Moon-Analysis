@@ -10,7 +10,7 @@
     2020,
     2026
   ],
-  "generated_utc": "2026-08-14T00:07:01Z",
+  "generated_utc": "2026-08-14T00:11:04Z",
   "token_expiry_used_for_download": "2026-08-14T00:52:01Z",
   "images": [
     {
@@ -18,9 +18,10 @@
       "file": "satellite_history/53.594070_19.000151/2000_2000-05-05_landsat-7_USGS_Landsat_C2_SR_53.594070_19.000151.png",
       "date": "2000-05-05",
       "platform": "landsat-7",
-      "item_id": "LE07_L2SP_190022_20000505_02_T1",
+      "item_id": "LE07_L2SP_190023_20000505_02_T1",
       "scene_cloud_cover_percent": 0.0,
-      "local_clear_fraction": 0.999845,
+      "local_clear_fraction": 0.999,
+      "local_valid_coverage_fraction": 1.0,
       "source_dataset": "USGS Landsat Collection 2 Level-2 Surface Reflectance",
       "stac_collection": "landsat-c2-l2",
       "delivery_catalog": "Microsoft Planetary Computer STAC",
@@ -30,27 +31,17 @@
       },
       "crop_size_m": 9000,
       "native_pixel_size_m": 30,
-      "width_pixels": 300,
-      "height_pixels": 300,
-      "crs": "EPSG:32634",
-      "transform": [
-        30.0,
-        0.0,
-        363135.0,
-        0.0,
-        -30.0,
-        5944725.0
-      ],
-      "processing": "Natural-color RGB derived directly from Landsat Collection 2 Level-2 surface-reflectance red/green/blue bands using documented reflectance scale/offset, fixed display stretch and gamma only; no AI generation, interpolation or synthetic content."
+      "processing": "Natural-color RGB directly from Landsat Collection 2 Level-2 red/green/blue surface-reflectance bands; fixed display stretch and gamma only; no AI or synthetic content."
     },
     {
       "requested_year": 2007,
       "file": "satellite_history/53.594070_19.000151/2007_2007-09-06_landsat-5_USGS_Landsat_C2_SR_53.594070_19.000151.png",
       "date": "2007-09-06",
       "platform": "landsat-5",
-      "item_id": "LT05_L2SP_190022_20070906_02_T1",
-      "scene_cloud_cover_percent": 3.0,
-      "local_clear_fraction": 1.0,
+      "item_id": "LT05_L2SP_190023_20070906_02_T1",
+      "scene_cloud_cover_percent": 32.0,
+      "local_clear_fraction": 0.992522,
+      "local_valid_coverage_fraction": 1.0,
       "source_dataset": "USGS Landsat Collection 2 Level-2 Surface Reflectance",
       "stac_collection": "landsat-c2-l2",
       "delivery_catalog": "Microsoft Planetary Computer STAC",
@@ -60,18 +51,7 @@
       },
       "crop_size_m": 9000,
       "native_pixel_size_m": 30,
-      "width_pixels": 300,
-      "height_pixels": 300,
-      "crs": "EPSG:32634",
-      "transform": [
-        30.0,
-        0.0,
-        363135.0,
-        0.0,
-        -30.0,
-        5944725.0
-      ],
-      "processing": "Natural-color RGB derived directly from Landsat Collection 2 Level-2 surface-reflectance red/green/blue bands using documented reflectance scale/offset, fixed display stretch and gamma only; no AI generation, interpolation or synthetic content."
+      "processing": "Natural-color RGB directly from Landsat Collection 2 Level-2 red/green/blue surface-reflectance bands; fixed display stretch and gamma only; no AI or synthetic content."
     },
     {
       "requested_year": 2013,
