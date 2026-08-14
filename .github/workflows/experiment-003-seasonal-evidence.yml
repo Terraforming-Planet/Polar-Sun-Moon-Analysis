@@ -1,0 +1,111 @@
+name: Experiment 003 Jezioro Nogat seasonal evidence
+
+on:
+  push:
+    branches:
+      - experiment-003-jezioro-nogat-53-578593-19-068364
+    paths:
+      - 'tools/build_experiment_003_seasonal_evidence.py'
+      - '.github/workflows/experiment-003-seasonal-evidence.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment-003-jezioro-nogat-53-578593-19-068364
+          fetch-depth: 20
+          filter: blob:none
+          sparse-checkout: |
+            tools
+            experiments
+          sparse-checkout-cone-mode: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install geospatial dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pillow requests rasterio pyproj
+
+      - name: Build Test 003 Jezioro Nogat imagery 1990-2026
+        run: python tools/build_experiment_003_seasonal_evidence.py
+
+      - name: Validate Test 003 package
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from datetime import date
+          from pathlib import Path
+
+          exp = Path('experiments/experiment_003_jezioro_nogat')
+          summary = json.loads((exp/'BUILD_SUMMARY.json').read_text(encoding='utf-8'))
+          print(summary)
+          assert summary['experiment'] == 3
+          assert summary['object'] == 'Jezioro Nogat'
+          assert summary['center'] == {'lat': 53.578593, 'lon': 19.068364}
+          assert summary['spring_count_ok'] >= 30, summary
+          assert summary['autumn_count_ok'] >= 30, summary
+
+          combined = Path(summary['combined_zip'])
+          assert combined.exists() and combined.stat().st_size > 100000
+
+          for season in ('spring', 'autumn'):
+              root = exp/'seasonal_evidence'/season
+              manifest = json.loads((root/'manifest.json').read_text(encoding='utf-8'))
+              assert manifest['center'] == {'lat': 53.578593, 'lon': 19.068364}
+              assert len(manifest['records']) == 37
+              assert manifest.get('no_experiment_002_imagery_reused') is True
+              seen = {}
+              for rec in manifest['records']:
+                  if rec.get('status') != 'ok':
+                      continue
+                  assert str(rec['date']).startswith(str(rec['year']) + '-')
+                  native = root/'images'/rec['files'][0]
+                  assert native.exists()
+                  sha = hashlib.sha256(native.read_bytes()).hexdigest()
+                  assert sha not in seen, f"duplicate satellite image: {seen.get(sha)} and {rec['year']}"
+                  seen[sha] = rec['year']
+
+          # 14 Aug 2026: September-November 2026 is still in the future.
+          if date.today() < date(2026, 9, 1):
+              autumn = json.loads((exp/'seasonal_evidence/autumn/manifest.json').read_text(encoding='utf-8'))
+              rec2026 = next(r for r in autumn['records'] if r['year'] == 2026)
+              assert rec2026.get('status') != 'ok', 'Do not fabricate autumn 2026 before September 2026'
+
+          assert (exp/'EVIDENCE_POLICY.json').exists()
+          assert (exp/'EXPERIMENT_003_REPORT.md').exists()
+          print('EXPERIMENT_003_JEZIORO_NOGAT_VALIDATED')
+          PY
+
+      - name: Upload downloadable Test 003 archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: TEST003_JEZIORO_NOGAT_1990_2026_53.578593_19.068364
+          path: |
+            experiments/experiment_003_jezioro_nogat/TEST003_JEZIORO_NOGAT_1990_2026_53.578593_19.068364.zip
+            experiments/experiment_003_jezioro_nogat/seasonal_evidence/spring/TEST003_SPRING_1990_2026_37_YEARS_2km_53.578593_19.068364.zip
+            experiments/experiment_003_jezioro_nogat/seasonal_evidence/autumn/TEST003_AUTUMN_1990_2026_37_YEARS_2km_53.578593_19.068364.zip
+            experiments/experiment_003_jezioro_nogat/BUILD_SUMMARY.json
+            experiments/experiment_003_jezioro_nogat/EXPERIMENT_003_REPORT.md
+            experiments/experiment_003_jezioro_nogat/EVIDENCE_POLICY.json
+          retention-days: 90
+
+      - name: Commit Test 003 evidence outputs
+        run: |
+          git config user.name "Terraforming Planet"
+          git config user.email "kontakt@teslaeco.pl"
+          git add experiments/experiment_003_jezioro_nogat
+          git diff --cached --quiet && echo "No Test 003 evidence changes" && exit 0
+          git commit -m "Build Test 003 Jezioro Nogat satellite dataset 1990-2026"
+          git pull --rebase origin experiment-003-jezioro-nogat-53-578593-19-068364
+          git push origin HEAD:experiment-003-jezioro-nogat-53-578593-19-068364
