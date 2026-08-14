@@ -6,6 +6,7 @@ on:
       - annual-best-53-591400-19-010717
     paths:
       - 'tools/build_third_source_sentinel1_rtc_water_2015_2025.py'
+      - 'tools/refine_third_source_sentinel1_rtc_measurements.py'
       - '.github/workflows/third-source-sentinel1-rtc-water-2015-2025.yml'
   workflow_dispatch:
 
@@ -36,8 +37,11 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install numpy scipy pillow rasterio pyproj pystac-client planetary-computer
 
-      - name: Build Sentinel-1 RTC third-source pack and measurements
+      - name: Build Sentinel-1 RTC third-source pack
         run: python tools/build_third_source_sentinel1_rtc_water_2015_2025.py
+
+      - name: Refine and cross-check water measurements
+        run: python tools/refine_third_source_sentinel1_rtc_measurements.py
 
       - name: Validate third-source outputs
         run: |
@@ -48,12 +52,16 @@ jobs:
           root = Path('satellite_third_source_sentinel1_rtc_may_2015_2025/53.591400_19.010717')
           manifest = json.loads((root / 'manifest.json').read_text(encoding='utf-8'))
           print('COUNT_OK', manifest['count_ok'], 'OF', manifest['count_requested'])
-          if manifest['count_ok'] < 10:
-              raise SystemExit(f"Too few annual Sentinel-1 RTC results: {manifest['count_ok']}/{manifest['count_requested']}")
-          rows = list(csv.DictReader((root / 'measurements_open_water_radar.csv').open(encoding='utf-8')))
-          print('MEASUREMENT_ROWS', len(rows))
-          if len(rows) != manifest['count_requested'] * 2:
-              raise SystemExit(f"Expected {manifest['count_requested'] * 2} measurement rows, got {len(rows)}")
+          if manifest['count_ok'] != 11:
+              raise SystemExit(f"Incomplete Sentinel-1 RTC series: {manifest['count_ok']}/11")
+          if manifest.get('measurement_version') != 2:
+              raise SystemExit('Refined measurement v2 missing')
+          rows = list(csv.DictReader((root / 'measurements_open_water_radar_refined.csv').open(encoding='utf-8')))
+          print('REFINED_MEASUREMENT_ROWS', len(rows))
+          if len(rows) != 22:
+              raise SystemExit(f"Expected 22 refined measurement rows, got {len(rows)}")
+          anomalies = [r for r in rows if r['measurement_status'] == 'classification_anomaly']
+          print('CLASSIFICATION_ANOMALIES', len(anomalies))
           zips = list(root.glob('THIRD_SOURCE_SENTINEL1_RTC_*.zip'))
           if len(zips) != 1 or zips[0].stat().st_size < 100_000:
               raise SystemExit('Missing or unexpectedly small output ZIP')
@@ -65,5 +73,5 @@ jobs:
           git config user.email "kontakt@teslaeco.pl"
           git add satellite_third_source_sentinel1_rtc_may_2015_2025/53.591400_19.010717
           git diff --cached --quiet && echo "No generated changes to commit" && exit 0
-          git commit -m "Add Sentinel-1 RTC third-source water verification pack"
+          git commit -m "Refine Sentinel-1 RTC water measurements with stable envelope"
           git push
