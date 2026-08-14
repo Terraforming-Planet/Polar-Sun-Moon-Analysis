@@ -53,7 +53,8 @@
     "contact_sheet": "CONTACT_SHEET_SENTINEL1_RTC_MAY_2015_2025.jpg",
     "images_directory": "images",
     "measurements_csv_refined": "measurements_open_water_radar_refined.csv",
-    "contact_sheet_refined": "CONTACT_SHEET_SENTINEL1_RTC_MAY_2015_2025_REFINED.jpg"
+    "contact_sheet_refined": "CONTACT_SHEET_SENTINEL1_RTC_MAY_2015_2025_REFINED.jpg",
+    "measurement_notes": "MEASUREMENT_NOTES.md"
   },
   "records": [
     {
@@ -1651,5 +1652,10 @@
       "frequency_required": 3,
       "envelope_dilation_m": 40.0
     }
+  },
+  "measurement_reporting_policy": {
+    "jezioro_kuchnia": "High-confidence refined Sentinel-1 RTC open-water proxy; suitable for quantitative trend cross-checking, not a survey/cadastral area.",
+    "staw_w_lesie": "Small forest pond: SAR values are qualitative cross-checks only; low/anomalous rows must not be used as exact area measurements.",
+    "csv_status_fix": "measurement_status now maps directly from each refined measurement status."
   }
 }
