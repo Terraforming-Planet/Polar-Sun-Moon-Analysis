@@ -1,0 +1,42 @@
+name: Analyze Lake Kuchnia adaptive 1990-2026
+
+on:
+  push:
+    branches:
+      - annual-best-53-591400-19-010717
+    paths:
+      - tools/analyze_lake_adaptive_1990_2026.py
+      - .github/workflows/analyze-lake-adaptive-1990-2026.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: annual-best-53-591400-19-010717
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          python -m pip install --upgrade pip
+          pip install requests numpy pyproj rasterio scipy
+      - name: Run adaptive lake analysis
+        run: python tools/analyze_lake_adaptive_1990_2026.py
+      - name: Commit result
+        run: |
+          git config user.name "terraforming-planet-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add water_analysis_1990_2026/53.591400_19.010717/lake_adaptive.csv
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Add adaptive Lake Kuchnia area analysis [skip ci]"
+            git pull --rebase origin annual-best-53-591400-19-010717
+            git push origin HEAD:annual-best-53-591400-19-010717
+          fi
