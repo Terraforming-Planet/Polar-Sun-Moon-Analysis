@@ -7,6 +7,7 @@ on:
     paths:
       - 'tools/measure_experiment_001_endpoints_fast.py'
       - 'tools/measure_experiment_001_seasonal_water_v2.py'
+      - 'tools/measure_experiment_001_seasonal_water_v3.py'
       - '.github/workflows/experiment-001-endpoint-fast.yml'
   workflow_dispatch:
 
@@ -30,7 +31,7 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install numpy pillow requests rasterio pyproj scipy
-      - name: Measure endpoints
+      - name: Measure exact endpoint products
         run: python tools/measure_experiment_001_endpoints_fast.py
       - name: Validate output
         run: |
@@ -39,9 +40,13 @@ jobs:
           from pathlib import Path
           p=Path('experiments/experiment_001_pond_forest_kuchnia/measurements_endpoint_fast/endpoint_measurement_1990_2026.json')
           d=json.loads(p.read_text(encoding='utf-8'))
-          assert len(d['records'])==4
+          assert len(d['records'])==3
           assert d['pond_seed_corrected']['west_offset_m']>=600
           assert len(d['comparisons'])==4
+          for r in d['records']:
+              lake=r['lake_kuchnia']
+              assert lake['high_m2'] >= 100000, (r['date'],lake)
+              assert lake['low_m2'] <= 1000000, (r['date'],lake)
           print('FAST_ENDPOINT_COMPARISONS',d['comparisons'])
           PY
       - name: Commit endpoint measurement
@@ -50,6 +55,6 @@ jobs:
           git config user.email "kontakt@teslaeco.pl"
           git add experiments/experiment_001_pond_forest_kuchnia/measurements_endpoint_fast
           git diff --cached --quiet && echo "No endpoint changes" && exit 0
-          git commit -m "Add corrected Experiment 001 1990-2026 endpoint measurement"
+          git commit -m "Add exact-product Experiment 001 1990-2026 endpoint measurement"
           git pull --rebase origin annual-best-53-591400-19-010717
           git push origin HEAD:annual-best-53-591400-19-010717
