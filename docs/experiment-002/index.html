@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#07111f" />
+  <meta name="description" content="TerraWater Test 002 — zestaw danych satelitarnych 1990–2026 dla 53.609856, 19.055751." />
+  <title>TerraWater Test 002 — 1990–2026</title>
+  <style>
+    *{box-sizing:border-box} body{margin:0;background:#06101a;color:#eaf7ff;font-family:Inter,system-ui,Arial,sans-serif}.wrap{max-width:1180px;margin:auto;padding:20px}.top{padding:14px 20px;background:#071522;border-bottom:1px solid #244a65;display:flex;gap:10px;align-items:center;flex-wrap:wrap}.top strong{margin-right:auto}.btn{display:inline-block;padding:11px 15px;border-radius:10px;background:#0c6380;border:1px solid #63ddff;color:white;text-decoration:none;font-weight:800}.btn.alt{background:#17304a;border-color:#476d88}.hero,.grid{display:grid;gap:18px}.hero{grid-template-columns:1.15fr .85fr;margin-top:18px}.card{background:linear-gradient(180deg,#0d1d2c,#10273b);border:1px solid #28526e;border-radius:18px;padding:20px;box-shadow:0 12px 30px #0005}.grid{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:15px}.metric{background:#0a1a28;border:1px solid #244863;border-radius:13px;padding:14px}.metric strong{display:block;color:#fff;margin-bottom:5px}.muted{color:#b8d0df}.coord{color:#82e9ff;font-family:ui-monospace,monospace}.download{display:grid;gap:10px;margin-top:14px}.download a{padding:13px 15px;border-radius:12px;text-decoration:none;color:#fff;background:#0b6d88;border:1px solid #5ce5ff;font-weight:900}.download a.secondary{background:#173650;border-color:#5a8caa}.sheet{width:100%;border-radius:14px;border:1px solid #315a73;background:#07131d;margin-top:10px}.warn{border-left:4px solid #ffd166;background:#332a16;padding:14px 16px;border-radius:10px;color:#fff2c4}.ok{border-left:4px solid #58e69f;background:#143126;padding:14px 16px;border-radius:10px;color:#dfffea}h1{font-size:clamp(1.9rem,4vw,3rem);margin:0 0 10px}h2{margin-top:0;color:#d7f2ff}li,p{line-height:1.65}.footer{text-align:center;color:#9db8c8;margin:25px 0 5px}@media(max-width:850px){.hero,.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <nav class="top"><strong>Terraforming Planet — TerraWater</strong><a class="btn alt" href="../">← Strona główna</a><a class="btn alt" href="../experiment-001/">Test 001</a></nav>
+  <main class="wrap">
+    <section class="hero">
+      <article class="card">
+        <h1>Test 002 — zestaw satelitarny 1990–2026</h1>
+        <p>Drugi niezależny przypadek TerraWater dla obszaru wskazanego współrzędnymi <span class="coord">53.609856, 19.055751</span>. Celem jest porównanie historycznego zasięgu wody i terenów podmokłych w identycznym kadrze 2 km × 2 km.</p>
+        <div class="grid">
+          <div class="metric"><strong>Zakres lat</strong><span class="muted">1990–2026 — 37 lat</span></div>
+          <div class="metric"><strong>Kadr</strong><span class="muted">2 km × 2 km, stały punkt centralny</span></div>
+          <div class="metric"><strong>Wiosna</strong><span class="muted">Maj → fallback kwiecień → czerwiec</span></div>
+          <div class="metric"><strong>Jesień</strong><span class="muted">Wrzesień → październik → listopad</span></div>
+        </div>
+        <div class="download">
+          <a href="https://raw.githubusercontent.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/experiment-002-water-change-53-609856-19-055751/experiments/experiment_002_czarne_dolne_wetland/TEST002_SPRING_AUTUMN_1990_2026_53.609856_19.055751.zip">⬇ POBIERZ PEŁNY TEST 002 — WIOSNA + JESIEŃ</a>
+          <a class="secondary" href="https://raw.githubusercontent.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/experiment-002-water-change-53-609856-19-055751/experiments/experiment_002_czarne_dolne_wetland/seasonal_evidence/spring/TEST002_SPRING_1990_2026_37_YEARS_2km_53.609856_19.055751.zip">⬇ Pobierz tylko serię wiosenną 1990–2026</a>
+          <a class="secondary" href="https://raw.githubusercontent.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/experiment-002-water-change-53-609856-19-055751/experiments/experiment_002_czarne_dolne_wetland/seasonal_evidence/autumn/TEST002_AUTUMN_1990_2026_37_YEARS_2km_53.609856_19.055751.zip">⬇ Pobierz tylko serię jesienną 1990–2026</a>
+        </div>
+      </article>
+      <article class="card">
+        <h2>Polityka dowodowa</h2>
+        <div class="ok"><strong>Realne piksele satelitarne.</strong> Generator korzysta z publicznych danych Landsat i Sentinel-2. Daty akwizycji są zapisywane w manifestach i nazwach plików.</div>
+        <p>Nie stosujemy generatywnego uzupełniania obrazu ani AI super-resolution. Jeżeli preferowany miesiąc nie ma wystarczająco dobrego obrazu, używany jest jawnie opisany miesiąc zapasowy.</p>
+        <div class="warn"><strong>2026 jesień:</strong> obserwacja wrzesień–listopad 2026 nie może być wymyślona przed wystąpieniem sezonu. Jeżeli jej jeszcze nie ma, manifest pozostawia ją jako brakującą.</div>
+      </article>
+    </section>
+
+    <section class="card" style="margin-top:20px">
+      <h2>Podgląd serii wiosennej</h2>
+      <img class="sheet" src="https://raw.githubusercontent.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/experiment-002-water-change-53-609856-19-055751/experiments/experiment_002_czarne_dolne_wetland/seasonal_evidence/spring/CONTACT_SHEET_SPRING_1990_2026.jpg" alt="Contact sheet Test 002 wiosna 1990-2026" />
+    </section>
+
+    <section class="card" style="margin-top:20px">
+      <h2>Podgląd serii jesiennej</h2>
+      <img class="sheet" src="https://raw.githubusercontent.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/experiment-002-water-change-53-609856-19-055751/experiments/experiment_002_czarne_dolne_wetland/seasonal_evidence/autumn/CONTACT_SHEET_AUTUMN_1990_2026.jpg" alt="Contact sheet Test 002 jesień 1990-2026" />
+    </section>
+
+    <section class="card" style="margin-top:20px">
+      <h2>Pliki kontrolne</h2>
+      <ul>
+        <li><a href="https://raw.githubusercontent.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/experiment-002-water-change-53-609856-19-055751/experiments/experiment_002_czarne_dolne_wetland/BUILD_SUMMARY.json">BUILD_SUMMARY.json</a></li>
+        <li><a href="https://raw.githubusercontent.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/experiment-002-water-change-53-609856-19-055751/experiments/experiment_002_czarne_dolne_wetland/seasonal_evidence/spring/manifest.json">Manifest wiosenny</a></li>
+        <li><a href="https://raw.githubusercontent.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/experiment-002-water-change-53-609856-19-055751/experiments/experiment_002_czarne_dolne_wetland/seasonal_evidence/autumn/manifest.json">Manifest jesienny</a></li>
+        <li><a href="https://github.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/tree/experiment-002-water-change-53-609856-19-055751/experiments/experiment_002_czarne_dolne_wetland">Otwórz cały Test 002 w GitHub</a></li>
+      </ul>
+    </section>
+    <div class="footer">Terraforming Planet • TerraWater Test 002 • 53.609856, 19.055751</div>
+  </main>
+</body>
+</html>
