@@ -1,0 +1,85 @@
+name: Experiment 002 seasonal evidence
+
+on:
+  push:
+    branches:
+      - experiment-002-water-change-53-609856-19-055751
+    paths:
+      - 'tools/build_experiment_002_seasonal_evidence.py'
+      - '.github/workflows/experiment-002-seasonal-evidence.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment-002-water-change-53-609856-19-055751
+          fetch-depth: 20
+          filter: blob:none
+          sparse-checkout: |
+            tools
+            experiments
+          sparse-checkout-cone-mode: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install geospatial dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pillow requests rasterio pyproj
+
+      - name: Build Test 002 imagery 1990-2026
+        run: python tools/build_experiment_002_seasonal_evidence.py
+
+      - name: Validate Test 002 package
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          exp = Path('experiments/experiment_002_czarne_dolne_wetland')
+          summary = json.loads((exp/'BUILD_SUMMARY.json').read_text(encoding='utf-8'))
+          print(summary)
+          assert summary['spring_count_ok'] >= 30, summary
+          assert summary['autumn_count_ok'] >= 30, summary
+          combined = Path(summary['combined_zip'])
+          assert combined.exists() and combined.stat().st_size > 100000
+          for season in ('spring', 'autumn'):
+              root = exp/'seasonal_evidence'/season
+              manifest = json.loads((root/'manifest.json').read_text(encoding='utf-8'))
+              assert len(manifest['records']) == 37
+              for rec in manifest['records']:
+                  if rec.get('status') == 'ok':
+                      assert str(rec['date']).startswith(str(rec['year']) + '-')
+          print('EXPERIMENT_002_VALIDATED')
+          PY
+
+      - name: Upload downloadable Test 002 archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: TEST002_1990_2026_53.609856_19.055751
+          path: |
+            experiments/experiment_002_czarne_dolne_wetland/TEST002_SPRING_AUTUMN_1990_2026_53.609856_19.055751.zip
+            experiments/experiment_002_czarne_dolne_wetland/seasonal_evidence/spring/TEST002_SPRING_1990_2026_37_YEARS_2km_53.609856_19.055751.zip
+            experiments/experiment_002_czarne_dolne_wetland/seasonal_evidence/autumn/TEST002_AUTUMN_1990_2026_37_YEARS_2km_53.609856_19.055751.zip
+            experiments/experiment_002_czarne_dolne_wetland/BUILD_SUMMARY.json
+            experiments/experiment_002_czarne_dolne_wetland/EXPERIMENT_002_REPORT.md
+          retention-days: 90
+
+      - name: Commit Test 002 evidence outputs
+        run: |
+          git config user.name "Terraforming Planet"
+          git config user.email "kontakt@teslaeco.pl"
+          git add experiments/experiment_002_czarne_dolne_wetland
+          git diff --cached --quiet && echo "No Test 002 evidence changes" && exit 0
+          git commit -m "Build Test 002 satellite dataset 1990-2026"
+          git pull --rebase origin experiment-002-water-change-53-609856-19-055751
+          git push origin HEAD:experiment-002-water-change-53-609856-19-055751
