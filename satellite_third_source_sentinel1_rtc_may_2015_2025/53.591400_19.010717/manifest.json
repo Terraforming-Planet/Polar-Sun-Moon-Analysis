@@ -51,7 +51,9 @@
   "outputs": {
     "measurements_csv": "measurements_open_water_radar.csv",
     "contact_sheet": "CONTACT_SHEET_SENTINEL1_RTC_MAY_2015_2025.jpg",
-    "images_directory": "images"
+    "images_directory": "images",
+    "measurements_csv_refined": "measurements_open_water_radar_refined.csv",
+    "contact_sheet_refined": "CONTACT_SHEET_SENTINEL1_RTC_MAY_2015_2025_REFINED.jpg"
   },
   "records": [
     {
@@ -111,14 +113,65 @@
       "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
       "measurements": {
         "jezioro_kuchnia": {
+          "area_m2": 73500.0,
+          "area_ha": 7.35,
+          "water_pixels": 735,
+          "seed_distance_m": 31.622776601683796,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -17.391868591308594,
+          "median_water_vh_db": -22.765361785888672,
+          "stable_core_overlap_fraction": 0.8886138613861386,
+          "boundary_pixels": 14,
+          "edge_pixel_uncertainty_m2": 700.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": 0.0,
+          "change_vs_baseline_percent": 0.0
+        },
+        "staw_w_lesie": {
+          "area_m2": 2000.0,
+          "area_ha": 0.2,
+          "water_pixels": 20,
+          "seed_distance_m": 0.0,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -13.633539199829102,
+          "median_water_vh_db": -18.39200210571289,
+          "stable_core_overlap_fraction": 0.1941747572815534,
+          "boundary_pixels": 2,
+          "edge_pixel_uncertainty_m2": 100.0,
+          "confidence": "low",
+          "status": "classification_anomaly",
+          "baseline_year": 2018,
+          "change_vs_baseline_m2": -6800.0,
+          "change_vs_baseline_percent": -77.27272727272727
+        }
+      },
+      "files": {
+        "vv_native": "images/2015_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2015_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2015_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2015_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2015_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2015_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png",
+        "water_overlay_refined_native": "images/2015_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_native.png",
+        "water_overlay_refined_display": "images/2015_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_display1024.png"
+      },
+      "status": "ok",
+      "measurements_v1_adaptive": {
+        "jezioro_kuchnia": {
           "area_m2": 71700.0,
           "area_ha": 7.17,
           "water_pixels": 717,
           "seed_distance_m": 31.622776601683796,
           "vv_threshold_db": -12.0,
-          "vh_threshold_db": -17.18219355116288,
-          "vv_otsu_db": -11.64116154874365,
-          "vh_otsu_db": -17.18219355116288,
+          "vh_threshold_db": -17.182193038463595,
+          "vv_otsu_db": -11.641161440859243,
+          "vh_otsu_db": -17.182193038463595,
           "boundary_pixels": 16,
           "edge_pixel_uncertainty_m2": 800.0,
           "confidence": "medium",
@@ -134,8 +187,8 @@
           "seed_distance_m": 0.0,
           "vv_threshold_db": -12.0,
           "vh_threshold_db": -17.0,
-          "vv_otsu_db": -8.777064812680086,
-          "vh_otsu_db": -14.200788322091102,
+          "vv_otsu_db": -8.777064378062883,
+          "vh_otsu_db": -14.20078772306442,
           "boundary_pixels": 8,
           "edge_pixel_uncertainty_m2": 400.0,
           "confidence": "high",
@@ -144,16 +197,7 @@
           "change_vs_baseline_m2": 0.0,
           "change_vs_baseline_percent": 0.0
         }
-      },
-      "files": {
-        "vv_native": "images/2015_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
-        "vh_native": "images/2015_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
-        "falsecolor_native": "images/2015_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
-        "falsecolor_display": "images/2015_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
-        "water_overlay_native": "images/2015_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
-        "water_overlay_display": "images/2015_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
-      },
-      "status": "ok"
+      }
     },
     {
       "year": 2016,
@@ -204,14 +248,65 @@
       "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
       "measurements": {
         "jezioro_kuchnia": {
+          "area_m2": 71500.0,
+          "area_ha": 7.15,
+          "water_pixels": 715,
+          "seed_distance_m": 36.05551275463989,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -18.51776885986328,
+          "median_water_vh_db": -22.647249221801758,
+          "stable_core_overlap_fraction": 0.8811881188118812,
+          "boundary_pixels": 16,
+          "edge_pixel_uncertainty_m2": 800.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": -2000.0,
+          "change_vs_baseline_percent": -2.7210884353741496
+        },
+        "staw_w_lesie": {
+          "area_m2": 2100.0,
+          "area_ha": 0.21,
+          "water_pixels": 21,
+          "seed_distance_m": 0.0,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -13.947986602783203,
+          "median_water_vh_db": -18.829830169677734,
+          "stable_core_overlap_fraction": 0.1941747572815534,
+          "boundary_pixels": 6,
+          "edge_pixel_uncertainty_m2": 300.0,
+          "confidence": "low",
+          "status": "classification_anomaly",
+          "baseline_year": 2018,
+          "change_vs_baseline_m2": -6700.0,
+          "change_vs_baseline_percent": -76.13636363636364
+        }
+      },
+      "files": {
+        "vv_native": "images/2016_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2016_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2016_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2016_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2016_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2016_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png",
+        "water_overlay_refined_native": "images/2016_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_native.png",
+        "water_overlay_refined_display": "images/2016_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_display1024.png"
+      },
+      "status": "ok",
+      "measurements_v1_adaptive": {
+        "jezioro_kuchnia": {
           "area_m2": 69500.0,
           "area_ha": 6.95,
           "water_pixels": 695,
           "seed_distance_m": 36.05551275463989,
-          "vv_threshold_db": -12.327794255117576,
-          "vh_threshold_db": -17.030995818376546,
-          "vv_otsu_db": -12.327794255117576,
-          "vh_otsu_db": -17.030995818376546,
+          "vv_threshold_db": -12.327793266673883,
+          "vh_threshold_db": -17.03099440435569,
+          "vv_otsu_db": -12.327793266673883,
+          "vh_otsu_db": -17.03099440435569,
           "boundary_pixels": 20,
           "edge_pixel_uncertainty_m2": 1000.0,
           "confidence": "medium",
@@ -227,8 +322,8 @@
           "seed_distance_m": 0.0,
           "vv_threshold_db": -12.0,
           "vh_threshold_db": -17.0,
-          "vv_otsu_db": -8.65488414565722,
-          "vh_otsu_db": -14.623035334050655,
+          "vv_otsu_db": -8.65488314256072,
+          "vh_otsu_db": -14.623034785191217,
           "boundary_pixels": 4,
           "edge_pixel_uncertainty_m2": 200.0,
           "confidence": "high",
@@ -237,16 +332,7 @@
           "change_vs_baseline_m2": 100.0,
           "change_vs_baseline_percent": 5.88235294117647
         }
-      },
-      "files": {
-        "vv_native": "images/2016_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
-        "vh_native": "images/2016_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
-        "falsecolor_native": "images/2016_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
-        "falsecolor_display": "images/2016_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
-        "water_overlay_native": "images/2016_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
-        "water_overlay_display": "images/2016_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
-      },
-      "status": "ok"
+      }
     },
     {
       "year": 2017,
@@ -306,14 +392,65 @@
       "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
       "measurements": {
         "jezioro_kuchnia": {
+          "area_m2": 81200.0,
+          "area_ha": 8.12,
+          "water_pixels": 812,
+          "seed_distance_m": 31.622776601683796,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -19.420795440673828,
+          "median_water_vh_db": -22.955230712890625,
+          "stable_core_overlap_fraction": 0.969059405940594,
+          "boundary_pixels": 2,
+          "edge_pixel_uncertainty_m2": 100.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": 7700.0,
+          "change_vs_baseline_percent": 10.476190476190476
+        },
+        "staw_w_lesie": {
+          "area_m2": 1900.0,
+          "area_ha": 0.19,
+          "water_pixels": 19,
+          "seed_distance_m": 0.0,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -13.623127937316895,
+          "median_water_vh_db": -18.86343765258789,
+          "stable_core_overlap_fraction": 0.18446601941747573,
+          "boundary_pixels": 4,
+          "edge_pixel_uncertainty_m2": 200.0,
+          "confidence": "low",
+          "status": "classification_anomaly",
+          "baseline_year": 2018,
+          "change_vs_baseline_m2": -6900.0,
+          "change_vs_baseline_percent": -78.4090909090909
+        }
+      },
+      "files": {
+        "vv_native": "images/2017_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2017_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2017_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2017_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2017_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2017_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png",
+        "water_overlay_refined_native": "images/2017_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_native.png",
+        "water_overlay_refined_display": "images/2017_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_display1024.png"
+      },
+      "status": "ok",
+      "measurements_v1_adaptive": {
+        "jezioro_kuchnia": {
           "area_m2": 74100.0,
           "area_ha": 7.41,
           "water_pixels": 741,
           "seed_distance_m": 40.0,
-          "vv_threshold_db": -13.25898361161353,
-          "vh_threshold_db": -17.323085101644207,
-          "vv_otsu_db": -13.25898361161353,
-          "vh_otsu_db": -17.323085101644207,
+          "vv_threshold_db": -13.258982574641724,
+          "vh_threshold_db": -17.32308412313462,
+          "vv_otsu_db": -13.258982574641724,
+          "vh_otsu_db": -17.32308412313462,
           "boundary_pixels": 6,
           "edge_pixel_uncertainty_m2": 300.0,
           "confidence": "medium",
@@ -329,8 +466,8 @@
           "seed_distance_m": 0.0,
           "vv_threshold_db": -12.0,
           "vh_threshold_db": -17.0,
-          "vv_otsu_db": -9.101223069429398,
-          "vh_otsu_db": -13.902748480935891,
+          "vv_otsu_db": -9.101222472637891,
+          "vh_otsu_db": -13.90274802992741,
           "boundary_pixels": 2,
           "edge_pixel_uncertainty_m2": 100.0,
           "confidence": "high",
@@ -339,16 +476,7 @@
           "change_vs_baseline_m2": 0.0,
           "change_vs_baseline_percent": 0.0
         }
-      },
-      "files": {
-        "vv_native": "images/2017_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
-        "vh_native": "images/2017_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
-        "falsecolor_native": "images/2017_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
-        "falsecolor_display": "images/2017_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
-        "water_overlay_native": "images/2017_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
-        "water_overlay_display": "images/2017_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
-      },
-      "status": "ok"
+      }
     },
     {
       "year": 2018,
@@ -408,13 +536,64 @@
       "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
       "measurements": {
         "jezioro_kuchnia": {
+          "area_m2": 79900.0,
+          "area_ha": 7.99,
+          "water_pixels": 799,
+          "seed_distance_m": 40.0,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -19.79499626159668,
+          "median_water_vh_db": -23.39556884765625,
+          "stable_core_overlap_fraction": 0.9665841584158416,
+          "boundary_pixels": 10,
+          "edge_pixel_uncertainty_m2": 500.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": 6400.0,
+          "change_vs_baseline_percent": 8.707482993197278
+        },
+        "staw_w_lesie": {
+          "area_m2": 8800.0,
+          "area_ha": 0.88,
+          "water_pixels": 88,
+          "seed_distance_m": 0.0,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -14.316377639770508,
+          "median_water_vh_db": -19.328901290893555,
+          "stable_core_overlap_fraction": 0.8252427184466019,
+          "boundary_pixels": 4,
+          "edge_pixel_uncertainty_m2": 200.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2018,
+          "change_vs_baseline_m2": 0.0,
+          "change_vs_baseline_percent": 0.0
+        }
+      },
+      "files": {
+        "vv_native": "images/2018_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2018_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2018_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2018_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2018_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2018_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png",
+        "water_overlay_refined_native": "images/2018_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_native.png",
+        "water_overlay_refined_display": "images/2018_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_display1024.png"
+      },
+      "status": "ok",
+      "measurements_v1_adaptive": {
+        "jezioro_kuchnia": {
           "area_m2": 75100.0,
           "area_ha": 7.51,
           "water_pixels": 751,
           "seed_distance_m": 40.0,
-          "vv_threshold_db": -13.130091929733757,
+          "vv_threshold_db": -13.130090901553634,
           "vh_threshold_db": -18.065745426416402,
-          "vv_otsu_db": -13.130091929733757,
+          "vv_otsu_db": -13.130090901553634,
           "vh_otsu_db": -18.065745426416402,
           "boundary_pixels": 10,
           "edge_pixel_uncertainty_m2": 500.0,
@@ -431,8 +610,8 @@
           "seed_distance_m": 0.0,
           "vv_threshold_db": -12.0,
           "vh_threshold_db": -17.0,
-          "vv_otsu_db": -9.19991700053215,
-          "vh_otsu_db": -14.730000999569894,
+          "vv_otsu_db": -9.199916684627533,
+          "vh_otsu_db": -14.730000338951747,
           "boundary_pixels": 0,
           "edge_pixel_uncertainty_m2": 100.0,
           "confidence": "high",
@@ -441,16 +620,7 @@
           "change_vs_baseline_m2": 800.0,
           "change_vs_baseline_percent": 47.05882352941176
         }
-      },
-      "files": {
-        "vv_native": "images/2018_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
-        "vh_native": "images/2018_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
-        "falsecolor_native": "images/2018_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
-        "falsecolor_display": "images/2018_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
-        "water_overlay_native": "images/2018_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
-        "water_overlay_display": "images/2018_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
-      },
-      "status": "ok"
+      }
     },
     {
       "year": 2019,
@@ -510,14 +680,65 @@
       "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
       "measurements": {
         "jezioro_kuchnia": {
+          "area_m2": 71800.0,
+          "area_ha": 7.18,
+          "water_pixels": 718,
+          "seed_distance_m": 36.05551275463989,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -17.871286392211914,
+          "median_water_vh_db": -22.989551544189453,
+          "stable_core_overlap_fraction": 0.8824257425742574,
+          "boundary_pixels": 16,
+          "edge_pixel_uncertainty_m2": 800.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": -1700.0,
+          "change_vs_baseline_percent": -2.312925170068027
+        },
+        "staw_w_lesie": {
+          "area_m2": 800.0,
+          "area_ha": 0.08,
+          "water_pixels": 8,
+          "seed_distance_m": 28.284271247461902,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -14.078035354614258,
+          "median_water_vh_db": -19.70524024963379,
+          "stable_core_overlap_fraction": 0.07766990291262135,
+          "boundary_pixels": 8,
+          "edge_pixel_uncertainty_m2": 400.0,
+          "confidence": "low",
+          "status": "classification_anomaly",
+          "baseline_year": 2018,
+          "change_vs_baseline_m2": -8000.0,
+          "change_vs_baseline_percent": -90.9090909090909
+        }
+      },
+      "files": {
+        "vv_native": "images/2019_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2019_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2019_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2019_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2019_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2019_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png",
+        "water_overlay_refined_native": "images/2019_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_native.png",
+        "water_overlay_refined_display": "images/2019_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_display1024.png"
+      },
+      "status": "ok",
+      "measurements_v1_adaptive": {
+        "jezioro_kuchnia": {
           "area_m2": 70700.0,
           "area_ha": 7.07,
           "water_pixels": 707,
           "seed_distance_m": 36.05551275463989,
-          "vv_threshold_db": -12.371508709862848,
-          "vh_threshold_db": -17.501646695733072,
-          "vv_otsu_db": -12.371508709862848,
-          "vh_otsu_db": -17.501646695733072,
+          "vv_threshold_db": -12.371508618667741,
+          "vh_threshold_db": -17.501645707289377,
+          "vv_otsu_db": -12.371508618667741,
+          "vh_otsu_db": -17.501645707289377,
           "boundary_pixels": 16,
           "edge_pixel_uncertainty_m2": 800.0,
           "confidence": "medium",
@@ -533,8 +754,8 @@
           "seed_distance_m": 28.284271247461902,
           "vv_threshold_db": -12.0,
           "vh_threshold_db": -17.0,
-          "vv_otsu_db": -8.386386431753635,
-          "vh_otsu_db": -14.142601141333579,
+          "vv_otsu_db": -8.386386041839918,
+          "vh_otsu_db": -14.142600702246028,
           "boundary_pixels": 8,
           "edge_pixel_uncertainty_m2": 400.0,
           "confidence": "high",
@@ -543,16 +764,7 @@
           "change_vs_baseline_m2": -900.0,
           "change_vs_baseline_percent": -52.94117647058824
         }
-      },
-      "files": {
-        "vv_native": "images/2019_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
-        "vh_native": "images/2019_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
-        "falsecolor_native": "images/2019_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
-        "falsecolor_display": "images/2019_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
-        "water_overlay_native": "images/2019_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
-        "water_overlay_display": "images/2019_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
-      },
-      "status": "ok"
+      }
     },
     {
       "year": 2020,
@@ -612,14 +824,65 @@
       "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
       "measurements": {
         "jezioro_kuchnia": {
+          "area_m2": 71300.0,
+          "area_ha": 7.13,
+          "water_pixels": 713,
+          "seed_distance_m": 36.05551275463989,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -19.3924503326416,
+          "median_water_vh_db": -23.634334564208984,
+          "stable_core_overlap_fraction": 0.8824257425742574,
+          "boundary_pixels": 24,
+          "edge_pixel_uncertainty_m2": 1200.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": -2200.0,
+          "change_vs_baseline_percent": -2.9931972789115644
+        },
+        "staw_w_lesie": {
+          "area_m2": 2100.0,
+          "area_ha": 0.21,
+          "water_pixels": 21,
+          "seed_distance_m": 10.0,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -13.929588317871094,
+          "median_water_vh_db": -19.366031646728516,
+          "stable_core_overlap_fraction": 0.20388349514563106,
+          "boundary_pixels": 4,
+          "edge_pixel_uncertainty_m2": 200.0,
+          "confidence": "low",
+          "status": "classification_anomaly",
+          "baseline_year": 2018,
+          "change_vs_baseline_m2": -6700.0,
+          "change_vs_baseline_percent": -76.13636363636364
+        }
+      },
+      "files": {
+        "vv_native": "images/2020_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2020_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2020_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2020_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2020_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2020_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png",
+        "water_overlay_refined_native": "images/2020_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_native.png",
+        "water_overlay_refined_display": "images/2020_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_display1024.png"
+      },
+      "status": "ok",
+      "measurements_v1_adaptive": {
+        "jezioro_kuchnia": {
           "area_m2": 3000.0,
           "area_ha": 0.3,
           "water_pixels": 30,
           "seed_distance_m": 42.426406871192846,
-          "vv_threshold_db": -12.809536738569538,
-          "vh_threshold_db": -17.937445946931845,
-          "vv_otsu_db": -12.809536738569538,
-          "vh_otsu_db": -17.937445946931845,
+          "vv_threshold_db": -12.80953669545551,
+          "vh_threshold_db": -17.937444547712808,
+          "vv_otsu_db": -12.80953669545551,
+          "vh_otsu_db": -17.937444547712808,
           "boundary_pixels": 5,
           "edge_pixel_uncertainty_m2": 250.0,
           "confidence": "medium",
@@ -635,8 +898,8 @@
           "seed_distance_m": 10.0,
           "vv_threshold_db": -12.0,
           "vh_threshold_db": -17.0,
-          "vv_otsu_db": -9.229003363102674,
-          "vh_otsu_db": -14.824457213282585,
+          "vv_otsu_db": -9.229002994795641,
+          "vh_otsu_db": -14.824456277489663,
           "boundary_pixels": 8,
           "edge_pixel_uncertainty_m2": 400.0,
           "confidence": "high",
@@ -645,16 +908,7 @@
           "change_vs_baseline_m2": 300.0,
           "change_vs_baseline_percent": 17.647058823529413
         }
-      },
-      "files": {
-        "vv_native": "images/2020_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
-        "vh_native": "images/2020_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
-        "falsecolor_native": "images/2020_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
-        "falsecolor_display": "images/2020_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
-        "water_overlay_native": "images/2020_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
-        "water_overlay_display": "images/2020_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
-      },
-      "status": "ok"
+      }
     },
     {
       "year": 2021,
@@ -714,14 +968,65 @@
       "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
       "measurements": {
         "jezioro_kuchnia": {
+          "area_m2": 81200.0,
+          "area_ha": 8.12,
+          "water_pixels": 812,
+          "seed_distance_m": 30.0,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -18.778411865234375,
+          "median_water_vh_db": -22.515459060668945,
+          "stable_core_overlap_fraction": 0.9702970297029703,
+          "boundary_pixels": 2,
+          "edge_pixel_uncertainty_m2": 100.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": 7700.0,
+          "change_vs_baseline_percent": 10.476190476190476
+        },
+        "staw_w_lesie": {
+          "area_m2": 1100.0,
+          "area_ha": 0.11,
+          "water_pixels": 11,
+          "seed_distance_m": 20.0,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -13.481191635131836,
+          "median_water_vh_db": -18.263322830200195,
+          "stable_core_overlap_fraction": 0.10679611650485436,
+          "boundary_pixels": 2,
+          "edge_pixel_uncertainty_m2": 100.0,
+          "confidence": "low",
+          "status": "classification_anomaly",
+          "baseline_year": 2018,
+          "change_vs_baseline_m2": -7700.0,
+          "change_vs_baseline_percent": -87.5
+        }
+      },
+      "files": {
+        "vv_native": "images/2021_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2021_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2021_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2021_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2021_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2021_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png",
+        "water_overlay_refined_native": "images/2021_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_native.png",
+        "water_overlay_refined_display": "images/2021_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_display1024.png"
+      },
+      "status": "ok",
+      "measurements_v1_adaptive": {
+        "jezioro_kuchnia": {
           "area_m2": 77800.0,
           "area_ha": 7.78,
           "water_pixels": 778,
           "seed_distance_m": 31.622776601683796,
-          "vv_threshold_db": -12.923121268004179,
-          "vh_threshold_db": -17.405310782889526,
-          "vv_otsu_db": -12.923121268004179,
-          "vh_otsu_db": -17.405310782889526,
+          "vv_threshold_db": -12.923119997680187,
+          "vh_threshold_db": -17.405308825870353,
+          "vv_otsu_db": -12.923119997680187,
+          "vh_otsu_db": -17.405308825870353,
           "boundary_pixels": 6,
           "edge_pixel_uncertainty_m2": 300.0,
           "confidence": "medium",
@@ -737,8 +1042,8 @@
           "seed_distance_m": 22.360679774997898,
           "vv_threshold_db": -12.0,
           "vh_threshold_db": -17.0,
-          "vv_otsu_db": -7.937817511459191,
-          "vh_otsu_db": -13.634130421777563,
+          "vv_otsu_db": -7.937816857049863,
+          "vh_otsu_db": -13.634129535655177,
           "boundary_pixels": 0,
           "edge_pixel_uncertainty_m2": 100.0,
           "confidence": "high",
@@ -747,16 +1052,7 @@
           "change_vs_baseline_m2": -800.0,
           "change_vs_baseline_percent": -47.05882352941176
         }
-      },
-      "files": {
-        "vv_native": "images/2021_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
-        "vh_native": "images/2021_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
-        "falsecolor_native": "images/2021_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
-        "falsecolor_display": "images/2021_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
-        "water_overlay_native": "images/2021_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
-        "water_overlay_display": "images/2021_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
-      },
-      "status": "ok"
+      }
     },
     {
       "year": 2022,
@@ -815,14 +1111,65 @@
       "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
       "measurements": {
         "jezioro_kuchnia": {
+          "area_m2": 72300.0,
+          "area_ha": 7.23,
+          "water_pixels": 723,
+          "seed_distance_m": 30.0,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -18.260648727416992,
+          "median_water_vh_db": -22.593570709228516,
+          "stable_core_overlap_fraction": 0.8898514851485149,
+          "boundary_pixels": 4,
+          "edge_pixel_uncertainty_m2": 200.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": -1200.0,
+          "change_vs_baseline_percent": -1.6326530612244898
+        },
+        "staw_w_lesie": {
+          "area_m2": 1200.0,
+          "area_ha": 0.12,
+          "water_pixels": 12,
+          "seed_distance_m": 28.284271247461902,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -13.827505111694336,
+          "median_water_vh_db": -18.51018524169922,
+          "stable_core_overlap_fraction": 0.11650485436893204,
+          "boundary_pixels": 12,
+          "edge_pixel_uncertainty_m2": 600.0,
+          "confidence": "low",
+          "status": "classification_anomaly",
+          "baseline_year": 2018,
+          "change_vs_baseline_m2": -7600.0,
+          "change_vs_baseline_percent": -86.36363636363636
+        }
+      },
+      "files": {
+        "vv_native": "images/2022_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2022_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2022_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2022_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2022_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2022_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png",
+        "water_overlay_refined_native": "images/2022_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_native.png",
+        "water_overlay_refined_display": "images/2022_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_display1024.png"
+      },
+      "status": "ok",
+      "measurements_v1_adaptive": {
+        "jezioro_kuchnia": {
           "area_m2": 70400.0,
           "area_ha": 7.04,
           "water_pixels": 704,
           "seed_distance_m": 36.05551275463989,
-          "vv_threshold_db": -12.439943428710109,
-          "vh_threshold_db": -17.272018608947594,
-          "vv_otsu_db": -12.439943428710109,
-          "vh_otsu_db": -17.272018608947594,
+          "vv_threshold_db": -12.439941253140573,
+          "vh_threshold_db": -17.27201617260774,
+          "vv_otsu_db": -12.439941253140573,
+          "vh_otsu_db": -17.27201617260774,
           "boundary_pixels": 23,
           "edge_pixel_uncertainty_m2": 1150.0,
           "confidence": "medium",
@@ -838,8 +1185,8 @@
           "seed_distance_m": 28.284271247461902,
           "vv_threshold_db": -12.0,
           "vh_threshold_db": -17.0,
-          "vv_otsu_db": -8.578745311746996,
-          "vh_otsu_db": -13.983850971857704,
+          "vv_otsu_db": -8.57874487489462,
+          "vh_otsu_db": -13.983850744366643,
           "boundary_pixels": 10,
           "edge_pixel_uncertainty_m2": 500.0,
           "confidence": "high",
@@ -848,16 +1195,7 @@
           "change_vs_baseline_m2": -700.0,
           "change_vs_baseline_percent": -41.17647058823529
         }
-      },
-      "files": {
-        "vv_native": "images/2022_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
-        "vh_native": "images/2022_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
-        "falsecolor_native": "images/2022_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
-        "falsecolor_display": "images/2022_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
-        "water_overlay_native": "images/2022_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
-        "water_overlay_display": "images/2022_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
-      },
-      "status": "ok"
+      }
     },
     {
       "year": 2023,
@@ -908,14 +1246,65 @@
       "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
       "measurements": {
         "jezioro_kuchnia": {
+          "area_m2": 72200.0,
+          "area_ha": 7.22,
+          "water_pixels": 722,
+          "seed_distance_m": 36.05551275463989,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -18.041839599609375,
+          "median_water_vh_db": -22.75143814086914,
+          "stable_core_overlap_fraction": 0.8935643564356436,
+          "boundary_pixels": 24,
+          "edge_pixel_uncertainty_m2": 1200.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": -1300.0,
+          "change_vs_baseline_percent": -1.7687074829931975
+        },
+        "staw_w_lesie": {
+          "area_m2": 1700.0,
+          "area_ha": 0.17,
+          "water_pixels": 17,
+          "seed_distance_m": 22.360679774997898,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -13.67734432220459,
+          "median_water_vh_db": -18.00075340270996,
+          "stable_core_overlap_fraction": 0.1650485436893204,
+          "boundary_pixels": 2,
+          "edge_pixel_uncertainty_m2": 100.0,
+          "confidence": "low",
+          "status": "classification_anomaly",
+          "baseline_year": 2018,
+          "change_vs_baseline_m2": -7100.0,
+          "change_vs_baseline_percent": -80.68181818181817
+        }
+      },
+      "files": {
+        "vv_native": "images/2023_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2023_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2023_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2023_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2023_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2023_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png",
+        "water_overlay_refined_native": "images/2023_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_native.png",
+        "water_overlay_refined_display": "images/2023_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_display1024.png"
+      },
+      "status": "ok",
+      "measurements_v1_adaptive": {
+        "jezioro_kuchnia": {
           "area_m2": 2900.0,
           "area_ha": 0.29,
           "water_pixels": 29,
           "seed_distance_m": 36.05551275463989,
           "vv_threshold_db": -12.0,
-          "vh_threshold_db": -17.306586021383605,
-          "vv_otsu_db": -11.778982650165771,
-          "vh_otsu_db": -17.306586021383605,
+          "vh_threshold_db": -17.30658511062463,
+          "vv_otsu_db": -11.778981536626828,
+          "vh_otsu_db": -17.30658511062463,
           "boundary_pixels": 8,
           "edge_pixel_uncertainty_m2": 400.0,
           "confidence": "medium",
@@ -931,8 +1320,8 @@
           "seed_distance_m": 28.284271247461902,
           "vv_threshold_db": -12.0,
           "vh_threshold_db": -17.0,
-          "vv_otsu_db": -8.373168140649788,
-          "vh_otsu_db": -14.38801184296608,
+          "vv_otsu_db": -8.373167131096118,
+          "vh_otsu_db": -14.388011112809181,
           "boundary_pixels": 0,
           "edge_pixel_uncertainty_m2": 100.0,
           "confidence": "high",
@@ -941,16 +1330,7 @@
           "change_vs_baseline_m2": -300.0,
           "change_vs_baseline_percent": -17.647058823529413
         }
-      },
-      "files": {
-        "vv_native": "images/2023_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
-        "vh_native": "images/2023_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
-        "falsecolor_native": "images/2023_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
-        "falsecolor_display": "images/2023_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
-        "water_overlay_native": "images/2023_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
-        "water_overlay_display": "images/2023_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
-      },
-      "status": "ok"
+      }
     },
     {
       "year": 2024,
@@ -1009,14 +1389,65 @@
       "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
       "measurements": {
         "jezioro_kuchnia": {
+          "area_m2": 74100.0,
+          "area_ha": 7.41,
+          "water_pixels": 741,
+          "seed_distance_m": 31.622776601683796,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -18.14145851135254,
+          "median_water_vh_db": -22.2846622467041,
+          "stable_core_overlap_fraction": 0.9133663366336634,
+          "boundary_pixels": 16,
+          "edge_pixel_uncertainty_m2": 800.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": 600.0,
+          "change_vs_baseline_percent": 0.8163265306122449
+        },
+        "staw_w_lesie": {
+          "area_m2": 900.0,
+          "area_ha": 0.09,
+          "water_pixels": 9,
+          "seed_distance_m": 22.360679774997898,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -13.696149826049805,
+          "median_water_vh_db": -19.110639572143555,
+          "stable_core_overlap_fraction": 0.08737864077669903,
+          "boundary_pixels": 0,
+          "edge_pixel_uncertainty_m2": 100.0,
+          "confidence": "low",
+          "status": "classification_anomaly",
+          "baseline_year": 2018,
+          "change_vs_baseline_m2": -7900.0,
+          "change_vs_baseline_percent": -89.77272727272727
+        }
+      },
+      "files": {
+        "vv_native": "images/2024_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2024_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2024_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2024_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2024_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2024_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png",
+        "water_overlay_refined_native": "images/2024_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_native.png",
+        "water_overlay_refined_display": "images/2024_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_display1024.png"
+      },
+      "status": "ok",
+      "measurements_v1_adaptive": {
+        "jezioro_kuchnia": {
           "area_m2": 73600.0,
           "area_ha": 7.36,
           "water_pixels": 736,
           "seed_distance_m": 31.622776601683796,
           "vv_threshold_db": -12.0,
           "vh_threshold_db": -17.0,
-          "vv_otsu_db": -11.929191971197724,
-          "vh_otsu_db": -16.92750659018755,
+          "vv_otsu_db": -11.929190982754033,
+          "vh_otsu_db": -16.92750567018986,
           "boundary_pixels": 18,
           "edge_pixel_uncertainty_m2": 900.0,
           "confidence": "medium",
@@ -1042,16 +1473,7 @@
           "change_vs_baseline_m2": -900.0,
           "change_vs_baseline_percent": -52.94117647058824
         }
-      },
-      "files": {
-        "vv_native": "images/2024_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
-        "vh_native": "images/2024_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
-        "falsecolor_native": "images/2024_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
-        "falsecolor_display": "images/2024_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
-        "water_overlay_native": "images/2024_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
-        "water_overlay_display": "images/2024_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
-      },
-      "status": "ok"
+      }
     },
     {
       "year": 2025,
@@ -1111,14 +1533,65 @@
       "composite_method": "per-pixel temporal median in dB across up to 3 May acquisitions on the preferred repeat track, then 3x3 median speckle filter",
       "measurements": {
         "jezioro_kuchnia": {
+          "area_m2": 75000.0,
+          "area_ha": 7.5,
+          "water_pixels": 750,
+          "seed_distance_m": 31.622776601683796,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -20.83003807067871,
+          "median_water_vh_db": -24.706899642944336,
+          "stable_core_overlap_fraction": 0.900990099009901,
+          "boundary_pixels": 26,
+          "edge_pixel_uncertainty_m2": 1300.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2015,
+          "change_vs_baseline_m2": 1500.0,
+          "change_vs_baseline_percent": 2.0408163265306123
+        },
+        "staw_w_lesie": {
+          "area_m2": 10000.0,
+          "area_ha": 1.0,
+          "water_pixels": 100,
+          "seed_distance_m": 10.0,
+          "fixed_vv_threshold_db": -12.0,
+          "fixed_vh_threshold_db": -16.5,
+          "very_dark_vv_override_db": -15.0,
+          "median_water_vv_db": -13.44107437133789,
+          "median_water_vh_db": -18.770435333251953,
+          "stable_core_overlap_fraction": 0.8252427184466019,
+          "boundary_pixels": 9,
+          "edge_pixel_uncertainty_m2": 450.0,
+          "confidence": "high",
+          "status": "ok",
+          "baseline_year": 2018,
+          "change_vs_baseline_m2": 1200.0,
+          "change_vs_baseline_percent": 13.636363636363635
+        }
+      },
+      "files": {
+        "vv_native": "images/2025_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
+        "vh_native": "images/2025_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
+        "falsecolor_native": "images/2025_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
+        "falsecolor_display": "images/2025_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
+        "water_overlay_native": "images/2025_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
+        "water_overlay_display": "images/2025_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png",
+        "water_overlay_refined_native": "images/2025_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_native.png",
+        "water_overlay_refined_display": "images/2025_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_REFINED_display1024.png"
+      },
+      "status": "ok",
+      "measurements_v1_adaptive": {
+        "jezioro_kuchnia": {
           "area_m2": 1900.0,
           "area_ha": 0.19,
           "water_pixels": 19,
           "seed_distance_m": 36.05551275463989,
-          "vv_threshold_db": -14.519049038117137,
-          "vh_threshold_db": -19.192074078321458,
-          "vv_otsu_db": -14.519049038117137,
-          "vh_otsu_db": -19.192074078321458,
+          "vv_threshold_db": -14.519047694231078,
+          "vh_threshold_db": -19.192072607278824,
+          "vv_otsu_db": -14.519047694231078,
+          "vh_otsu_db": -19.192072607278824,
           "boundary_pixels": 19,
           "edge_pixel_uncertainty_m2": 950.0,
           "confidence": "medium",
@@ -1134,8 +1607,8 @@
           "seed_distance_m": 10.0,
           "vv_threshold_db": -12.0,
           "vh_threshold_db": -17.0,
-          "vv_otsu_db": -9.769909925758833,
-          "vh_otsu_db": -15.67169502476851,
+          "vv_otsu_db": -9.769909134507174,
+          "vh_otsu_db": -15.671693524718284,
           "boundary_pixels": 14,
           "edge_pixel_uncertainty_m2": 700.0,
           "confidence": "medium",
@@ -1144,16 +1617,39 @@
           "change_vs_baseline_m2": 7800.0,
           "change_vs_baseline_percent": 458.8235294117647
         }
-      },
-      "files": {
-        "vv_native": "images/2025_S1_RTC_MAY_MEDIAN_10m_2km_VV_native.png",
-        "vh_native": "images/2025_S1_RTC_MAY_MEDIAN_10m_2km_VH_native.png",
-        "falsecolor_native": "images/2025_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_native.png",
-        "falsecolor_display": "images/2025_S1_RTC_MAY_MEDIAN_10m_2km_VV_VH_RATIO_falsecolor_display1024.png",
-        "water_overlay_native": "images/2025_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_native.png",
-        "water_overlay_display": "images/2025_S1_RTC_MAY_MEDIAN_10m_2km_WATER_OVERLAY_display1024.png"
-      },
-      "status": "ok"
+      }
     }
-  ]
+  ],
+  "measurement_version": 2,
+  "measurement_v2_name": "stable-envelope fixed-threshold RTC verification",
+  "measurement_v2_method": {
+    "orbit": {
+      "orbit_state": "descending",
+      "relative_orbit": 124
+    },
+    "fixed_rule": "((VV <= -12.0 dB AND VH <= -16.5 dB) OR VV <= -15.0 dB)",
+    "stable_core": "pixel must behave radar-dark in >=3 annual May composites (fallback >=2 only if required for a tiny water body)",
+    "envelope": "stable multi-year core dilated by 60 m for Lake Kuchnia and 40 m for the forest pond, clipped to fixed local ROI",
+    "purpose": "prevent year-specific Otsu threshold shifts and unrelated dark fields/forest from creating false area jumps"
+  },
+  "stable_envelope_diagnostics": {
+    "jezioro_kuchnia": {
+      "stable_core_pixels": 808,
+      "stable_core_area_m2": 80800.0,
+      "envelope_pixels": 1933,
+      "envelope_area_m2": 193300.0,
+      "core_seed_distance_m": 31.622776601683796,
+      "frequency_required": 3,
+      "envelope_dilation_m": 60.0
+    },
+    "staw_w_lesie": {
+      "stable_core_pixels": 103,
+      "stable_core_area_m2": 10300.0,
+      "envelope_pixels": 447,
+      "envelope_area_m2": 44700.0,
+      "core_seed_distance_m": 0.0,
+      "frequency_required": 3,
+      "envelope_dilation_m": 40.0
+    }
+  }
 }
