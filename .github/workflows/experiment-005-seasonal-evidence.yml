@@ -1,0 +1,95 @@
+name: Experiment 005 Jezioro Tarpno seasonal evidence
+
+on:
+  push:
+    branches:
+      - experiment-005-jezioro-tarpno-53-497670-18-822712
+    paths:
+      - 'tools/build_experiment_005_seasonal_evidence.py'
+      - '.github/workflows/experiment-005-seasonal-evidence.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment-005-jezioro-tarpno-53-497670-18-822712
+          fetch-depth: 20
+          filter: blob:none
+          sparse-checkout: |
+            tools
+            experiments
+          sparse-checkout-cone-mode: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install geospatial dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pillow requests rasterio pyproj
+
+      - name: Build Test 005 Jezioro Tarpno imagery 1990-2026
+        run: python tools/build_experiment_005_seasonal_evidence.py
+
+      - name: Validate Test 005 package
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from datetime import date
+          from pathlib import Path
+          exp=Path('experiments/experiment_005_jezioro_tarpno')
+          s=json.loads((exp/'BUILD_SUMMARY.json').read_text())
+          assert s['experiment']==5
+          assert s['object']=='Jezioro Tarpno'
+          assert s['center']=={'lat':53.49767,'lon':18.822712}
+          assert s['frame_width_m']==4000 and s['frame_height_m']==5000
+          assert s['spring_count_ok']>=30 and s['autumn_count_ok']>=30
+          assert Path(s['combined_zip']).exists()
+          for season in ('spring','autumn'):
+              root=exp/'seasonal_evidence'/season
+              m=json.loads((root/'manifest.json').read_text())
+              assert len(m['records'])==37
+              seen={}
+              for r in m['records']:
+                  if r.get('status')!='ok': continue
+                  p=root/'images'/r['files'][0]
+                  h=hashlib.sha256(p.read_bytes()).hexdigest()
+                  assert h not in seen, (seen.get(h),r['year'])
+                  seen[h]=r['year']
+          if date.today()<date(2026,9,1):
+              a=json.loads((exp/'seasonal_evidence/autumn/manifest.json').read_text())
+              r=next(x for x in a['records'] if x['year']==2026)
+              assert r.get('status')!='ok'
+          print('EXPERIMENT_005_VALIDATED')
+          PY
+
+      - name: Upload Test 005 archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: TEST005_JEZIORO_TARPNO_1990_2026
+          path: |
+            experiments/experiment_005_jezioro_tarpno/TEST005_JEZIORO_TARPNO_1990_2026_FULL_LAKE_4x5km_53.497670_18.822712.zip
+            experiments/experiment_005_jezioro_tarpno/seasonal_evidence/spring/TEST005_SPRING_1990_2026_37_YEARS_4x5km_53.497670_18.822712.zip
+            experiments/experiment_005_jezioro_tarpno/seasonal_evidence/autumn/TEST005_AUTUMN_1990_2026_37_YEARS_4x5km_53.497670_18.822712.zip
+            experiments/experiment_005_jezioro_tarpno/BUILD_SUMMARY.json
+            experiments/experiment_005_jezioro_tarpno/EXPERIMENT_005_REPORT.md
+            experiments/experiment_005_jezioro_tarpno/EVIDENCE_POLICY.json
+          retention-days: 90
+
+      - name: Commit Test 005 evidence outputs
+        run: |
+          git config user.name "Terraforming Planet"
+          git config user.email "kontakt@teslaeco.pl"
+          git add experiments/experiment_005_jezioro_tarpno
+          git diff --cached --quiet && echo "No Test 005 evidence changes" && exit 0
+          git commit -m "Build Test 005 Jezioro Tarpno satellite dataset 1990-2026"
+          git pull --rebase origin experiment-005-jezioro-tarpno-53-497670-18-822712
+          git push origin HEAD:experiment-005-jezioro-tarpno-53-497670-18-822712
