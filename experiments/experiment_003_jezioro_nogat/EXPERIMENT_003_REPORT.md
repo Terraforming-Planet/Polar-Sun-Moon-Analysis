@@ -1,12 +1,13 @@
 # Experiment 003 — Jezioro Nogat satellite evidence 1990–2026
 
-## AOI
+## Corrected AOI
 
 - Object: **Jezioro Nogat**
 - Center: **53.578593, 19.068364**
-- Crop: **2 km × 2 km**
+- Corrected fixed frame: **4 km × 6 km, portrait, north-up**
 - Years requested: **1990–2026 (37 years)**
-- This experiment is independent from Experiment 002 and does not reuse its imagery.
+- The previous 2 km × 2 km Test 003 dataset is rejected because it cropped the lake.
+- The corrected dataset is rebuilt from source satellite products; Experiment 002 imagery is not reused.
 
 ## Seasonal acquisition policy
 
@@ -22,7 +23,7 @@
 - Spring missing years: **none**
 - Autumn accepted scenes: **36 / 37**
 - Autumn missing years: **[2026]**
-- Platforms used: **Sentinel-2A, Sentinel-2B, landsat-5, landsat-7, landsat-8, landsat-9**
+- Platforms used: **Sentinel-2A, Sentinel-2B, Sentinel-2C, landsat-5, landsat-7, landsat-8, landsat-9**
 
 ## Scientific status
 

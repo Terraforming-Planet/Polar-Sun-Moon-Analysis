@@ -5,7 +5,13 @@
     "lat": 53.578593,
     "lon": 19.068364
   },
-  "crop_m": 2000,
+  "frame": {
+    "width_m": 4000,
+    "height_m": 6000,
+    "label": "4x6km",
+    "orientation": "portrait_north_up",
+    "supersedes": "rejected 2 km x 2 km crop"
+  },
   "years": {
     "start": 1990,
     "end": 2026,
@@ -36,7 +42,8 @@
     "generative_fill_forbidden": true,
     "ai_super_resolution_forbidden": true,
     "cross_year_exact_duplicate_rejected": true,
-    "experiment_002_imagery_must_not_be_reused": true
+    "experiment_002_imagery_must_not_be_reused": true,
+    "whole_lake_frame_required": true
   },
   "primary_sources": [
     "USGS Landsat Collection 2",

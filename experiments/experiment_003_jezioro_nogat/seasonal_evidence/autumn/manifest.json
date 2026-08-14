@@ -1,5 +1,5 @@
 {
-  "experiment": "Experiment 003 - Jezioro Nogat water and shoreline monitoring",
+  "experiment": "Experiment 003 - Jezioro Nogat full-lake water and shoreline monitoring",
   "center": {
     "lat": 53.578593,
     "lon": 19.068364
@@ -60,21 +60,24 @@
       "platform": "landsat-5",
       "item_id": "LT05_L2SP_190023_19901025_02_T1",
       "scene_cloud_cover_percent": 1.0,
-      "local_clear_fraction": 0.995099,
+      "local_clear_fraction": 0.996353,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "1990_1990-10-25_landsat-5_30m_2km_native.png",
-        "1990_1990-10-25_landsat-5_30m_2km_display1024.png"
+        "1990_1990-10-25_landsat-5_30m_4x6km_native.png",
+        "1990_1990-10-25_landsat-5_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "8744a4c6748a40b38fd3fdd5ac6b78cb3475efce489704f6f8c903fa9a747f14",
-        "visual_std": 61.9972,
-        "near_black_fraction": 0.003586,
-        "near_white_fraction": 0.004715,
+        "sha256": "b481b917899f35023a4dc6cb35f13b2407c70584f6aeebdee8266439d1dda611",
+        "visual_std": 55.2878,
+        "near_black_fraction": 0.00705,
+        "near_white_fraction": 0.008911,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -84,14 +87,14 @@
       "selected_month_name": "October",
       "is_fallback_month": true,
       "preferred_month": 9,
-      "selection_quality_score": 0.996216,
+      "selection_quality_score": 0.997057,
       "fallback_reason": "preferred month had no sufficiently reliable candidate",
       "rejected_candidates": [
         {
           "month": 9,
           "item_id": "LT05_L2SP_190023_19900923_02_T1",
           "reason": "quality_below_0.76_before_fallback",
-          "score": 0.3007611940298508
+          "score": 0.36045338345864664
         }
       ]
     },
@@ -105,18 +108,21 @@
       "local_clear_fraction": 1.0,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "1991_1991-09-26_landsat-5_30m_2km_native.png",
-        "1991_1991-09-26_landsat-5_30m_2km_display1024.png"
+        "1991_1991-09-26_landsat-5_30m_4x6km_native.png",
+        "1991_1991-09-26_landsat-5_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "5efc3c8ee1cfe259645e45cb2cfce650e9d80f8ec9ed50b2f52ec01ef167cc74",
-        "visual_std": 72.2478,
-        "near_black_fraction": 0.017914,
-        "near_white_fraction": 0.012894,
+        "sha256": "0a936d611248c23ff4b55a0cf8138f23272fea6645b2275688f30cfc8725eb72",
+        "visual_std": 63.8568,
+        "near_black_fraction": 0.018478,
+        "near_white_fraction": 0.012054,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -132,38 +138,48 @@
     },
     {
       "year": 1992,
-      "date": "1992-09-28",
+      "date": "1992-10-14",
       "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
       "platform": "landsat-5",
-      "item_id": "LT05_L2SP_190023_19920928_02_T1",
-      "scene_cloud_cover_percent": 63.0,
-      "local_clear_fraction": 0.867677,
+      "item_id": "LT05_L2SP_190023_19921014_02_T1",
+      "scene_cloud_cover_percent": 6.0,
+      "local_clear_fraction": 0.723308,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "1992_1992-09-28_landsat-5_30m_2km_native.png",
-        "1992_1992-09-28_landsat-5_30m_2km_display1024.png"
+        "1992_1992-10-14_landsat-5_30m_4x6km_native.png",
+        "1992_1992-10-14_landsat-5_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "e701747a82e901e2db57b7a1cba67c0a39893d61034e610e9d4b1f2b5c445f63",
-        "visual_std": 50.1905,
-        "near_black_fraction": 0.042572,
-        "near_white_fraction": 0.01651,
+        "sha256": "3ea6ed9cff9df3bd779401bbf8910355f59da9c2fc4eb3edf817d6d81538d9be",
+        "visual_std": 50.7362,
+        "near_black_fraction": 0.014236,
+        "near_white_fraction": 0.007935,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
       },
       "requested_season": "autumn",
-      "selected_month": 9,
-      "selected_month_name": "September",
-      "is_fallback_month": false,
+      "selected_month": 10,
+      "selected_month_name": "October",
+      "is_fallback_month": true,
       "preferred_month": 9,
-      "selection_quality_score": 0.879843,
-      "fallback_reason": null,
-      "rejected_candidates": []
+      "selection_quality_score": 0.811617,
+      "fallback_reason": "preferred month had no sufficiently reliable candidate",
+      "rejected_candidates": [
+        {
+          "month": 9,
+          "item_id": "LT05_L2SP_190023_19920928_02_T1",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.7381560150375941
+        }
+      ]
     },
     {
       "year": 1993,
@@ -175,18 +191,21 @@
       "local_clear_fraction": 1.0,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "1993_1993-10-01_landsat-5_30m_2km_native.png",
-        "1993_1993-10-01_landsat-5_30m_2km_display1024.png"
+        "1993_1993-10-01_landsat-5_30m_4x6km_native.png",
+        "1993_1993-10-01_landsat-5_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "6372f8f7d58b7bda8d929b2faf03ea4e284f2c3b66a43344112c1f0ff27c3f13",
-        "visual_std": 65.0352,
-        "near_black_fraction": 0.005875,
-        "near_white_fraction": 0.011978,
+        "sha256": "1c86cb4b7c6f60245c82f0fd7b502840f8171726e09ee37cc95fecc82407b46e",
+        "visual_std": 59.6383,
+        "near_black_fraction": 0.013367,
+        "near_white_fraction": 0.010681,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -203,7 +222,7 @@
           "month": 9,
           "item_id": "LT05_L2SP_189023_19930908_02_T1",
           "reason": "quality_below_0.76_before_fallback",
-          "score": 0.5693358208955224
+          "score": 0.6508958646616542
         }
       ]
     },
@@ -217,18 +236,21 @@
       "local_clear_fraction": 1.0,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "1994_1994-10-20_landsat-5_30m_2km_native.png",
-        "1994_1994-10-20_landsat-5_30m_2km_display1024.png"
+        "1994_1994-10-20_landsat-5_30m_4x6km_native.png",
+        "1994_1994-10-20_landsat-5_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "3ae2fb6a37f2821a38105834dc7dbd076f032a384a88bd46555ad18a451290ae",
-        "visual_std": 60.9852,
-        "near_black_fraction": 0.004883,
-        "near_white_fraction": 0.007599,
+        "sha256": "ea2f17fa4334b05c51945d49ae69a044b31f6191525e145acb00708e1589adfe",
+        "visual_std": 54.8525,
+        "near_black_fraction": 0.007965,
+        "near_white_fraction": 0.009293,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -256,21 +278,24 @@
       "platform": "landsat-5",
       "item_id": "LT05_L2SP_189023_19951117_02_T2",
       "scene_cloud_cover_percent": 38.0,
-      "local_clear_fraction": 0.994876,
+      "local_clear_fraction": 0.971241,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "1995_1995-11-17_landsat-5_30m_2km_native.png",
-        "1995_1995-11-17_landsat-5_30m_2km_display1024.png"
+        "1995_1995-11-17_landsat-5_30m_4x6km_native.png",
+        "1995_1995-11-17_landsat-5_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "ca9dd8111b0de3d89c20ed11f1dba11bfcb4965795db1d9e9eaa258c65bed543",
-        "visual_std": 63.052,
-        "near_black_fraction": 0.000595,
-        "near_white_fraction": 0.000397,
+        "sha256": "b2ba2d6de3413adf5593dc31aaa43182c39428aac75c1fb96338fdda8f372f86",
+        "visual_std": 50.1668,
+        "near_black_fraction": 0.00238,
+        "near_white_fraction": 0.001312,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -280,7 +305,7 @@
       "selected_month_name": "November",
       "is_fallback_month": true,
       "preferred_month": 9,
-      "selection_quality_score": 0.977567,
+      "selection_quality_score": 0.961731,
       "fallback_reason": "preferred month had no sufficiently reliable candidate",
       "rejected_candidates": [
         {
@@ -293,7 +318,7 @@
           "month": 10,
           "item_id": "LT05_L2SP_190023_19951023_02_T1",
           "reason": "quality_below_0.76_before_fallback",
-          "score": 0.33162686567164185
+          "score": 0.31118120300751884
         }
       ]
     },
@@ -307,18 +332,21 @@
       "local_clear_fraction": 1.0,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "1996_1996-09-23_landsat-5_30m_2km_native.png",
-        "1996_1996-09-23_landsat-5_30m_2km_display1024.png"
+        "1996_1996-09-23_landsat-5_30m_4x6km_native.png",
+        "1996_1996-09-23_landsat-5_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "f920ea6db5f1ae7ff6531646f8c74fad44a30bac0fd403df8c60c70b4579d87d",
-        "visual_std": 69.5609,
-        "near_black_fraction": 0.027191,
-        "near_white_fraction": 0.012054,
+        "sha256": "d523e80bdf472cf21b5c3ba870bfe47f459ab1fb145537653c3d086c0ae182cb",
+        "visual_std": 63.981,
+        "near_black_fraction": 0.024933,
+        "near_white_fraction": 0.014893,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -342,18 +370,21 @@
       "local_clear_fraction": 1.0,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "1997_1997-09-03_landsat-5_30m_2km_native.png",
-        "1997_1997-09-03_landsat-5_30m_2km_display1024.png"
+        "1997_1997-09-03_landsat-5_30m_4x6km_native.png",
+        "1997_1997-09-03_landsat-5_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "d6cea42f0be213335cade874c2955e64ea170062854ae5a7ddf79ec8bdbc8cc8",
-        "visual_std": 70.1735,
-        "near_black_fraction": 0.008606,
-        "near_white_fraction": 0.00676,
+        "sha256": "5d167b51c040941c0dfcdd508293214048a4c22dd7e4a9e1d3c603a4664de04a",
+        "visual_std": 61.1623,
+        "near_black_fraction": 0.022705,
+        "near_white_fraction": 0.0168,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -377,18 +408,21 @@
       "local_clear_fraction": 1.0,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "1998_1998-09-06_landsat-5_30m_2km_native.png",
-        "1998_1998-09-06_landsat-5_30m_2km_display1024.png"
+        "1998_1998-09-06_landsat-5_30m_4x6km_native.png",
+        "1998_1998-09-06_landsat-5_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "60e72ab7df5c1e51712d3d3d6378c9fffdd6572a66ba994a1f8dfc12f7ca8f29",
-        "visual_std": 68.7443,
-        "near_black_fraction": 0.032547,
-        "near_white_fraction": 0.017929,
+        "sha256": "314a66a5bdf0caf543190f845a76bea648a309acc59a5907a41136c60b88be67",
+        "visual_std": 61.7318,
+        "near_black_fraction": 0.033737,
+        "near_white_fraction": 0.017029,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -412,18 +446,21 @@
       "local_clear_fraction": 1.0,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "1999_1999-09-08_landsat-7_30m_2km_native.png",
-        "1999_1999-09-08_landsat-7_30m_2km_display1024.png"
+        "1999_1999-09-08_landsat-7_30m_4x6km_native.png",
+        "1999_1999-09-08_landsat-7_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "650778d06248480f3b3d13022b226c75c5416af552aa9fdba9e915ad5b1df216",
-        "visual_std": 69.2754,
-        "near_black_fraction": 0.019318,
-        "near_white_fraction": 0.013977,
+        "sha256": "0d262b10ac9b756b5b030f99877941a2aa955867b244d6896e06899a6f9aa2e3",
+        "visual_std": 63.1387,
+        "near_black_fraction": 0.026505,
+        "near_white_fraction": 0.016632,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -447,18 +484,21 @@
       "local_clear_fraction": 1.0,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "2000_2000-09-18_landsat-5_30m_2km_native.png",
-        "2000_2000-09-18_landsat-5_30m_2km_display1024.png"
+        "2000_2000-09-18_landsat-5_30m_4x6km_native.png",
+        "2000_2000-09-18_landsat-5_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "432eec414f7952b5597ed34e71218409615bb60b4b90ef447f748ffb70a83dfe",
-        "visual_std": 61.338,
-        "near_black_fraction": 0.023666,
-        "near_white_fraction": 0.013382,
+        "sha256": "8bb0db63c6ddec51ef706920e8c5d88e36cbbd7e849fd67bba9c3e9bac914f50",
+        "visual_std": 62.6913,
+        "near_black_fraction": 0.026123,
+        "near_white_fraction": 0.015259,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -482,18 +522,21 @@
       "local_clear_fraction": 1.0,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "2001_2001-10-24_landsat-7_30m_2km_native.png",
-        "2001_2001-10-24_landsat-7_30m_2km_display1024.png"
+        "2001_2001-10-24_landsat-7_30m_4x6km_native.png",
+        "2001_2001-10-24_landsat-7_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "413648ed1440dd35a33ad7dc88ba2f1e46814724670ef6ecf80ca5fcd135e99c",
-        "visual_std": 66.54,
-        "near_black_fraction": 0.004944,
-        "near_white_fraction": 0.009323,
+        "sha256": "97c8a0e89b8281c1d3b3ebe72720ab3a0a36aaf023f0a80cef65daf73c08faae",
+        "visual_std": 57.7044,
+        "near_black_fraction": 0.01088,
+        "near_white_fraction": 0.012161,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -510,32 +553,35 @@
           "month": 9,
           "item_id": "LE07_L2SP_189023_20010906_02_T1",
           "reason": "quality_below_0.76_before_fallback",
-          "score": 0.3180820895522388
+          "score": 0.5404857142857142
         }
       ]
     },
     {
       "year": 2002,
-      "date": "2002-09-09",
+      "date": "2002-09-25",
       "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
       "platform": "landsat-7",
-      "item_id": "LE07_L2SP_189023_20020909_02_T1",
-      "scene_cloud_cover_percent": 3.0,
-      "local_clear_fraction": 0.997995,
+      "item_id": "LE07_L2SP_189023_20020925_02_T1",
+      "scene_cloud_cover_percent": 16.0,
+      "local_clear_fraction": 1.0,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "2002_2002-09-09_landsat-7_30m_2km_native.png",
-        "2002_2002-09-09_landsat-7_30m_2km_display1024.png"
+        "2002_2002-09-25_landsat-7_30m_4x6km_native.png",
+        "2002_2002-09-25_landsat-7_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "8333ef064a68b3b801bb0232951e154d289aff7bbc485766e5a85771ab1e8bdf",
-        "visual_std": 67.08,
-        "near_black_fraction": 0.011948,
-        "near_white_fraction": 0.012985,
+        "sha256": "e5bf6ba5f6c5c69915875bcba3aa7362850a7e64cd1aa84ffb11e1f151d02fa8",
+        "visual_std": 63.1699,
+        "near_black_fraction": 0.019699,
+        "near_white_fraction": 0.018326,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -545,7 +591,7 @@
       "selected_month_name": "September",
       "is_fallback_month": false,
       "preferred_month": 9,
-      "selection_quality_score": 0.997157,
+      "selection_quality_score": 0.992,
       "fallback_reason": null,
       "rejected_candidates": []
     },
@@ -557,21 +603,24 @@
       "item_id": "LE07_L2SP_189023_20030928_02_T1",
       "scene_cloud_cover_percent": 12.0,
       "local_clear_fraction": 1.0,
-      "local_valid_fraction": 0.755848,
+      "local_valid_fraction": 0.753684,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "2003_2003-09-28_landsat-7_30m_2km_native.png",
-        "2003_2003-09-28_landsat-7_30m_2km_display1024.png"
+        "2003_2003-09-28_landsat-7_30m_4x6km_native.png",
+        "2003_2003-09-28_landsat-7_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "ba2dd1827369ef60e3d822fd4c61103302c6c585db5d453060040fe53f35fb07",
-        "visual_std": 78.7541,
-        "near_black_fraction": 0.240768,
-        "near_white_fraction": 0.008957,
-        "dark_row_fraction": 0.007812,
+        "sha256": "ace3b5469f196680cc9e633419cf4f3e50026c2ed7228d3e9036aed4bc021748",
+        "visual_std": 73.4726,
+        "near_black_fraction": 0.237198,
+        "near_white_fraction": 0.011047,
+        "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
       },
@@ -580,7 +629,7 @@
       "selected_month_name": "September",
       "is_fallback_month": false,
       "preferred_month": 9,
-      "selection_quality_score": 0.925637,
+      "selection_quality_score": 0.925032,
       "fallback_reason": null,
       "rejected_candidates": []
     },
@@ -591,21 +640,24 @@
       "platform": "landsat-5",
       "item_id": "LT05_L2SP_189023_20040906_02_T1",
       "scene_cloud_cover_percent": 15.0,
-      "local_clear_fraction": 0.83337,
+      "local_clear_fraction": 0.867105,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "2004_2004-09-06_landsat-5_30m_2km_native.png",
-        "2004_2004-09-06_landsat-5_30m_2km_display1024.png"
+        "2004_2004-09-06_landsat-5_30m_4x6km_native.png",
+        "2004_2004-09-06_landsat-5_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "b2578a1e74aebf4388b45d2f8e28c98d8de44b8ffd960011b7e6c62e31dec097",
-        "visual_std": 61.8515,
-        "near_black_fraction": 0.024139,
-        "near_white_fraction": 0.013672,
+        "sha256": "f8fba277482d344ed2a8dd44016bdb36545f6e5853eeccf96f70fef00832f6fb",
+        "visual_std": 50.2874,
+        "near_black_fraction": 0.041183,
+        "near_white_fraction": 0.017059,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -615,7 +667,7 @@
       "selected_month_name": "September",
       "is_fallback_month": false,
       "preferred_month": 9,
-      "selection_quality_score": 0.880858,
+      "selection_quality_score": 0.903461,
       "fallback_reason": null,
       "rejected_candidates": []
     },
@@ -629,18 +681,21 @@
       "local_clear_fraction": 1.0,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "2005_2005-09-09_landsat-5_30m_2km_native.png",
-        "2005_2005-09-09_landsat-5_30m_2km_display1024.png"
+        "2005_2005-09-09_landsat-5_30m_4x6km_native.png",
+        "2005_2005-09-09_landsat-5_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "9a72f48543d80db9bdcdf7ebc8f1d91ce79efbd881766c45906d279fbaa15007",
-        "visual_std": 64.3697,
-        "near_black_fraction": 0.027039,
-        "near_white_fraction": 0.018143,
+        "sha256": "81516d8410165812012705510aaedf0702cdf06b1d24fac0c0d29907295e07c9",
+        "visual_std": 65.0216,
+        "near_black_fraction": 0.033066,
+        "near_white_fraction": 0.017212,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -664,18 +719,21 @@
       "local_clear_fraction": 1.0,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "2006_2006-09-12_landsat-5_30m_2km_native.png",
-        "2006_2006-09-12_landsat-5_30m_2km_display1024.png"
+        "2006_2006-09-12_landsat-5_30m_4x6km_native.png",
+        "2006_2006-09-12_landsat-5_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "f542082601cf66edc0c8af2a69604dd705478bebf3009569c6b2cdd7ae516572",
-        "visual_std": 65.508,
-        "near_black_fraction": 0.05513,
-        "near_white_fraction": 0.016617,
+        "sha256": "5255ea3239c3a7fcb1fd3ece1f3582e1d82a3beebf1c49429230161a2d6c9d36",
+        "visual_std": 67.7083,
+        "near_black_fraction": 0.030487,
+        "near_white_fraction": 0.017273,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -699,18 +757,21 @@
       "local_clear_fraction": 1.0,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "2007_2007-09-06_landsat-5_30m_2km_native.png",
-        "2007_2007-09-06_landsat-5_30m_2km_display1024.png"
+        "2007_2007-09-06_landsat-5_30m_4x6km_native.png",
+        "2007_2007-09-06_landsat-5_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "704075744a2fad5902d5705a0fad9b7c0908b98623dba167fbba6d9634f953c3",
-        "visual_std": 65.4172,
-        "near_black_fraction": 0.064865,
-        "near_white_fraction": 0.020386,
+        "sha256": "a5e9bad5ff69752dd0fb5c5791a83d5b8519c95d1d8f28a060341ac1f27ae6e5",
+        "visual_std": 62.934,
+        "near_black_fraction": 0.032761,
+        "near_white_fraction": 0.017868,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -732,20 +793,23 @@
       "item_id": "LE07_L2SP_189023_20080925_02_T1",
       "scene_cloud_cover_percent": 0.0,
       "local_clear_fraction": 1.0,
-      "local_valid_fraction": 0.765872,
+      "local_valid_fraction": 0.765714,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "2008_2008-09-25_landsat-7_30m_2km_native.png",
-        "2008_2008-09-25_landsat-7_30m_2km_display1024.png"
+        "2008_2008-09-25_landsat-7_30m_4x6km_native.png",
+        "2008_2008-09-25_landsat-7_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "04d348334ecb345d7d9521e614324e1eb02f6c28827996542386c5404783ea00",
-        "visual_std": 73.4925,
-        "near_black_fraction": 0.219742,
-        "near_white_fraction": 0.013336,
+        "sha256": "98a7c41c5857e949f1130d78b90a25f8798e5186196f4bef78260e50c3a54570",
+        "visual_std": 78.4702,
+        "near_black_fraction": 0.213608,
+        "near_white_fraction": 0.00972,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -755,7 +819,7 @@
       "selected_month_name": "September",
       "is_fallback_month": false,
       "preferred_month": 9,
-      "selection_quality_score": 0.884444,
+      "selection_quality_score": 0.8844,
       "fallback_reason": null,
       "rejected_candidates": []
     },
@@ -769,18 +833,21 @@
       "local_clear_fraction": 1.0,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "2009_2009-09-20_landsat-5_30m_2km_native.png",
-        "2009_2009-09-20_landsat-5_30m_2km_display1024.png"
+        "2009_2009-09-20_landsat-5_30m_4x6km_native.png",
+        "2009_2009-09-20_landsat-5_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "d6d03e33771ef9795ecec881d9b99193779e89607a48a4406819d9c63f261a59",
-        "visual_std": 71.7635,
-        "near_black_fraction": 0.038574,
-        "near_white_fraction": 0.012802,
+        "sha256": "a734af8a65566a59350c2503cb8eab23cf19577ce66be8819344a68d6ad5ca7f",
+        "visual_std": 64.0526,
+        "near_black_fraction": 0.021957,
+        "near_white_fraction": 0.012299,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -804,18 +871,21 @@
       "local_clear_fraction": 1.0,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "2010_2010-09-23_landsat-5_30m_2km_native.png",
-        "2010_2010-09-23_landsat-5_30m_2km_display1024.png"
+        "2010_2010-09-23_landsat-5_30m_4x6km_native.png",
+        "2010_2010-09-23_landsat-5_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "abbef9d2998f8ed96e9fcfbcc7725efcc98209810701952c33bf39ffd5c664ec",
-        "visual_std": 68.5001,
-        "near_black_fraction": 0.016037,
-        "near_white_fraction": 0.012085,
+        "sha256": "136f07d76d3c733f4240c63fdbc72d757842756064f88412b2cbbf8e837ba366",
+        "visual_std": 63.9586,
+        "near_black_fraction": 0.026291,
+        "near_white_fraction": 0.014938,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -831,38 +901,48 @@
     },
     {
       "year": 2011,
-      "date": "2011-09-17",
+      "date": "2011-10-03",
       "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
       "platform": "landsat-5",
-      "item_id": "LT05_L2SP_190023_20110917_02_T1",
-      "scene_cloud_cover_percent": 42.0,
-      "local_clear_fraction": 0.84384,
+      "item_id": "LT05_L2SP_190023_20111003_02_T2",
+      "scene_cloud_cover_percent": 15.0,
+      "local_clear_fraction": 0.999662,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "2011_2011-09-17_landsat-5_30m_2km_native.png",
-        "2011_2011-09-17_landsat-5_30m_2km_display1024.png"
+        "2011_2011-10-03_landsat-5_30m_4x6km_native.png",
+        "2011_2011-10-03_landsat-5_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "052ef2d207f616f603a9e0b70270b14479ef666cbb0f81ab639f3d97ad4921ea",
-        "visual_std": 67.8306,
-        "near_black_fraction": 0.04007,
-        "near_white_fraction": 0.016647,
+        "sha256": "34c844e1416b1be5163f9b1c21f9e800091ed86980c699a8ace7555a22cace1c",
+        "visual_std": 61.7462,
+        "near_black_fraction": 0.0047,
+        "near_white_fraction": 0.012375,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
       },
       "requested_season": "autumn",
-      "selected_month": 9,
-      "selected_month_name": "September",
-      "is_fallback_month": false,
+      "selected_month": 10,
+      "selected_month_name": "October",
+      "is_fallback_month": true,
       "preferred_month": 9,
-      "selection_quality_score": 0.874373,
-      "fallback_reason": null,
-      "rejected_candidates": []
+      "selection_quality_score": 0.992273,
+      "fallback_reason": "preferred month had no sufficiently reliable candidate",
+      "rejected_candidates": [
+        {
+          "month": 9,
+          "item_id": "LT05_L2SP_190023_20110917_02_T1",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.640121052631579
+        }
+      ]
     },
     {
       "year": 2012,
@@ -872,20 +952,23 @@
       "item_id": "LE07_L2SP_190023_20120911_02_T1",
       "scene_cloud_cover_percent": 2.0,
       "local_clear_fraction": 1.0,
-      "local_valid_fraction": 0.780575,
+      "local_valid_fraction": 0.781805,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "2012_2012-09-11_landsat-7_30m_2km_native.png",
-        "2012_2012-09-11_landsat-7_30m_2km_display1024.png"
+        "2012_2012-09-11_landsat-7_30m_4x6km_native.png",
+        "2012_2012-09-11_landsat-7_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "3ca22dcf925b8593b0abd29038ae093fdbaa494ffe26294499b7b1bdbd18eb7a",
-        "visual_std": 81.776,
-        "near_black_fraction": 0.208694,
-        "near_white_fraction": 0.010315,
+        "sha256": "bab15a4a1a03b69ee3da851474ed6aa1caf854bbb3b08d177342deb1905fec56",
+        "visual_std": 81.8801,
+        "near_black_fraction": 0.199097,
+        "near_white_fraction": 0.011765,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -895,7 +978,7 @@
       "selected_month_name": "September",
       "is_fallback_month": false,
       "preferred_month": 9,
-      "selection_quality_score": 0.937561,
+      "selection_quality_score": 0.937905,
       "fallback_reason": null,
       "rejected_candidates": []
     },
@@ -909,18 +992,21 @@
       "local_clear_fraction": 1.0,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "2013_2013-09-06_landsat-8_30m_2km_native.png",
-        "2013_2013-09-06_landsat-8_30m_2km_display1024.png"
+        "2013_2013-09-06_landsat-8_30m_4x6km_native.png",
+        "2013_2013-09-06_landsat-8_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "d8bf6b655d036ce2526902f9a85c5d2f2815c46e3b875c6f2c920e5133ce113b",
-        "visual_std": 65.2652,
-        "near_black_fraction": 0.056778,
-        "near_white_fraction": 0.017776,
+        "sha256": "008d6b6cbd4799a121615092156636e890f72cbec9288907091d0313887af288",
+        "visual_std": 66.2688,
+        "near_black_fraction": 0.029999,
+        "near_white_fraction": 0.019745,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -944,18 +1030,21 @@
       "local_clear_fraction": 1.0,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 30,
-      "crop_m": 2000,
       "files": [
-        "2014_2014-09-18_landsat-8_30m_2km_native.png",
-        "2014_2014-09-18_landsat-8_30m_2km_display1024.png"
+        "2014_2014-09-18_landsat-8_30m_4x6km_native.png",
+        "2014_2014-09-18_landsat-8_30m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "b15eecbc84a48c10f7f584d95ce5cb06203e4af5aae54d47262430f94ee0decd",
-        "visual_std": 71.297,
-        "near_black_fraction": 0.040802,
-        "near_white_fraction": 0.0186,
+        "sha256": "0d4ff9b4dc36c61c6ca723f0f78a57f5e24f6a2b90e82f1f898efafcc025b9c0",
+        "visual_std": 69.8805,
+        "near_black_fraction": 0.022766,
+        "near_white_fraction": 0.020782,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -971,26 +1060,29 @@
     },
     {
       "year": 2015,
-      "date": "2015-09-29",
-      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
-      "platform": "landsat-7",
-      "item_id": "LE07_L2SP_189023_20150929_02_T1",
-      "scene_cloud_cover_percent": 45.0,
-      "local_clear_fraction": 1.0,
-      "local_valid_fraction": 0.752283,
-      "native_resolution_m": 30,
-      "crop_m": 2000,
+      "date": "2015-09-19",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20150919T100016_R122_T34UCE_20210412T111447",
+      "scene_cloud_cover_percent": 2.977854,
+      "local_clear_fraction": 0.993933,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
       "files": [
-        "2015_2015-09-29_landsat-7_30m_2km_native.png",
-        "2015_2015-09-29_landsat-7_30m_2km_display1024.png"
+        "2015_2015-09-19_Sentinel-2A_10m_4x6km_native.png",
+        "2015_2015-09-19_Sentinel-2A_10m_4x6km_display800x1200.jpg"
       ],
-      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "28d49564825acf08cb16fb9900ef101b1a32604b088ef164ca42c14a061aca27",
-        "visual_std": 76.2074,
-        "near_black_fraction": 0.238281,
-        "near_white_fraction": 0.007416,
+        "sha256": "333171594615d53f83043607313c79deb9ca88812489eca29ebfc02091da9e1c",
+        "visual_std": 59.5337,
+        "near_black_fraction": 0.035141,
+        "near_white_fraction": 0.015686,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -1000,43 +1092,35 @@
       "selected_month_name": "September",
       "is_fallback_month": false,
       "preferred_month": 9,
-      "selection_quality_score": 0.908139,
+      "selection_quality_score": 1.019446,
       "fallback_reason": null,
-      "rejected_candidates": [
-        {
-          "month": 9,
-          "item_id": "S2A_MSIL2A_20150919T100016_R122_T34UCE_20210412T111447",
-          "reason": "RuntimeError('image-first visual integrity check failed')",
-          "moved_files": [
-            "experiments/experiment_003_jezioro_nogat/seasonal_evidence/autumn/rejected_candidates/2015_2015-09-19_Sentinel-2A_10m_2km_display1024.png",
-            "experiments/experiment_003_jezioro_nogat/seasonal_evidence/autumn/rejected_candidates/2015_2015-09-19_Sentinel-2A_10m_2km_native.png"
-          ],
-          "score": 1.016476073
-        }
-      ]
+      "rejected_candidates": []
     },
     {
       "year": 2016,
-      "date": "2016-09-07",
-      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
-      "platform": "landsat-8",
-      "item_id": "LC08_L2SP_189023_20160907_02_T1",
-      "scene_cloud_cover_percent": 0.42,
-      "local_clear_fraction": 1.0,
+      "date": "2016-09-13",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20160913T100022_R122_T33UYV_20210213T003121",
+      "scene_cloud_cover_percent": 0.922243,
+      "local_clear_fraction": 0.9394,
       "local_valid_fraction": 1.0,
-      "native_resolution_m": 30,
-      "crop_m": 2000,
+      "native_resolution_m": 10,
       "files": [
-        "2016_2016-09-07_landsat-8_30m_2km_native.png",
-        "2016_2016-09-07_landsat-8_30m_2km_display1024.png"
+        "2016_2016-09-13_Sentinel-2A_10m_4x6km_native.png",
+        "2016_2016-09-13_Sentinel-2A_10m_4x6km_display800x1200.jpg"
       ],
-      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "35676e0a3676a4d865c54652486e580d3eecb00c609ed269295769c7960bda95",
-        "visual_std": 72.999,
-        "near_black_fraction": 0.030182,
-        "near_white_fraction": 0.010986,
+        "sha256": "03fba57c7bcff025d41446793bb459eedd56fce7b62fc7c29f4a7de65c2750b1",
+        "visual_std": 48.2234,
+        "near_black_fraction": 0.041534,
+        "near_white_fraction": 0.015945,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -1046,32 +1130,35 @@
       "selected_month_name": "September",
       "is_fallback_month": false,
       "preferred_month": 9,
-      "selection_quality_score": 0.99979,
+      "selection_quality_score": 0.983937,
       "fallback_reason": null,
       "rejected_candidates": []
     },
     {
       "year": 2017,
-      "date": "2017-09-20",
+      "date": "2017-09-28",
       "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
-      "platform": "Sentinel-2B",
-      "item_id": "S2B_MSIL2A_20170920T095019_R079_T34UCE_20210202T070142",
-      "scene_cloud_cover_percent": 21.285766,
-      "local_clear_fraction": 0.9998,
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20170928T100021_R122_T34UCE_20210202T110615",
+      "scene_cloud_cover_percent": 2.676222,
+      "local_clear_fraction": 0.996617,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 10,
-      "crop_m": 2000,
       "files": [
-        "2017_2017-09-20_Sentinel-2B_10m_2km_native.png",
-        "2017_2017-09-20_Sentinel-2B_10m_2km_display1024.png"
+        "2017_2017-09-28_Sentinel-2A_10m_4x6km_native.png",
+        "2017_2017-09-28_Sentinel-2A_10m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "0f153bc5408eca0bb844903c7c56c7b4a7527beda2a5205a99ca7d151deb0a29",
-        "visual_std": 76.1581,
-        "near_black_fraction": 0.066284,
-        "near_white_fraction": 0.015915,
+        "sha256": "52822f49d3ed60779f0981c62179b74138cbbb0d71b393a0bae27a85da22cd37",
+        "visual_std": 66.6173,
+        "near_black_fraction": 0.03096,
+        "near_white_fraction": 0.012711,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -1081,7 +1168,7 @@
       "selected_month_name": "September",
       "is_fallback_month": false,
       "preferred_month": 9,
-      "selection_quality_score": 1.014223,
+      "selection_quality_score": 1.021395,
       "fallback_reason": null,
       "rejected_candidates": []
     },
@@ -1092,21 +1179,24 @@
       "platform": "Sentinel-2A",
       "item_id": "S2A_MSIL2A_20180903T100021_R122_T34UCE_20201011T075930",
       "scene_cloud_cover_percent": 5.112681,
-      "local_clear_fraction": 0.9999,
+      "local_clear_fraction": 0.999933,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 10,
-      "crop_m": 2000,
       "files": [
-        "2018_2018-09-03_Sentinel-2A_10m_2km_native.png",
-        "2018_2018-09-03_Sentinel-2A_10m_2km_display1024.png"
+        "2018_2018-09-03_Sentinel-2A_10m_4x6km_native.png",
+        "2018_2018-09-03_Sentinel-2A_10m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "730dc10d79b3af079edd0e520e5c982a931eeaad6a7bc673d528aea1f3b0627a",
-        "visual_std": 69.8771,
-        "near_black_fraction": 0.07869,
-        "near_white_fraction": 0.018692,
+        "sha256": "f994b1b3aec31345f99b4209524460290c3fd99f7e55ac1ecf14eded99564677",
+        "visual_std": 71.0129,
+        "near_black_fraction": 0.047089,
+        "near_white_fraction": 0.015503,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -1116,7 +1206,7 @@
       "selected_month_name": "September",
       "is_fallback_month": false,
       "preferred_month": 9,
-      "selection_quality_score": 1.022377,
+      "selection_quality_score": 1.022399,
       "fallback_reason": null,
       "rejected_candidates": []
     },
@@ -1127,21 +1217,24 @@
       "platform": "Sentinel-2A",
       "item_id": "S2A_MSIL2A_20190905T095031_R079_T34UCE_20201004T093100",
       "scene_cloud_cover_percent": 33.96981,
-      "local_clear_fraction": 0.9948,
+      "local_clear_fraction": 0.921867,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 10,
-      "crop_m": 2000,
       "files": [
-        "2019_2019-09-05_Sentinel-2A_10m_2km_native.png",
-        "2019_2019-09-05_Sentinel-2A_10m_2km_display1024.png"
+        "2019_2019-09-05_Sentinel-2A_10m_4x6km_native.png",
+        "2019_2019-09-05_Sentinel-2A_10m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "fe4270545540617105e20c19f1ff509e985c97d7e70d415e11318655948bd23e",
-        "visual_std": 72.7137,
-        "near_black_fraction": 0.059464,
-        "near_white_fraction": 0.011566,
+        "sha256": "930244744387564c3ca6f86eadbd6b208f4a3193c21f633734181a01eafeea1a",
+        "visual_std": 57.9515,
+        "near_black_fraction": 0.031113,
+        "near_white_fraction": 0.014938,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -1151,34 +1244,37 @@
       "selected_month_name": "September",
       "is_fallback_month": false,
       "preferred_month": 9,
-      "selection_quality_score": 1.004531,
+      "selection_quality_score": 0.955666,
       "fallback_reason": null,
       "rejected_candidates": []
     },
     {
       "year": 2020,
-      "date": "2020-09-24",
+      "date": "2020-09-12",
       "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
-      "platform": "Sentinel-2B",
-      "item_id": "S2B_MSIL2A_20200924T095029_R079_T33UYV_20200926T132532",
-      "scene_cloud_cover_percent": 4.762012,
-      "local_clear_fraction": 1.0,
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20200912T100031_R122_T33UYV_20200918T134152",
+      "scene_cloud_cover_percent": 0.483824,
+      "local_clear_fraction": 0.99735,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 10,
-      "crop_m": 2000,
       "files": [
-        "2020_2020-09-24_Sentinel-2B_10m_2km_native.png",
-        "2020_2020-09-24_Sentinel-2B_10m_2km_display1024.png"
+        "2020_2020-09-12_Sentinel-2A_10m_4x6km_native.png",
+        "2020_2020-09-12_Sentinel-2A_10m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "012fa60e9b5fbb3e7700d880fd2e78ef937304aae27013b0074c00dc51605c07",
-        "visual_std": 75.0635,
-        "near_black_fraction": 0.074615,
-        "near_white_fraction": 0.014206,
+        "sha256": "c25033a651c2aa072e32d5a9ef357f8daa9cc8a1fa5332e261bc9bb996f608db",
+        "visual_std": 67.1384,
+        "near_black_fraction": 0.026352,
+        "near_white_fraction": 0.013718,
         "dark_row_fraction": 0.0,
-        "dark_col_fraction": 0.003906,
+        "dark_col_fraction": 0.0,
         "broken_visual": false
       },
       "requested_season": "autumn",
@@ -1186,7 +1282,7 @@
       "selected_month_name": "September",
       "is_fallback_month": false,
       "preferred_month": 9,
-      "selection_quality_score": 1.022619,
+      "selection_quality_score": 1.022983,
       "fallback_reason": null,
       "rejected_candidates": []
     },
@@ -1197,23 +1293,26 @@
       "platform": "Sentinel-2A",
       "item_id": "S2A_MSIL2A_20210927T100031_R122_T33UYV_20210927T175724",
       "scene_cloud_cover_percent": 0.330401,
-      "local_clear_fraction": 0.9998,
+      "local_clear_fraction": 0.99995,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 10,
-      "crop_m": 2000,
       "files": [
-        "2021_2021-09-27_Sentinel-2A_10m_2km_native.png",
-        "2021_2021-09-27_Sentinel-2A_10m_2km_display1024.png"
+        "2021_2021-09-27_Sentinel-2A_10m_4x6km_native.png",
+        "2021_2021-09-27_Sentinel-2A_10m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "dc2f4d48b7dde1d52d83abc23b99daede72c0ffb5ae38953c8b6c7fcc07dcba4",
-        "visual_std": 67.2293,
-        "near_black_fraction": 0.096085,
-        "near_white_fraction": 0.01622,
+        "sha256": "1f956d02a0e4067d5ac571aa5ebcf07825f53276973223e0f0ec3b7d12d7c67e",
+        "visual_std": 63.3751,
+        "near_black_fraction": 0.033524,
+        "near_white_fraction": 0.009552,
         "dark_row_fraction": 0.0,
-        "dark_col_fraction": 0.007812,
+        "dark_col_fraction": 0.0,
         "broken_visual": false
       },
       "requested_season": "autumn",
@@ -1221,34 +1320,37 @@
       "selected_month_name": "September",
       "is_fallback_month": false,
       "preferred_month": 9,
-      "selection_quality_score": 1.024701,
+      "selection_quality_score": 1.024801,
       "fallback_reason": null,
       "rejected_candidates": []
     },
     {
       "year": 2022,
-      "date": "2022-09-04",
-      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
-      "platform": "Sentinel-2B",
-      "item_id": "S2B_MSIL2A_20220904T094549_R079_T33UYV_20240731T165745",
-      "scene_cloud_cover_percent": 24.14601,
+      "date": "2022-09-07",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-9",
+      "item_id": "LC09_L2SP_190022_20220907_02_T1",
+      "scene_cloud_cover_percent": 6.03,
       "local_clear_fraction": 1.0,
       "local_valid_fraction": 1.0,
-      "native_resolution_m": 10,
-      "crop_m": 2000,
+      "native_resolution_m": 30,
       "files": [
-        "2022_2022-09-04_Sentinel-2B_10m_2km_native.png",
-        "2022_2022-09-04_Sentinel-2B_10m_2km_display1024.png"
+        "2022_2022-09-07_landsat-9_30m_4x6km_native.png",
+        "2022_2022-09-07_landsat-9_30m_4x6km_display800x1200.jpg"
       ],
-      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "21a79a3e9d43f123dd7174ca114d87e813dc57ecd0a33fc5a376f1435432120d",
-        "visual_std": 73.5736,
-        "near_black_fraction": 0.124146,
-        "near_white_fraction": 0.0215,
+        "sha256": "590bb3c7bb0f67c87b5f02def130973925ee74f6bbe7598ef6d74264636e0587",
+        "visual_std": 68.6778,
+        "near_black_fraction": 0.037003,
+        "near_white_fraction": 0.016144,
         "dark_row_fraction": 0.0,
-        "dark_col_fraction": 0.101562,
+        "dark_col_fraction": 0.0,
         "broken_visual": false
       },
       "requested_season": "autumn",
@@ -1256,7 +1358,7 @@
       "selected_month_name": "September",
       "is_fallback_month": false,
       "preferred_month": 9,
-      "selection_quality_score": 1.012927,
+      "selection_quality_score": 0.996985,
       "fallback_reason": null,
       "rejected_candidates": []
     },
@@ -1270,20 +1372,23 @@
       "local_clear_fraction": 1.0,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 10,
-      "crop_m": 2000,
       "files": [
-        "2023_2023-09-12_Sentinel-2B_10m_2km_native.png",
-        "2023_2023-09-12_Sentinel-2B_10m_2km_display1024.png"
+        "2023_2023-09-12_Sentinel-2B_10m_4x6km_native.png",
+        "2023_2023-09-12_Sentinel-2B_10m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "09267c08b57f1ba3cf979c143eeb7c5ced912817dbe1e7e1481a47710525acf5",
-        "visual_std": 66.2628,
-        "near_black_fraction": 0.107239,
-        "near_white_fraction": 0.017181,
+        "sha256": "63436e93dd66b807c49e00ea70eb55f5bb50d3340f4b859c1d00924104952cab",
+        "visual_std": 68.9404,
+        "near_black_fraction": 0.059952,
+        "near_white_fraction": 0.0177,
         "dark_row_fraction": 0.0,
-        "dark_col_fraction": 0.050781,
+        "dark_col_fraction": 0.0,
         "broken_visual": false
       },
       "requested_season": "autumn",
@@ -1305,18 +1410,21 @@
       "local_clear_fraction": 1.0,
       "local_valid_fraction": 1.0,
       "native_resolution_m": 10,
-      "crop_m": 2000,
       "files": [
-        "2024_2024-09-08_Sentinel-2A_10m_2km_native.png",
-        "2024_2024-09-08_Sentinel-2A_10m_2km_display1024.png"
+        "2024_2024-09-08_Sentinel-2A_10m_4x6km_native.png",
+        "2024_2024-09-08_Sentinel-2A_10m_4x6km_display800x1200.jpg"
       ],
       "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "94a1a3ab5de25a541483cb9f260c5d1d4bc0bfadafafe10e47b9a923dd77d515",
-        "visual_std": 66.9953,
-        "near_black_fraction": 0.015167,
-        "near_white_fraction": 0.017929,
+        "sha256": "4574f928fb4c05fd15e4e2eb5daf57aabc844da6e0da6bd6dbadb3e1cdcd189b",
+        "visual_std": 72.7161,
+        "near_black_fraction": 0.029053,
+        "near_white_fraction": 0.016541,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -1332,26 +1440,29 @@
     },
     {
       "year": 2025,
-      "date": "2025-09-24",
-      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
-      "platform": "landsat-9",
-      "item_id": "LC09_L2SP_189023_20250924_02_T1",
-      "scene_cloud_cover_percent": 0.75,
+      "date": "2025-09-26",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2C",
+      "item_id": "S2C_MSIL2A_20250926T100041_R122_T33UYV_20250926T152116",
+      "scene_cloud_cover_percent": 0.012366,
       "local_clear_fraction": 1.0,
       "local_valid_fraction": 1.0,
-      "native_resolution_m": 30,
-      "crop_m": 2000,
+      "native_resolution_m": 10,
       "files": [
-        "2025_2025-09-24_landsat-9_30m_2km_native.png",
-        "2025_2025-09-24_landsat-9_30m_2km_display1024.png"
+        "2025_2025-09-26_Sentinel-2C_10m_4x6km_native.png",
+        "2025_2025-09-26_Sentinel-2C_10m_4x6km_display800x1200.jpg"
       ],
-      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 6000,
+      "frame_orientation": "portrait_north_up",
+      "display_copy": "800x1200 JPEG viewing copy; native-resolution PNG retained",
       "status": "ok",
       "image_integrity": {
-        "sha256": "20019ad8cf6f9da2bc877367a3636065df7f86e69a690dec95db9b8a9b28f06b",
-        "visual_std": 76.4128,
-        "near_black_fraction": 0.047348,
-        "near_white_fraction": 0.014069,
+        "sha256": "65517c6561541af96e4d9aeebf07f620337576a65a67a3b275a82305b118713c",
+        "visual_std": 66.1203,
+        "near_black_fraction": 0.034485,
+        "near_white_fraction": 0.012924,
         "dark_row_fraction": 0.0,
         "dark_col_fraction": 0.0,
         "broken_visual": false
@@ -1361,20 +1472,9 @@
       "selected_month_name": "September",
       "is_fallback_month": false,
       "preferred_month": 9,
-      "selection_quality_score": 0.999625,
+      "selection_quality_score": 1.024994,
       "fallback_reason": null,
-      "rejected_candidates": [
-        {
-          "month": 9,
-          "item_id": "S2C_MSIL2A_20250926T100041_R122_T33UYV_20250926T152116",
-          "reason": "RuntimeError('image-first visual integrity check failed')",
-          "moved_files": [
-            "experiments/experiment_003_jezioro_nogat/seasonal_evidence/autumn/rejected_candidates/2025_2025-09-26_Sentinel-2C_10m_2km_display1024.png",
-            "experiments/experiment_003_jezioro_nogat/seasonal_evidence/autumn/rejected_candidates/2025_2025-09-26_Sentinel-2C_10m_2km_native.png"
-          ],
-          "score": 1.0249938170000001
-        }
-      ]
+      "rejected_candidates": []
     },
     {
       "year": 2026,
@@ -1390,11 +1490,16 @@
   ],
   "count_ok": 36,
   "count_missing_or_rejected": 1,
-  "aoi": "2 km x 2 km centered exactly on 53.578593, 19.068364",
+  "aoi": {
+    "width_m": 4000,
+    "height_m": 6000,
+    "orientation": "portrait_north_up",
+    "purpose": "whole Jezioro Nogat plus surrounding landscape visible in every annual frame"
+  },
+  "previous_frame_rejected": "2 km x 2 km cropped the lake and is superseded",
   "dataset_role": "independent TerraWater lake comparison case",
   "test_number": 3,
   "object_name": "Jezioro Nogat",
   "no_experiment_002_imagery_reused": true,
-  "zip": "experiments/experiment_003_jezioro_nogat/seasonal_evidence/autumn/TEST003_AUTUMN_1990_2026_37_YEARS_2km_53.578593_19.068364.zip",
-  "zip_bytes": 28275207
+  "zip": "experiments/experiment_003_jezioro_nogat/seasonal_evidence/autumn/TEST003_AUTUMN_1990_2026_37_YEARS_4x6km_53.578593_19.068364.zip"
 }
