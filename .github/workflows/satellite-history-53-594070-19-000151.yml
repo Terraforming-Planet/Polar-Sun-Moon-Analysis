@@ -1,4 +1,4 @@
-name: Real Landsat history 53.594070 19.000151
+name: Multi-satellite 2km packs 53.594070 19.000151
 
 on:
   push:
@@ -14,7 +14,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,258 +27,24 @@ jobs:
       - name: Install geospatial dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests rasterio pillow numpy pyproj
+          pip install requests numpy pillow pyproj rasterio pystac-client planetary-computer
 
-      - name: Download and render official Landsat Collection 2 Level-2 data
+      - name: Build real satellite packs
         env:
           GDAL_DISABLE_READDIR_ON_OPEN: EMPTY_DIR
-          GDAL_HTTP_MULTIRANGE: YES
-          GDAL_HTTP_MERGE_CONSECUTIVE_RANGES: YES
-          CPL_VSIL_CURL_ALLOWED_EXTENSIONS: .TIF,.tif
-        run: |
-          python - <<'PY'
-          import json
-          import time
-          from datetime import date, datetime
-          from pathlib import Path
+          GDAL_HTTP_MULTIRANGE: 'YES'
+          GDAL_HTTP_MERGE_CONSECUTIVE_RANGES: 'YES'
+          AWS_NO_SIGN_REQUEST: 'YES'
+        run: python tools/build_satellite_packs_2km.py
 
-          import numpy as np
-          import rasterio
-          import requests
-          from PIL import Image
-          from pyproj import Transformer
-          from rasterio.windows import from_bounds
-
-          LAT = 53.594070
-          LON = 19.000151
-          TARGET_YEARS = [2000, 2007, 2013, 2020, 2026]
-          HALF_SIZE_M = 4500.0
-          OUT = Path('satellite_history/53.594070_19.000151')
-          OUT.mkdir(parents=True, exist_ok=True)
-
-          STAC_SEARCH = 'https://planetarycomputer.microsoft.com/api/stac/v1/search'
-          TOKEN_URL = 'https://planetarycomputer.microsoft.com/api/sas/v1/token/landsat-c2-l2'
-
-          SENSOR_PREF = {
-              2000: ['landsat-7', 'landsat-5'],
-              2007: ['landsat-5'],
-              2013: ['landsat-8'],
-              2020: ['landsat-8'],
-              2026: ['landsat-9', 'landsat-8'],
-          }
-
-          session = requests.Session()
-
-          def request_json(method, url, **kwargs):
-              last = None
-              for attempt in range(6):
-                  r = session.request(method, url, timeout=120, **kwargs)
-                  last = r
-                  if r.status_code != 429:
-                      r.raise_for_status()
-                      return r.json()
-                  wait = int(r.headers.get('Retry-After', 2 ** attempt))
-                  print(f'HTTP 429 from {url}; retrying in {wait}s', flush=True)
-                  time.sleep(wait)
-              last.raise_for_status()
-
-          token_info = request_json('GET', TOKEN_URL)
-          SAS_TOKEN = token_info['token']
-          TOKEN_EXPIRY = token_info.get('msft:expiry')
-          print('Obtained one Landsat collection SAS token; expiry=', TOKEN_EXPIRY, flush=True)
-
-          def signed(href):
-              if '?' in href:
-                  if 'sig=' in href or 'se=' in href:
-                      return href
-                  return href + '&' + SAS_TOKEN
-              return href + '?' + SAS_TOKEN
-
-          def end_date_for(year):
-              if year == 2026:
-                  return min(date(2026, 9, 30), date.today())
-              return date(year, 9, 30)
-
-          def search_items(year):
-              payload = {
-                  'collections': ['landsat-c2-l2'],
-                  'bbox': [LON - 0.14, LAT - 0.10, LON + 0.14, LAT + 0.10],
-                  'datetime': f'{year}-05-01/{end_date_for(year).isoformat()}',
-                  'limit': 100,
-              }
-              result = request_json('POST', STAC_SEARCH, json=payload)
-              items = result.get('features', [])
-              if not items:
-                  end = min(date(year, 12, 31), date.today()) if year == 2026 else date(year, 12, 31)
-                  payload['datetime'] = f'{year}-01-01/{end.isoformat()}'
-                  result = request_json('POST', STAC_SEARCH, json=payload)
-                  items = result.get('features', [])
-              return items
-
-          def platform(item):
-              return str(item.get('properties', {}).get('platform', '')).lower()
-
-          def cloud_score(item):
-              value = item.get('properties', {}).get('eo:cloud_cover')
-              try:
-                  return float(value)
-              except (TypeError, ValueError):
-                  return 100.0
-
-          def item_datetime(item):
-              raw = item.get('properties', {}).get('datetime') or ''
-              return datetime.fromisoformat(raw.replace('Z', '+00:00')).replace(tzinfo=None)
-
-          def point_window(src):
-              transformer = Transformer.from_crs('EPSG:4326', src.crs, always_xy=True)
-              x, y = transformer.transform(LON, LAT)
-              return from_bounds(
-                  x - HALF_SIZE_M,
-                  y - HALF_SIZE_M,
-                  x + HALF_SIZE_M,
-                  y + HALF_SIZE_M,
-                  transform=src.transform,
-              ).round_offsets().round_lengths()
-
-          def open_crop(href):
-              with rasterio.Env(
-                  GDAL_DISABLE_READDIR_ON_OPEN='EMPTY_DIR',
-                  GDAL_HTTP_MULTIRANGE='YES',
-                  GDAL_HTTP_MERGE_CONSECUTIVE_RANGES='YES',
-              ):
-                  with rasterio.open(signed(href)) as src:
-                      w = point_window(src)
-                      arr = src.read(1, window=w, boundless=False)
-                      meta = {
-                          'crs': str(src.crs),
-                          'transform': [float(v) for v in src.window_transform(w)[:6]],
-                          'width': int(arr.shape[1]),
-                          'height': int(arr.shape[0]),
-                      }
-              return arr, meta
-
-          def local_clear_fraction(item):
-              qa = item.get('assets', {}).get('qa_pixel')
-              if not qa:
-                  return max(0.0, 1.0 - cloud_score(item) / 100.0)
-              try:
-                  arr, _ = open_crop(qa['href'])
-                  if arr.size == 0:
-                      return 0.0
-                  valid = (arr & 1) == 0
-                  if not np.any(valid):
-                      return 0.0
-                  clear = ((arr >> 6) & 1).astype(bool)
-                  return float(np.mean(clear[valid]))
-              except Exception as exc:
-                  print('QA read failed:', item.get('id'), repr(exc), flush=True)
-                  return max(0.0, 1.0 - cloud_score(item) / 100.0)
-
-          def choose_item(year):
-              all_items = search_items(year)
-              prefs = SENSOR_PREF[year]
-              items = [i for i in all_items if platform(i) in prefs]
-              if not items:
-                  raise RuntimeError(
-                      f'No preferred Landsat scenes for {year}; total STAC matches={len(all_items)}; '
-                      f'platforms={sorted(set(platform(i) for i in all_items))}'
-                  )
-              items.sort(key=cloud_score)
-              candidates = items[:8]
-              target_day = datetime(int(year), 7, 15)
-              ranked = []
-              for item in candidates:
-                  clear = local_clear_fraction(item)
-                  day_distance = abs((item_datetime(item) - target_day).days)
-                  sensor_rank = prefs.index(platform(item))
-                  score = (1.0 - clear) * 1000.0 + cloud_score(item) * 0.4 + day_distance * 0.03 + sensor_rank * 1.5
-                  ranked.append((score, -clear, cloud_score(item), item))
-                  print(
-                      year, item.get('id'), 'platform=', platform(item),
-                      'scene_cloud=', cloud_score(item), 'local_clear=', round(clear, 4),
-                      'score=', round(score, 3), flush=True
-                  )
-              ranked.sort(key=lambda x: (x[0], x[1], x[2]))
-              chosen = ranked[0][3]
-              return chosen, -ranked[0][1]
-
-          def read_band(item, key):
-              asset = item.get('assets', {}).get(key)
-              if not asset:
-                  raise RuntimeError(f"{item.get('id')} missing asset {key}; keys={sorted(item.get('assets', {}))}")
-              return open_crop(asset['href'])
-
-          def render_item(item, clear_fraction, requested_year):
-              bands = []
-              raster_meta = None
-              for key in ['red', 'green', 'blue']:
-                  raw, meta = read_band(item, key)
-                  if raster_meta is None:
-                      raster_meta = meta
-                  bands.append(raw.astype(np.float32) * 2.75e-5 - 0.2)
-
-              shapes = {a.shape for a in bands}
-              if len(shapes) != 1:
-                  raise RuntimeError(f'RGB band shapes differ for {item.get("id")}: {shapes}')
-
-              rgb = np.stack(bands, axis=-1)
-              low, high = 0.015, 0.30
-              rgb = np.clip((rgb - low) / (high - low), 0.0, 1.0)
-              rgb = np.power(rgb, 1.0 / 2.2)
-              rgb8 = np.rint(rgb * 255.0).astype(np.uint8)
-
-              acquired = item.get('properties', {}).get('datetime', '')[:10]
-              sensor = platform(item).replace('_', '-') or 'landsat'
-              fname = f'{requested_year}_{acquired}_{sensor}_USGS_Landsat_C2_SR_53.594070_19.000151.png'
-              fpath = OUT / fname
-              Image.fromarray(rgb8, mode='RGB').save(fpath, optimize=True)
-
-              props = item.get('properties', {})
-              return {
-                  'requested_year': requested_year,
-                  'file': str(fpath),
-                  'date': acquired,
-                  'platform': props.get('platform'),
-                  'item_id': item.get('id'),
-                  'scene_cloud_cover_percent': cloud_score(item),
-                  'local_clear_fraction': round(float(clear_fraction), 6),
-                  'source_dataset': 'USGS Landsat Collection 2 Level-2 Surface Reflectance',
-                  'stac_collection': item.get('collection'),
-                  'delivery_catalog': 'Microsoft Planetary Computer STAC',
-                  'coordinate': {'lat': LAT, 'lon': LON},
-                  'crop_size_m': int(HALF_SIZE_M * 2),
-                  'native_pixel_size_m': 30,
-                  'width_pixels': raster_meta['width'],
-                  'height_pixels': raster_meta['height'],
-                  'crs': raster_meta['crs'],
-                  'transform': raster_meta['transform'],
-                  'processing': 'Natural-color RGB derived directly from Landsat Collection 2 Level-2 surface-reflectance red/green/blue bands using documented reflectance scale/offset, fixed display stretch and gamma only; no AI generation, interpolation or synthetic content.',
-              }
-
-          manifest = {
-              'requested_coordinate': {'lat': LAT, 'lon': LON},
-              'target_years': TARGET_YEARS,
-              'generated_utc': datetime.utcnow().isoformat(timespec='seconds') + 'Z',
-              'token_expiry_used_for_download': TOKEN_EXPIRY,
-              'images': [],
-          }
-
-          for year in TARGET_YEARS:
-              selected, local_clear = choose_item(year)
-              meta = render_item(selected, local_clear, year)
-              manifest['images'].append(meta)
-              print('SELECTED', json.dumps(meta, ensure_ascii=False), flush=True)
-
-          (OUT / 'manifest.json').write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding='utf-8')
-          print('Generated files:', flush=True)
-          for p in sorted(OUT.glob('*')):
-              print(p, p.stat().st_size, flush=True)
-          PY
-
-      - name: Commit generated imagery to this working branch
+      - name: Commit generated packs
         run: |
           git config user.name "terraforming-planet-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add satellite_history/53.594070_19.000151
-          git commit -m "Add five real Landsat snapshots for 53.594070 19.000151 [skip ci]"
-          git push origin HEAD:satellite-history-53-594070-19-000151
+          git add satellite_packs/53.594070_19.000151
+          if git diff --cached --quiet; then
+            echo "No generated changes"
+          else
+            git commit -m "Add real 2km multi-satellite comparison packs [skip ci]"
+            git push origin HEAD:satellite-history-53-594070-19-000151
+          fi
