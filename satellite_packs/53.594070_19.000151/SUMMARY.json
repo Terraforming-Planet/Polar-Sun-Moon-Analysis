@@ -1,0 +1,186 @@
+{
+  "center": [
+    53.59407,
+    19.000151
+  ],
+  "crop": "2 km x 2 km",
+  "years": [
+    2000,
+    2005,
+    2010,
+    2015,
+    2020,
+    2026
+  ],
+  "results": {
+    "USGS_Landsat": {
+      "zip": "USGS_Landsat_2km.zip",
+      "manifest": {
+        "source": "USGS Landsat Collection 2 Level-1 via Microsoft Planetary Computer",
+        "crop": "2 km x 2 km",
+        "center": [
+          53.59407,
+          19.000151
+        ],
+        "years": [
+          {
+            "year": 2000,
+            "status": "not_found"
+          },
+          {
+            "year": 2005,
+            "status": "not_found"
+          },
+          {
+            "year": 2010,
+            "status": "not_found"
+          },
+          {
+            "year": 2015,
+            "status": "not_found"
+          },
+          {
+            "year": 2020,
+            "status": "not_found"
+          },
+          {
+            "year": 2026,
+            "status": "not_found"
+          }
+        ]
+      }
+    },
+    "ESA_Sentinel2": {
+      "zip": "ESA_Copernicus_Sentinel2_2km.zip",
+      "manifest": {
+        "source": "ESA/Copernicus Sentinel-2 L2A via Microsoft Planetary Computer",
+        "crop": "2 km x 2 km",
+        "center": [
+          53.59407,
+          19.000151
+        ],
+        "years": [
+          {
+            "year": 2015,
+            "status": "ok",
+            "date": "2015-08-10",
+            "item_id": "S2A_MSIL2A_20150810T100016_R122_T34UCE_20210411T195233",
+            "cloud": 0.06699,
+            "valid_fraction": 1.0,
+            "files": [
+              "2015_2015-08-10_Sentinel-2_2km_RGB10m.png"
+            ]
+          },
+          {
+            "year": 2020,
+            "status": "ok",
+            "date": "2020-08-15",
+            "item_id": "S2B_MSIL2A_20200815T095039_R079_T34UCE_20200818T105337",
+            "cloud": 0.05668,
+            "valid_fraction": 1.0,
+            "files": [
+              "2020_2020-08-15_Sentinel-2_2km_RGB10m.png"
+            ]
+          },
+          {
+            "year": 2026,
+            "status": "ok",
+            "date": "2026-05-26",
+            "item_id": "S2A_MSIL2A_20260526T100041_R122_T34UCE_20260526T164315",
+            "cloud": 1.073762,
+            "valid_fraction": 1.0,
+            "files": [
+              "2026_2026-05-26_Sentinel-2_2km_RGB10m.png"
+            ]
+          }
+        ]
+      }
+    },
+    "NASA_ASTER": {
+      "zip": "NASA_Terra_ASTER_2km.zip",
+      "manifest": {
+        "source": "NASA Terra ASTER L1T via Microsoft Planetary Computer",
+        "collection": "aster-l1t",
+        "crop": "2 km x 2 km",
+        "center": [
+          53.59407,
+          19.000151
+        ],
+        "years": [
+          {
+            "year": 2000,
+            "status": "not_found"
+          },
+          {
+            "year": 2005,
+            "status": "ok",
+            "date": "2005-10-26",
+            "item_id": "AST_L1T_00310262005100025_20150511170408",
+            "cloud": 81.0,
+            "valid_fraction": 1.0,
+            "files": [
+              "2005_2005-10-26_Terra_ASTER_2km_falsecolor_NIR_R_G_15m.png"
+            ]
+          },
+          {
+            "year": 2010,
+            "status": "not_in_pc_archive"
+          },
+          {
+            "year": 2015,
+            "status": "not_in_pc_archive"
+          },
+          {
+            "year": 2020,
+            "status": "not_in_pc_archive"
+          },
+          {
+            "year": 2026,
+            "status": "not_in_pc_archive"
+          }
+        ],
+        "note": "False color NIR/Red/Green; ASTER VNIR has no blue band."
+      }
+    },
+    "JAXA_ALOS_PALSAR": {
+      "zip": "JAXA_ALOS_PALSAR_2km.zip",
+      "manifest": {
+        "source": "JAXA ALOS/ALOS-2 PALSAR Annual Mosaic via Microsoft Planetary Computer",
+        "collection": "alos-fnf-mosaic",
+        "crop": "2 km x 2 km",
+        "center": [
+          53.59407,
+          19.000151
+        ],
+        "years": [
+          {
+            "year": 2000,
+            "status": "not_found"
+          },
+          {
+            "year": 2005,
+            "status": "not_found"
+          },
+          {
+            "year": 2010,
+            "status": "not_found"
+          },
+          {
+            "year": 2015,
+            "status": "not_found"
+          },
+          {
+            "year": 2020,
+            "status": "not_found"
+          },
+          {
+            "year": 2026,
+            "status": "not_found"
+          }
+        ],
+        "note": "SAR radar, not optical. Water often appears dark."
+      }
+    }
+  },
+  "integrity": "No generated AI imagery. PNGs are deterministic displays of real satellite pixels."
+}
