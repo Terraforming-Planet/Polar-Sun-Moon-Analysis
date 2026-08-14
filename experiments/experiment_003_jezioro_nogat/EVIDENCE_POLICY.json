@@ -1,0 +1,51 @@
+{
+  "experiment_id": "003",
+  "object": "Jezioro Nogat",
+  "center": {
+    "lat": 53.578593,
+    "lon": 19.068364
+  },
+  "crop_m": 2000,
+  "years": {
+    "start": 1990,
+    "end": 2026,
+    "count": 37
+  },
+  "season_policy": {
+    "spring": {
+      "preferred_month": 5,
+      "fallback_months": [
+        4,
+        6
+      ]
+    },
+    "autumn": {
+      "preferred_month": 9,
+      "fallback_months": [
+        10,
+        11
+      ]
+    }
+  },
+  "rules": {
+    "real_acquisition_date_required": true,
+    "fallback_must_be_labeled": true,
+    "future_observations_never_invented": true,
+    "autumn_2026_must_remain_missing_until_observed": true,
+    "google_maps_reference_not_measurement_evidence": true,
+    "generative_fill_forbidden": true,
+    "ai_super_resolution_forbidden": true,
+    "cross_year_exact_duplicate_rejected": true,
+    "experiment_002_imagery_must_not_be_reused": true
+  },
+  "primary_sources": [
+    "USGS Landsat Collection 2",
+    "ESA/Copernicus Sentinel-2 Level-2A"
+  ],
+  "radar_control_planned": "ESA/Copernicus Sentinel-1 RTC",
+  "supplementary_candidates": [
+    "NASA ASTER",
+    "JAXA ALOS"
+  ],
+  "measurement_status": "not_started; this build is evidence acquisition only"
+}
