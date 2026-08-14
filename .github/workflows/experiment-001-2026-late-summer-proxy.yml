@@ -1,0 +1,56 @@
+name: Experiment 001 August 2026 proxy
+
+on:
+  push:
+    branches:
+      - annual-best-53-591400-19-010717
+    paths:
+      - 'tools/build_experiment_001_2026_late_summer_proxy.py'
+      - '.github/workflows/experiment-001-2026-late-summer-proxy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: annual-best-53-591400-19-010717
+          fetch-depth: 20
+          filter: blob:none
+          sparse-checkout: |
+            tools
+            experiments
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install numpy pillow requests rasterio pyproj
+      - run: python tools/build_experiment_001_2026_late_summer_proxy.py
+      - name: Validate
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('experiments/experiment_001_pond_forest_kuchnia/seasonal_evidence/late_summer_2026_proxy')
+          d=json.loads((root/'manifest.json').read_text(encoding='utf-8'))
+          r=d['observation']
+          assert r['date'].startswith('2026-08-')
+          assert r['is_autumn_observation'] is False
+          assert r['must_not_be_used_as_autumn_2026'] is True
+          assert len(list(root.glob('*.zip')))==1
+          print('AUGUST_2026_PROXY',r['date'],r['platform'],r['native_resolution_m'])
+          PY
+      - name: Commit
+        run: |
+          git config user.name "Terraforming Planet"
+          git config user.email "kontakt@teslaeco.pl"
+          git add experiments/experiment_001_pond_forest_kuchnia/seasonal_evidence/late_summer_2026_proxy
+          git diff --cached --quiet && echo "No proxy changes" && exit 0
+          git commit -m "Add August 2026 non-autumn proxy for Experiment 001"
+          git pull --rebase origin annual-best-53-591400-19-010717
+          git push origin HEAD:annual-best-53-591400-19-010717
