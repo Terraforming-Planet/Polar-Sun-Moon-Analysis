@@ -33,9 +33,6 @@ def recommendation(body: str, m: dict) -> tuple[str, str]:
             "review_before_quantitative_use",
             "Lake radar result needs manual review before quantitative use.",
         )
-    # The forest pond is small and partly surrounded/covered by trees. C-band SAR can mix
-    # canopy, wet soil and water within 10 m pixels, so even a high-confidence connected
-    # radar-dark component is not promoted to an exact pond-area measurement.
     if status == "ok" and confidence == "high":
         return (
             "qualitative_cross_check_only",
@@ -89,7 +86,7 @@ def main() -> None:
                     "interpretation": interpretation,
                 })
 
-    notes = """# Sentinel-1 RTC measurement notes\n\n"
+    notes = "# Sentinel-1 RTC measurement notes\n\n"
     notes += "This package is the third independent sensor check. It uses real ESA/Copernicus Sentinel-1 C-band SAR RTC pixels on a fixed 10 m grid (100 m²/pixel), May 2015-2025, preferred descending relative orbit 124. No generative AI, synthetic filling or AI super-resolution is used.\n\n"
     notes += "## Jezioro Kuchnia\n"
     notes += "The refined series is stable and high-confidence in every year. Treat the reported area as a Sentinel-1 radar open-water **proxy** suitable for trend verification against the optical sources, not as a cadastral or field-survey boundary.\n\n"
@@ -99,7 +96,6 @@ def main() -> None:
     notes += "`edge_pixel_uncertainty_m2` is only a pixel-edge discretization indicator. It does not include all SAR classification uncertainty. One 10 m analysis pixel equals 100 m².\n"
     NOTES_PATH.write_text(notes, encoding="utf-8")
 
-    # Record the interpretation policy in the machine-readable manifest as well.
     data["measurement_reporting_policy"] = {
         "jezioro_kuchnia": "High-confidence refined Sentinel-1 RTC open-water proxy; suitable for quantitative trend cross-checking, not a survey/cadastral area.",
         "staw_w_lesie": "Small forest pond: SAR values are qualitative cross-checks only; low/anomalous rows must not be used as exact area measurements.",
