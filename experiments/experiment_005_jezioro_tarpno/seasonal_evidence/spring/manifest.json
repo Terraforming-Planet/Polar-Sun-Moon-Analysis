@@ -1,0 +1,1755 @@
+{
+  "experiment": "Experiment 005 - Jezioro Tarpno water and shoreline monitoring",
+  "center": {
+    "lat": 53.49767,
+    "lon": 18.822712
+  },
+  "crop": "2 km x 2 km centered exactly on coordinate for imagery; measurement stage uses larger AOI where needed",
+  "season": "spring",
+  "preferred_month": 5,
+  "fallback_months": [
+    4,
+    6
+  ],
+  "years_requested": [
+    1990,
+    1991,
+    1992,
+    1993,
+    1994,
+    1995,
+    1996,
+    1997,
+    1998,
+    1999,
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "filename_rule": "every image filename begins YYYY_YYYY-MM-DD_...",
+  "integrity_policy": "real public satellite pixels only; no AI filling/super-resolution; image-first broken-image check; exact cross-year SHA duplicate rejected",
+  "records": [
+    {
+      "year": 1990,
+      "date": "1990-05-02",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19900502_02_T1",
+      "scene_cloud_cover_percent": 1.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1990_1990-05-02_landsat-5_30m_4x5km_native.png",
+        "1990_1990-05-02_landsat-5_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "2a85a42e8734472641e96f24e4e2a5f40bf8e1741f65b349a3b98c1670527c8c",
+        "visual_std": 61.0186,
+        "near_black_fraction": 0.033249,
+        "near_white_fraction": 0.017273,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.9995,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1991,
+      "date": "1991-05-30",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19910530_02_T1",
+      "scene_cloud_cover_percent": 14.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1991_1991-05-30_landsat-5_30m_4x5km_native.png",
+        "1991_1991-05-30_landsat-5_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "5c4e4e6ba5cfea8e64930e2e75443a45490c2e0cc087e25f7930fdb37d901f3d",
+        "visual_std": 60.3648,
+        "near_black_fraction": 0.027817,
+        "near_white_fraction": 0.015015,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.993,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1992,
+      "date": "1992-05-16",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19920516_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1992_1992-05-16_landsat-5_30m_4x5km_native.png",
+        "1992_1992-05-16_landsat-5_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "4a1c300ec1ec9e8a0ae7607c8bff7a5e32357b2b3e116fcc4f653a95952598c2",
+        "visual_std": 59.2816,
+        "near_black_fraction": 0.026718,
+        "near_white_fraction": 0.016708,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1993,
+      "date": "1993-05-10",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19930510_02_T1",
+      "scene_cloud_cover_percent": 6.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1993_1993-05-10_landsat-5_30m_4x5km_native.png",
+        "1993_1993-05-10_landsat-5_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "0a685f87b20707b8076b31133cbc0b683a3f69f29d485d037ef3f41f3c5c93aa",
+        "visual_std": 62.0642,
+        "near_black_fraction": 0.022263,
+        "near_white_fraction": 0.013916,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.997,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1994,
+      "date": "1994-05-06",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19940506_02_T1",
+      "scene_cloud_cover_percent": 4.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1994_1994-05-06_landsat-5_30m_4x5km_native.png",
+        "1994_1994-05-06_landsat-5_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "71b891a158599ad5af256904bee2c926e2a75fc330909a4de1da030d01d7c584",
+        "visual_std": 60.3711,
+        "near_black_fraction": 0.022568,
+        "near_white_fraction": 0.015213,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.998,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1995,
+      "date": "1995-04-23",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19950423_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 0.999955,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1995_1995-04-23_landsat-5_30m_4x5km_native.png",
+        "1995_1995-04-23_landsat-5_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "88e2f697e3dae8d00dbb724ee55d5d7bac3fe88447b349736d00fdde29b1b439",
+        "visual_std": 55.6006,
+        "near_black_fraction": 0.018265,
+        "near_white_fraction": 0.011322,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 4,
+      "selected_month_name": "April",
+      "is_fallback_month": true,
+      "preferred_month": 5,
+      "selection_quality_score": 0.94997,
+      "fallback_reason": "preferred month had no sufficiently reliable candidate",
+      "rejected_candidates": [
+        {
+          "month": 5,
+          "item_id": "LT05_L2SP_189023_19950509_02_T1",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.28924132186754314
+        }
+      ]
+    },
+    {
+      "year": 1996,
+      "date": "1996-05-18",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19960518_02_T1",
+      "scene_cloud_cover_percent": 11.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1996_1996-05-18_landsat-5_30m_4x5km_native.png",
+        "1996_1996-05-18_landsat-5_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "caff459e5c448363f5d767d0d58705ba2f443e23030f6014b1e0f65372313d32",
+        "visual_std": 58.5298,
+        "near_black_fraction": 0.01767,
+        "near_white_fraction": 0.011917,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.9945,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1997,
+      "date": "1997-05-14",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19970514_02_T1",
+      "scene_cloud_cover_percent": 7.0,
+      "local_clear_fraction": 0.861555,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1997_1997-05-14_landsat-5_30m_4x5km_native.png",
+        "1997_1997-05-14_landsat-5_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "3c5705dc502f9367e44cab6f4d799f32c8fdae9288dbfef3657fbab08d72e027",
+        "visual_std": 56.3063,
+        "near_black_fraction": 0.02121,
+        "near_white_fraction": 0.016037,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.903742,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1998,
+      "date": "1998-05-17",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19980517_02_T1",
+      "scene_cloud_cover_percent": 11.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1998_1998-05-17_landsat-5_30m_4x5km_native.png",
+        "1998_1998-05-17_landsat-5_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "cf0bc8834e4a29bc529a075033140ea98ac75e5ffe143084d8c58dc184ba8485",
+        "visual_std": 60.9041,
+        "near_black_fraction": 0.018402,
+        "near_white_fraction": 0.00798,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.9945,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1999,
+      "date": "1999-05-20",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19990520_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1999_1999-05-20_landsat-5_30m_4x5km_native.png",
+        "1999_1999-05-20_landsat-5_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "66c23af0967cb2a6c20b4ce714f70cb026b6d9ffa9c5d410ec0e0d5ec5b29b01",
+        "visual_std": 59.6031,
+        "near_black_fraction": 0.017822,
+        "near_white_fraction": 0.009659,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2000,
+      "date": "2000-05-13",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_20000513_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2000_2000-05-13_landsat-5_30m_4x5km_native.png",
+        "2000_2000-05-13_landsat-5_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "f5f141034bfe5c0518a8212863b83d891638974d0691318dfd54bbd49e982e64",
+        "visual_std": 61.2196,
+        "near_black_fraction": 0.024048,
+        "near_white_fraction": 0.009247,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2001,
+      "date": "2001-05-08",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20010508_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2001_2001-05-08_landsat-7_30m_4x5km_native.png",
+        "2001_2001-05-08_landsat-7_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "d9c7e5159e58acf127191551a06821320bd34812a31225ccfd05ed8ab71b8efc",
+        "visual_std": 59.1533,
+        "near_black_fraction": 0.021973,
+        "near_white_fraction": 0.010727,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2002,
+      "date": "2002-05-04",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_189023_20020504_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2002_2002-05-04_landsat-7_30m_4x5km_native.png",
+        "2002_2002-05-04_landsat-7_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "b65ebc06b169efd6c709fc8cc00224c8759f2eca8f48f965ba742a1d697e97bb",
+        "visual_std": 57.1339,
+        "near_black_fraction": 0.020615,
+        "near_white_fraction": 0.015625,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2003,
+      "date": "2003-05-30",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20030530_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2003_2003-05-30_landsat-7_30m_4x5km_native.png",
+        "2003_2003-05-30_landsat-7_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "9da297643cf82be07d0f9de4e3388fd64441239ecbfa34c70a1c0370262103ac",
+        "visual_std": 57.7523,
+        "near_black_fraction": 0.022842,
+        "near_white_fraction": 0.013931,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2004,
+      "date": "2004-05-01",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20040501_02_T1",
+      "scene_cloud_cover_percent": 2.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2004_2004-05-01_landsat-5_30m_4x5km_native.png",
+        "2004_2004-05-01_landsat-5_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "34a088be0aaa1afaab5421fe3188fd9dc757808c1dc4d9f5412ed24f864a2460",
+        "visual_std": 58.5445,
+        "near_black_fraction": 0.016968,
+        "near_white_fraction": 0.010223,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.999,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2005,
+      "date": "2005-05-20",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20050520_02_T1",
+      "scene_cloud_cover_percent": 4.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2005_2005-05-20_landsat-5_30m_4x5km_native.png",
+        "2005_2005-05-20_landsat-5_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "f87d886874da7e5d20ad87be410f8ed6d1104d9fa6e3bf455a397e87a6997cc7",
+        "visual_std": 58.5547,
+        "near_black_fraction": 0.01683,
+        "near_white_fraction": 0.009842,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.998,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2006,
+      "date": "2006-05-07",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20060507_02_T1",
+      "scene_cloud_cover_percent": 5.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2006_2006-05-07_landsat-5_30m_4x5km_native.png",
+        "2006_2006-05-07_landsat-5_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "20bd18a7fd41fc39517b46ba6432d33167ab8892685c3de806579a1b359012c5",
+        "visual_std": 56.4848,
+        "near_black_fraction": 0.010727,
+        "near_white_fraction": 0.009384,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.9975,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2007,
+      "date": "2007-05-25",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20070525_02_T1",
+      "scene_cloud_cover_percent": 3.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 0.82153,
+      "native_resolution_m": 30,
+      "files": [
+        "2007_2007-05-25_landsat-7_30m_4x5km_native.png",
+        "2007_2007-05-25_landsat-7_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "7d3b29e3d5ef884129e75898a8e2eeda8e232d441833f22fac207650ed63b279",
+        "visual_std": 63.1681,
+        "near_black_fraction": 0.167038,
+        "near_white_fraction": 0.006866,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.948528,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2008,
+      "date": "2008-05-28",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20080528_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2008_2008-05-28_landsat-5_30m_4x5km_native.png",
+        "2008_2008-05-28_landsat-5_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "da3f867d15df7edf59a3439f9049321abc01bcc726fcbdb929312d665f261d08",
+        "visual_std": 59.7825,
+        "near_black_fraction": 0.020294,
+        "near_white_fraction": 0.009064,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2009,
+      "date": "2009-05-15",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20090515_02_T1",
+      "scene_cloud_cover_percent": 8.0,
+      "local_clear_fraction": 0.963802,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2009_2009-05-15_landsat-5_30m_4x5km_native.png",
+        "2009_2009-05-15_landsat-5_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "2e5ef4ccf24ae60449fbe67ee977557bd3b4783e982e6a4f4d2696061185a7fb",
+        "visual_std": 55.8013,
+        "near_black_fraction": 0.020309,
+        "near_white_fraction": 0.010208,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.971747,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2010,
+      "date": "2010-04-16",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20100416_02_T1",
+      "scene_cloud_cover_percent": 14.0,
+      "local_clear_fraction": 0.848408,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2010_2010-04-16_landsat-5_30m_4x5km_native.png",
+        "2010_2010-04-16_landsat-5_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "77dcecd5e2824a6f125910496ae7cab814be67afcbfb9b4a8eed47d2febdc4be",
+        "visual_std": 46.4726,
+        "near_black_fraction": 0.050598,
+        "near_white_fraction": 0.018524,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 4,
+      "selected_month_name": "April",
+      "is_fallback_month": true,
+      "preferred_month": 5,
+      "selection_quality_score": 0.891434,
+      "fallback_reason": "preferred month had no sufficiently reliable candidate",
+      "rejected_candidates": [
+        {
+          "month": 5,
+          "item_id": "LT05_L2SP_189023_20100502_02_T1",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.45548070775741756
+        }
+      ]
+    },
+    {
+      "year": 2011,
+      "date": "2011-05-20",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20110520_02_T1",
+      "scene_cloud_cover_percent": 27.0,
+      "local_clear_fraction": 0.95294,
+      "local_valid_fraction": 0.828508,
+      "native_resolution_m": 30,
+      "files": [
+        "2011_2011-05-20_landsat-7_30m_4x5km_native.png",
+        "2011_2011-05-20_landsat-7_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "4763faa0a354d48c402b5515da7c3dd5a6803851e57d4352283a7fa1ceb91896",
+        "visual_std": 63.5255,
+        "near_black_fraction": 0.160553,
+        "near_white_fraction": 0.00708,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.906952,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2012,
+      "date": "2012-05-22",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20120522_02_T1",
+      "scene_cloud_cover_percent": 4.0,
+      "local_clear_fraction": 0.999831,
+      "local_valid_fraction": 0.797128,
+      "native_resolution_m": 30,
+      "files": [
+        "2012_2012-05-22_landsat-7_30m_4x5km_native.png",
+        "2012_2012-05-22_landsat-7_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "0bbc5bad97c6c06980e1e0306f16b6bee34f28647dd2dad57df57b0776d83c93",
+        "visual_std": 61.4841,
+        "near_black_fraction": 0.203217,
+        "near_white_fraction": 0.011536,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.941082,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2013,
+      "date": "2013-05-17",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-8",
+      "item_id": "LC08_L2SP_190023_20130517_02_T1",
+      "scene_cloud_cover_percent": 19.49,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2013_2013-05-17_landsat-8_30m_4x5km_native.png",
+        "2013_2013-05-17_landsat-8_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "b25e1fdc26834ba5fbb12ea71ebcad84feb0bded5c1d83efc8f670944c882639",
+        "visual_std": 55.7919,
+        "near_black_fraction": 0.029495,
+        "near_white_fraction": 0.010345,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.990255,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2014,
+      "date": "2014-05-20",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-8",
+      "item_id": "LC08_L2SP_190023_20140520_02_T1",
+      "scene_cloud_cover_percent": 9.54,
+      "local_clear_fraction": 0.915222,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2014_2014-05-20_landsat-8_30m_4x5km_native.png",
+        "2014_2014-05-20_landsat-8_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "f92c6691f7f13ddfeecaadb2d5c0254f5bdd564973560979d43241821c22abb7",
+        "visual_std": 49.9249,
+        "near_black_fraction": 0.018494,
+        "near_white_fraction": 0.014923,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.938429,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2015,
+      "date": "2015-05-07",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-8",
+      "item_id": "LC08_L2SP_190023_20150507_02_T1",
+      "scene_cloud_cover_percent": 5.64,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2015_2015-05-07_landsat-8_30m_4x5km_native.png",
+        "2015_2015-05-07_landsat-8_30m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "5231a58047e061d65fd8f5669fbded2fb973065dbe0aea6ac1904a8b74e14e2c",
+        "visual_std": 56.126,
+        "near_black_fraction": 0.031952,
+        "near_white_fraction": 0.012558,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.99718,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2016,
+      "date": "2016-05-06",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20160506T100032_R122_T33UYV_20210211T090201",
+      "scene_cloud_cover_percent": 0.920345,
+      "local_clear_fraction": 0.99232,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2016_2016-05-06_Sentinel-2A_10m_4x5km_native.png",
+        "2016_2016-05-06_Sentinel-2A_10m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "15a9a2a3fd655be8f4834a5de1c3e0d0eddd851f5dc56e0d2882bd521b00c6b5",
+        "visual_std": 52.6985,
+        "near_black_fraction": 0.039444,
+        "near_white_fraction": 0.01355,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.019394,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2017,
+      "date": "2017-05-18",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20170518T095031_R079_T33UYV_20210209T162320",
+      "scene_cloud_cover_percent": 0.067295,
+      "local_clear_fraction": 0.98962,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2017_2017-05-18_Sentinel-2A_10m_4x5km_native.png",
+        "2017_2017-05-18_Sentinel-2A_10m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "ee8db5768c75df2fadaca4ef3281332fc6a7be4afaab31654898e8c2bf2904bd",
+        "visual_std": 55.5102,
+        "near_black_fraction": 0.040558,
+        "near_white_fraction": 0.009415,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.018012,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2018,
+      "date": "2018-05-08",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20180508T095029_R079_T34UCE_20201012T072713",
+      "scene_cloud_cover_percent": 0.059469,
+      "local_clear_fraction": 0.99094,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2018_2018-05-08_Sentinel-2B_10m_4x5km_native.png",
+        "2018_2018-05-08_Sentinel-2B_10m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "186c5222fb1861ff3ea908ef0b35197c32f3525fcc1b1ee10ebf0753e302f2d3",
+        "visual_std": 54.8191,
+        "near_black_fraction": 0.020538,
+        "near_white_fraction": 0.010452,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.0189,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2019,
+      "date": "2019-05-01",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20190501T100031_R122_T33UYV_20201006T083634",
+      "scene_cloud_cover_percent": 2.765254,
+      "local_clear_fraction": 0.99862,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2019_2019-05-01_Sentinel-2A_10m_4x5km_native.png",
+        "2019_2019-05-01_Sentinel-2A_10m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "f02f0f1de84ea05ba46b5651ab1e19793794c70af79c630ff8f18effdde5147a",
+        "visual_std": 55.7319,
+        "near_black_fraction": 0.028763,
+        "near_white_fraction": 0.010239,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.022693,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2020,
+      "date": "2020-05-22",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20200522T095041_R079_T34UCE_20200910T132336",
+      "scene_cloud_cover_percent": 11.855619,
+      "local_clear_fraction": 0.99568,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2020_2020-05-22_Sentinel-2A_10m_4x5km_native.png",
+        "2020_2020-05-22_Sentinel-2A_10m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "8a0e908f3bf3f469805feea9a8de4eac4d8b0db2abcf95b7f8460a696b47de24",
+        "visual_std": 58.5787,
+        "near_black_fraction": 0.021423,
+        "near_white_fraction": 0.008774,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.016178,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2021,
+      "date": "2021-05-12",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20210512T095029_R079_T33UYV_20210606T074105",
+      "scene_cloud_cover_percent": 0.106014,
+      "local_clear_fraction": 0.98636,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2021_2021-05-12_Sentinel-2B_10m_4x5km_native.png",
+        "2021_2021-05-12_Sentinel-2B_10m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "056255f6e09d75a0ae933c5ed48deb6c758a25483fb535a64e3620acc0bea6c1",
+        "visual_std": 58.295,
+        "near_black_fraction": 0.041138,
+        "near_white_fraction": 0.014771,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.015808,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2022,
+      "date": "2022-05-10",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20220510T100029_R122_T33UYV_20240612T220829",
+      "scene_cloud_cover_percent": 24.608648,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2022_2022-05-10_Sentinel-2B_10m_4x5km_native.png",
+        "2022_2022-05-10_Sentinel-2B_10m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "6dbcb816157a12ccfdb01c52f3613f2a183fa7e8e36ff30abb2f8816f190520c",
+        "visual_std": 55.1821,
+        "near_black_fraction": 0.024124,
+        "near_white_fraction": 0.008911,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.012696,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2023,
+      "date": "2023-05-27",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20230527T095031_R079_T33UYV_20230527T161030",
+      "scene_cloud_cover_percent": 1.837752,
+      "local_clear_fraction": 0.99918,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2023_2023-05-27_Sentinel-2A_10m_4x5km_native.png",
+        "2023_2023-05-27_Sentinel-2A_10m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "1bec86856b46fab6e85b7b4f444172e56f76d92ae5c820a658c3ce45244346a8",
+        "visual_std": 54.661,
+        "near_black_fraction": 0.023926,
+        "near_white_fraction": 0.010757,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.023532,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2024,
+      "date": "2024-05-01",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20240501T095031_R079_T33UYV_20240501T154122",
+      "scene_cloud_cover_percent": 0.510306,
+      "local_clear_fraction": 0.9998,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2024_2024-05-01_Sentinel-2A_10m_4x5km_native.png",
+        "2024_2024-05-01_Sentinel-2A_10m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "3f8d5c0e18c2560ae055d80fab01bfb04ba22ad4394c154a5167686a082b3fd0",
+        "visual_std": 54.603,
+        "near_black_fraction": 0.02446,
+        "near_white_fraction": 0.009094,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.024611,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2025,
+      "date": "2025-05-06",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2C",
+      "item_id": "S2C_MSIL2A_20250506T095051_R079_T33UYV_20250506T121455",
+      "scene_cloud_cover_percent": 0.252054,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2025_2025-05-06_Sentinel-2C_10m_4x5km_native.png",
+        "2025_2025-05-06_Sentinel-2C_10m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "eea680e67330495b926226a913d2ba43d06c694a6f90a4e969babf8c643076b5",
+        "visual_std": 58.5199,
+        "near_black_fraction": 0.023605,
+        "near_white_fraction": 0.007767,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.024874,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2026,
+      "date": "2026-05-01",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2C",
+      "item_id": "S2C_MSIL2A_20260501T095031_R079_T33UYV_20260501T132213",
+      "scene_cloud_cover_percent": 0.000367,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2026_2026-05-01_Sentinel-2C_10m_4x5km_native.png",
+        "2026_2026-05-01_Sentinel-2C_10m_4x5km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 4000,
+      "crop_height_m": 5000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Tarpno",
+          "lat": 53.49767,
+          "lon": 18.822712
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "4bf37fc9b15e7479ef1ac18b3bb26b53554fc530c865d6ad175f598db37082d3",
+        "visual_std": 54.9494,
+        "near_black_fraction": 0.030807,
+        "near_white_fraction": 0.008591,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.025,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    }
+  ],
+  "count_ok": 37,
+  "count_missing_or_rejected": 0,
+  "targets": [
+    {
+      "name": "Jezioro Tarpno",
+      "lat": 53.49767,
+      "lon": 18.822712
+    }
+  ],
+  "aoi": {
+    "width_m": 4000,
+    "height_m": 5000,
+    "orientation": "portrait_north_up",
+    "purpose": "whole Jezioro Tarpno plus surrounding Grudziadz landscape visible in every annual frame"
+  },
+  "dataset_role": "independent TerraWater lake comparison case",
+  "test_number": 5,
+  "object_name": "Jezioro Tarpno",
+  "zip": "experiments/experiment_005_jezioro_tarpno/seasonal_evidence/spring/TEST005_SPRING_1990_2026_37_YEARS_4x5km_53.497670_18.822712.zip"
+}
