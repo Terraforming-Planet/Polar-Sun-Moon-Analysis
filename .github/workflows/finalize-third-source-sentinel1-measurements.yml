@@ -1,0 +1,63 @@
+name: Finalize third-source Sentinel-1 measurements
+
+on:
+  push:
+    branches:
+      - annual-best-53-591400-19-010717
+    paths:
+      - 'tools/finalize_third_source_measurement_labels.py'
+      - '.github/workflows/finalize-third-source-sentinel1-measurements.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: annual-best-53-591400-19-010717
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            tools
+            satellite_third_source_sentinel1_rtc_may_2015_2025
+          sparse-checkout-cone-mode: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Finalize confidence/status labels and rebuild ZIP
+        run: python tools/finalize_third_source_measurement_labels.py
+
+      - name: Validate final labels
+        run: |
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          root = Path('satellite_third_source_sentinel1_rtc_may_2015_2025/53.591400_19.010717')
+          rows = list(csv.DictReader((root / 'measurements_open_water_radar_refined.csv').open(encoding='utf-8')))
+          lake = [r for r in rows if r['body'] == 'jezioro_kuchnia']
+          pond = [r for r in rows if r['body'] == 'staw_w_lesie']
+          assert len(rows) == 22 and len(lake) == 11 and len(pond) == 11
+          assert all(r['measurement_status'] for r in rows)
+          assert all(r['recommended_use'] for r in rows)
+          assert sum(r['confidence'] == 'high' and r['measurement_status'] == 'ok' for r in lake) == 11
+          assert any(r['measurement_status'] == 'classification_anomaly' for r in pond)
+          z = root / 'THIRD_SOURCE_SENTINEL1_RTC_MAY_2015_2025_WATER_2km_53.591400_19.010717.zip'
+          assert z.exists() and z.stat().st_size > 100_000
+          print('FINAL_ROWS', len(rows), 'LAKE_HIGH_OK', 11, 'POND_ANOMALIES', sum(r['measurement_status'] == 'classification_anomaly' for r in pond), 'ZIP', z.stat().st_size)
+          PY
+
+      - name: Commit finalized measurement package
+        run: |
+          git config user.name "Terraforming Planet"
+          git config user.email "kontakt@teslaeco.pl"
+          git add satellite_third_source_sentinel1_rtc_may_2015_2025/53.591400_19.010717
+          git diff --cached --quiet && echo "No finalized changes to commit" && exit 0
+          git commit -m "Finalize Sentinel-1 measurement confidence labels"
+          git push
