@@ -1,0 +1,55 @@
+name: Experiment 001 fast endpoint measurement
+
+on:
+  push:
+    branches:
+      - annual-best-53-591400-19-010717
+    paths:
+      - 'tools/measure_experiment_001_endpoints_fast.py'
+      - 'tools/measure_experiment_001_seasonal_water_v2.py'
+      - '.github/workflows/experiment-001-endpoint-fast.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  endpoint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: annual-best-53-591400-19-010717
+          fetch-depth: 20
+          sparse-checkout: |
+            tools
+            experiments
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install numpy pillow requests rasterio pyproj scipy
+      - name: Measure endpoints
+        run: python tools/measure_experiment_001_endpoints_fast.py
+      - name: Validate output
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('experiments/experiment_001_pond_forest_kuchnia/measurements_endpoint_fast/endpoint_measurement_1990_2026.json')
+          d=json.loads(p.read_text(encoding='utf-8'))
+          assert len(d['records'])==4
+          assert d['pond_seed_corrected']['west_offset_m']>=600
+          assert len(d['comparisons'])==4
+          print('FAST_ENDPOINT_COMPARISONS',d['comparisons'])
+          PY
+      - name: Commit endpoint measurement
+        run: |
+          git config user.name "Terraforming Planet"
+          git config user.email "kontakt@teslaeco.pl"
+          git add experiments/experiment_001_pond_forest_kuchnia/measurements_endpoint_fast
+          git diff --cached --quiet && echo "No endpoint changes" && exit 0
+          git commit -m "Add corrected Experiment 001 1990-2026 endpoint measurement"
+          git pull --rebase origin annual-best-53-591400-19-010717
+          git push origin HEAD:annual-best-53-591400-19-010717
