@@ -1,0 +1,125 @@
+{
+  "experiment_id": "001",
+  "method": "Image-first visible-footprint multi-year consensus using deterministic GrabCut on the same fixed geographic crop; not a spectral water classifier.",
+  "source_images": "Primary real Landsat/Sentinel display crops; no generative filling or AI super-resolution.",
+  "geometry": {
+    "full_display_size_px": 1024,
+    "full_crop_ground_size_m": 2000,
+    "pond_crop_box_full_display_px": [
+      40,
+      200,
+      280,
+      440
+    ],
+    "work_size_px": 360,
+    "meters_per_work_pixel": 1.3020833333333333,
+    "corrected_pond_seed_approx": {
+      "lat": 53.594595,
+      "lon": 19.00014
+    }
+  },
+  "historical_consensus_years": [
+    1998,
+    1999,
+    2000,
+    2004,
+    2005,
+    2006,
+    2008
+  ],
+  "individual_historical_visible_components": [
+    {
+      "year": 1998,
+      "visible_component_area_m2": 16138.7,
+      "visible_component_area_ha": 1.6139
+    },
+    {
+      "year": 1999,
+      "visible_component_area_m2": 17588.3,
+      "visible_component_area_ha": 1.7588
+    },
+    {
+      "year": 2000,
+      "visible_component_area_m2": 18563.2,
+      "visible_component_area_ha": 1.8563
+    },
+    {
+      "year": 2004,
+      "visible_component_area_m2": 16844.0,
+      "visible_component_area_ha": 1.6844
+    },
+    {
+      "year": 2005,
+      "visible_component_area_m2": 20446.8,
+      "visible_component_area_ha": 2.0447
+    },
+    {
+      "year": 2006,
+      "visible_component_area_m2": 15480.9,
+      "visible_component_area_ha": 1.5481
+    },
+    {
+      "year": 2008,
+      "visible_component_area_m2": 20780.8,
+      "visible_component_area_ha": 2.0781
+    }
+  ],
+  "support_sensitivity": [
+    {
+      "minimum_support_years": 1,
+      "historical_consensus_area_m2": 23978.3,
+      "historical_consensus_area_ha": 2.3978,
+      "1990_dark_component_overlap_m2": 20540.0,
+      "1990_overlap_fraction_of_consensus": 0.85661
+    },
+    {
+      "minimum_support_years": 2,
+      "historical_consensus_area_m2": 21642.0,
+      "historical_consensus_area_ha": 2.1642,
+      "1990_dark_component_overlap_m2": 19063.3,
+      "1990_overlap_fraction_of_consensus": 0.88085
+    },
+    {
+      "minimum_support_years": 3,
+      "historical_consensus_area_m2": 19251.5,
+      "historical_consensus_area_ha": 1.9252,
+      "1990_dark_component_overlap_m2": 17635.8,
+      "1990_overlap_fraction_of_consensus": 0.91607
+    },
+    {
+      "minimum_support_years": 4,
+      "historical_consensus_area_m2": 17722.2,
+      "historical_consensus_area_ha": 1.7722,
+      "1990_dark_component_overlap_m2": 16398.1,
+      "1990_overlap_fraction_of_consensus": 0.92528
+    },
+    {
+      "minimum_support_years": 5,
+      "historical_consensus_area_m2": 16269.3,
+      "historical_consensus_area_ha": 1.6269,
+      "1990_dark_component_overlap_m2": 15367.3,
+      "1990_overlap_fraction_of_consensus": 0.94456
+    }
+  ],
+  "recommended_working_measurement": {
+    "persistent_historical_visible_footprint_m2": 17722.2,
+    "persistent_historical_visible_footprint_ha": 1.7722,
+    "conservative_lower_m2": 16269.3,
+    "repeat_supported_upper_m2": 21642.0,
+    "broad_union_upper_m2": 23978.3,
+    "1990_overlap_with_central_consensus_m2": 16398.1,
+    "1990_overlap_fraction": 0.92528,
+    "2026_open_water_area_m2": null,
+    "2026_state": "No comparable persistent dark-water footprint visible; May/August 2026 spectral seed diagnostics are strongly non-water-like. Exact residual open-water area remains manual/spectral-review gated.",
+    "loss_percent_status": "near-total state transition supported visually; exact percentage remains uncertainty-gated"
+  },
+  "interpretation": {
+    "old_2_5ha_statement": "Retained as the earlier user/visual working estimate and possible broad upper estimate, but not the central quantitative result.",
+    "current_central_result": "The repeatable historical footprint is closer to ~1.7 ha. A defensible historical range from repeated images is ~1.56–2.04 ha; the one-year/union envelope extends to ~2.37 ha.",
+    "precision_warning": "Historical Landsat multispectral detail is ~30 m. Sub-pixel display segmentation is used only to stabilize a multi-year footprint; uncertainty must be reported at hectare-scale, not to individual square metres."
+  },
+  "overlays": [
+    "experiments/experiment_001_pond_forest_kuchnia/measurements_visible_pond_consensus/2000_historical_consensus_overlay.png",
+    "experiments/experiment_001_pond_forest_kuchnia/measurements_visible_pond_consensus/2026_historical_consensus_on_recent_basin.png"
+  ]
+}
