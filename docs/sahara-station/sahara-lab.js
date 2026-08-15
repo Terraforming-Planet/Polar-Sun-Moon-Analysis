@@ -30,76 +30,364 @@ let dem = null;
 let demSiteElevationM = 0;
 let demReady = false;
 
-function setText(id, value) { const el = $(id); if (el) el.textContent = value; }
-function setDisabled(id, value) { const el = $(id); if (el) el.disabled = Boolean(value); }
-function bind(id, event, handler) { const el = $(id); if (el) el.addEventListener(event, handler); }
-function setMessage(text, kind = '') { const el = $('actionMessage'); if (!el) return; el.textContent = text; el.className = `action-message ${kind}`.trim(); }
-function makeStatusBadge() { if (!viewer || $('demStatus')) return; const badge = document.createElement('div'); badge.id = 'demStatus'; badge.style.cssText = 'position:absolute;right:12px;bottom:12px;z-index:8;max-width:78%;padding:7px 9px;border:1px solid #8e6336;border-radius:8px;background:#130c06e8;color:#fff4dd;font:700 11px/1.35 Inter,system-ui,sans-serif;backdrop-filter:blur(8px)'; badge.textContent = 'DEM: przygotowanie sceny…'; viewer.appendChild(badge); }
-function setDemStatus(text, ok = false) { const badge = $('demStatus'); if (!badge) return; badge.textContent = text; badge.style.borderColor = ok ? '#75d9a0' : '#d49a53'; }
-function frustumVolume(base, top, height) { return height / 3 * (base * base + base * top + top * top); }
-function arcticReferenceShape() { const base = 20, top = 2, height = 8; return { base, top, height, volume: frustumVolume(base, top, height) }; }
-function currentShape() { const base = Math.max(0.5, Number($('baseSize')?.value || 20)); const top = Math.min(base - 0.1, Math.max(0.2, Number($('topSize')?.value || 2))); const height = Math.max(0.1, Number($('heightSize')?.value || 8)); return { base, top, height, volume: frustumVolume(base, top, height) }; }
-function sameShape(a, b) { return Math.abs(a.base - b.base) < 1e-6 && Math.abs(a.top - b.top) < 1e-6 && Math.abs(a.height - b.height) < 1e-6; }
+function setText(id, value) {
+  const el = $(id);
+  if (el) el.textContent = value;
+}
+function setDisabled(id, value) {
+  const el = $(id);
+  if (el) el.disabled = Boolean(value);
+}
+function bind(id, event, handler) {
+  const el = $(id);
+  if (el) el.addEventListener(event, handler);
+}
+function setMessage(text, kind = '') {
+  const el = $('actionMessage');
+  if (!el) return;
+  el.textContent = text;
+  el.className = `action-message ${kind}`.trim();
+}
+function makeStatusBadge() {
+  if (!viewer || $('demStatus')) return;
+  const badge = document.createElement('div');
+  badge.id = 'demStatus';
+  badge.style.cssText = 'position:absolute;right:12px;bottom:12px;z-index:8;max-width:78%;padding:7px 9px;border:1px solid #8e6336;border-radius:8px;background:#130c06e8;color:#fff4dd;font:700 11px/1.35 Inter,system-ui,sans-serif;backdrop-filter:blur(8px)';
+  badge.textContent = 'DEM: przygotowanie sceny…';
+  viewer.appendChild(badge);
+}
+function setDemStatus(text, ok = false) {
+  const badge = $('demStatus');
+  if (!badge) return;
+  badge.textContent = text;
+  badge.style.borderColor = ok ? '#75d9a0' : '#d49a53';
+}
+function frustumVolume(base, top, height) {
+  return height / 3 * (base * base + base * top + top * top);
+}
+function arcticReferenceShape() {
+  const base = 20;
+  const top = 2;
+  const height = 8;
+  return { base, top, height, volume: frustumVolume(base, top, height) };
+}
+function currentShape() {
+  const base = Math.max(0.5, Number($('baseSize')?.value || 20));
+  const top = Math.min(base - 0.1, Math.max(0.2, Number($('topSize')?.value || 2)));
+  const height = Math.max(0.1, Number($('heightSize')?.value || 8));
+  return { base, top, height, volume: frustumVolume(base, top, height) };
+}
+function sameShape(a, b) {
+  return Math.abs(a.base - b.base) < 1e-6 && Math.abs(a.top - b.top) < 1e-6 && Math.abs(a.height - b.height) < 1e-6;
+}
 
 const viewer = $('viewer');
 if (!viewer) throw new Error('Sahara 3D: missing #viewer');
 makeStatusBadge();
+
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 viewer.appendChild(renderer.domElement);
+
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xc9803f);
 scene.fog = new THREE.Fog(0xc78343, 45, 105);
 const camera = new THREE.PerspectiveCamera(46, 1, 0.05, 220);
 camera.position.set(34, 25, 40);
 const orbit = new OrbitControls(camera, renderer.domElement);
-orbit.target.set(4, 1, -1); orbit.enableDamping = true; orbit.dampingFactor = 0.065; orbit.minDistance = 8; orbit.maxDistance = 88; orbit.maxPolarAngle = Math.PI * 0.49;
+orbit.target.set(4, 1, -1);
+orbit.enableDamping = true;
+orbit.dampingFactor = 0.065;
+orbit.minDistance = 8;
+orbit.maxDistance = 88;
+orbit.maxPolarAngle = Math.PI * 0.49;
 scene.add(new THREE.HemisphereLight(0xffe6b7, 0x4d2b18, 1.65));
 const sun = new THREE.DirectionalLight(0xfff2d2, 3.4);
-sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.camera.left = -42; sun.shadow.camera.right = 42; sun.shadow.camera.top = 42; sun.shadow.camera.bottom = -42; sun.shadow.camera.near = 1; sun.shadow.camera.far = 125; sun.shadow.bias = -0.00035;
-scene.add(sun); scene.add(sun.target);
-const terrainGeometry = new THREE.PlaneGeometry(WORLD_KM, WORLD_KM, TERRAIN_SEGMENTS, TERRAIN_SEGMENTS); terrainGeometry.rotateX(-Math.PI / 2);
-const terrain = new THREE.Mesh(terrainGeometry, new THREE.MeshStandardMaterial({ color: 0xb97436, roughness: 0.98, metalness: 0 })); terrain.receiveShadow = true; scene.add(terrain);
-const grid = new THREE.GridHelper(WORLD_KM, 16, 0x755134, 0x755134); grid.position.y = 0.03; grid.material.transparent = true; grid.material.opacity = 0.24; grid.visible = false; scene.add(grid);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.left = -42;
+sun.shadow.camera.right = 42;
+sun.shadow.camera.top = 42;
+sun.shadow.camera.bottom = -42;
+sun.shadow.camera.near = 1;
+sun.shadow.camera.far = 125;
+sun.shadow.bias = -0.00035;
+scene.add(sun);
+scene.add(sun.target);
+
+const terrainGeometry = new THREE.PlaneGeometry(WORLD_KM, WORLD_KM, TERRAIN_SEGMENTS, TERRAIN_SEGMENTS);
+terrainGeometry.rotateX(-Math.PI / 2);
+const terrain = new THREE.Mesh(terrainGeometry, new THREE.MeshStandardMaterial({ color: 0xb97436, roughness: 0.98, metalness: 0 }));
+terrain.receiveShadow = true;
+scene.add(terrain);
+const grid = new THREE.GridHelper(WORLD_KM, 16, 0x755134, 0x755134);
+grid.position.y = 0.03;
+grid.material.transparent = true;
+grid.material.opacity = 0.24;
+grid.visible = false;
+scene.add(grid);
+
 const channelPoints2D = [[-29,-15],[-24,-12],[-20,-14],[-15,-9],[-10,-7],[-5,-10],[0,-5],[4,-2],[8,-4],[12,1],[17,4],[22,3],[27,8],[31,11]];
 const channelCurve = new THREE.CatmullRomCurve3(channelPoints2D.map(([x, z]) => new THREE.Vector3(x, 0.08, z)), false, 'catmullrom', 0.25);
-const channelVisual = new THREE.Line(new THREE.BufferGeometry().setFromPoints(channelCurve.getPoints(180)), new THREE.LineBasicMaterial({ color: 0x60351f, transparent: true, opacity: 0.9 })); scene.add(channelVisual);
-function fallbackTerrainHeight(x, z) { return Math.sin(x * 0.12) * 0.11 + Math.cos(z * 0.10) * 0.10 + Math.sin((x + z) * 0.06) * 0.07; }
-function sampleDemHeightKm(x, z) { if (!demReady || !dem) return fallbackTerrainHeight(x, z); const u = clamp((x + WORLD_HALF) / WORLD_KM, 0, 1) * (DEM_GRID - 1), v = clamp((WORLD_HALF - z) / WORLD_KM, 0, 1) * (DEM_GRID - 1), x0 = Math.floor(u), y0 = Math.floor(v), x1 = Math.min(DEM_GRID - 1, x0 + 1), y1 = Math.min(DEM_GRID - 1, y0 + 1), tx = u - x0, ty = v - y0, a = dem[y0 * DEM_GRID + x0], b = dem[y0 * DEM_GRID + x1], c = dem[y1 * DEM_GRID + x0], d = dem[y1 * DEM_GRID + x1], elevationM = (a * (1 - tx) + b * tx) * (1 - ty) + (c * (1 - tx) + d * tx) * ty; return (elevationM - demSiteElevationM) / 1000; }
-function channelDepression(x, z) { if (!channelEnabled) return 0; let min = Infinity; for (let i = 0; i < channelPoints2D.length - 1; i++) { const [ax, az] = channelPoints2D[i], [bx, bz] = channelPoints2D[i + 1], abx = bx - ax, abz = bz - az, t = clamp(((x - ax) * abx + (z - az) * abz) / (abx * abx + abz * abz || 1), 0, 1); min = Math.min(min, Math.hypot(x - (ax + abx * t), z - (az + abz * t))); } const width = 0.9; if (min >= width) return 0; const q = 1 - min / width; return -0.12 * q * q; }
+const channelVisual = new THREE.Line(new THREE.BufferGeometry().setFromPoints(channelCurve.getPoints(180)), new THREE.LineBasicMaterial({ color: 0x60351f, transparent: true, opacity: 0.9 }));
+scene.add(channelVisual);
+
+function fallbackTerrainHeight(x, z) {
+  return Math.sin(x * 0.12) * 0.11 + Math.cos(z * 0.10) * 0.10 + Math.sin((x + z) * 0.06) * 0.07;
+}
+function sampleDemHeightKm(x, z) {
+  if (!demReady || !dem) return fallbackTerrainHeight(x, z);
+  const u = clamp((x + WORLD_HALF) / WORLD_KM, 0, 1) * (DEM_GRID - 1);
+  const v = clamp((WORLD_HALF - z) / WORLD_KM, 0, 1) * (DEM_GRID - 1);
+  const x0 = Math.floor(u), y0 = Math.floor(v), x1 = Math.min(DEM_GRID - 1, x0 + 1), y1 = Math.min(DEM_GRID - 1, y0 + 1);
+  const tx = u - x0, ty = v - y0;
+  const a = dem[y0 * DEM_GRID + x0], b = dem[y0 * DEM_GRID + x1], c = dem[y1 * DEM_GRID + x0], d = dem[y1 * DEM_GRID + x1];
+  const elevationM = (a * (1 - tx) + b * tx) * (1 - ty) + (c * (1 - tx) + d * tx) * ty;
+  return (elevationM - demSiteElevationM) / 1000;
+}
+function channelDepression(x, z) {
+  if (!channelEnabled) return 0;
+  let min = Infinity;
+  for (let i = 0; i < channelPoints2D.length - 1; i++) {
+    const [ax, az] = channelPoints2D[i], [bx, bz] = channelPoints2D[i + 1];
+    const abx = bx - ax, abz = bz - az;
+    const t = clamp(((x - ax) * abx + (z - az) * abz) / (abx * abx + abz * abz || 1), 0, 1);
+    min = Math.min(min, Math.hypot(x - (ax + abx * t), z - (az + abz * t)));
+  }
+  const width = 0.9;
+  if (min >= width) return 0;
+  const q = 1 - min / width;
+  return -0.12 * q * q;
+}
 function baseTerrainHeight(x, z) { return sampleDemHeightKm(x, z) + channelDepression(x, z); }
-function valleyOffsetAt(x, z, object) { const { base, top, height } = object.userData.shape, dx = x - object.position.x, dz = z - object.position.z, a = -object.rotation.y, rx = Math.abs(dx * Math.cos(a) - dz * Math.sin(a)), rz = Math.abs(dx * Math.sin(a) + dz * Math.cos(a)), r = Math.max(rx, rz), outer = base / 2, inner = Math.min(top / 2, outer - 0.01); if (r >= outer) return 0; if (r <= inner) return -height; const q = (r - inner) / Math.max(0.01, outer - inner); return -height * (1 - q); }
-function terrainHeightAt(x, z) { let y = baseTerrainHeight(x, z); for (const object of objects) { if (object.userData.kind !== 'valley') continue; const offset = valleyOffsetAt(x, z, object); if (offset < 0) y = Math.min(y, baseTerrainHeight(x, z) + offset); } return y; }
-function updateTerrain() { const pos = terrainGeometry.attributes.position; for (let i = 0; i < pos.count; i++) { const x = pos.getX(i), z = pos.getZ(i); pos.setY(i, terrainHeightAt(x, z)); } pos.needsUpdate = true; terrainGeometry.computeVertexNormals(); updateObjectGrounding(); updateHostedTrees(); }
+function valleyOffsetAt(x, z, object) {
+  const { base, top, height } = object.userData.shape;
+  const dx = x - object.position.x, dz = z - object.position.z, a = -object.rotation.y;
+  const rx = Math.abs(dx * Math.cos(a) - dz * Math.sin(a)), rz = Math.abs(dx * Math.sin(a) + dz * Math.cos(a));
+  const r = Math.max(rx, rz), outer = base / 2, inner = Math.min(top / 2, outer - 0.01);
+  if (r >= outer) return 0;
+  if (r <= inner) return -height;
+  const q = (r - inner) / Math.max(0.01, outer - inner);
+  return -height * (1 - q);
+}
+function terrainHeightAt(x, z) {
+  let y = baseTerrainHeight(x, z);
+  for (const object of objects) {
+    if (object.userData.kind !== 'valley') continue;
+    const offset = valleyOffsetAt(x, z, object);
+    if (offset < 0) y = Math.min(y, baseTerrainHeight(x, z) + offset);
+  }
+  return y;
+}
+function updateTerrain() {
+  const pos = terrainGeometry.attributes.position;
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i), z = pos.getZ(i);
+    pos.setY(i, terrainHeightAt(x, z));
+  }
+  pos.needsUpdate = true;
+  terrainGeometry.computeVertexNormals();
+  updateObjectGrounding();
+  updateHostedTrees();
+}
 function arcticMountainGeometry(shape) { return new THREE.CylinderGeometry(shape.top / 2, shape.base / 2, shape.height, 4, 1, false); }
-function createMountain(shape, x, z, options = {}) { const group = new THREE.Group(), geom = arcticMountainGeometry(shape), mesh = new THREE.Mesh(geom, new THREE.MeshStandardMaterial({ color: 0x737b77, roughness: 0.93, metalness: 0, emissive: 0x000000 })); mesh.rotation.y = Math.PI / 4; mesh.position.y = shape.height / 2; mesh.castShadow = true; mesh.receiveShadow = true; group.add(mesh); const cap = new THREE.Mesh(new THREE.CylinderGeometry(shape.top / 2, shape.top / 2, 0.12, 4), new THREE.MeshStandardMaterial({ color: 0x9ba49f, roughness: 0.82, emissive: 0x000000 })); cap.rotation.y = Math.PI / 4; cap.position.y = shape.height + 0.06; cap.castShadow = true; group.add(cap); const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geom), new THREE.LineBasicMaterial({ color: 0xffe3ae, transparent: true, opacity: 0 })); edges.rotation.y = Math.PI / 4; edges.position.y = shape.height / 2; group.add(edges); group.position.set(x, terrainHeightAt(x, z), z); group.userData = { id: nextId++, kind: 'mountain', shape: { ...shape }, volume: shape.volume, mesh, cap, edges, pairedWith: options.pairedWith || null, site: Boolean(options.site) }; mesh.userData.owner = group; cap.userData.owner = group; scene.add(group); objects.push(group); return group; }
-function createValley(shape, x, z, options = {}) { const group = new THREE.Group(), picker = new THREE.Mesh(new THREE.CylinderGeometry(shape.base / 2, shape.top / 2, shape.height, 4, 1, true), new THREE.MeshStandardMaterial({ color: 0x6d3c21, roughness: 1, transparent: true, opacity: 0.045, side: THREE.DoubleSide, depthWrite: false })); picker.rotation.y = Math.PI / 4; picker.position.y = -shape.height / 2; picker.userData.owner = group; group.add(picker); const rim = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-shape.base/2,0.08,-shape.base/2),new THREE.Vector3(shape.base/2,0.08,-shape.base/2),new THREE.Vector3(shape.base/2,0.08,shape.base/2),new THREE.Vector3(-shape.base/2,0.08,shape.base/2)]), new THREE.LineBasicMaterial({ color: 0xffbd72, transparent: true, opacity: 0.86 })); group.add(rim); const bottom = new THREE.Mesh(new THREE.CylinderGeometry(shape.top / 2, shape.top / 2, 0.05, 4), new THREE.MeshStandardMaterial({ color: 0x6d4027, roughness: 1 })); bottom.rotation.y = Math.PI / 4; bottom.position.y = -shape.height + 0.025; bottom.receiveShadow = true; group.add(bottom); const water = new THREE.Mesh(new THREE.CylinderGeometry(shape.top / 2, shape.top / 2, 0.025, 4), new THREE.MeshStandardMaterial({ color: 0x257ba4, roughness: 0.12, transparent: true, opacity: 0.62 })); water.rotation.y = Math.PI / 4; water.position.y = -shape.height + 0.08; water.visible = false; group.add(water); group.position.set(x, baseTerrainHeight(x, z), z); group.userData = { id: nextId++, kind: 'valley', shape: { ...shape }, volume: shape.volume, picker, rim, bottom, water, pairedWith: options.pairedWith || null, waterFraction: 0 }; scene.add(group); objects.push(group); updateTerrain(); return group; }
-function createResearchStation() { const group = new THREE.Group(), platform = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.75, 0.18, 12), new THREE.MeshStandardMaterial({ color: 0x252a2c, roughness: 0.42, metalness: 0.35 })); platform.position.y = 0.1; platform.castShadow = true; group.add(platform); const glassMat = new THREE.MeshStandardMaterial({ color: 0x72c9d4, roughness: 0.22, transparent: true, opacity: 0.72 }); for (const [x,z,r] of [[0,0,0.72],[1.0,0.2,0.42],[-0.9,0.35,0.4]]) { const dome = new THREE.Mesh(new THREE.SphereGeometry(r,20,10,0,Math.PI*2,0,Math.PI/2), glassMat); dome.position.set(x,0.2,z); dome.castShadow = true; group.add(dome); } group.position.set(-22, baseTerrainHeight(-22, -18), -18); scene.add(group); return group; }
+function createMountain(shape, x, z, options = {}) {
+  const group = new THREE.Group();
+  const geom = arcticMountainGeometry(shape);
+  const mesh = new THREE.Mesh(geom, new THREE.MeshStandardMaterial({ color: 0x737b77, roughness: 0.93, metalness: 0, emissive: 0x000000 }));
+  mesh.rotation.y = Math.PI / 4;
+  mesh.position.y = shape.height / 2;
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  group.add(mesh);
+  const cap = new THREE.Mesh(new THREE.CylinderGeometry(shape.top / 2, shape.top / 2, 0.12, 4), new THREE.MeshStandardMaterial({ color: 0x9ba49f, roughness: 0.82, emissive: 0x000000 }));
+  cap.rotation.y = Math.PI / 4;
+  cap.position.y = shape.height + 0.06;
+  cap.castShadow = true;
+  group.add(cap);
+  const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geom), new THREE.LineBasicMaterial({ color: 0xffe3ae, transparent: true, opacity: 0 }));
+  edges.rotation.y = Math.PI / 4;
+  edges.position.y = shape.height / 2;
+  group.add(edges);
+  group.position.set(x, terrainHeightAt(x, z), z);
+  group.userData = { id: nextId++, kind: 'mountain', shape: { ...shape }, volume: shape.volume, mesh, cap, edges, pairedWith: options.pairedWith || null, site: Boolean(options.site) };
+  mesh.userData.owner = group;
+  cap.userData.owner = group;
+  scene.add(group);
+  objects.push(group);
+  return group;
+}
+function createValley(shape, x, z, options = {}) {
+  const group = new THREE.Group();
+  const picker = new THREE.Mesh(new THREE.CylinderGeometry(shape.base / 2, shape.top / 2, shape.height, 4, 1, true), new THREE.MeshStandardMaterial({ color: 0x6d3c21, roughness: 1, transparent: true, opacity: 0.045, side: THREE.DoubleSide, depthWrite: false }));
+  picker.rotation.y = Math.PI / 4;
+  picker.position.y = -shape.height / 2;
+  picker.userData.owner = group;
+  group.add(picker);
+  const rim = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-shape.base/2,0.08,-shape.base/2),new THREE.Vector3(shape.base/2,0.08,-shape.base/2),new THREE.Vector3(shape.base/2,0.08,shape.base/2),new THREE.Vector3(-shape.base/2,0.08,shape.base/2)]), new THREE.LineBasicMaterial({ color: 0xffbd72, transparent: true, opacity: 0.86 }));
+  group.add(rim);
+  const bottom = new THREE.Mesh(new THREE.CylinderGeometry(shape.top / 2, shape.top / 2, 0.05, 4), new THREE.MeshStandardMaterial({ color: 0x6d4027, roughness: 1 }));
+  bottom.rotation.y = Math.PI / 4;
+  bottom.position.y = -shape.height + 0.025;
+  bottom.receiveShadow = true;
+  group.add(bottom);
+  const water = new THREE.Mesh(new THREE.CylinderGeometry(shape.top / 2, shape.top / 2, 0.025, 4), new THREE.MeshStandardMaterial({ color: 0x257ba4, roughness: 0.12, transparent: true, opacity: 0.62 }));
+  water.rotation.y = Math.PI / 4;
+  water.position.y = -shape.height + 0.08;
+  water.visible = false;
+  group.add(water);
+  group.position.set(x, baseTerrainHeight(x, z), z);
+  group.userData = { id: nextId++, kind: 'valley', shape: { ...shape }, volume: shape.volume, picker, rim, bottom, water, pairedWith: options.pairedWith || null, waterFraction: 0 };
+  scene.add(group);
+  objects.push(group);
+  updateTerrain();
+  return group;
+}
+function createResearchStation() {
+  const group = new THREE.Group();
+  const platform = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.75, 0.18, 12), new THREE.MeshStandardMaterial({ color: 0x252a2c, roughness: 0.42, metalness: 0.35 }));
+  platform.position.y = 0.1;
+  platform.castShadow = true;
+  group.add(platform);
+  const glassMat = new THREE.MeshStandardMaterial({ color: 0x72c9d4, roughness: 0.22, transparent: true, opacity: 0.72 });
+  for (const [x,z,r] of [[0,0,0.72],[1.0,0.2,0.42],[-0.9,0.35,0.4]]) {
+    const dome = new THREE.Mesh(new THREE.SphereGeometry(r,20,10,0,Math.PI*2,0,Math.PI/2), glassMat);
+    dome.position.set(x,0.2,z);
+    dome.castShadow = true;
+    group.add(dome);
+  }
+  group.position.set(-22, baseTerrainHeight(-22, -18), -18);
+  scene.add(group);
+  return group;
+}
 const researchStation = createResearchStation();
-const siteBeacon = new THREE.Group(), siteRing = new THREE.Mesh(new THREE.TorusGeometry(5.8,0.07,8,64), new THREE.MeshBasicMaterial({ color: 0xff4f49 })); siteRing.rotation.x = Math.PI / 2; siteRing.position.y = 0.2; siteBeacon.add(siteRing); const sitePole = new THREE.Mesh(new THREE.CylinderGeometry(0.035,0.035,5.2,8), new THREE.MeshBasicMaterial({ color: 0xff6159 })); sitePole.position.y = 2.6; siteBeacon.add(sitePole); siteBeacon.position.set(0, baseTerrainHeight(0,0), 0); scene.add(siteBeacon);
-const transform = new TransformControls(camera, renderer.domElement); transform.setMode('translate'); transform.setSize(0.8); transform.showY = false; scene.add(transform.getHelper()); transform.addEventListener('dragging-changed', (event) => { transformDragging = event.value; orbit.enabled = !event.value; }); transform.addEventListener('objectChange', () => { if (!selected) return; selected.position.x = clamp(selected.position.x, -WORLD_HALF + 5, WORLD_HALF - 5); selected.position.z = clamp(selected.position.z, -WORLD_HALF + 5, WORLD_HALF - 5); if (selected.userData.kind === 'valley') updateTerrain(); else selected.position.y = terrainHeightAt(selected.position.x, selected.position.z); updateHostedTrees(); updateSelectionHud(); });
-function updateObjectGrounding() { for (const object of objects) object.position.y = object.userData.kind === 'mountain' ? terrainHeightAt(object.position.x, object.position.z) : baseTerrainHeight(object.position.x, object.position.z); researchStation.position.y = terrainHeightAt(researchStation.position.x, researchStation.position.z); siteBeacon.position.y = baseTerrainHeight(0,0); }
-function updateSun() { const az = Number($('sunAzimuth')?.value || 225), el = Number($('sunElevation')?.value || 28); setText('sunAzOut', `${fmt(az,0)}°`); setText('sunElOut', `${fmt(el,0)}°`); setText('shadowDirection', `${fmt((az+180)%360,0)}°`); const azr = THREE.MathUtils.degToRad(az), elr = THREE.MathUtils.degToRad(el), radius = 68, horizontal = Math.cos(elr) * radius; sun.position.set(Math.sin(azr)*horizontal, Math.sin(elr)*radius, Math.cos(azr)*horizontal); sun.target.position.set(0,0,0); updateShadowReadout(); updateWaterAndVegetation(); }
-function totals() { let excavated=0, used=0, mountains=0, valleys=0, pairs=0; for (const object of objects) { if (object.userData.kind === 'valley') { excavated += object.userData.volume; valleys++; if (object.userData.pairedWith) pairs++; } else { used += object.userData.volume; mountains++; } } /* bank: excavated - used */ return { excavated, used, bank: excavated - used, mountains, valleys, pairs }; }
-function scenarioRetention() { const t = totals(), rain = Number($('rainScenario')?.value || 35) / 100, network = clamp(t.pairs/12,0,1), stage = clamp(scenarioStage/10,0,1); return clamp(rain*0.28 + network*0.42 + stage*0.30, 0, 1); }
-function updateMetrics() { const t = totals(); setText('mountainCount', t.mountains); setText('valleyCount', t.valleys); setText('pairedCount', t.pairs); setText('excavatedTotal', `${fmt(t.excavated)} km³`); setText('usedTotal', `${fmt(t.used)} km³`); setText('materialBank', `${fmt(t.bank)} km³`); if ($('materialBank')) $('materialBank').style.color = t.bank < -0.001 ? '#ff9a72' : '#96edb2'; setDisabled('buildMountain', !findUnpairedValleyForShape(currentShape())); setText('treeCount', trees.length.toLocaleString('pl-PL')); }
-function updateShapeOutputs() { const shape = currentShape(); if ($('topSize') && Number($('topSize').value) >= shape.base) { $('topSize').value = String(Math.max(0.5, shape.base - 0.25)); return updateShapeOutputs(); } setText('baseOut', `${fmt(shape.base,2)} km`); setText('topOut', `${fmt(shape.top,2)} km`); setText('heightOut', `${fmt(shape.height,2)} km`); setText('newVolume', `${fmt(shape.volume)} km³`); updateMetrics(); }
+const siteBeacon = new THREE.Group();
+const siteRing = new THREE.Mesh(new THREE.TorusGeometry(5.8,0.07,8,64), new THREE.MeshBasicMaterial({ color: 0xff4f49 }));
+siteRing.rotation.x = Math.PI / 2;
+siteRing.position.y = 0.2;
+siteBeacon.add(siteRing);
+const sitePole = new THREE.Mesh(new THREE.CylinderGeometry(0.035,0.035,5.2,8), new THREE.MeshBasicMaterial({ color: 0xff6159 }));
+sitePole.position.y = 2.6;
+siteBeacon.add(sitePole);
+siteBeacon.position.set(0, baseTerrainHeight(0,0), 0);
+scene.add(siteBeacon);
+
+const transform = new TransformControls(camera, renderer.domElement);
+transform.setMode('translate');
+transform.setSize(0.8);
+transform.showY = false;
+scene.add(transform.getHelper());
+transform.addEventListener('dragging-changed', (event) => { transformDragging = event.value; orbit.enabled = !event.value; });
+transform.addEventListener('objectChange', () => {
+  if (!selected) return;
+  selected.position.x = clamp(selected.position.x, -WORLD_HALF + 5, WORLD_HALF - 5);
+  selected.position.z = clamp(selected.position.z, -WORLD_HALF + 5, WORLD_HALF - 5);
+  if (selected.userData.kind === 'valley') updateTerrain(); else selected.position.y = terrainHeightAt(selected.position.x, selected.position.z);
+  updateHostedTrees();
+  updateSelectionHud();
+});
+function updateObjectGrounding() {
+  for (const object of objects) object.position.y = object.userData.kind === 'mountain' ? terrainHeightAt(object.position.x, object.position.z) : baseTerrainHeight(object.position.x, object.position.z);
+  researchStation.position.y = terrainHeightAt(researchStation.position.x, researchStation.position.z);
+  siteBeacon.position.y = baseTerrainHeight(0,0);
+}
+function updateSun() {
+  const az = Number($('sunAzimuth')?.value || 225), el = Number($('sunElevation')?.value || 28);
+  setText('sunAzOut', `${fmt(az,0)}°`);
+  setText('sunElOut', `${fmt(el,0)}°`);
+  setText('shadowDirection', `${fmt((az+180)%360,0)}°`);
+  const azr = THREE.MathUtils.degToRad(az), elr = THREE.MathUtils.degToRad(el), radius = 68, horizontal = Math.cos(elr) * radius;
+  sun.position.set(Math.sin(azr)*horizontal, Math.sin(elr)*radius, Math.cos(azr)*horizontal);
+  sun.target.position.set(0,0,0);
+  updateShadowReadout();
+  updateWaterAndVegetation();
+}
+function totals() {
+  let excavated=0, used=0, mountains=0, valleys=0, pairs=0;
+  for (const object of objects) {
+    if (object.userData.kind === 'valley') { excavated += object.userData.volume; valleys++; if (object.userData.pairedWith) pairs++; }
+    else { used += object.userData.volume; mountains++; }
+  }
+  // bank: excavated - used
+  return { excavated, used, bank: excavated - used, mountains, valleys, pairs };
+}
+function scenarioRetention() {
+  const t = totals(), rain = Number($('rainScenario')?.value || 35) / 100, network = clamp(t.pairs/12,0,1), stage = clamp(scenarioStage/10,0,1);
+  return clamp(rain*0.28 + network*0.42 + stage*0.30, 0, 1);
+}
+function updateMetrics() {
+  const t = totals();
+  setText('mountainCount', t.mountains); setText('valleyCount', t.valleys); setText('pairedCount', t.pairs);
+  setText('excavatedTotal', `${fmt(t.excavated)} km³`); setText('usedTotal', `${fmt(t.used)} km³`); setText('materialBank', `${fmt(t.bank)} km³`);
+  if ($('materialBank')) $('materialBank').style.color = t.bank < -0.001 ? '#ff9a72' : '#96edb2';
+  setDisabled('buildMountain', !findUnpairedValleyForShape(currentShape()));
+  setText('treeCount', trees.length.toLocaleString('pl-PL'));
+}
+function updateShapeOutputs() {
+  const shape = currentShape();
+  if ($('topSize') && Number($('topSize').value) >= shape.base) { $('topSize').value = String(Math.max(0.5, shape.base - 0.25)); return updateShapeOutputs(); }
+  setText('baseOut', `${fmt(shape.base,2)} km`); setText('topOut', `${fmt(shape.top,2)} km`); setText('heightOut', `${fmt(shape.height,2)} km`); setText('newVolume', `${fmt(shape.volume)} km³`);
+  updateMetrics();
+}
 function findObjectById(id) { return objects.find((object) => object.userData.id === id) || null; }
 function findUnpairedValleyForShape(shape) { return objects.find((object) => object.userData.kind === 'valley' && !object.userData.pairedWith && sameShape(object.userData.shape, shape)) || null; }
 function randomPlacement(side=1) { return { x: side*(10+Math.random()*10), z:(Math.random()-0.5)*28 }; }
-function digValley(shape=currentShape(), at=null) { const p = at || randomPlacement(1), valley = createValley(shape,p.x,p.z); updateMetrics(); updateWaterAndVegetation(); setMessage(`Wykopano dolinę #${valley.userData.id}. Najpierw wykop dolinę — jej ${fmt(shape.volume)} km³ może zasilić jedną zgodną górę.`, 'ok'); selectObject(valley); return valley; }
-function buildMountain(shape=currentShape(), at=null, options={}) { const sourceValley = options.sourceValley || findUnpairedValleyForShape(shape); if (!sourceValley) { setMessage('Brak wolnej doliny 1:1 dla tej geometrii. Najpierw wykop dolinę o tych samych wymiarach.', 'error'); return null; } const p = at || randomPlacement(-1), mountain = createMountain(shape,p.x,p.z,{ pairedWith:sourceValley.userData.id, site:Boolean(options.site) }); sourceValley.userData.pairedWith = mountain.userData.id; updateMetrics(); updateWaterAndVegetation(); setMessage(`Zbudowano górę #${mountain.userData.id} z materiału doliny #${sourceValley.userData.id}.`, 'ok'); selectObject(mountain); return mountain; }
-function createPair(shape=currentShape(), near=null) { const center = near || {x:8,z:-4}; const valley = digValley(shape,{x:clamp(center.x+12,-WORLD_HALF+10,WORLD_HALF-10),z:clamp(center.z+10,-WORLD_HALF+10,WORLD_HALF-10)}); const mountain = buildMountain(shape,{x:clamp(center.x-10,-WORLD_HALF+10,WORLD_HALF-10),z:clamp(center.z-8,-WORLD_HALF+10,WORLD_HALF-10)},{sourceValley:valley}); return { valley, mountain }; }
-function duplicateSelected() { if (!selected) return setMessage('Najpierw zaznacz górę albo dolinę.', 'error'); const shape = {...selected.userData.shape, volume:selected.userData.volume}; createPair(shape,{x:clamp(selected.position.x+(selected.position.x>0?-8:8),-WORLD_HALF+12,WORLD_HALF-12),z:clamp(selected.position.z+(selected.position.z>0?-10:10),-WORLD_HALF+12,WORLD_HALF-12)}); setMessage('Powielono pełną parę 1:1: najpierw nowa dolina, następnie nowa góra z jej materiału.', 'ok'); }
-function disposeObject(object) { if (!object) return; scene.remove(object); object.traverse((child) => { if (child.geometry) child.geometry.dispose(); if (child.material) (Array.isArray(child.material)?child.material:[child.material]).forEach((m)=>m.dispose()); }); }
-function deleteSelected() { if (!selected) return setMessage('Najpierw zaznacz obiekt do usunięcia.', 'error'); const object=selected; if (object.userData.kind==='valley' && object.userData.pairedWith) return setMessage(`Nie można usunąć doliny #${object.userData.id}: zasila górę #${object.userData.pairedWith}. Najpierw usuń tę górę.`, 'error'); if (object.userData.kind==='mountain' && object.userData.pairedWith) { const valley=findObjectById(object.userData.pairedWith); if (valley) valley.userData.pairedWith=null; } clearSelection(); const index=objects.indexOf(object); if (index>=0) objects.splice(index,1); disposeObject(object); updateTerrain(); updateMetrics(); updateWaterAndVegetation(); }
-function highlight(object,on) { if (!object) return; if (object.userData.kind==='mountain') { object.userData.mesh.material.emissive.setHex(on?0x382400:0); object.userData.cap.material.emissive.setHex(on?0x382400:0); object.userData.edges.material.opacity=on?0.95:0; } else { object.userData.rim.material.color.setHex(on?0xfff0b4:0xffbd72); object.userData.rim.material.opacity=on?1:0.86; object.userData.picker.material.opacity=on?0.11:0.045; } }
+function digValley(shape=currentShape(), at=null) {
+  const p = at || randomPlacement(1), valley = createValley(shape,p.x,p.z);
+  updateMetrics(); updateWaterAndVegetation();
+  setMessage(`Wykopano dolinę #${valley.userData.id}. Najpierw wykop dolinę — jej ${fmt(shape.volume)} km³ może zasilić jedną zgodną górę.`, 'ok');
+  selectObject(valley); return valley;
+}
+function buildMountain(shape=currentShape(), at=null, options={}) {
+  const sourceValley = options.sourceValley || findUnpairedValleyForShape(shape);
+  if (!sourceValley) { setMessage('Brak wolnej doliny 1:1 dla tej geometrii. Najpierw wykop dolinę o tych samych wymiarach.', 'error'); return null; }
+  const p = at || randomPlacement(-1), mountain = createMountain(shape,p.x,p.z,{ pairedWith:sourceValley.userData.id, site:Boolean(options.site) });
+  sourceValley.userData.pairedWith = mountain.userData.id;
+  updateMetrics(); updateWaterAndVegetation();
+  setMessage(`Zbudowano górę #${mountain.userData.id} z materiału doliny #${sourceValley.userData.id}.`, 'ok');
+  selectObject(mountain); return mountain;
+}
+function createPair(shape=currentShape(), near=null) {
+  const center = near || {x:8,z:-4};
+  const valley = digValley(shape,{x:clamp(center.x+12,-WORLD_HALF+10,WORLD_HALF-10),z:clamp(center.z+10,-WORLD_HALF+10,WORLD_HALF-10)});
+  const mountain = buildMountain(shape,{x:clamp(center.x-10,-WORLD_HALF+10,WORLD_HALF-10),z:clamp(center.z-8,-WORLD_HALF+10,WORLD_HALF-10)},{sourceValley:valley});
+  return { valley, mountain };
+}
+function duplicateSelected() {
+  if (!selected) return setMessage('Najpierw zaznacz górę albo dolinę.', 'error');
+  const shape = {...selected.userData.shape, volume:selected.userData.volume};
+  createPair(shape,{x:clamp(selected.position.x+(selected.position.x>0?-8:8),-WORLD_HALF+12,WORLD_HALF-12),z:clamp(selected.position.z+(selected.position.z>0?-10:10),-WORLD_HALF+12,WORLD_HALF-12)});
+  setMessage('Powielono pełną parę 1:1: najpierw nowa dolina, następnie nowa góra z jej materiału.', 'ok');
+}
+function disposeObject(object) {
+  if (!object) return;
+  scene.remove(object);
+  object.traverse((child) => { if (child.geometry) child.geometry.dispose(); if (child.material) (Array.isArray(child.material)?child.material:[child.material]).forEach((m)=>m.dispose()); });
+}
+function deleteSelected() {
+  if (!selected) return setMessage('Najpierw zaznacz obiekt do usunięcia.', 'error');
+  const object=selected;
+  if (object.userData.kind==='valley' && object.userData.pairedWith) return setMessage(`Nie można usunąć doliny #${object.userData.id}: zasila górę #${object.userData.pairedWith}. Najpierw usuń tę górę.`, 'error');
+  if (object.userData.kind==='mountain' && object.userData.pairedWith) { const valley=findObjectById(object.userData.pairedWith); if (valley) valley.userData.pairedWith=null; }
+  clearSelection();
+  const index=objects.indexOf(object); if (index>=0) objects.splice(index,1);
+  disposeObject(object); updateTerrain(); updateMetrics(); updateWaterAndVegetation();
+}
+function highlight(object,on) {
+  if (!object) return;
+  if (object.userData.kind==='mountain') { object.userData.mesh.material.emissive.setHex(on?0x382400:0); object.userData.cap.material.emissive.setHex(on?0x382400:0); object.userData.edges.material.opacity=on?0.95:0; }
+  else { object.userData.rim.material.color.setHex(on?0xfff0b4:0xffbd72); object.userData.rim.material.opacity=on?1:0.86; object.userData.picker.material.opacity=on?0.11:0.045; }
+}
 function selectObject(object) { if (selected===object) return; highlight(selected,false); selected=object; if (selected){highlight(selected,true);transform.attach(selected);} else transform.detach(); updateSelectionHud(); updateShadowReadout(); }
 function clearSelection(){selectObject(null);}
-function updateSelectionHud() { if (!selected) return setText('selectionHud','Zaznaczenie: brak'); const kind=selected.userData.kind==='mountain'?'góra':'dolina', pair=selected.userData.pairedWith?` • para #${selected.userData.pairedWith}`:' • bez pary', angle=THREE.MathUtils.radToDeg(selected.rotation.y); setText('selectionHud',`Zaznaczenie: ${kind} #${selected.userData.id}${pair} • ${fmt(selected.userData.volume)} km³ • X ${fmt(selected.position.x,1)} km • Z ${fmt(selected.position.z,1)} km • obrót ${fmt(angle,0)}°`); }
+function updateSelectionHud() {
+  if (!selected) return setText('selectionHud','Zaznaczenie: brak');
+  const kind=selected.userData.kind==='mountain'?'góra':'dolina', pair=selected.userData.pairedWith?` • para #${selected.userData.pairedWith}`:' • bez pary', angle=THREE.MathUtils.radToDeg(selected.rotation.y);
+  setText('selectionHud',`Zaznaczenie: ${kind} #${selected.userData.id}${pair} • ${fmt(selected.userData.volume)} km³ • X ${fmt(selected.position.x,1)} km • Z ${fmt(selected.position.z,1)} km • obrót ${fmt(angle,0)}°`);
+}
 function rotateSelected(deltaDeg) { if (!selected || selected.userData.kind!=='mountain') return setMessage('Zaznacz górę, aby zmienić jej orientację.','error'); selected.rotation.y+=THREE.MathUtils.degToRad(deltaDeg); updateSelectionHud(); }
 function optimizeShade() { if (!selected || selected.userData.kind!=='mountain') return setMessage('Zaznacz górę, aby ustawić ją względem Słońca.','error'); selected.rotation.y=-THREE.MathUtils.degToRad(Number($('sunAzimuth')?.value||225))+Math.PI/4; updateSelectionHud(); }
 function snapSelected() { if(!selected)return setMessage('Najpierw zaznacz obiekt.','error'); selected.position.x=Math.round(selected.position.x/2)*2;selected.position.z=Math.round(selected.position.z/2)*2;if(selected.userData.kind==='valley')updateTerrain();else selected.position.y=terrainHeightAt(selected.position.x,selected.position.z);updateSelectionHud(); }
@@ -109,7 +397,9 @@ function plantAtSelectedValley(count=100){let valley=selected?.userData.kind==='
 function updateHostedTrees(){for(const tree of trees){const id=tree.userData.hostValleyId;if(!id){tree.position.y=terrainHeightAt(tree.position.x,tree.position.z);continue;}const valley=findObjectById(id);if(!valley){tree.userData.hostValleyId=null;continue;}tree.position.x=valley.position.x+tree.userData.relX;tree.position.z=valley.position.z+tree.userData.relZ;tree.position.y=terrainHeightAt(tree.position.x,tree.position.z);}}
 function clearTrees(){while(trees.length)disposeObject(trees.pop());updateMetrics();updateWaterAndVegetation();}
 function updateWaterAndVegetation(){const retention=scenarioRetention(),showWater=$('showWater')?.checked??true;let waterM3=0;for(const valley of objects.filter((o)=>o.userData.kind==='valley')){const local=clamp(retention+(valley.userData.pairedWith?0.12:0),0,1),depthKm=local<0.06?0:0.002+local*0.018,sideKm=valley.userData.shape.top*(0.55+0.35*local);valley.userData.waterFraction=local;valley.userData.water.visible=showWater&&depthKm>0;valley.userData.water.scale.setScalar(0.55+0.35*local);valley.userData.water.position.y=-valley.userData.shape.height+0.06+depthKm;waterM3+=sideKm*sideKm*depthKm*1e9;}setText('waterStored',`${fmt(waterM3/1e6,1)} mln m³`);const shade=clamp(1-Math.sin(THREE.MathUtils.degToRad(Number($('sunElevation')?.value||28))),0,1),score=clamp(Math.round(22+retention*58+shade*20),0,100);setText('plantScore',`${score}/100`);for(const tree of trees){const color=new THREE.Color().setHSL(0.22+score/800,0.52,0.28+score/500);tree.userData.crown.material.color.copy(color);tree.userData.marker.material.color.copy(color.clone().offsetHSL(0,0.1,0.18));}}
-const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2(); renderer.domElement.addEventListener('pointerdown',(event)=>{if(transformDragging)return;const rect=renderer.domElement.getBoundingClientRect();pointer.x=((event.clientX-rect.left)/rect.width)*2-1;pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;raycaster.setFromCamera(pointer,camera);if(plantingMode){const terrainHits=raycaster.intersectObject(terrain,false);if(terrainHits.length){const p=terrainHits[0].point;createTree(p.x,p.z);updateMetrics();updateWaterAndVegetation();return;}}const pickables=[];for(const object of objects)object.traverse((child)=>{if(child.isMesh&&child.userData.owner)pickables.push(child);});const hits=raycaster.intersectObjects(pickables,false);if(hits.length)selectObject(hits[0].object.userData.owner);});
+
+const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
+renderer.domElement.addEventListener('pointerdown',(event)=>{if(transformDragging)return;const rect=renderer.domElement.getBoundingClientRect();pointer.x=((event.clientX-rect.left)/rect.width)*2-1;pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;raycaster.setFromCamera(pointer,camera);if(plantingMode){const terrainHits=raycaster.intersectObject(terrain,false);if(terrainHits.length){const p=terrainHits[0].point;createTree(p.x,p.z);updateMetrics();updateWaterAndVegetation();return;}}const pickables=[];for(const object of objects)object.traverse((child)=>{if(child.isMesh&&child.userData.owner)pickables.push(child);});const hits=raycaster.intersectObjects(pickables,false);if(hits.length)selectObject(hits[0].object.userData.owner);});
 function clearObjects(){clearSelection();while(objects.length)disposeObject(objects.pop());}
 function configureArcticDefaults(){if($('baseSize')){$('baseSize').max='48';$('baseSize').value='20';}if($('topSize')){$('topSize').max='12';$('topSize').value='2';}if($('heightSize')){$('heightSize').max='10';$('heightSize').value='8';}}
 function seedInitialSaharaScene(){clearTrees();clearObjects();nextId=1;scenarioStage=0;const shape=arcticReferenceShape(),valley=createValley(shape,18,-11),mountain=createMountain(shape,0,0,{pairedWith:valley.userData.id,site:true});valley.userData.pairedWith=mountain.userData.id;updateTerrain();updateMetrics();updateWaterAndVegetation();selectObject(mountain);camera.position.set(34,25,40);orbit.target.set(4,1,-1);orbit.update();setMessage('Gotowe: model 90°N został przeniesiony na Saharę. W scenie startowej jest góra 20×20 km / 8 km oraz odpowiadająca jej dolina 1:1.','ok');}
