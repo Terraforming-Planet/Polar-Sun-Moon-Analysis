@@ -1,0 +1,108 @@
+name: Experiment 011 Ilawa-Zalewo regional seasonal evidence
+
+on:
+  push:
+    branches:
+      - experiment-011-ilawa-zalewo-regional-53-760000-19-590000
+    paths:
+      - 'tools/build_experiment_011_seasonal_evidence.py'
+      - '.github/workflows/experiment-011-seasonal-evidence.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment-011-ilawa-zalewo-regional-53-760000-19-590000
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            tools
+          sparse-checkout-cone-mode: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install geospatial dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pillow requests rasterio pyproj
+
+      - name: Build Test 011 spring and autumn imagery 1990-2026
+        run: python tools/build_experiment_011_seasonal_evidence.py
+
+      - name: Validate Test 011 dates, frames and duplicate integrity
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from datetime import date
+          from pathlib import Path
+          from PIL import Image
+
+          exp=Path('experiments/experiment_011_ilawa_zalewo_regional')
+          summary=json.loads((exp/'BUILD_SUMMARY.json').read_text())
+          assert summary['experiment']==11
+          assert summary['center']=={'lat':53.76,'lon':19.59}
+          assert summary['frame_width_m']==65000 and summary['frame_height_m']==60000
+          assert summary['output_grid_m']==30.0
+          assert summary['spring_count_ok']>=30, summary
+          assert summary['autumn_count_ok']>=30, summary
+          combined=Path(summary['combined_zip'])
+          assert combined.exists() and combined.stat().st_size>100000
+
+          seen_hash={}
+          seen_item={}
+          for season in ('spring','autumn'):
+              root=exp/'seasonal_evidence'/season
+              m=json.loads((root/'manifest.json').read_text())
+              assert len(m['records'])==37
+              assert m['aoi']['width_m']==65000 and m['aoi']['height_m']==60000
+              for r in m['records']:
+                  if r.get('status')!='ok':
+                      continue
+                  assert str(r['date']).startswith(str(r['year'])+'-')
+                  assert r.get('output_grid_m')==30.0
+                  p=root/'images'/r['files'][0]
+                  assert p.exists(), p
+                  h=hashlib.sha256(p.read_bytes()).hexdigest()
+                  key=f"{season}:{r['year']}"
+                  assert h not in seen_hash, f"exact cross-season/year duplicate: {seen_hash[h]} == {key}"
+                  seen_hash[h]=key
+                  item=r.get('item_id')
+                  if item:
+                      assert item not in seen_item, f"same source product reused: {seen_item[item]} == {key}: {item}"
+                      seen_item[item]=key
+                  with Image.open(p) as im:
+                      assert im.width>=1500 and im.height>=1400, (key, im.size)
+
+          if date.today()<date(2026,9,1):
+              am=json.loads((exp/'seasonal_evidence/autumn/manifest.json').read_text())
+              r=next(x for x in am['records'] if x['year']==2026)
+              assert r.get('status')!='ok', 'Autumn 2026 must not be fabricated before September 2026'
+          print('EXPERIMENT_011_VALIDATED')
+          PY
+
+      - name: Upload Test 011 downloadable ZIPs
+        uses: actions/upload-artifact@v4
+        with:
+          name: TEST011_ILAWA_ZALEWO_1990_2026_SPRING_AUTUMN
+          path: |
+            experiments/experiment_011_ilawa_zalewo_regional/TEST011_ILAWA_ZALEWO_1990_2026_SPRING_AUTUMN_65x60km_53.760000_19.590000.zip
+            experiments/experiment_011_ilawa_zalewo_regional/seasonal_evidence/spring/TEST011_SPRING_1990_2026_37_YEARS_65x60km_53.760000_19.590000.zip
+            experiments/experiment_011_ilawa_zalewo_regional/seasonal_evidence/autumn/TEST011_AUTUMN_1990_2026_37_YEARS_65x60km_53.760000_19.590000.zip
+            experiments/experiment_011_ilawa_zalewo_regional/BUILD_SUMMARY.json
+            experiments/experiment_011_ilawa_zalewo_regional/EXPERIMENT_011_REPORT.md
+            experiments/experiment_011_ilawa_zalewo_regional/EVIDENCE_POLICY.json
+            experiments/experiment_011_ilawa_zalewo_regional/seasonal_evidence/spring/manifest.json
+            experiments/experiment_011_ilawa_zalewo_regional/seasonal_evidence/autumn/manifest.json
+            experiments/experiment_011_ilawa_zalewo_regional/seasonal_evidence/spring/CONTACT_SHEET_SPRING_1990_2026.jpg
+            experiments/experiment_011_ilawa_zalewo_regional/seasonal_evidence/autumn/CONTACT_SHEET_AUTUMN_1990_2026.jpg
+          retention-days: 90
+          compression-level: 0
