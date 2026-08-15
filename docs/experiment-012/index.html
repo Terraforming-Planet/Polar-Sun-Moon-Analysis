@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TEST 012 — Great Salt Lake — Terraforming Planet</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#050b14;color:#eaf6ff;font-family:Inter,system-ui,sans-serif}.wrap{max-width:1050px;margin:auto;padding:24px}.card{background:#0b1828;border:1px solid #274966;border-radius:16px;padding:20px;margin:16px 0}.ok{border-color:#43d49f;background:#0b211c}.warn{border-color:#f0bd55;background:#241d0d}h1{font-size:clamp(28px,6vw,56px);margin:.2em 0;color:#7be5ff}h2{color:#bfefff}a.btn{display:inline-block;margin:8px 8px 8px 0;padding:12px 16px;border-radius:10px;background:#087da3;color:white;text-decoration:none;font-weight:800}a.secondary{background:#17324a}code{overflow-wrap:anywhere;color:#a8f1d8}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.metric{background:#081522;border:1px solid #24435c;border-radius:12px;padding:14px}.metric b{display:block;font-size:1.35rem;color:#8ce8ff}.back{color:#9fdcff;text-decoration:none}.small{color:#a8bac9;font-size:.92rem;line-height:1.55}ul{line-height:1.7}
+</style>
+</head>
+<body><main class="wrap">
+<a class="back" href="../">← Centrum Terraforming Planet</a>
+<h1>💧 TEST 012 — Great Salt Lake, Utah, USA</h1>
+<div class="card ok"><strong>STATUS: BUILD I WALIDACJA ZAKOŃCZONE SUKCESEM</strong><p>Run GitHub Actions 31895323080 zakończył budowanie regionalnych mozaik, kontrolę dat oraz kontrolę duplikatów i opublikował paczkę jako GitHub Actions Artifact.</p></div>
+<div class="grid">
+<div class="metric"><b>1990–2026</b>wiosna + jesień</div>
+<div class="metric"><b>120 × 160 km</b>stały kadr north-up</div>
+<div class="metric"><b>60 m/piksel</b>wspólna siatka porównawcza</div>
+<div class="metric"><b>1.22 GB</b>artifact z pełnymi danymi</div>
+</div>
+<div class="card"><h2>Pobierz zdjęcia satelitarne</h2><p>Pełne zdjęcia nie są wciskane bezpośrednio do GitHub Pages, bo paczka ma ponad 1 GB. Są przechowywane jako artifact tego udanego runu.</p><a class="btn" href="https://github.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/actions/runs/31895323080/artifacts/9251746988">⬇ Pobierz TEST 012 ZIP</a><a class="btn secondary" href="https://github.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/actions/runs/31895323080">Otwórz poprawny run</a><p class="small">SHA-256 artifactu: <code>2e6b1a3ab66e503c2da7b37cb2c363024b1c9a75a6f785302f0aa018ee0d6245</code></p></div>
+<div class="card"><h2>Co jest w paczce?</h2><ul><li>sezonowe obrazy 1990–2026 dla wiosny i jesieni,</li><li>regionalne obrazy PNG oraz kopie JPG do szybkiego podglądu,</li><li>osobne ZIP-y SPRING i AUTUMN oraz ZIP zbiorczy,</li><li>manifesty z datami, platformą i identyfikatorami produktów,</li><li>contact sheet dla obu sezonów,</li><li>raport i polityka integralności danych.</li></ul></div>
+<div class="card warn"><h2>Dlaczego w logu było ponad 2000?</h2><p>Liczby 2000–2800 widoczne po lewej stronie GitHub Actions to <strong>numery linii logu</strong>, a nie liczba zdjęć. Wpisy <code>MOSAIC candidates</code> pokazują wiele scen źródłowych rozważanych do zbudowania jednego końcowego obrazu regionalnego. Zgodnie z testem końcowym produktem jest jedna porównywalna obserwacja na rok i sezon, a nie tysiące losowych kafli.</p></div>
+<div class="card"><h2>Integralność</h2><p>Mozaiki składają wyłącznie prawdziwe piksele ze scen Landsat/Sentinel. Pipeline nie używa generatywnego uzupełniania ani AI super-resolution. Źródłowe identyfikatory scen i daty są zachowane w manifestach.</p></div>
+</main></body></html>
