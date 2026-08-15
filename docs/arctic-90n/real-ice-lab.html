@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#04101a">
+<title>90°N — realistyczny lód i duże pola kry</title>
+<link rel="stylesheet" href="./real-ice-lab.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.167.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.167.1/examples/jsm/"}}</script>
+</head>
+<body>
+<main>
+<div class="top"><strong>Terraforming Planet — 90°N</strong><div><a href="./">stacja 90°N</a> · <a href="./risk-demo.html">screening ryzyka</a></div></div>
+<section class="hero">
+<div class="tag">DEMO / MINI-EXPERIMENT LAB / NIE CFD / NIE FEM</div>
+<h1>90°N — laboratorium małych eksperymentów V3</h1>
+<p>Ta wersja pokazuje bardziej czytelny model wyspy trapezowej: ścięty szczyt, platformę na górze, dno oceanu z osadami, część nad i pod poziomem morza, a także uproszczoną strefę spiętrzania lodu przed bryłą.</p>
+<p class="warn"><strong>Zasada:</strong> wyniki oznaczone jako screening są wskaźnikami czułości. Nie przewidują wysokości tsunami, nośności fundamentu, siły lodu ani bezpieczeństwa konstrukcji.</p>
+</section>
+<section class="layout">
+<div class="viewerWrap">
+  <div id="viewer" class="panel viewer">
+    <div class="badge">Model 3D: przeciągnij • zoom: kółko/pinch • cząstki = kierunek przepływu • grubsze kry = strefa kontaktu z górą</div>
+    <div class="overlaylabel label-sea">Poziom oceanu / Sea level</div>
+    <div class="overlaylabel label-bed">Dno oceanu / Seabed</div>
+    <div class="overlaylabel label-above">Część nad wodą: <span id="aboveLbl">4,0 km</span></div>
+    <div class="overlaylabel label-below">Część pod wodą: <span id="belowLbl">4,0 km</span></div>
+  </div>
+  <div class="panel diagram" id="diagram">
+    <div class="arrowTag">Przekrój pionowy</div>
+    <div class="crossSea"></div>
+    <div class="crossBed"></div>
+    <div class="sandTexture"></div>
+    <div class="crossMountain"></div>
+    <div class="crossCap"></div>
+    <div class="crossStation"></div>
+    <div class="crossMast"></div>
+    <div class="pileZone"></div>
+    <div class="iceFlow"><div class="iceFloes2" id="iceFloes2"></div></div>
+    <div class="scaleMark" style="top:6%">szczyt</div>
+    <div class="scaleMark" style="top:47%">0 km / poziom morza</div>
+    <div class="scaleMark" style="top:54%">dno oceanu</div>
+    <div class="scaleMark" style="right:10px;left:auto;top:18%" id="markAbove">+4,0 km</div>
+    <div class="scaleMark" style="right:10px;left:auto;top:69%" id="markBelow">−4,0 km</div>
+    <div class="legend">
+      <div><b>jasna strefa</b><br>uproszczone piętrzenie lodu</div>
+      <div><b>linia wody</b><br>poziom oceanu</div>
+      <div><b>linia dna</b><br>osady i styk konstrukcji z dnem</div>
+    </div>
+  </div>
+</div>
+<aside class="panel controls">
+<h2 style="margin-top:0">Wspólne parametry</h2>
+<div class="control"><label>Podstawa <b id="bo"></b></label><input id="b" type="range" min="6" max="48" step=".5" value="8"></div>
+<div class="control"><label>Szczyt plateau <b id="to"></b></label><input id="t" type="range" min="0.8" max="8" step=".1" value="2.0"></div>
+<div class="control"><label>Wysokość całkowita <b id="ho"></b></label><input id="h" type="range" min="6" max="10" step=".25" value="8"></div>
+<div class="control"><label>Głębokość oceanu <b id="do"></b></label><input id="d" type="range" min="3.5" max="4.5" step=".05" value="4"></div>
+<div class="control"><label>Prąd <b id="vo"></b></label><input id="v" type="range" min=".005" max=".20" step=".005" value=".09"></div>
+<div class="control"><label>Dryf lodu <b id="io"></b></label><input id="ice" type="range" min=".01" max=".40" step=".01" value=".25"></div>
+<div class="presetBtns">
+  <button id="presetSummer">Preset: lato / lód rozdrobniony</button>
+  <button id="presetWinter">Preset: zima / zwarty pak</button>
+  <button id="presetMulti">Preset: lód wieloletni / stress test</button>
+</div>
+<div class="subnote">Skala pozioma sceny 3D jest celowo skompresowana, ale klasy kry i pole lodowe są liczone według realistycznych przedziałów WMO.</div>
+<button id="reset">Reset do 8 × 8 km</button>
+<p class="note">Wspólne suwaki zasilają wszystkie eksperymenty poniżej.</p>
+<div class="smallgrid">
+  <div class="kpi"><b id="aboveKpi"></b><span>nad poziomem oceanu</span></div>
+  <div class="kpi"><b id="belowKpi"></b><span>pod poziomem oceanu</span></div>
+</div>
+</aside>
+</section>
+<section class="metrics">
+<div class="card"><b id="vol"></b><span>objętość skały</span></div>
+<div class="card"><b id="mass"></b><span>masa skały</span></div>
+<div class="card"><b id="press"></b><span>średni efektywny nacisk / powierzchnia podstawy</span></div>
+<div class="card"><b id="slope"></b><span>geometryczny kąt zbocza</span></div>
+<div class="card"><b id="domFloe"></b><span>dominująca klasa kry (WMO)</span></div>
+<div class="card"><b id="floeMix"></b><span>mieszanka rozmiarów kry</span></div>
+<div class="card"><b id="fieldAreaCard"></b><span>rzeczywista powierzchnia pola lodowego</span></div>
+<div class="card"><b id="iceScenario"></b><span>aktywny scenariusz lodowy</span></div>
+</section>
+<h2>Małe eksperymenty</h2>
+<section class="lab">
+<article class="experiment"><div class="expno">EKSPERYMENT 1</div><h3>Jak szeroka musi być podstawa?</h3><p>Porównujemy 8, 12, 16, 20 i 24 km przy stałej wysokości 8 km i bieżącym szczycie.</p><div id="sweepTable" class="tablewrap"></div><div class="result" id="sweepInsight"></div></article>
+<article class="experiment"><div class="expno">EKSPERYMENT 2</div><h3>Cel: zadany kąt zbocza</h3><div class="control"><label>Kąt docelowy <b id="angleO">35°</b></label><input id="angleTarget" type="range" min="20" max="65" step="1" value="35"></div><div class="result">Geometrycznie potrzebna podstawa: <b id="angleBase"></b><br><span class="note">To nie jest bezpieczny kąt geotechniczny — tylko geometria.</span></div></article>
+<article class="experiment"><div class="expno">EKSPERYMENT 3</div><h3>Skąd wziąć materiał?</h3><div class="control"><label>Średnica obszaru wydobycia <b id="excO">126 km</b></label><input id="excD" type="range" min="8" max="160" step="2" value="126"></div><div class="result">Średnia głębokość prostego wykopu: <b id="excDepth"></b></div><div id="excBars"></div><p class="note">Bez skarp, strat materiału, bulkingu, geologii i stref ochronnych.</p></article>
+<article class="experiment"><div class="expno">EKSPERYMENT 4</div><h3>Prąd: jak szybko rośnie opór?</h3><div class="result">Uproszczony drag dla bieżącego prądu: <b id="dragNow"></b></div><div id="dragBars"></div><p class="note">Model F=½ρCdAv² z Cd=1,2. To proxy, nie obciążenie projektowe.</p></article>
+<article class="experiment"><div class="expno">EKSPERYMENT 5</div><h3>Lód: względny indeks kontaktu</h3><div class="result">Indeks względem bazowego 8 km / 0,08 m/s: <b id="iceIndex"></b></div><div id="iceBars"></div><p class="note">Indeks ∝ szerokość × prędkość². Nie jest siłą, ciśnieniem ani prawdopodobieństwem awarii.</p></article>
+<article class="experiment"><div class="expno">EKSPERYMENT 6</div><h3>Szybka awaria → źródło tsunami</h3><div class="control"><label>Udział bryły w szybkiej awarii <b id="failO">14,3%</b></label><input id="failP" type="range" min=".1" max="20" step=".1" value="14.3"></div><div class="result">Hipotetycznie ruszająca objętość: <b id="failV"></b><br>Długa fala przy aktualnej głębokości: <b id="waveSpeed"></b></div><p class="note">Nie wyliczamy wysokości tsunami. NOAA wskazuje, że zależy ona m.in. od objętości, prędkości ruchu i głębokości.</p></article>
+<article class="experiment"><div class="expno">EKSPERYMENT 7</div><h3>Statyczne wyparcie wody</h3><div class="result">Zanurzona objętość: <b id="subV"></b><br>Idealizowany globalny ekwiwalent: <b id="msl"></b></div><p class="note">Tylko gdyby tę zanurzoną objętość dodano z zewnątrz. Przy wydobyciu materiału z tego samego dna nie jest to model netto poziomu morza.</p></article>
+<article class="experiment"><div class="expno">EKSPERYMENT 8</div><h3>Kompromis: zbocze vs ilość skały</h3><div id="tradeBars"></div><div class="result" id="tradeInsight"></div></article>
+<article class="experiment"><div class="expno">EKSPERYMENT 9</div><h3>Piętrzenie lodu przy górze</h3><div class="control"><label>Grubość lodu <b id="iceThickO">2,0 m</b></label><input id="iceThick" type="range" min="0.5" max="8" step="0.1" value="2"></div><div class="control"><label>Szerokość napływu lodu <b id="iceFrontO">20 km</b></label><input id="iceFront" type="range" min="2" max="80" step="1" value="20"></div><div class="control"><label>Koncentracja lodu <b id="iceConcO">80%</b></label><input id="iceConc" type="range" min="10" max="100" step="1" value="80"></div><div class="result">Powierzchnia napływającego lodu: <b id="iceArea"></b><br>Indeks piętrzenia lodu: <b id="icePile"></b><br>Ocena: <b id="icePileRisk"></b></div><p class="note">To screening kontaktu i potencjału zatoru, nie pełna mechanika ridges / keels.</p></article>
+<article class="experiment"><div class="expno">EKSPERYMENT 10</div><h3>Uderzenie dużej powierzchni lodu</h3><div class="control"><label>Długość pola lodowego <b id="iceLenO">10 km</b></label><input id="iceLen" type="range" min="1" max="60" step="1" value="10"></div><div class="control"><label>Efektywna gęstość lodu <b id="iceRhoO">900 kg/m³</b></label><input id="iceRho" type="range" min="700" max="950" step="10" value="900"></div><div class="result">Szacowana objętość pola: <b id="iceVolImpact"></b><br>Szacowana masa pola: <b id="iceMassImpact"></b><br>Pęd: <b id="iceMomentum"></b><br>Energia kinetyczna: <b id="iceEnergy"></b><br>Indeks uderzenia: <b id="iceImpactRisk"></b></div><p class="note">To nie jest projektowa siła uderzenia. Wynik służy tylko do porównywania scenariuszy.</p></article>
+</section>
+<section class="panel" style="margin-top:14px"><h2>Źródła i metodologia</h2><p>NOAA — <em>Tsunami Generation: Landslides</em>; NSIDC — <em>Science of Sea Ice</em> i pressure ridges; USACE EM 1110-2-1902 — <em>Slope Stability</em>; USGS — badania osuwisk podmorskich i tsunami.</p><p>Ta wersja pokazuje powierzchnię napływu lodu, potencjalne piętrzenie oraz uproszczone zderzenie dużego pola lodowego z konstrukcją. Klasy kry są powiązane z kategoriami WMO: small floe 20–100 m, medium floe 100–500 m, big floe 500–2000 m, vast floe 2–10 km, giant floe &gt;10 km.</p></section>
+<p class="footer">To laboratorium ma służyć do wykrywania problemów i stawiania kolejnych pytań. Nie jest argumentem za fizyczzną budową bez pełnego modelowania i oceny środowiskowej.</p>
+</main>
+<script type="module" src="./real-ice-lab.js"></script>
+</body>
+</html>
