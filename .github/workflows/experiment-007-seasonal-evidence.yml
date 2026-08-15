@@ -77,6 +77,27 @@ jobs:
             experiments/experiment_007_karas_ilawa/EXPERIMENT_007_REPORT.md
             experiments/experiment_007_karas_ilawa/EVIDENCE_POLICY.json
           retention-days: 90
+      - name: Prepare repository-safe Test 007 outputs
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          exp=Path('experiments/experiment_007_karas_ilawa')
+          summary=exp/'BUILD_SUMMARY.json'
+          data=json.loads(summary.read_text())
+          data['archive_delivery']='github_actions_artifact_only_due_to_github_100mb_per_file_limit'
+          data['archive_run_url']='https://github.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/actions/runs/${{ github.run_id }}'
+          summary.write_text(json.dumps(data, indent=2, ensure_ascii=False))
+          for season in ('spring','autumn'):
+              p=exp/'seasonal_evidence'/season/'manifest.json'
+              m=json.loads(p.read_text())
+              m.pop('zip', None)
+              m.pop('zip_bytes', None)
+              m['archive_delivery']='GitHub Actions artifact; bulk ZIP exceeds normal repository per-file limit'
+              p.write_text(json.dumps(m, indent=2, ensure_ascii=False))
+          for p in exp.rglob('TEST007_*.zip'):
+              p.unlink()
+          PY
       - name: Commit Test 007 evidence outputs
         run: |
           git config user.name "Terraforming Planet"
