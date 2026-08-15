@@ -1,0 +1,154 @@
+name: Publish Test 012 satellite gallery
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-test012-gallery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: publish-test012-gallery
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      SOURCE_RUN_ID: '31895323080'
+      SOURCE_ARTIFACT: TEST012_GREAT_SALT_LAKE_1990_2026_SPRING_AUTUMN
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install thumbnail dependency
+        run: python -m pip install pillow
+
+      - name: Download validated Test 012 artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/test012
+          mkdir -p /tmp/test012
+          gh run download "$SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$SOURCE_ARTIFACT" --dir /tmp/test012
+          find /tmp/test012 -maxdepth 2 -type f -printf '%p %s bytes\n' | sort
+
+      - name: Extract only web gallery images and metadata
+        run: |
+          python - <<'PY'
+          import html
+          import json
+          import re
+          import shutil
+          import zipfile
+          from pathlib import Path
+          from PIL import Image
+
+          src = Path('/tmp/test012')
+          docs = Path('docs/experiment-012')
+          gallery = docs / 'gallery'
+          if gallery.exists():
+              shutil.rmtree(gallery)
+          (gallery / 'spring').mkdir(parents=True, exist_ok=True)
+          (gallery / 'autumn').mkdir(parents=True, exist_ok=True)
+
+          combined = next(src.rglob('TEST012_GREAT_SALT_LAKE_1990_2026_SPRING_AUTUMN_*.zip'))
+          records = []
+          with zipfile.ZipFile(combined) as zf:
+              names = zf.namelist()
+              for season in ('spring', 'autumn'):
+                  manifest_name = f'{season}/manifest.json'
+                  if manifest_name not in names:
+                      raise SystemExit(f'missing {manifest_name}')
+                  manifest = json.loads(zf.read(manifest_name).decode('utf-8'))
+                  for rec in manifest.get('records', []):
+                      if rec.get('status') != 'ok':
+                          continue
+                      files = rec.get('files') or []
+                      display = next((f for f in files if '_display900x1200.jpg' in f), None)
+                      if not display:
+                          continue
+                      member = f'{season}/images/{display}'
+                      if member not in names:
+                          raise SystemExit(f'missing image {member}')
+                      year = int(rec['year'])
+                      out = gallery / season / f'{year}.jpg'
+                      with zf.open(member) as fh:
+                          im = Image.open(fh).convert('RGB')
+                          im.thumbnail((450, 600), Image.Resampling.LANCZOS)
+                          im.save(out, 'JPEG', quality=78, optimize=True, progressive=True)
+                      records.append({
+                          'season': season,
+                          'year': year,
+                          'date': rec.get('date'),
+                          'platform': rec.get('platform'),
+                          'item_id': rec.get('item_id'),
+                          'thumb': f'gallery/{season}/{year}.jpg',
+                      })
+
+              for season in ('spring', 'autumn'):
+                  contact = f'{season}/CONTACT_SHEET_{season.upper()}_1990_2026.jpg'
+                  if contact in names:
+                      out = gallery / f'CONTACT_SHEET_{season.upper()}_1990_2026.jpg'
+                      out.write_bytes(zf.read(contact))
+
+          records.sort(key=lambda r: (r['season'], r['year']))
+          (gallery / 'gallery.json').write_text(json.dumps(records, indent=2, ensure_ascii=False), encoding='utf-8')
+          if len(records) < 60:
+              raise SystemExit(f'gallery too small: {len(records)} records')
+
+          cards = []
+          for r in sorted(records, key=lambda x: (x['year'], x['season'])):
+              label = 'WIOSNA' if r['season'] == 'spring' else 'JESIEŃ'
+              cards.append(
+                  f'<article class="shot"><img loading="lazy" src="{html.escape(r["thumb"])}" alt="Great Salt Lake {r["year"]} {label}">'
+                  f'<b>{r["year"]} — {label}</b><span>{html.escape(str(r.get("date") or ""))} · {html.escape(str(r.get("platform") or ""))}</span></article>'
+              )
+
+          page = f'''<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TEST 012 — Great Salt Lake</title><style>
+          :root{{color-scheme:dark}}*{{box-sizing:border-box}}body{{margin:0;background:#050b14;color:#eaf6ff;font-family:Inter,system-ui,sans-serif}}main{{max-width:1200px;margin:auto;padding:20px}}h1{{color:#7be5ff;font-size:clamp(28px,6vw,52px)}}.ok{{padding:16px;border:1px solid #43d49f;background:#0b211c;border-radius:14px}}a{{color:#8ce8ff}}.btn{{display:inline-block;background:#087da3;color:#fff;text-decoration:none;font-weight:800;padding:12px 16px;border-radius:10px;margin:8px 8px 8px 0}}.grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:20px}}.shot{{background:#0b1828;border:1px solid #274966;border-radius:12px;overflow:hidden}}.shot img{{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;background:#02060a}}.shot b,.shot span{{display:block;padding:7px 9px}}.shot span{{font-size:.78rem;color:#a8bac9;padding-top:0}}.note{{background:#0b1828;border:1px solid #274966;border-radius:14px;padding:16px;margin:16px 0;line-height:1.6}}
+          </style></head><body><main><p><a href="../">← Centrum Terraforming Planet</a></p><h1>💧 TEST 012 — Great Salt Lake, Utah</h1><div class="ok"><b>ZWALIDOWANE DANE SATELITARNE 1990–2026</b><br>Ta galeria pokazuje lekkie kopie podglądowe prawdziwych obrazów z udanego runu 31895323080. Pełne PNG/JPG i manifesty pozostają w artifactcie.</div><p><a class="btn" href="https://github.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/actions/runs/31895323080/artifacts/9251746988">⬇ Pobierz pełny ZIP 1.22 GB</a><a class="btn" href="https://github.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/actions/runs/31895323080">GitHub Actions</a></p><div class="note"><b>Ważne:</b> liczby ponad 2000 widoczne w logu były numerami linii logu i listami kandydatów do mozaiki, nie liczbą końcowych zdjęć. Test ma finalną obserwację dla każdego zaakceptowanego roku i sezonu. Mozaiki składają wyłącznie rzeczywiste piksele źródłowe; bez generatywnego wypełniania.</div><div class="grid">{''.join(cards)}</div></main></body></html>'''
+          (docs / 'index.html').write_text(page, encoding='utf-8')
+          print(f'published gallery records={len(records)}')
+          PY
+
+      - name: Verify gallery
+        run: |
+          set -euo pipefail
+          test -s docs/experiment-012/index.html
+          test -s docs/experiment-012/gallery/gallery.json
+          count=$(find docs/experiment-012/gallery -type f -name '*.jpg' | wc -l)
+          echo "gallery_jpg_count=$count"
+          test "$count" -ge 60
+
+      - name: Commit gallery to main
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/experiment-012
+          if git diff --cached --quiet; then
+            echo 'No gallery changes.'
+            exit 0
+          fi
+          git commit -m 'chore(site): publish validated Test 012 satellite gallery'
+          for attempt in 1 2 3 4; do
+            if git fetch origin main && git rebase origin/main && git push origin HEAD:main; then
+              exit 0
+            fi
+            git rebase --abort >/dev/null 2>&1 || true
+            sleep $((attempt * 4))
+          done
+          exit 1
