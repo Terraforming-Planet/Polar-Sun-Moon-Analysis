@@ -5,7 +5,7 @@ import './tiled-earth.css'
 type Marker = { longitude: number; latitude: number; color?: number; radius?: number }
 type Props = { selectedTime: string; markers?: Marker[] }
 type ViewMode = 'globe' | 'north' | 'south'
-type Layer = 'full-live-earth' | 'realtime-clouds' | 'ocean-waves' | 'high-resolution' | 'nasa-day' | 'nasa-night' | 'copernicus-safe'
+type Layer = 'full-live-earth' | 'global-clouds' | 'regional-clouds' | 'ocean-waves' | 'high-resolution' | 'nasa-day' | 'nasa-night' | 'copernicus-safe'
 type Sensor = 'sentinel-1-grd' | 'sentinel-2-l2a' | 'sentinel-3-olci-l1b'
 type StacItem = { id: string; bbox?: number[]; properties?: Record<string, unknown>; assets?: Record<string, { href?: string; type?: string }>; links?: Array<{ rel?: string; href?: string }> }
 type CesiumApi = {
@@ -26,6 +26,7 @@ const CESIUM_VERSION = '1.126'
 const CESIUM_BASE = `https://cdn.jsdelivr.net/npm/cesium@${CESIUM_VERSION}/Build/Cesium/`
 const HIGH_RESOLUTION_WORLD = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
 const NASA_WMTS = 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/wmts.cgi'
+const NASA_GLOBAL_TRUE_COLOR = 'VIIRS_SNPP_CorrectedReflectance_TrueColor'
 const WAVEWATCH_WMS = 'https://erddap.aoml.noaa.gov/hdb/erddap/wms/WaveWatch_2026/request'
 const STAC_SEARCH = 'https://stac.dataspace.copernicus.eu/v1/search'
 const CDSE_INSTANCE = import.meta.env.VITE_CDSE_INSTANCE_ID || 'd708f736-b553-4328-9b5e-39bdb444790c'
@@ -33,6 +34,12 @@ const CDSE_WMS = `https://sh.dataspace.copernicus.eu/ogc/wms/${CDSE_INSTANCE}`
 const TEN_MINUTES = 10 * 60 * 1000
 const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000
 const LAST_FRAME = 1008
+
+const REGIONAL_CLOUD_PRODUCTS = [
+  ['GOES-East_ABI_GeoColor', 'GOES-East'],
+  ['GOES-West_ABI_GeoColor', 'GOES-West'],
+  ['Himawari_AHI_Band13_Clean_Infrared', 'Himawari'],
+] as const
 
 function floorToTenMinutes(value: Date) { return new Date(Math.floor(value.getTime() / TEN_MINUTES) * TEN_MINUTES) }
 
@@ -133,17 +140,27 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   const [playing, setPlaying] = useState(false)
   const [speed, setSpeed] = useState(2)
   const [frameIndex, setFrameIndex] = useState(LAST_FRAME)
-  const [cloudOpacity, setCloudOpacity] = useState(.82)
+  const [cloudOpacity, setCloudOpacity] = useState(.72)
   const [waveOpacity, setWaveOpacity] = useState(.52)
   const [nowTick, setNowTick] = useState(() => Date.now())
   const [error, setError] = useState('')
   const animationEnd = useMemo(() => floorToTenMinutes(new Date(nowTick)), [nowTick])
   const animationStart = useMemo(() => new Date(animationEnd.getTime() - SEVEN_DAYS), [animationEnd])
   const animatedDate = useMemo(() => new Date(animationStart.getTime() + frameIndex * TEN_MINUTES), [animationStart, frameIndex])
-  const animatedMode = layer === 'full-live-earth' || layer === 'realtime-clouds' || layer === 'ocean-waves'
+  const animatedMode = layer === 'regional-clouds' || layer === 'ocean-waves'
   const date = useMemo(() => animatedMode ? animatedDate : live ? new Date(nowTick) : new Date(selectedTime), [animatedMode, animatedDate, live, nowTick, selectedTime])
   const day = date.toISOString().slice(0, 10)
   const subdailyTime = date.toISOString().slice(0, 16) + ':00Z'
+  const fullLiveTitle = constrainedDevice
+    ? 'PEŁNA ZIEMIA · GLOBALNY TRUE COLOR + CHMURY'
+    : 'PEŁNA ZIEMIA · GLOBALNY TRUE COLOR + CHMURY + FALE'
+  const coverageNote = layer === 'regional-clouds'
+    ? 'Tryb regionalny: klatki geostacjonarne około 10 min są nakładane delikatnie na globalny VIIRS. Granice regionalnych sensorów są cechą źródła, nie globalną chmurą.'
+    : layer === 'full-live-earth' || layer === 'global-clouds'
+      ? 'Chmury globalne: jedna warstwa NASA VIIRS True Color pokrywa cały glob w tej samej projekcji. Nie łączymy prostokątnych pełnych dysków GOES/Himawari w widoku globalnym, więc znika sztuczny szew.'
+      : constrainedDevice
+        ? 'Tryb mobilny: adaptacyjna jakość kafelków, mniejszy cache i bezpieczny zoom do ok. 25 m nad powierzchnią.'
+        : 'Tryb pełny: szczegółowość zależy od rozdzielczości źródłowych kafelków dla danego miejsca.'
 
   useEffect(() => { const timer = window.setInterval(() => setNowTick(Date.now()), 60_000); return () => window.clearInterval(timer) }, [])
   useEffect(() => { if (!playing || !animatedMode) return; const timer = window.setInterval(() => setFrameIndex(value => value >= LAST_FRAME ? 0 : value + 1), 1000 / speed); return () => window.clearInterval(timer) }, [playing, speed, animatedMode])
@@ -201,22 +218,26 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
     if (!ready || !viewer || !Cesium || view !== 'globe') return
     viewer.imageryLayers.removeAll()
     viewer.clock.currentTime = Cesium.JulianDate.fromIso8601(date.toISOString())
+
     const base = viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({ url: HIGH_RESOLUTION_WORLD, minimumLevel: 0, maximumLevel: 23, credit: 'Esri World Imagery' }))
     base.alpha = 1
     base.contrast = 1.04
-    if (layer === 'full-live-earth' || layer === 'nasa-day') {
-      const trueColor = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({ url: NASA_WMTS, layer: 'VIIRS_SNPP_CorrectedReflectance_TrueColor', style: 'default', format: 'image/jpeg', tileMatrixSetID: 'GoogleMapsCompatible_Level9', maximumLevel: 9, dimensions: { Time: day }, credit: 'NASA VIIRS true color' }))
-      trueColor.alpha = layer === 'full-live-earth' ? .72 : .86
+
+    const usesGlobalTrueColor = layer === 'full-live-earth' || layer === 'global-clouds' || layer === 'regional-clouds' || layer === 'nasa-day'
+    if (usesGlobalTrueColor) {
+      const trueColor = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({ url: NASA_WMTS, layer: NASA_GLOBAL_TRUE_COLOR, style: 'default', format: 'image/jpeg', tileMatrixSetID: 'GoogleMapsCompatible_Level9', maximumLevel: 9, dimensions: { Time: day }, credit: 'NASA GIBS · Suomi NPP VIIRS True Color' }))
+      trueColor.alpha = layer === 'nasa-day' ? .94 : layer === 'regional-clouds' ? .86 : layer === 'global-clouds' ? .98 : .94
     }
-    if (layer === 'full-live-earth' || layer === 'realtime-clouds') {
-      const cloudProducts = constrainedDevice && layer === 'full-live-earth'
-        ? ([['GOES-East_ABI_GeoColor', 'GOES-East']] as const)
-        : ([['GOES-East_ABI_GeoColor', 'GOES-East'], ['GOES-West_ABI_GeoColor', 'GOES-West'], ['Himawari_AHI_Band13_Clean_Infrared', 'Himawari']] as const)
+
+    if (layer === 'regional-clouds') {
+      const cloudProducts = constrainedDevice ? REGIONAL_CLOUD_PRODUCTS.slice(0, 1) : REGIONAL_CLOUD_PRODUCTS
+      const regionalAlpha = constrainedDevice ? Math.min(.30, cloudOpacity * .42) : Math.min(.40, cloudOpacity * .55)
       for (const [name, credit] of cloudProducts) {
-        const clouds = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({ url: NASA_WMTS, layer: name, style: 'default', format: 'image/png', tileMatrixSetID: 'GoogleMapsCompatible_Level7', maximumLevel: 7, dimensions: { Time: subdailyTime }, credit: `NASA GIBS · ${credit}` }))
-        clouds.alpha = cloudOpacity
+        const clouds = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({ url: NASA_WMTS, layer: name, style: 'default', format: 'image/png', tileMatrixSetID: 'GoogleMapsCompatible_Level7', maximumLevel: 7, dimensions: { Time: subdailyTime }, credit: `NASA GIBS · ${credit} · regional subdaily` }))
+        clouds.alpha = regionalAlpha
       }
     }
+
     if (layer === 'ocean-waves' || (!constrainedDevice && layer === 'full-live-earth')) {
       const waves = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapServiceImageryProvider({ url: WAVEWATCH_WMS, layers: 'WaveWatch_2026:Thgt', parameters: { transparent: true, format: 'image/png', time: date.toISOString(), colorscalerange: '0,12' }, credit: 'NOAA/PacIOOS WaveWatch III · significant wave height' }))
       waves.alpha = waveOpacity
@@ -266,15 +287,15 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
       <button type="button" className={view === 'north' ? 'is-active' : ''} onClick={() => setView('north')}>Arktyka — zdjęcie</button>
       <button type="button" className={view === 'south' ? 'is-active' : ''} onClick={() => setView('south')}>Antarktyda — zdjęcie</button>
       {view === 'globe' && <>
-        <label>Obraz<select value={layer} onChange={event => { setLayer(event.target.value as Layer); setPlaying(false) }}><option value="full-live-earth">ORYGINALNA PLANETA LIVE — ląd + oceany + chmury + fale</option><option value="realtime-clouds">Chmury — klatka co 10 minut</option><option value="ocean-waves">Fale oceaniczne — wysokość znacząca</option><option value="high-resolution">Szczegółowa mapa satelitarna — maksymalny zoom</option><option value="nasa-day">NASA VIIRS — prawdziwy kolor</option><option value="nasa-night">NASA VIIRS — nocne światła</option><option value="copernicus-safe">Copernicus — aktualna obserwacja</option></select></label>
+        <label>Obraz<select value={layer} onChange={event => { setLayer(event.target.value as Layer); setPlaying(false) }}><option value="full-live-earth">PEŁNA PLANETA — globalny true color + chmury + fale</option><option value="global-clouds">Chmury globalne — NASA VIIRS, mozaika dzienna bez szwu sensorów</option><option value="regional-clouds">Chmury regionalne — GOES/Himawari, około 10 min</option><option value="ocean-waves">Fale oceaniczne — wysokość znacząca</option><option value="high-resolution">Szczegółowa mapa satelitarna — maksymalny zoom</option><option value="nasa-day">NASA VIIRS — prawdziwy kolor</option><option value="nasa-night">NASA VIIRS — nocne światła</option><option value="copernicus-safe">Copernicus — aktualna obserwacja</option></select></label>
         <label><input type="checkbox" checked={live} onChange={event => setLive(event.target.checked)} /> czas rzeczywisty</label>
         <label><input type="checkbox" checked={solarLighting} onChange={event => setSolarLighting(event.target.checked)} /> dzień/noc</label>
         <label><input type="checkbox" checked={nightVision} onChange={event => setNightVision(event.target.checked)} /> noktowizor</label>
       </>}
-      <div className="location-globe-status"><strong>{layer === 'full-live-earth' ? 'PEŁNA ZIEMIA LIVE · PRAWDZIWY KOLOR · CHMURY · FALOWANIE OCEANU' : animatedMode ? 'ANIMACJA 7 DNI · KROK 10 MINUT' : 'PEŁNA ZIEMIA · MAKSYMALNY ZOOM'}</strong><span>{date.toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span><span>{constrainedDevice ? 'Tryb mobilny: adaptacyjna jakość kafelków, mniejszy cache i bezpieczny zoom do ok. 25 m nad powierzchnią.' : 'Tryb pełny: szczegółowość zależy od rozdzielczości źródłowych kafelków dla danego miejsca.'}</span>{error && <span>{error}</span>}</div>
+      <div className="location-globe-status"><strong>{layer === 'full-live-earth' ? fullLiveTitle : layer === 'global-clouds' ? 'GLOBALNE CHMURY · NASA VIIRS · BEZ SZWU SENSORÓW' : animatedMode ? 'ANIMACJA ŹRÓDŁA · KROK 10 MINUT' : 'PEŁNA ZIEMIA · MAKSYMALNY ZOOM'}</strong><span>{date.toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span><span>{coverageNote}</span>{error && <span>{error}</span>}</div>
     </div>
     {view === 'globe' ? <>
-      {animatedMode && <div className="scene-controls"><button type="button" onClick={() => setPlaying(value => !value)}>{playing ? 'Ⅱ Pauza' : '▶ Odtwarzaj 7 dni'}</button><button type="button" onClick={() => { setPlaying(false); setFrameIndex(LAST_FRAME); setLive(true) }}>TERAZ</button><label>Prędkość<select value={speed} onChange={event => setSpeed(Number(event.target.value))}><option value={1}>1 kl./s</option><option value={2}>2 kl./s</option><option value={4}>4 kl./s</option></select></label>{layer !== 'ocean-waves' && <label>Chmury {Math.round(cloudOpacity * 100)}%<input type="range" min="10" max="100" value={Math.round(cloudOpacity * 100)} onChange={event => setCloudOpacity(Number(event.target.value) / 100)} /></label>}{layer !== 'realtime-clouds' && <label>Fale {Math.round(waveOpacity * 100)}%<input type="range" min="10" max="90" value={Math.round(waveOpacity * 100)} onChange={event => setWaveOpacity(Number(event.target.value) / 100)} /></label>}<label>Klatka {frameIndex + 1}/1009<input type="range" min="0" max={LAST_FRAME} step="1" value={frameIndex} onChange={event => { setPlaying(false); setLive(false); setFrameIndex(Number(event.target.value)) }} /></label></div>}
+      {animatedMode && <div className="scene-controls tiled-earth-playback"><button type="button" onClick={() => setPlaying(value => !value)}>{playing ? 'Ⅱ Pauza' : '▶ Odtwarzaj 7 dni'}</button><button type="button" onClick={() => { setPlaying(false); setFrameIndex(LAST_FRAME); setLive(true) }}>TERAZ</button><label>Prędkość<select value={speed} onChange={event => setSpeed(Number(event.target.value))}><option value={1}>1 kl./s</option><option value={2}>2 kl./s</option><option value={4}>4 kl./s</option></select></label>{layer === 'regional-clouds' && <label>Regionalne chmury {Math.round(cloudOpacity * 100)}%<input type="range" min="10" max="80" value={Math.round(cloudOpacity * 100)} onChange={event => setCloudOpacity(Number(event.target.value) / 100)} /></label>}{layer === 'ocean-waves' && <label>Fale {Math.round(waveOpacity * 100)}%<input type="range" min="10" max="90" value={Math.round(waveOpacity * 100)} onChange={event => setWaveOpacity(Number(event.target.value) / 100)} /></label>}<label>Klatka {frameIndex + 1}/1009<input type="range" min="0" max={LAST_FRAME} step="1" value={frameIndex} onChange={event => { setPlaying(false); setLive(false); setFrameIndex(Number(event.target.value)) }} /></label></div>}
       <div className="tiled-earth-zoom"><button type="button" aria-label="Przybliż" onClick={() => zoom(.55)}>+</button><button type="button" aria-label="Maksymalne przybliżenie" onClick={maximumZoom}>MAX</button><button type="button" aria-label="Widok całej planety" onClick={globalView}>🌍</button><button type="button" aria-label="Oddal" onClick={() => zoom(-.7)}>−</button></div>
       <div ref={host} className="tiled-earth-canvas" />
     </> : <PolarScene mode={view} date={date} />}
