@@ -1,0 +1,1741 @@
+{
+  "experiment": "Experiment 009 - Jezioro Plowez water and shoreline monitoring",
+  "center": {
+    "lat": 53.452516,
+    "lon": 19.212111
+  },
+  "crop": "2 km x 2 km centered exactly on coordinate for imagery; measurement stage uses larger AOI where needed",
+  "season": "autumn",
+  "preferred_month": 9,
+  "fallback_months": [
+    10,
+    11
+  ],
+  "years_requested": [
+    1990,
+    1991,
+    1992,
+    1993,
+    1994,
+    1995,
+    1996,
+    1997,
+    1998,
+    1999,
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "filename_rule": "every image filename begins YYYY_YYYY-MM-DD_...",
+  "integrity_policy": "real public satellite pixels only; no AI filling/super-resolution; image-first broken-image check; exact cross-year SHA duplicate rejected",
+  "records": [
+    {
+      "year": 1990,
+      "date": "1990-10-25",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19901025_02_T1",
+      "scene_cloud_cover_percent": 1.0,
+      "local_clear_fraction": 0.994006,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1990_1990-10-25_landsat-5_30m_7x9km_native.png",
+        "1990_1990-10-25_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "fff71727df7b286d102777c8884326457174fa8a08a957f8a495c1e868c5979e",
+        "visual_std": 56.5887,
+        "near_black_fraction": 0.011337,
+        "near_white_fraction": 0.010818,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 10,
+      "selected_month_name": "October",
+      "is_fallback_month": true,
+      "preferred_month": 9,
+      "selection_quality_score": 0.995484,
+      "fallback_reason": "preferred month had no sufficiently reliable candidate",
+      "rejected_candidates": [
+        {
+          "month": 9,
+          "item_id": "LT05_L2SP_189023_19900916_02_T1",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.491934477825465
+        }
+      ]
+    },
+    {
+      "year": 1991,
+      "date": "1991-09-26",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19910926_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 0.999986,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1991_1991-09-26_landsat-5_30m_7x9km_native.png",
+        "1991_1991-09-26_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "fd72eaa1a4226086e00dbda4da2cc793353b6fa0ce521e23c5a1961956515798",
+        "visual_std": 65.787,
+        "near_black_fraction": 0.021545,
+        "near_white_fraction": 0.013321,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.94999,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1992,
+      "date": "1992-09-28",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19920928_02_T1",
+      "scene_cloud_cover_percent": 63.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1992_1992-09-28_landsat-5_30m_7x9km_native.png",
+        "1992_1992-09-28_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "79de0241846994c8c330f1f1c87d403cb003eba171a34c464eba1d8e4a71a87b",
+        "visual_std": 62.3328,
+        "near_black_fraction": 0.018158,
+        "near_white_fraction": 0.01384,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.9685,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1993,
+      "date": "1993-09-08",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19930908_02_T1",
+      "scene_cloud_cover_percent": 7.0,
+      "local_clear_fraction": 0.734206,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1993_1993-09-08_landsat-5_30m_7x9km_native.png",
+        "1993_1993-09-08_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "ed530b65deb6f6babf9c54d354f91cffba9a0e685412a6232df708d0d6642f15",
+        "visual_std": 45.9201,
+        "near_black_fraction": 0.071121,
+        "near_white_fraction": 0.017868,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.818418,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1994,
+      "date": "1994-10-20",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19941020_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 0.999914,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1994_1994-10-20_landsat-5_30m_7x9km_native.png",
+        "1994_1994-10-20_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "7728f2da4e2d48f44548b9577a768e4756146f678f73e1b131afa2bf8d742562",
+        "visual_std": 56.6582,
+        "near_black_fraction": 0.015488,
+        "near_white_fraction": 0.011749,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 10,
+      "selected_month_name": "October",
+      "is_fallback_month": true,
+      "preferred_month": 9,
+      "selection_quality_score": 0.949942,
+      "fallback_reason": "preferred month had no sufficiently reliable candidate",
+      "rejected_candidates": [
+        {
+          "month": 9,
+          "item_id": "LT05_L2SP_190023_19940902_02_T2",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.28450000000000003
+        }
+      ]
+    },
+    {
+      "year": 1995,
+      "date": "1995-11-17",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19951117_02_T2",
+      "scene_cloud_cover_percent": 38.0,
+      "local_clear_fraction": 0.910415,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1995_1995-11-17_landsat-5_30m_7x9km_native.png",
+        "1995_1995-11-17_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "dee41e0bc3ed397df4b021c639d979ea0c30354fe04f9fb2f382360642ffe3c0",
+        "visual_std": 40.2594,
+        "near_black_fraction": 0.009125,
+        "near_white_fraction": 0.015961,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 11,
+      "selected_month_name": "November",
+      "is_fallback_month": true,
+      "preferred_month": 9,
+      "selection_quality_score": 0.920978,
+      "fallback_reason": "preferred month had no sufficiently reliable candidate",
+      "rejected_candidates": [
+        {
+          "month": 9,
+          "item_id": "LT05_L2SP_189023_19950914_02_T2",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.29850000000000004
+        },
+        {
+          "month": 10,
+          "item_id": "LT05_L2SP_190023_19951023_02_T1",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.3871891273247497
+        }
+      ]
+    },
+    {
+      "year": 1996,
+      "date": "1996-09-23",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19960923_02_T1",
+      "scene_cloud_cover_percent": 22.0,
+      "local_clear_fraction": 0.999986,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1996_1996-09-23_landsat-5_30m_7x9km_native.png",
+        "1996_1996-09-23_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "2ad3adc9a61d08ffa4f59c1e0beb90a714088509e55121a8904e3cafdb6b7bf5",
+        "visual_std": 60.5948,
+        "near_black_fraction": 0.023422,
+        "near_white_fraction": 0.014755,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.98899,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1997,
+      "date": "1997-09-26",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19970926_02_T1",
+      "scene_cloud_cover_percent": 55.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1997_1997-09-26_landsat-5_30m_7x9km_native.png",
+        "1997_1997-09-26_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "0c6465657fe045b253526e8965ec6323b48a06739c7a12f78a48ad105dbe0ecc",
+        "visual_std": 65.793,
+        "near_black_fraction": 0.023712,
+        "near_white_fraction": 0.013275,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.9725,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1998,
+      "date": "1998-09-06",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19980906_02_T1",
+      "scene_cloud_cover_percent": 2.0,
+      "local_clear_fraction": 0.876824,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1998_1998-09-06_landsat-5_30m_7x9km_native.png",
+        "1998_1998-09-06_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "624e0f844edc9db727415741e542b569b312212ab91f19d66794ce43cceed82f",
+        "visual_std": 61.8427,
+        "near_black_fraction": 0.03894,
+        "near_white_fraction": 0.005386,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.916472,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1999,
+      "date": "1999-09-08",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_19990908_02_T1",
+      "scene_cloud_cover_percent": 5.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1999_1999-09-08_landsat-7_30m_7x9km_native.png",
+        "1999_1999-09-08_landsat-7_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "2347dc87e9cda3566bd6d09887efb43923eaddaae72b0c2b94bc782b7475a87c",
+        "visual_std": 65.8318,
+        "near_black_fraction": 0.022446,
+        "near_white_fraction": 0.015564,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.9975,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2000,
+      "date": "2000-09-18",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_20000918_02_T2",
+      "scene_cloud_cover_percent": 9.0,
+      "local_clear_fraction": 0.999914,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2000_2000-09-18_landsat-5_30m_7x9km_native.png",
+        "2000_2000-09-18_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "e1d262230a9bbd16e343eb10f5ea334fba73dc397afef7c5c4cb0d0a78acd601",
+        "visual_std": 64.4106,
+        "near_black_fraction": 0.026291,
+        "near_white_fraction": 0.013748,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.995442,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2001,
+      "date": "2001-10-24",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_189023_20011024_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 0.999986,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2001_2001-10-24_landsat-7_30m_7x9km_native.png",
+        "2001_2001-10-24_landsat-7_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "423cc8b5b2bed819e620e6dd2971db08f1e684127ff8fe4279085724e1025511",
+        "visual_std": 60.8358,
+        "near_black_fraction": 0.013687,
+        "near_white_fraction": 0.010101,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 10,
+      "selected_month_name": "October",
+      "is_fallback_month": true,
+      "preferred_month": 9,
+      "selection_quality_score": 0.94999,
+      "fallback_reason": "preferred month had no sufficiently reliable candidate",
+      "rejected_candidates": [
+        {
+          "month": 9,
+          "item_id": "LE07_L2SP_189023_20010906_02_T1",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.4490984263233191
+        }
+      ]
+    },
+    {
+      "year": 2002,
+      "date": "2002-09-09",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_189023_20020909_02_T1",
+      "scene_cloud_cover_percent": 3.0,
+      "local_clear_fraction": 0.999828,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2002_2002-09-09_landsat-7_30m_7x9km_native.png",
+        "2002_2002-09-09_landsat-7_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "9bbd3fc959239278cd7619cd5eb24d3fe9c88aac0899ab27d38242b25b442621",
+        "visual_std": 64.6879,
+        "near_black_fraction": 0.020065,
+        "near_white_fraction": 0.016251,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.998385,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2003,
+      "date": "2003-09-20",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20030920_02_T1",
+      "scene_cloud_cover_percent": 19.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2003_2003-09-20_landsat-5_30m_7x9km_native.png",
+        "2003_2003-09-20_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "444b70a73cafa09e8e00777015c970fa7bc5f4a3e647d1a298f8ace2deaed273",
+        "visual_std": 67.3968,
+        "near_black_fraction": 0.025803,
+        "near_white_fraction": 0.014404,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.9905,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2004,
+      "date": "2004-09-06",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20040906_02_T1",
+      "scene_cloud_cover_percent": 15.0,
+      "local_clear_fraction": 0.876395,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2004_2004-09-06_landsat-5_30m_7x9km_native.png",
+        "2004_2004-09-06_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "a30cfaf97af10f5fc090de59dd125361d04013c247975c5a149353dbd0944bfe",
+        "visual_std": 52.1284,
+        "near_black_fraction": 0.054062,
+        "near_white_fraction": 0.016647,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.909685,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2005,
+      "date": "2005-09-09",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20050909_02_T1",
+      "scene_cloud_cover_percent": 2.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2005_2005-09-09_landsat-5_30m_7x9km_native.png",
+        "2005_2005-09-09_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "28481cc8191a82c88da3986d43901a5b7937af6ec90c0a719c82945e13043dad",
+        "visual_std": 66.7546,
+        "near_black_fraction": 0.025833,
+        "near_white_fraction": 0.014481,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.999,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2006,
+      "date": "2006-09-12",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20060912_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 0.999986,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2006_2006-09-12_landsat-5_30m_7x9km_native.png",
+        "2006_2006-09-12_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "c9bfe436236c87d5a6b8c9f2f238de313842cbf6e58ca85b9405b444dad43461",
+        "visual_std": 65.3924,
+        "near_black_fraction": 0.028168,
+        "near_white_fraction": 0.015778,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.94999,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2007,
+      "date": "2007-09-23",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_189023_20070923_02_T1",
+      "scene_cloud_cover_percent": 54.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 0.81226,
+      "native_resolution_m": 30,
+      "files": [
+        "2007_2007-09-23_landsat-7_30m_7x9km_native.png",
+        "2007_2007-09-23_landsat-7_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "7cbcc08ce96aa589796459d9f236b21d0dacb52edb419a8e57c35ca679741cbe",
+        "visual_std": 74.1843,
+        "near_black_fraction": 0.170944,
+        "near_white_fraction": 0.010132,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.920433,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2008,
+      "date": "2008-09-25",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_189023_20080925_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 0.99993,
+      "local_valid_fraction": 0.820815,
+      "native_resolution_m": 30,
+      "files": [
+        "2008_2008-09-25_landsat-7_30m_7x9km_native.png",
+        "2008_2008-09-25_landsat-7_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "b2dcee39bc817e1e1e5b75ca7aa1ece3fcb5774493c6ddf3022996deb363b93a",
+        "visual_std": 72.3374,
+        "near_black_fraction": 0.157669,
+        "near_white_fraction": 0.008545,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.899782,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2009,
+      "date": "2009-09-20",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20090920_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2009_2009-09-20_landsat-5_30m_7x9km_native.png",
+        "2009_2009-09-20_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "9c8ffb103813371b3eac8d5e9e806015be5056a8ce7578a8034b96b5c8d165d1",
+        "visual_std": 67.376,
+        "near_black_fraction": 0.024185,
+        "near_white_fraction": 0.014816,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2010,
+      "date": "2010-09-23",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20100923_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 0.999986,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2010_2010-09-23_landsat-5_30m_7x9km_native.png",
+        "2010_2010-09-23_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "a5c8ab56cc0ca4833a3e4ab30ee066ceaa47b5a470c44452964c306ce116dfbf",
+        "visual_std": 62.4981,
+        "near_black_fraction": 0.023163,
+        "near_white_fraction": 0.016663,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.94999,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2011,
+      "date": "2011-09-17",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_20110917_02_T1",
+      "scene_cloud_cover_percent": 42.0,
+      "local_clear_fraction": 0.999685,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2011_2011-09-17_landsat-5_30m_7x9km_native.png",
+        "2011_2011-09-17_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "b4cc9d6d1d2d40aa0954e403c140f185faf59e3e4fc616e80869101f7e4a5c66",
+        "visual_std": 64.8757,
+        "near_black_fraction": 0.030716,
+        "near_white_fraction": 0.011932,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.978789,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2012,
+      "date": "2012-09-04",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_189023_20120904_02_T1",
+      "scene_cloud_cover_percent": 22.0,
+      "local_clear_fraction": 0.95108,
+      "local_valid_fraction": 0.792518,
+      "native_resolution_m": 30,
+      "files": [
+        "2012_2012-09-04_landsat-7_30m_7x9km_native.png",
+        "2012_2012-09-04_landsat-7_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "b13e11e921b265b9179a3763c25f2b893482701b29c3fc1dc070a9a26889ad55",
+        "visual_std": 68.2583,
+        "near_black_fraction": 0.200546,
+        "near_white_fraction": 0.010696,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.898129,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2013,
+      "date": "2013-09-06",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-8",
+      "item_id": "LC08_L2SP_190023_20130906_02_T1",
+      "scene_cloud_cover_percent": 0.01,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2013_2013-09-06_landsat-8_30m_7x9km_native.png",
+        "2013_2013-09-06_landsat-8_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "d0e51c164de74f112cbdf1838b2576762eda4d9401b5df4bc85c6b028060f801",
+        "visual_std": 68.3849,
+        "near_black_fraction": 0.034119,
+        "near_white_fraction": 0.015961,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.999995,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2014,
+      "date": "2014-09-18",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-8",
+      "item_id": "LC08_L2SP_189023_20140918_02_T1",
+      "scene_cloud_cover_percent": 0.02,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2014_2014-09-18_landsat-8_30m_7x9km_native.png",
+        "2014_2014-09-18_landsat-8_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "c3e6a129f2ad9b94a87b4c5f6e82ce46245362908b288824457e0ad5e64c5772",
+        "visual_std": 67.0651,
+        "near_black_fraction": 0.029694,
+        "near_white_fraction": 0.016357,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.99999,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2015,
+      "date": "2015-09-29",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20150929T100016_R122_T33UYV_20210412T130930",
+      "scene_cloud_cover_percent": 16.712859,
+      "local_clear_fraction": 0.963695,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2015_2015-09-29_Sentinel-2A_10m_7x9km_native.png",
+        "2015_2015-09-29_Sentinel-2A_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "34786b0e4ac17ed11e75473a2ee9b947d8acb8565fcbe343f32f599273602790",
+        "visual_std": 62.6435,
+        "near_black_fraction": 0.01825,
+        "near_white_fraction": 0.010925,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.992319,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2016,
+      "date": "2016-09-03",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20160903T100032_R122_T33UYV_20210212T210307",
+      "scene_cloud_cover_percent": 15.809911,
+      "local_clear_fraction": 0.996743,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2016_2016-09-03_Sentinel-2A_10m_7x9km_native.png",
+        "2016_2016-09-03_Sentinel-2A_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "ea8f077a77a8ee61bf29a4b7cd315f734c38c594037833f7a289614c7054a1fb",
+        "visual_std": 66.7167,
+        "near_black_fraction": 0.021652,
+        "near_white_fraction": 0.010468,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 1.014913,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2017,
+      "date": "2017-09-28",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20170928T100021_R122_T33UYV_20210202T110611",
+      "scene_cloud_cover_percent": 2.730001,
+      "local_clear_fraction": 0.981117,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2017_2017-09-28_Sentinel-2A_10m_7x9km_native.png",
+        "2017_2017-09-28_Sentinel-2A_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "1d5fc048f63f45c4ef5b881792794db2366edb3b68bb37577b0efc1216e3d8d8",
+        "visual_std": 62.0965,
+        "near_black_fraction": 0.02121,
+        "near_white_fraction": 0.008896,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 1.010984,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2018,
+      "date": "2018-09-20",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20180920T095021_R079_T34UCE_20201009T030240",
+      "scene_cloud_cover_percent": 11.577341,
+      "local_clear_fraction": 0.999638,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2018_2018-09-20_Sentinel-2A_10m_7x9km_native.png",
+        "2018_2018-09-20_Sentinel-2A_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "e6929b008db5dfbe4573b9b9c0202a6b8b0d6cae830a3d42a3733220a7c630c2",
+        "visual_std": 63.684,
+        "near_black_fraction": 0.018066,
+        "near_white_fraction": 0.008774,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 1.018969,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2019,
+      "date": "2019-09-05",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20190905T095031_R079_T33UYV_20201004T093058",
+      "scene_cloud_cover_percent": 31.99648,
+      "local_clear_fraction": 0.999638,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2019_2019-09-05_Sentinel-2A_10m_7x9km_native.png",
+        "2019_2019-09-05_Sentinel-2A_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "58b5d2ebd036bf84c32eb52b5608b75802e9dd2ce996cd82fc622e813e3e6286",
+        "visual_std": 67.298,
+        "near_black_fraction": 0.022583,
+        "near_white_fraction": 0.01059,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 1.008759,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2020,
+      "date": "2020-09-24",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20200924T095029_R079_T33UYV_20200926T132532",
+      "scene_cloud_cover_percent": 4.762012,
+      "local_clear_fraction": 0.999987,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2020_2020-09-24_Sentinel-2B_10m_7x9km_native.png",
+        "2020_2020-09-24_Sentinel-2B_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "8fbe92930c2887744ff7627634852a9366ade9f83d27e16ef65211fd4cecd872",
+        "visual_std": 65.3269,
+        "near_black_fraction": 0.021957,
+        "near_white_fraction": 0.008469,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 1.02261,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2021,
+      "date": "2021-09-27",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20210927T100031_R122_T33UYV_20210927T175724",
+      "scene_cloud_cover_percent": 0.330401,
+      "local_clear_fraction": 0.99953,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2021_2021-09-27_Sentinel-2A_10m_7x9km_native.png",
+        "2021_2021-09-27_Sentinel-2A_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "9c3aa21efb64f9f6833a1e68333c6bd1011d4609fd11152c536c501964c1c473",
+        "visual_std": 62.5318,
+        "near_black_fraction": 0.015244,
+        "near_white_fraction": 0.010986,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 1.02452,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2022,
+      "date": "2022-09-07",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20220907T095549_R122_T33UYV_20220908T011022",
+      "scene_cloud_cover_percent": 36.093304,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2022_2022-09-07_Sentinel-2B_10m_7x9km_native.png",
+        "2022_2022-09-07_Sentinel-2B_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "86060085b8a27e1e6302848ce9327b9d419817c9d0e4b0556ba38420b255e5d8",
+        "visual_std": 63.7673,
+        "near_black_fraction": 0.028198,
+        "near_white_fraction": 0.012283,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 1.006953,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2023,
+      "date": "2023-09-12",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20230912T095609_R122_T33UYV_20241103T122113",
+      "scene_cloud_cover_percent": 0.123749,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2023_2023-09-12_Sentinel-2B_10m_7x9km_native.png",
+        "2023_2023-09-12_Sentinel-2B_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "da25fcb9961ebf451d6013d11db7b2166283d46054b6143d07b0317422a7feeb",
+        "visual_std": 63.6943,
+        "near_black_fraction": 0.028076,
+        "near_white_fraction": 0.011398,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 1.024938,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2024,
+      "date": "2024-09-08",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20240908T095031_R079_T33UYV_20240908T133147",
+      "scene_cloud_cover_percent": 0.007657,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2024_2024-09-08_Sentinel-2A_10m_7x9km_native.png",
+        "2024_2024-09-08_Sentinel-2A_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "89105cd3058bec4d5a77a91c34c0e0baf7901a2caca06d11a5de287e219ab552",
+        "visual_std": 66.0569,
+        "near_black_fraction": 0.017807,
+        "near_white_fraction": 0.009323,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 1.024996,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2025,
+      "date": "2025-09-26",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2C",
+      "item_id": "S2C_MSIL2A_20250926T100041_R122_T33UYV_20250926T152116",
+      "scene_cloud_cover_percent": 0.012366,
+      "local_clear_fraction": 0.999371,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2025_2025-09-26_Sentinel-2C_10m_7x9km_native.png",
+        "2025_2025-09-26_Sentinel-2C_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Plowez",
+          "lat": 53.452516,
+          "lon": 19.212111
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "6d7f1c30017052f6bb4b3be6966ea7a997c899e9e2301356bab0b6f019d55080",
+        "visual_std": 62.9826,
+        "near_black_fraction": 0.028854,
+        "near_white_fraction": 0.012085,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 1.024573,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2026,
+      "status": "not_found_or_rejected",
+      "requested_season": "autumn",
+      "months_searched": [
+        9,
+        10,
+        11
+      ],
+      "rejected_candidates": []
+    }
+  ],
+  "count_ok": 36,
+  "count_missing_or_rejected": 1,
+  "targets": [
+    {
+      "name": "Jezioro Plowez",
+      "lat": 53.452516,
+      "lon": 19.212111
+    }
+  ],
+  "aoi": {
+    "width_m": 7000,
+    "height_m": 9000,
+    "orientation": "portrait_north_up",
+    "purpose": "reference-height view covering all of Jezioro Plowez plus nearby Plowez, Rywaldzik, wetlands, small ponds and surrounding agricultural/forest context"
+  },
+  "dataset_role": "independent TerraWater lake comparison case",
+  "test_number": 9,
+  "object_name": "Jezioro Plowez",
+  "zip": "experiments/experiment_009_jezioro_plowez/seasonal_evidence/autumn/TEST009_AUTUMN_1990_2026_37_YEARS_7x9km_53.452516_19.212111.zip"
+}
