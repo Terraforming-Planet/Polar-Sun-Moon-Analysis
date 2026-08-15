@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+# TEST011_TRIGGER_BUILD_2026_08_15
 import json
 import shutil
 import zipfile
@@ -53,7 +54,6 @@ def save_regional(rgb, base_path: Path) -> tuple[str, str]:
 
 
 def configure_globals() -> None:
-    # Reuse the proven seasonal acquisition/QA engine, but with a much wider fixed footprint.
     m.LAT = LAT
     m.LON = LON
     m.YEARS = YEARS
@@ -66,11 +66,9 @@ def configure_globals() -> None:
     m.FRAME_LABEL = FRAME_LABEL
     m.DISPLAY_WIDTH = DISPLAY_WIDTH
     m.DISPLAY_HEIGHT = DISPLAY_HEIGHT
-
     m.base.TARGET_CRS = TARGET_CRS
     m.base.transformer = Transformer.from_crs("EPSG:4326", TARGET_CRS, always_xy=True)
     m.configure()
-    # Cap output to a uniform 30 m grid. Sentinel-2 is downsampled rather than upscaled.
     m.base.target_grid = fixed_regional_grid
     m.base.save_native_and_display = save_regional
 
@@ -88,13 +86,7 @@ def normalize_season_output(name: str, result: dict) -> dict:
         "test_number": TEST,
         "center": {"lat": LAT, "lon": LON},
         "targets": TARGETS,
-        "aoi": {
-            "width_m": int(FRAME_WIDTH_M),
-            "height_m": int(FRAME_HEIGHT_M),
-            "orientation": "north_up",
-            "output_grid_m": OUTPUT_GSD_M,
-            "purpose": "wide regional view approximating the supplied map altitude while keeping the same footprint for every year",
-        },
+        "aoi": {"width_m": int(FRAME_WIDTH_M), "height_m": int(FRAME_HEIGHT_M), "orientation": "north_up", "output_grid_m": OUTPUT_GSD_M, "purpose": "wide regional view approximating the supplied map altitude while keeping the same footprint for every year"},
         "dataset_role": "TerraWater regional water-system screening; visual evidence before quantitative measurement",
         "object_name": "Ilawa-Zalewo regional water system",
         "zip": str(new),
@@ -129,34 +121,9 @@ def write_metadata() -> None:
     sm = json.loads((SEASONS / "spring" / "manifest.json").read_text(encoding="utf-8"))
     am = json.loads((SEASONS / "autumn" / "manifest.json").read_text(encoding="utf-8"))
     sy, ay = accepted_years(sm), accepted_years(am)
-    policy = {
-        "experiment_id": "011",
-        "name": "Ilawa-Zalewo regional water system",
-        "center": {"lat": LAT, "lon": LON},
-        "targets": TARGETS,
-        "frame": {"width_m": int(FRAME_WIDTH_M), "height_m": int(FRAME_HEIGHT_M), "orientation": "north_up", "output_grid_m": OUTPUT_GSD_M},
-        "years": {"start": 1990, "end": 2026, "count": 37},
-        "seasons": {"spring": {"preferred": 5, "fallback": [4, 6]}, "autumn": {"preferred": 9, "fallback": [10, 11]}},
-        "rules": {
-            "real_acquisition_date_required": True,
-            "same_footprint_every_year": True,
-            "future_observations_never_invented": True,
-            "autumn_2026_missing_until_observed": True,
-            "generative_fill_forbidden": True,
-            "ai_super_resolution_forbidden": True,
-            "cross_year_exact_duplicate_rejected": True,
-            "cross_season_duplicate_checked_in_ci": True,
-            "product_id_duplicate_checked_in_ci": True,
-        },
-    }
+    policy = {"experiment_id": "011", "name": "Ilawa-Zalewo regional water system", "center": {"lat": LAT, "lon": LON}, "targets": TARGETS, "frame": {"width_m": int(FRAME_WIDTH_M), "height_m": int(FRAME_HEIGHT_M), "orientation": "north_up", "output_grid_m": OUTPUT_GSD_M}, "years": {"start": 1990, "end": 2026, "count": 37}, "seasons": {"spring": {"preferred": 5, "fallback": [4, 6]}, "autumn": {"preferred": 9, "fallback": [10, 11]}}, "rules": {"real_acquisition_date_required": True, "same_footprint_every_year": True, "future_observations_never_invented": True, "autumn_2026_missing_until_observed": True, "generative_fill_forbidden": True, "ai_super_resolution_forbidden": True, "cross_year_exact_duplicate_rejected": True, "cross_season_duplicate_checked_in_ci": True, "product_id_duplicate_checked_in_ci": True}}
     (EXP / "EVIDENCE_POLICY.json").write_text(json.dumps(policy, indent=2, ensure_ascii=False), encoding="utf-8")
-    cfg = {
-        "experiment_id": "011", "center": {"lat": LAT, "lon": LON}, "targets": TARGETS,
-        "frame": policy["frame"], "years": YEARS,
-        "spring_missing_years": [y for y in YEARS if y not in sy],
-        "autumn_missing_years": [y for y in YEARS if y not in ay],
-        "platforms_used": platforms(sm, am),
-    }
+    cfg = {"experiment_id": "011", "center": {"lat": LAT, "lon": LON}, "targets": TARGETS, "frame": policy["frame"], "years": YEARS, "spring_missing_years": [y for y in YEARS if y not in sy], "autumn_missing_years": [y for y in YEARS if y not in ay], "platforms_used": platforms(sm, am)}
     (EXP / "experiment.json").write_text(json.dumps(cfg, indent=2, ensure_ascii=False), encoding="utf-8")
     report = f"""# Experiment 011 — Iława–Zalewo regional satellite evidence, 1990–2026
 
@@ -203,17 +170,7 @@ def main() -> None:
     sm = json.loads((SEASONS / "spring" / "manifest.json").read_text())
     am = json.loads((SEASONS / "autumn" / "manifest.json").read_text())
     sy, ay = accepted_years(sm), accepted_years(am)
-    summary = {
-        "experiment": TEST,
-        "object": "Ilawa-Zalewo regional water system",
-        "center": {"lat": LAT, "lon": LON},
-        "frame_width_m": int(FRAME_WIDTH_M), "frame_height_m": int(FRAME_HEIGHT_M), "output_grid_m": OUTPUT_GSD_M,
-        "spring_count_ok": len(sy), "autumn_count_ok": len(ay),
-        "spring_missing_years": [y for y in YEARS if y not in sy],
-        "autumn_missing_years": [y for y in YEARS if y not in ay],
-        "platforms_used": platforms(sm, am),
-        "combined_zip": str(combined), "combined_zip_bytes": combined.stat().st_size,
-    }
+    summary = {"experiment": TEST, "object": "Ilawa-Zalewo regional water system", "center": {"lat": LAT, "lon": LON}, "frame_width_m": int(FRAME_WIDTH_M), "frame_height_m": int(FRAME_HEIGHT_M), "output_grid_m": OUTPUT_GSD_M, "spring_count_ok": len(sy), "autumn_count_ok": len(ay), "spring_missing_years": [y for y in YEARS if y not in sy], "autumn_missing_years": [y for y in YEARS if y not in ay], "platforms_used": platforms(sm, am), "combined_zip": str(combined), "combined_zip_bytes": combined.stat().st_size}
     (EXP / "BUILD_SUMMARY.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8")
     print(json.dumps(summary, indent=2, ensure_ascii=False))
 
