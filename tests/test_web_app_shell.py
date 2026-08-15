@@ -21,6 +21,7 @@ def test_source_navigation_contains_all_published_research_tabs() -> None:
     for number in range(1, 11):
         assert f"./experiment-{number:03d}/" in html
     assert "./arctic-90n/" in html
+    assert "./sahara-station/" in html
     assert "./copernicus/" in html
     assert "./flood-map/" in html
     assert "./constellation/" in html
