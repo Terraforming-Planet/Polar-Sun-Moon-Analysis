@@ -1,0 +1,1748 @@
+{
+  "experiment": "Experiment 010 - Drweca floodplain and wetland monitoring",
+  "center": {
+    "lat": 53.067318,
+    "lon": 18.872006
+  },
+  "crop": "2 km x 2 km centered exactly on coordinate for imagery; measurement stage uses larger AOI where needed",
+  "season": "spring",
+  "preferred_month": 5,
+  "fallback_months": [
+    4,
+    6
+  ],
+  "years_requested": [
+    1990,
+    1991,
+    1992,
+    1993,
+    1994,
+    1995,
+    1996,
+    1997,
+    1998,
+    1999,
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "filename_rule": "every image filename begins YYYY_YYYY-MM-DD_...",
+  "integrity_policy": "real public satellite pixels only; no AI filling/super-resolution; image-first broken-image check; exact cross-year SHA duplicate rejected",
+  "records": [
+    {
+      "year": 1990,
+      "date": "1990-05-11",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19900511_02_T1",
+      "scene_cloud_cover_percent": 3.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1990_1990-05-11_landsat-5_30m_8x12km_native.png",
+        "1990_1990-05-11_landsat-5_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "c7d2601a446ad64ec18e2921a6016f6f3891d3355edabe7809308706866be541",
+        "visual_std": 56.2275,
+        "near_black_fraction": 0.008728,
+        "near_white_fraction": 0.009354,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.9985,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1991,
+      "date": "1991-05-30",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19910530_02_T1",
+      "scene_cloud_cover_percent": 14.0,
+      "local_clear_fraction": 0.937163,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1991_1991-05-30_landsat-5_30m_8x12km_native.png",
+        "1991_1991-05-30_landsat-5_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "902e6707b8761b98de60ac6b25ce5bd165113e561958f0e45cba4436ffc957ec",
+        "visual_std": 55.2101,
+        "near_black_fraction": 0.028625,
+        "near_white_fraction": 0.01123,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.950899,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1992,
+      "date": "1992-05-16",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19920516_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 0.999981,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1992_1992-05-16_landsat-5_30m_8x12km_native.png",
+        "1992_1992-05-16_landsat-5_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "17c3e8a7fd7f8df371ea0ed87e9dbfd5d898c9361485bc65cbb6ca0ec393f17e",
+        "visual_std": 61.3871,
+        "near_black_fraction": 0.04541,
+        "near_white_fraction": 0.008987,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.949987,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1993,
+      "date": "1993-05-26",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19930526_02_T1",
+      "scene_cloud_cover_percent": 33.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1993_1993-05-26_landsat-5_30m_8x12km_native.png",
+        "1993_1993-05-26_landsat-5_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "3ebd2eac8f53872bcacae7cfcbf5d14a82beda315f89c4cc50727777f3204b97",
+        "visual_std": 65.7285,
+        "near_black_fraction": 0.01326,
+        "near_white_fraction": 0.007248,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.9835,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1994,
+      "date": "1994-05-06",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19940506_02_T1",
+      "scene_cloud_cover_percent": 4.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1994_1994-05-06_landsat-5_30m_8x12km_native.png",
+        "1994_1994-05-06_landsat-5_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "83abf02880b5602c8e1a72075f6a16f7ef0f186bf877a4a9006338dbc48bc0e4",
+        "visual_std": 66.4554,
+        "near_black_fraction": 0.020523,
+        "near_white_fraction": 0.010803,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.998,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1995,
+      "date": "1995-04-23",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19950423_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 0.999991,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1995_1995-04-23_landsat-5_30m_8x12km_native.png",
+        "1995_1995-04-23_landsat-5_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "7aee25fca85c0cbd381fc0402e867b9b5801f7f4389d0d7436af7d535d5609b9",
+        "visual_std": 64.0967,
+        "near_black_fraction": 0.011826,
+        "near_white_fraction": 0.010452,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 4,
+      "selected_month_name": "April",
+      "is_fallback_month": true,
+      "preferred_month": 5,
+      "selection_quality_score": 0.949994,
+      "fallback_reason": "preferred month had no sufficiently reliable candidate",
+      "rejected_candidates": [
+        {
+          "month": 5,
+          "item_id": "LT05_L2SP_189023_19950509_02_T1",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.28903764044943825
+        }
+      ]
+    },
+    {
+      "year": 1996,
+      "date": "1996-05-18",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19960518_02_T1",
+      "scene_cloud_cover_percent": 11.0,
+      "local_clear_fraction": 0.944148,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1996_1996-05-18_landsat-5_30m_8x12km_native.png",
+        "1996_1996-05-18_landsat-5_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "d5e984fac1ce2688ca90f2c4762457aafcf9adc6949c03650248468fb80b7e67",
+        "visual_std": 51.4246,
+        "near_black_fraction": 0.022125,
+        "near_white_fraction": 0.01474,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.957079,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1997,
+      "date": "1997-05-14",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19970514_02_T1",
+      "scene_cloud_cover_percent": 7.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1997_1997-05-14_landsat-5_30m_8x12km_native.png",
+        "1997_1997-05-14_landsat-5_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "1fb4d08bd1d0e6e3cd7b85aa05c8e936ecb59cc801e7b84aa86ce147861c321a",
+        "visual_std": 65.7591,
+        "near_black_fraction": 0.029907,
+        "near_white_fraction": 0.010223,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.9965,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1998,
+      "date": "1998-05-01",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19980501_02_T2",
+      "scene_cloud_cover_percent": 18.0,
+      "local_clear_fraction": 0.879831,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1998_1998-05-01_landsat-5_30m_8x12km_native.png",
+        "1998_1998-05-01_landsat-5_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "3f36d1299131691c3298005f2e339cfabf97671463b8b54808e5fb4b7ffcf6dd",
+        "visual_std": 65.7959,
+        "near_black_fraction": 0.025253,
+        "near_white_fraction": 0.00798,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.910487,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1999,
+      "date": "1999-05-20",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19990520_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1999_1999-05-20_landsat-5_30m_8x12km_native.png",
+        "1999_1999-05-20_landsat-5_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "51557474ffc76e901aea2f3f9b15e5ad6ae8825b01bb72d2341d2832181c1587",
+        "visual_std": 63.1201,
+        "near_black_fraction": 0.020187,
+        "near_white_fraction": 0.009399,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2000,
+      "date": "2000-05-13",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_20000513_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2000_2000-05-13_landsat-5_30m_8x12km_native.png",
+        "2000_2000-05-13_landsat-5_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "5208ecbf04e4ba831e57648e921f1312e2c7f083fe4979d13fb7ae0760ff53ba",
+        "visual_std": 63.0881,
+        "near_black_fraction": 0.014496,
+        "near_white_fraction": 0.008514,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2001,
+      "date": "2001-05-08",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20010508_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2001_2001-05-08_landsat-7_30m_8x12km_native.png",
+        "2001_2001-05-08_landsat-7_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "e9f367194edae373b8fbf3e61b4fe771b5089b3167f77815e1527d6bc489ca2b",
+        "visual_std": 63.3869,
+        "near_black_fraction": 0.018219,
+        "near_white_fraction": 0.010788,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2002,
+      "date": "2002-05-04",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_189023_20020504_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2002_2002-05-04_landsat-7_30m_8x12km_native.png",
+        "2002_2002-05-04_landsat-7_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "34bdcd7acda2c50c04350da1a66fe7302f26930e3590af5810d8e28887cc09e8",
+        "visual_std": 67.0119,
+        "near_black_fraction": 0.020462,
+        "near_white_fraction": 0.011642,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2003,
+      "date": "2003-05-30",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20030530_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 0.999167,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2003_2003-05-30_landsat-7_30m_8x12km_native.png",
+        "2003_2003-05-30_landsat-7_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "a1924f4ef950605f560e4bd6178067b56bb886ae5d1d659003786b19e11876e7",
+        "visual_std": 52.5189,
+        "near_black_fraction": 0.018707,
+        "near_white_fraction": 0.015015,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.949442,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2004,
+      "date": "2004-05-01",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20040501_02_T1",
+      "scene_cloud_cover_percent": 2.0,
+      "local_clear_fraction": 0.999176,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2004_2004-05-01_landsat-5_30m_8x12km_native.png",
+        "2004_2004-05-01_landsat-5_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "8874e4c0902d73ad2f1deaecdcbcd23de8c06f38f9d30732616c40cd76505c52",
+        "visual_std": 67.3816,
+        "near_black_fraction": 0.015182,
+        "near_white_fraction": 0.010803,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.998448,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2005,
+      "date": "2005-05-20",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20050520_02_T1",
+      "scene_cloud_cover_percent": 4.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2005_2005-05-20_landsat-5_30m_8x12km_native.png",
+        "2005_2005-05-20_landsat-5_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "308abe983df74635fde977f9277b37ae3fc56a62f4c9b623f9bf327190c28b2b",
+        "visual_std": 54.4618,
+        "near_black_fraction": 0.015381,
+        "near_white_fraction": 0.009949,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.998,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2006,
+      "date": "2006-05-07",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20060507_02_T1",
+      "scene_cloud_cover_percent": 5.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2006_2006-05-07_landsat-5_30m_8x12km_native.png",
+        "2006_2006-05-07_landsat-5_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "9dcedf1a9b0178c615535cc629767cf82f499cef1ec186dc4fca27cdf4ed9077",
+        "visual_std": 67.9338,
+        "near_black_fraction": 0.010025,
+        "near_white_fraction": 0.011917,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.9975,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2007,
+      "date": "2007-05-26",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20070526_02_T1",
+      "scene_cloud_cover_percent": 32.0,
+      "local_clear_fraction": 0.966507,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2007_2007-05-26_landsat-5_30m_8x12km_native.png",
+        "2007_2007-05-26_landsat-5_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "09710294a0de122e76701c6fb329fb295f78d279e57ba38a5750d034c5d5dc06",
+        "visual_std": 56.91,
+        "near_black_fraction": 0.020416,
+        "near_white_fraction": 0.007172,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.96156,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2008,
+      "date": "2008-05-28",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20080528_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2008_2008-05-28_landsat-5_30m_8x12km_native.png",
+        "2008_2008-05-28_landsat-5_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "2fcc480295718e843c1f234ca05e6c95b872f7b7ba40b182372b2f8295f6db06",
+        "visual_std": 57.0894,
+        "near_black_fraction": 0.02037,
+        "near_white_fraction": 0.010635,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2009,
+      "date": "2009-05-15",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20090515_02_T1",
+      "scene_cloud_cover_percent": 8.0,
+      "local_clear_fraction": 0.812191,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2009_2009-05-15_landsat-5_30m_8x12km_native.png",
+        "2009_2009-05-15_landsat-5_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "d27f22d90d8d0b8bd8eea14f21ac8f2bc4823e21391b5ffb5147b161b029da9e",
+        "visual_std": 57.0764,
+        "near_black_fraction": 0.015564,
+        "near_white_fraction": 0.009293,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.870168,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2010,
+      "date": "2010-05-02",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20100502_02_T1",
+      "scene_cloud_cover_percent": 56.0,
+      "local_clear_fraction": 0.947444,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2010_2010-05-02_landsat-5_30m_8x12km_native.png",
+        "2010_2010-05-02_landsat-5_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "da1a6caefdd6df00fce7993281fe48a116230b7663703398a0dc14cbe0fd1afe",
+        "visual_std": 48.7426,
+        "near_black_fraction": 0.020599,
+        "near_white_fraction": 0.014786,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.936787,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2011,
+      "date": "2011-05-20",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20110520_02_T1",
+      "scene_cloud_cover_percent": 27.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 0.756096,
+      "native_resolution_m": 30,
+      "files": [
+        "2011_2011-05-20_landsat-7_30m_8x12km_native.png",
+        "2011_2011-05-20_landsat-7_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "6ee9d14fa408211fff9d13460e35ea9f306a2037f76eb60cff4bdc1dbd481d1f",
+        "visual_std": 59.6581,
+        "near_black_fraction": 0.217056,
+        "near_white_fraction": 0.009384,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.918207,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2012,
+      "date": "2012-05-22",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20120522_02_T1",
+      "scene_cloud_cover_percent": 4.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 0.72677,
+      "native_resolution_m": 30,
+      "files": [
+        "2012_2012-05-22_landsat-7_30m_8x12km_native.png",
+        "2012_2012-05-22_landsat-7_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "d3074214449c151bd5fd26352d86872611bd05dc57cb7bd386bc0c7fa1d1635f",
+        "visual_std": 60.6241,
+        "near_black_fraction": 0.253571,
+        "near_white_fraction": 0.007431,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.921496,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2013,
+      "date": "2013-05-17",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-8",
+      "item_id": "LC08_L2SP_190023_20130517_02_T1",
+      "scene_cloud_cover_percent": 19.49,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2013_2013-05-17_landsat-8_30m_8x12km_native.png",
+        "2013_2013-05-17_landsat-8_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "8dbc35b6a45d8660ea2453a5b6a8502e84f3b5381ce4f2555a1028eb7675ea17",
+        "visual_std": 67.9504,
+        "near_black_fraction": 0.072998,
+        "near_white_fraction": 0.015076,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.990255,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2014,
+      "date": "2014-05-20",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-8",
+      "item_id": "LC08_L2SP_190023_20140520_02_T1",
+      "scene_cloud_cover_percent": 9.54,
+      "local_clear_fraction": 0.981358,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2014_2014-05-20_landsat-8_30m_8x12km_native.png",
+        "2014_2014-05-20_landsat-8_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "3b8f48630d7fd04e987ebcc5bec77aceae92fe0f02074b5ec58fd3786d2fd661",
+        "visual_std": 62.8828,
+        "near_black_fraction": 0.041046,
+        "near_white_fraction": 0.01091,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.98274,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2015,
+      "date": "2015-05-07",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-8",
+      "item_id": "LC08_L2SP_190023_20150507_02_T1",
+      "scene_cloud_cover_percent": 5.64,
+      "local_clear_fraction": 0.980309,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2015_2015-05-07_landsat-8_30m_8x12km_native.png",
+        "2015_2015-05-07_landsat-8_30m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "fa78e5b7a12e884676a15ad97cf3ca450c04109c0305625638559649b2937877",
+        "visual_std": 65.5167,
+        "near_black_fraction": 0.045425,
+        "near_white_fraction": 0.011642,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.983987,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2016,
+      "date": "2016-05-23",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20160523T095032_R079_T34UCD_20210211T133807",
+      "scene_cloud_cover_percent": 0.634155,
+      "local_clear_fraction": 0.999625,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2016_2016-05-23_Sentinel-2A_10m_8x12km_native.png",
+        "2016_2016-05-23_Sentinel-2A_10m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "6cf0991a3c9aa357045d411462566120ff7ef836e14534447a5aac98f978aacf",
+        "visual_std": 62.9958,
+        "near_black_fraction": 0.032257,
+        "near_white_fraction": 0.009308,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.024432,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2017,
+      "date": "2017-05-18",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20170518T095031_R079_T34UCD_20210209T162313",
+      "scene_cloud_cover_percent": 0.077345,
+      "local_clear_fraction": 0.999654,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2017_2017-05-18_Sentinel-2A_10m_8x12km_native.png",
+        "2017_2017-05-18_Sentinel-2A_10m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "147586510b23d084f767866c9a63a04b96d1dd5979252ab1b5ca4a84ce07cb8d",
+        "visual_std": 65.4636,
+        "near_black_fraction": 0.040665,
+        "near_white_fraction": 0.01033,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.02473,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2018,
+      "date": "2018-05-08",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20180508T095029_R079_T34UCD_20201026T090856",
+      "scene_cloud_cover_percent": 0.070909,
+      "local_clear_fraction": 0.999596,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2018_2018-05-08_Sentinel-2B_10m_8x12km_native.png",
+        "2018_2018-05-08_Sentinel-2B_10m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "ab83ad10c023a423d97c35ae64f20ebaa544f24c097c8c7171c55ff04a2a7164",
+        "visual_std": 63.0779,
+        "near_black_fraction": 0.027069,
+        "near_white_fraction": 0.011765,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.024694,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2019,
+      "date": "2019-05-01",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20190501T100031_R122_T34UCD_20201006T083634",
+      "scene_cloud_cover_percent": 0.467423,
+      "local_clear_fraction": 0.999733,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2019_2019-05-01_Sentinel-2A_10m_8x12km_native.png",
+        "2019_2019-05-01_Sentinel-2A_10m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "7804338e2ae8d767ee9dbce8e479a3cf4c7a4bf9895fbfeea1095a47bcc7e64a",
+        "visual_std": 68.4862,
+        "near_black_fraction": 0.030228,
+        "near_white_fraction": 0.009598,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.024588,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2020,
+      "date": "2020-05-15",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20200515T100031_R122_T33UYU_20200918T065614",
+      "scene_cloud_cover_percent": 0.289688,
+      "local_clear_fraction": 0.999683,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2020_2020-05-15_Sentinel-2A_10m_8x12km_native.png",
+        "2020_2020-05-15_Sentinel-2A_10m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "91b7d000e536f062612bb1595a8de3b0742ea45ea6e99c155e6220ef7acf42f4",
+        "visual_std": 67.5734,
+        "near_black_fraction": 0.022873,
+        "near_white_fraction": 0.009674,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.024643,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2021,
+      "date": "2021-05-12",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20210512T095029_R079_T34UCD_20210606T084005",
+      "scene_cloud_cover_percent": 0.166811,
+      "local_clear_fraction": 0.999188,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2021_2021-05-12_Sentinel-2B_10m_8x12km_native.png",
+        "2021_2021-05-12_Sentinel-2B_10m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "6c668b4ee202fd1fe1baa6605a93894dad3a77d4655b3d06ad3b836e947c7bc1",
+        "visual_std": 66.7673,
+        "near_black_fraction": 0.089554,
+        "near_white_fraction": 0.010208,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.024372,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2022,
+      "date": "2022-05-10",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20220510T100029_R122_T34UCD_20240612T220829",
+      "scene_cloud_cover_percent": 7.722235,
+      "local_clear_fraction": 0.998408,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2022_2022-05-10_Sentinel-2B_10m_8x12km_native.png",
+        "2022_2022-05-10_Sentinel-2B_10m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "e0fd2e5db163de24d18378f2ec2e31f90031693e28f11134b02a597fa90b28c6",
+        "visual_std": 66.5439,
+        "near_black_fraction": 0.021179,
+        "near_white_fraction": 0.008835,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.020072,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2023,
+      "date": "2023-05-10",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20230510T100031_R122_T34UCD_20230510T160505",
+      "scene_cloud_cover_percent": 0.05109,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2023_2023-05-10_Sentinel-2A_10m_8x12km_native.png",
+        "2023_2023-05-10_Sentinel-2A_10m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "23a10d2f7bb5910e7962de18a1039e9508cb55e3ebe9e59b0d755a7195131650",
+        "visual_std": 65.8433,
+        "near_black_fraction": 0.045044,
+        "near_white_fraction": 0.009201,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.024974,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2024,
+      "date": "2024-05-01",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20240501T095031_R079_T34UCD_20240501T154242",
+      "scene_cloud_cover_percent": 13.758209,
+      "local_clear_fraction": 0.999754,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2024_2024-05-01_Sentinel-2A_10m_8x12km_native.png",
+        "2024_2024-05-01_Sentinel-2A_10m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "289e3f2a2be3a808762506ba861c46f5470cd2f3e3f1c5a76586aade0032448f",
+        "visual_std": 66.1279,
+        "near_black_fraction": 0.019745,
+        "near_white_fraction": 0.007675,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.017956,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2025,
+      "date": "2025-05-06",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2C",
+      "item_id": "S2C_MSIL2A_20250506T095051_R079_T33UYU_20250506T121455",
+      "scene_cloud_cover_percent": 6.337713,
+      "local_clear_fraction": 0.997775,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2025_2025-05-06_Sentinel-2C_10m_8x12km_native.png",
+        "2025_2025-05-06_Sentinel-2C_10m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "425932abd0175a685eab90824cecc2b14c473e22906912f10d533e89e31a8139",
+        "visual_std": 65.333,
+        "near_black_fraction": 0.011444,
+        "near_white_fraction": 0.008484,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.02034,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2026,
+      "date": "2026-05-01",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2C",
+      "item_id": "S2C_MSIL2A_20260501T095031_R079_T34UCD_20260501T132213",
+      "scene_cloud_cover_percent": 0.000806,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2026_2026-05-01_Sentinel-2C_10m_8x12km_native.png",
+        "2026_2026-05-01_Sentinel-2C_10m_8x12km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 8000,
+      "crop_height_m": 12000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Dolina Drwecy",
+          "lat": 53.067318,
+          "lon": 18.872006
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "ae877571457185f06a52296b7c8eb691ce7c576ee4afb1cac96ef1744814cf46",
+        "visual_std": 65.1861,
+        "near_black_fraction": 0.036484,
+        "near_white_fraction": 0.008408,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.025,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    }
+  ],
+  "count_ok": 37,
+  "count_missing_or_rejected": 0,
+  "targets": [
+    {
+      "name": "Dolina Drwecy",
+      "lat": 53.067318,
+      "lon": 18.872006
+    }
+  ],
+  "aoi": {
+    "width_m": 8000,
+    "height_m": 12000,
+    "orientation": "portrait_north_up",
+    "purpose": "wide reference-height view covering the meandering Drweca corridor, floodplain, oxbow/wetland areas, forest and agricultural context visible around the requested point"
+  },
+  "dataset_role": "independent TerraWater river-wetland comparison case",
+  "test_number": 10,
+  "object_name": "Dolina Drwecy",
+  "zip": "experiments/experiment_010_drweca_wetlands/seasonal_evidence/spring/TEST010_SPRING_1990_2026_37_YEARS_8x12km_53.067318_18.872006.zip"
+}
