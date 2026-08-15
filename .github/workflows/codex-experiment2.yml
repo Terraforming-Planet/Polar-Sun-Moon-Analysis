@@ -1,0 +1,68 @@
+name: Codex Experiment 2 update
+
+on:
+  push:
+    branches:
+      - codex/experiment-2-himalaya
+
+permissions:
+  contents: write
+
+jobs:
+  apply-experiment-2:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/experiment-2-himalaya
+          fetch-depth: 0
+
+      - name: Mark Himalaya article as Experiment 2
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          pages = [
+              Path('web/public/sahara-station/index.html'),
+              Path('docs/sahara-station/index.html'),
+          ]
+
+          old_id = 'id="himalaya-water-lesson"'
+          new_id = 'id="experiment-2-himalaya"'
+          old_eyebrow = 'CIEKAWY PRZYKŁAD Z AZJI / HIPOTEZA DO SYMULACJI'
+          new_eyebrow = 'EKSPERYMENT 2 / HIMALAJE / TOPOGRAFIA I WODA'
+          old_title = '<h2>Himalaje: jak rzeźba terenu steruje wodą — i czego może nauczyć projekt Sahara</h2>'
+          new_title = '<h2>Eksperyment 2 — Himalaje: jak rzeźba terenu steruje wodą — i czego może nauczyć projekt Sahara</h2>'
+
+          for page in pages:
+              text = page.read_text(encoding='utf-8')
+              for old in (old_id, old_eyebrow, old_title):
+                  if old not in text:
+                      raise SystemExit(f'Expected marker missing in {page}: {old}')
+              text = text.replace(old_id, new_id, 1)
+              text = text.replace(old_eyebrow, new_eyebrow, 1)
+              text = text.replace(old_title, new_title, 1)
+              page.write_text(text, encoding='utf-8')
+
+          test_file = Path('tests/test_sahara_station_page.py')
+          tests = test_file.read_text(encoding='utf-8')
+          marker = 'def test_himalaya_article_is_experiment_two() -> None:'
+          if marker not in tests:
+              tests += '''\n\n\ndef test_himalaya_article_is_experiment_two() -> None:\n    html = PAGE.read_text(encoding="utf-8")\n\n    assert 'id="experiment-2-himalaya"' in html\n    assert "EKSPERYMENT 2 / HIMALAJE / TOPOGRAFIA I WODA" in html\n    assert "Eksperyment 2 — Himalaje: jak rzeźba terenu steruje wodą" in html\n'''
+              test_file.write_text(tests, encoding='utf-8')
+          PY
+
+      - name: Run Sahara page tests
+        run: python -m pytest tests/test_sahara_station_page.py -q
+
+      - name: Remove one-time Codex workflow and commit result
+        shell: bash
+        run: |
+          rm -f .github/workflows/codex-experiment2.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add web/public/sahara-station/index.html docs/sahara-station/index.html tests/test_sahara_station_page.py .github/workflows/codex-experiment2.yml
+          git commit -m "Add Himalaya water study as Experiment 2"
+          git push origin HEAD:codex/experiment-2-himalaya
