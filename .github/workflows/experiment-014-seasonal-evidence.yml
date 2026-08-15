@@ -1,0 +1,62 @@
+name: Experiment 014 Wisla Gniew Grudziadz seasonal evidence
+on:
+  push:
+    branches: [experiment-014-wisla-gniew-grudziadz]
+    paths: ['.github/workflows/experiment-014-seasonal-evidence.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment-014-wisla-gniew-grudziadz
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: tools
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Install geospatial dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pillow requests rasterio pyproj
+      - name: Configure Test 014 from validated regional mosaic engine
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('tools/build_experiment_012_seasonal_evidence.py'); s=p.read_text()
+          replacements={'TEST = 12':'TEST = 14','LAT = 41.150000':'LAT = 53.660000','LON = -112.600000':'LON = 18.790000','LAT_STR = "41.150000"':'LAT_STR = "53.660000"','LON_STR = "-112.600000"':'LON_STR = "18.790000"','experiment-012-great-salt-lake-41-150000--112-600000':'experiment-014-wisla-gniew-grudziadz','experiment_012_great_salt_lake':'experiment_014_wisla_gniew_grudziadz','FRAME_WIDTH_M = 120000.0':'FRAME_WIDTH_M = 45000.0','FRAME_HEIGHT_M = 160000.0':'FRAME_HEIGHT_M = 70000.0','FRAME_LABEL = "120x160km"':'FRAME_LABEL = "45x70km"','DISPLAY_WIDTH = 900':'DISPLAY_WIDTH = 900','DISPLAY_HEIGHT = 1200':'DISPLAY_HEIGHT = 1400','TARGET_CRS = "EPSG:32612"':'TARGET_CRS = "EPSG:32634"','Test 012':'Test 014','TEST012':'TEST014','Experiment 012':'Experiment 014','Great Salt Lake Utah USA water-loss reference':'Wisla Gniew to Grudziadz seasonal river reference','Great Salt Lake':'Wisla Gniew-Grudziadz'}
+          for a,b in replacements.items(): s=s.replace(a,b)
+          Path('tools/build_experiment_014_seasonal_evidence.py').write_text(s)
+          PY
+      - name: Build Test 014 spring and autumn imagery 1990-2026
+        run: python tools/build_experiment_014_seasonal_evidence.py
+      - name: Validate Test 014 integrity
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          from PIL import Image
+          exp=Path('experiments/experiment_014_wisla_gniew_grudziadz'); summary=json.loads((exp/'BUILD_SUMMARY.json').read_text())
+          assert summary['experiment']==14; assert summary['center']=={'lat':53.66,'lon':18.79}; assert summary['frame_width_m']==45000 and summary['frame_height_m']==70000; assert summary['target_crs']=='EPSG:32634'; assert summary['spring_count_ok']>=30 and summary['autumn_count_ok']>=30
+          seen_hash={}; seen_item={}
+          for season in ('spring','autumn'):
+            root=exp/'seasonal_evidence'/season; m=json.loads((root/'manifest.json').read_text()); assert len(m['records'])==37
+            for r in m['records']:
+              if r.get('status')!='ok': continue
+              p=root/'images'/r['files'][0]; h=hashlib.sha256(p.read_bytes()).hexdigest(); key=f"{season}:{r['year']}"; assert h not in seen_hash; seen_hash[h]=key
+              item=r.get('item_id'); assert not item or item not in seen_item
+              if item: seen_item[item]=key
+              with Image.open(p) as im: assert im.width>=750 and im.height>=1100
+          print('EXPERIMENT_014_VALIDATED')
+          PY
+      - name: Upload Test 014 ZIPs
+        uses: actions/upload-artifact@v4
+        with:
+          name: TEST014_WISLA_GNIEW_GRUDZIADZ_1990_2026_SPRING_AUTUMN
+          path: experiments/experiment_014_wisla_gniew_grudziadz/
+          retention-days: 90
+          compression-level: 0
