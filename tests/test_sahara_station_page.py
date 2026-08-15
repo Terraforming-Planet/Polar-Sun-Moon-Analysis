@@ -115,3 +115,12 @@ def test_sahara_research_copy_separates_atlantic_paleoriver_context() -> None:
     assert "→ Atlantyk" in html
     expected = "Nie należy zaliczać tego systemu do rzek uchodzących do Morza Śródziemnego."
     assert expected in html
+
+
+
+def test_himalaya_article_is_experiment_two() -> None:
+    html = PAGE.read_text(encoding="utf-8")
+
+    assert 'id="experiment-2-himalaya"' in html
+    assert "EKSPERYMENT 2 / HIMALAJE / TOPOGRAFIA I WODA" in html
+    assert "Eksperyment 2 — Himalaje: jak rzeźba terenu steruje wodą" in html
