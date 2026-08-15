@@ -1,0 +1,88 @@
+name: Experiment 007 Karas Ilawa wide-view seasonal evidence
+
+on:
+  push:
+    branches:
+      - experiment-007-karas-ilawa-53-5639201-19-4706276
+    paths:
+      - 'tools/build_experiment_007_seasonal_evidence.py'
+      - '.github/workflows/experiment-007-seasonal-evidence.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment-007-karas-ilawa-53-5639201-19-4706276
+          fetch-depth: 20
+          filter: blob:none
+          sparse-checkout: |
+            tools
+            experiments
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install geospatial dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pillow requests rasterio pyproj
+      - name: Build Test 007 imagery 1990-2026
+        run: python tools/build_experiment_007_seasonal_evidence.py
+      - name: Validate Test 007 package
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from datetime import date
+          from pathlib import Path
+          exp=Path('experiments/experiment_007_karas_ilawa')
+          s=json.loads((exp/'BUILD_SUMMARY.json').read_text())
+          assert s['experiment']==7
+          assert s['center']=={'lat':53.5639201,'lon':19.4706276}
+          assert s['frame_width_m']==18000 and s['frame_height_m']==24000
+          assert s['spring_count_ok']>=30 and s['autumn_count_ok']>=30
+          assert Path(s['combined_zip']).exists()
+          for season in ('spring','autumn'):
+              root=exp/'seasonal_evidence'/season
+              manifest=json.loads((root/'manifest.json').read_text())
+              assert len(manifest['records'])==37
+              seen={}
+              for r in manifest['records']:
+                  if r.get('status')!='ok': continue
+                  p=root/'images'/r['files'][0]
+                  h=hashlib.sha256(p.read_bytes()).hexdigest()
+                  assert h not in seen, (season, seen.get(h), r['year'])
+                  seen[h]=r['year']
+          if date.today()<date(2026,9,1):
+              manifest=json.loads((exp/'seasonal_evidence/autumn/manifest.json').read_text())
+              r=next(x for x in manifest['records'] if x['year']==2026)
+              assert r.get('status')!='ok'
+          print('EXPERIMENT_007_VALIDATED')
+          PY
+      - name: Upload Test 007 archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: TEST007_KARAS_ILAWA_1990_2026
+          path: |
+            experiments/experiment_007_karas_ilawa/TEST007_KARAS_ILAWA_1990_2026_FULL_VIEW_18x24km_53.5639201_19.4706276.zip
+            experiments/experiment_007_karas_ilawa/seasonal_evidence/spring/TEST007_SPRING_1990_2026_37_YEARS_18x24km_53.5639201_19.4706276.zip
+            experiments/experiment_007_karas_ilawa/seasonal_evidence/autumn/TEST007_AUTUMN_1990_2026_37_YEARS_18x24km_53.5639201_19.4706276.zip
+            experiments/experiment_007_karas_ilawa/BUILD_SUMMARY.json
+            experiments/experiment_007_karas_ilawa/EXPERIMENT_007_REPORT.md
+            experiments/experiment_007_karas_ilawa/EVIDENCE_POLICY.json
+          retention-days: 90
+      - name: Commit Test 007 evidence outputs
+        run: |
+          git config user.name "Terraforming Planet"
+          git config user.email "kontakt@teslaeco.pl"
+          git add experiments/experiment_007_karas_ilawa
+          git diff --cached --quiet && echo "No Test 007 evidence changes" && exit 0
+          git commit -m "Build Test 007 wide-view satellite dataset 1990-2026"
+          git pull --rebase origin experiment-007-karas-ilawa-53-5639201-19-4706276
+          git push origin HEAD:experiment-007-karas-ilawa-53-5639201-19-4706276
