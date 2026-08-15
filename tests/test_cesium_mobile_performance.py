@@ -24,13 +24,15 @@ def test_full_live_uses_one_global_viirs_cloud_bearing_layer() -> None:
     assert "layer === 'full-live-earth' || layer === 'global-clouds' || layer === 'regional-clouds' || layer === 'nasa-day'" in source
     assert "animatedMode = layer === 'regional-clouds' || layer === 'ocean-waves'" in source
 
-    regional_start = source.index("if (layer === 'regional-clouds') {")
+    composition_start = source.index("const usesGlobalTrueColor =")
+    regional_start = source.index("if (layer === 'regional-clouds') {", composition_start)
     waves_start = source.index("if (layer === 'ocean-waves'", regional_start)
-    before_regional_overlays = source[:regional_start]
+    global_composition = source[composition_start:regional_start]
     regional_block = source[regional_start:waves_start]
 
-    assert "GOES-East_ABI_GeoColor" not in before_regional_overlays
-    assert "GOES-East_ABI_GeoColor" in regional_block
+    assert "GOES-East_ABI_GeoColor" not in global_composition
+    assert "REGIONAL_CLOUD_PRODUCTS" in regional_block
+    assert "GOES-East_ABI_GeoColor" in source
     assert "GOES-West_ABI_GeoColor" in source
     assert "Himawari_AHI_Band13_Clean_Infrared" in source
 
