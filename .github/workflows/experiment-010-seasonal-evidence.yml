@@ -1,0 +1,109 @@
+name: Experiment 010 Drweca wetlands seasonal evidence
+
+on:
+  push:
+    branches:
+      - experiment-010-drweca-wetlands-53-067318-18-872006
+    paths:
+      - 'tools/build_experiment_010_seasonal_evidence.py'
+      - '.github/workflows/experiment-010-seasonal-evidence.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment-010-drweca-wetlands-53-067318-18-872006
+          fetch-depth: 20
+          filter: blob:none
+          sparse-checkout: |
+            tools
+            experiments
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install geospatial dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pillow requests rasterio pyproj
+      - name: Build Test 010 Drweca imagery 1990-2026
+        run: python tools/build_experiment_010_seasonal_evidence.py
+      - name: Validate Test 010 package
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from datetime import date
+          from pathlib import Path
+          exp=Path('experiments/experiment_010_drweca_wetlands')
+          s=json.loads((exp/'BUILD_SUMMARY.json').read_text())
+          assert s['experiment']==10
+          assert s['center']=={'lat':53.067318,'lon':18.872006}
+          assert s['frame_width_m']==8000 and s['frame_height_m']==12000
+          assert s['spring_count_ok']>=30 and s['autumn_count_ok']>=30
+          assert Path(s['combined_zip']).exists()
+          for season in ('spring','autumn'):
+              root=exp/'seasonal_evidence'/season
+              manifest=json.loads((root/'manifest.json').read_text())
+              assert len(manifest['records'])==37
+              seen={}
+              for r in manifest['records']:
+                  if r.get('status')!='ok': continue
+                  p=root/'images'/r['files'][0]
+                  h=hashlib.sha256(p.read_bytes()).hexdigest()
+                  assert h not in seen, (season, seen.get(h), r['year'])
+                  seen[h]=r['year']
+          if date.today()<date(2026,9,1):
+              manifest=json.loads((exp/'seasonal_evidence/autumn/manifest.json').read_text())
+              r=next(x for x in manifest['records'] if x['year']==2026)
+              assert r.get('status')!='ok'
+          print('EXPERIMENT_010_DRWECA_VALIDATED')
+          PY
+      - name: Upload Test 010 archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: TEST010_DRWECA_WETLANDS_1990_2026
+          path: |
+            experiments/experiment_010_drweca_wetlands/TEST010_DRWECA_WETLANDS_1990_2026_FULL_VIEW_8x12km_53.067318_18.872006.zip
+            experiments/experiment_010_drweca_wetlands/seasonal_evidence/spring/TEST010_SPRING_1990_2026_37_YEARS_8x12km_53.067318_18.872006.zip
+            experiments/experiment_010_drweca_wetlands/seasonal_evidence/autumn/TEST010_AUTUMN_1990_2026_37_YEARS_8x12km_53.067318_18.872006.zip
+            experiments/experiment_010_drweca_wetlands/BUILD_SUMMARY.json
+            experiments/experiment_010_drweca_wetlands/EXPERIMENT_010_REPORT.md
+            experiments/experiment_010_drweca_wetlands/EVIDENCE_POLICY.json
+          retention-days: 90
+      - name: Prepare repository-safe Test 010 outputs
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          exp=Path('experiments/experiment_010_drweca_wetlands')
+          limit=95*1024*1024
+          deleted=[]
+          for p in exp.rglob('*.zip'):
+              if p.stat().st_size>limit:
+                  deleted.append(str(p))
+                  p.unlink()
+          if deleted:
+              path=exp/'BUILD_SUMMARY.json'
+              s=json.loads(path.read_text())
+              s['archive_delivery']='github_actions_artifact_for_large_archives'
+              s['repository_omitted_large_archives']=deleted
+              s['archive_run_url']='https://github.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/actions'
+              path.write_text(json.dumps(s,indent=2,ensure_ascii=False))
+          print({'deleted_large_archives':deleted})
+          PY
+      - name: Commit Test 010 evidence outputs
+        run: |
+          git config user.name "Terraforming Planet"
+          git config user.email "kontakt@teslaeco.pl"
+          git add experiments/experiment_010_drweca_wetlands
+          git diff --cached --quiet && echo "No Test 010 evidence changes" && exit 0
+          git commit -m "Build Test 010 Drweca wetland satellite dataset 1990-2026"
+          git pull --rebase origin experiment-010-drweca-wetlands-53-067318-18-872006
+          git push origin HEAD:experiment-010-drweca-wetlands-53-067318-18-872006
