@@ -27,6 +27,21 @@ def test_sahara_station_page_exposes_terrain_controls() -> None:
         assert marker in html
 
 
+def test_sahara_station_uses_cube_chess_512_spatial_engine() -> None:
+    js = SCRIPT.read_text(encoding="utf-8")
+
+    assert "const BOARD_SIZE = 8" in js
+    assert "const TOTAL_LEVELS = 8" in js
+    assert "BOARD_SIZE ** 2 * TOTAL_LEVELS" in js
+    assert "8 × 8 × 8" in js
+    assert "CubeChess512SpatialEngine" in js
+    assert "THREE.InstancedMesh" in js
+    assert "function buildGrid512()" in js
+    assert "function worldToGridCell" in js
+    assert "function updateGridOccupancy" in js
+    assert "GRID 512" in js
+
+
 def test_sahara_station_uses_shadowed_3d_and_strict_material_pairing() -> None:
     js = SCRIPT.read_text(encoding="utf-8")
 
