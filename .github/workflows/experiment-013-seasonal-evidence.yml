@@ -1,0 +1,90 @@
+name: Experiment 013 Cosmopolis Grays Harbor seasonal evidence
+
+on:
+  push:
+    branches: [experiment-013-cosmopolis-grays-harbor]
+    paths: ['.github/workflows/experiment-013-seasonal-evidence.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment-013-cosmopolis-grays-harbor
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: tools
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install geospatial dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pillow requests rasterio pyproj
+      - name: Configure Test 013 from validated regional mosaic engine
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('tools/build_experiment_012_seasonal_evidence.py')
+          s=p.read_text()
+          replacements={
+            'TEST = 12':'TEST = 13',
+            'LAT = 41.150000':'LAT = 46.965781',
+            'LON = -112.600000':'LON = -123.510786',
+            'LAT_STR = "41.150000"':'LAT_STR = "46.965781"',
+            'LON_STR = "-112.600000"':'LON_STR = "-123.510786"',
+            'experiment-012-great-salt-lake-41-150000--112-600000':'experiment-013-cosmopolis-grays-harbor',
+            'experiment_012_great_salt_lake':'experiment_013_cosmopolis_grays_harbor',
+            'FRAME_WIDTH_M = 120000.0':'FRAME_WIDTH_M = 80000.0',
+            'FRAME_HEIGHT_M = 160000.0':'FRAME_HEIGHT_M = 60000.0',
+            'FRAME_LABEL = "120x160km"':'FRAME_LABEL = "80x60km"',
+            'DISPLAY_WIDTH = 900':'DISPLAY_WIDTH = 1200',
+            'DISPLAY_HEIGHT = 1200':'DISPLAY_HEIGHT = 900',
+            'TARGET_CRS = "EPSG:32612"':'TARGET_CRS = "EPSG:32610"',
+            'Test 012':'Test 013', 'TEST012':'TEST013', 'Experiment 012':'Experiment 013',
+            'Great Salt Lake Utah USA water-loss reference':'Cosmopolis Grays Harbor Chehalis River seasonal water reference',
+            'Great Salt Lake':'Cosmopolis / Grays Harbor',
+          }
+          for a,b in replacements.items(): s=s.replace(a,b)
+          p=Path('tools/build_experiment_013_seasonal_evidence.py'); p.write_text(s)
+          PY
+      - name: Build Test 013 spring and autumn imagery 1990-2026
+        run: python tools/build_experiment_013_seasonal_evidence.py
+      - name: Validate Test 013 integrity
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          from PIL import Image
+          exp=Path('experiments/experiment_013_cosmopolis_grays_harbor')
+          summary=json.loads((exp/'BUILD_SUMMARY.json').read_text())
+          assert summary['experiment']==13
+          assert summary['center']=={'lat':46.965781,'lon':-123.510786}
+          assert summary['frame_width_m']==80000 and summary['frame_height_m']==60000
+          assert summary['target_crs']=='EPSG:32610'
+          assert summary['spring_count_ok']>=30 and summary['autumn_count_ok']>=30
+          seen_hash={}; seen_item={}
+          for season in ('spring','autumn'):
+            root=exp/'seasonal_evidence'/season; m=json.loads((root/'manifest.json').read_text()); assert len(m['records'])==37
+            for r in m['records']:
+              if r.get('status')!='ok': continue
+              p=root/'images'/r['files'][0]; h=hashlib.sha256(p.read_bytes()).hexdigest(); key=f"{season}:{r['year']}"
+              assert h not in seen_hash; seen_hash[h]=key
+              item=r.get('item_id'); assert not item or item not in seen_item; seen_item[item]=key if item else key
+              with Image.open(p) as im: assert im.width>=1200 and im.height>=900
+          print('EXPERIMENT_013_VALIDATED')
+          PY
+      - name: Upload Test 013 ZIPs
+        uses: actions/upload-artifact@v4
+        with:
+          name: TEST013_COSMOPOLIS_GRAYS_HARBOR_1990_2026_SPRING_AUTUMN
+          path: experiments/experiment_013_cosmopolis_grays_harbor/
+          retention-days: 90
+          compression-level: 0
