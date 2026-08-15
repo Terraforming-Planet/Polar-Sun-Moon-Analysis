@@ -1,0 +1,1737 @@
+{
+  "experiment": "Experiment 008 - Jezioro Stelchno water and shoreline monitoring",
+  "center": {
+    "lat": 53.525217,
+    "lon": 18.46132
+  },
+  "crop": "2 km x 2 km centered exactly on coordinate for imagery; measurement stage uses larger AOI where needed",
+  "season": "autumn",
+  "preferred_month": 9,
+  "fallback_months": [
+    10,
+    11
+  ],
+  "years_requested": [
+    1990,
+    1991,
+    1992,
+    1993,
+    1994,
+    1995,
+    1996,
+    1997,
+    1998,
+    1999,
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "filename_rule": "every image filename begins YYYY_YYYY-MM-DD_...",
+  "integrity_policy": "real public satellite pixels only; no AI filling/super-resolution; image-first broken-image check; exact cross-year SHA duplicate rejected",
+  "records": [
+    {
+      "year": 1990,
+      "date": "1990-10-25",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19901025_02_T1",
+      "scene_cloud_cover_percent": 1.0,
+      "local_clear_fraction": 0.991173,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1990_1990-10-25_landsat-5_30m_7x9km_native.png",
+        "1990_1990-10-25_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "2f9e3942022f3880f780e5e2d9e606b6367a90f4347f9680ed364c5f5b1e1c85",
+        "visual_std": 73.8528,
+        "near_black_fraction": 0.008499,
+        "near_white_fraction": 0.0112,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 10,
+      "selected_month_name": "October",
+      "is_fallback_month": true,
+      "preferred_month": 9,
+      "selection_quality_score": 0.993586,
+      "fallback_reason": "preferred month had no sufficiently reliable candidate",
+      "rejected_candidates": [
+        {
+          "month": 9,
+          "item_id": "LT05_L2SP_189023_19900916_02_T1",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.7457484978540773
+        }
+      ]
+    },
+    {
+      "year": 1991,
+      "date": "1991-09-26",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19910926_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1991_1991-09-26_landsat-5_30m_7x9km_native.png",
+        "1991_1991-09-26_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "308b4799c7f0ecb25f2501735e6cff3be3b93729b9e0970983260399969c3aa7",
+        "visual_std": 75.8738,
+        "near_black_fraction": 0.013885,
+        "near_white_fraction": 0.014038,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1992,
+      "date": "1992-09-28",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19920928_02_T1",
+      "scene_cloud_cover_percent": 63.0,
+      "local_clear_fraction": 0.875923,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1992_1992-09-28_landsat-5_30m_7x9km_native.png",
+        "1992_1992-09-28_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "c6404fd9d3b9c62b2aec6fe341cb015428ef5395e6bdeba0f577eec2811c7599",
+        "visual_std": 46.814,
+        "near_black_fraction": 0.085236,
+        "near_white_fraction": 0.01886,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.885368,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1993,
+      "date": "1993-09-08",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19930908_02_T1",
+      "scene_cloud_cover_percent": 7.0,
+      "local_clear_fraction": 0.880106,
+      "local_valid_fraction": 0.999928,
+      "native_resolution_m": 30,
+      "files": [
+        "1993_1993-09-08_landsat-5_30m_7x9km_native.png",
+        "1993_1993-09-08_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "36a7300629fc22491a24a25a23af16157ecebb313425e4568c53b66038cbca67",
+        "visual_std": 47.104,
+        "near_black_fraction": 0.051163,
+        "near_white_fraction": 0.016724,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.916151,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1994,
+      "date": "1994-10-20",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19941020_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 0.9999,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1994_1994-10-20_landsat-5_30m_7x9km_native.png",
+        "1994_1994-10-20_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "bb6fffc8899f0f066cb3705392b953ee2bf4c1b9b3a11bf752d6772649cb27e4",
+        "visual_std": 67.1374,
+        "near_black_fraction": 0.007599,
+        "near_white_fraction": 0.012146,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 10,
+      "selected_month_name": "October",
+      "is_fallback_month": true,
+      "preferred_month": 9,
+      "selection_quality_score": 0.949933,
+      "fallback_reason": "preferred month had no sufficiently reliable candidate",
+      "rejected_candidates": [
+        {
+          "month": 9,
+          "item_id": "LT05_L2SP_190023_19940902_02_T2",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.28450000000000003
+        }
+      ]
+    },
+    {
+      "year": 1995,
+      "status": "not_found_or_rejected",
+      "requested_season": "autumn",
+      "months_searched": [
+        9,
+        10,
+        11
+      ],
+      "rejected_candidates": [
+        {
+          "month": 9,
+          "item_id": "LT05_L2SP_189023_19950914_02_T2",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.29850000000000004
+        },
+        {
+          "month": 10,
+          "item_id": "LT05_L2SP_190023_19951023_02_T1",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.30978927038626614
+        },
+        {
+          "month": 11,
+          "item_id": "LT05_L2SP_189023_19951117_02_T2",
+          "reason": "RuntimeError('image-first visual integrity check failed')",
+          "moved_files": [
+            "experiments/experiment_008_jezioro_stelchno/seasonal_evidence/autumn/rejected_candidates/1995_1995-11-17_landsat-5_30m_7x9km_display1000x1000.jpg",
+            "experiments/experiment_008_jezioro_stelchno/seasonal_evidence/autumn/rejected_candidates/1995_1995-11-17_landsat-5_30m_7x9km_native.png"
+          ],
+          "score": 0.6548110293688437
+        }
+      ]
+    },
+    {
+      "year": 1996,
+      "date": "1996-09-23",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19960923_02_T1",
+      "scene_cloud_cover_percent": 22.0,
+      "local_clear_fraction": 0.999986,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1996_1996-09-23_landsat-5_30m_7x9km_native.png",
+        "1996_1996-09-23_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "d73cd0959a3777f607684c6db737ed867b7845a4d980dd3faafa42144718676a",
+        "visual_std": 74.492,
+        "near_black_fraction": 0.015015,
+        "near_white_fraction": 0.016846,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.98899,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1997,
+      "date": "1997-11-13",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19971113_02_T2",
+      "scene_cloud_cover_percent": 100.0,
+      "local_clear_fraction": 0.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1997_1997-11-13_landsat-5_30m_7x9km_native.png",
+        "1997_1997-11-13_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "34c4e01fbd815c16f205ced878ada6b8c2784ac42632cf8e202d8c46259ad1e6",
+        "visual_std": 60.6785,
+        "near_black_fraction": 0.024246,
+        "near_white_fraction": 0.029617,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 11,
+      "selected_month_name": "November",
+      "is_fallback_month": true,
+      "preferred_month": 9,
+      "selection_quality_score": 0.28,
+      "fallback_reason": "preferred month had no sufficiently reliable candidate",
+      "rejected_candidates": [
+        {
+          "month": 9,
+          "item_id": "LT05_L2SP_190023_19970926_02_T1",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.5933030042918455
+        },
+        {
+          "month": 10,
+          "item_id": "LT05_L2SP_191023_19971003_02_T2",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.5726776824034335
+        }
+      ]
+    },
+    {
+      "year": 1998,
+      "date": "1998-09-06",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19980906_02_T1",
+      "scene_cloud_cover_percent": 2.0,
+      "local_clear_fraction": 0.997425,
+      "local_valid_fraction": 0.888784,
+      "native_resolution_m": 30,
+      "files": [
+        "1998_1998-09-06_landsat-5_30m_7x9km_native.png",
+        "1998_1998-09-06_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "b0719f8cde29a9b7c439b491af38773139c517824444fe61782ee887daa47c0b",
+        "visual_std": 74.3846,
+        "near_black_fraction": 0.13736,
+        "near_white_fraction": 0.015717,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.066406,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.966134,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1999,
+      "date": "1999-09-08",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_19990908_02_T1",
+      "scene_cloud_cover_percent": 5.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1999_1999-09-08_landsat-7_30m_7x9km_native.png",
+        "1999_1999-09-08_landsat-7_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "fcbd71dace39a475b9e5077fb51593ade9da8f34a05a3b1123e0294b89b18324",
+        "visual_std": 77.7544,
+        "near_black_fraction": 0.035004,
+        "near_white_fraction": 0.01619,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.9975,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2000,
+      "date": "2000-09-18",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_20000918_02_T2",
+      "scene_cloud_cover_percent": 9.0,
+      "local_clear_fraction": 0.993691,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2000_2000-09-18_landsat-5_30m_7x9km_native.png",
+        "2000_2000-09-18_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "cb175ec40de1fd937cd5e9a756311cc8602f6812b261ed12f3fe98b2935a7a8c",
+        "visual_std": 58.4501,
+        "near_black_fraction": 0.015533,
+        "near_white_fraction": 0.014221,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.991273,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2001,
+      "date": "2001-10-24",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_189023_20011024_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 0.999986,
+      "native_resolution_m": 30,
+      "files": [
+        "2001_2001-10-24_landsat-7_30m_7x9km_native.png",
+        "2001_2001-10-24_landsat-7_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "8fb51a13cad7cb76c19d7740e46e78b75f2823f86e82caf207aedee62e9dee18",
+        "visual_std": 71.3758,
+        "near_black_fraction": 0.006393,
+        "near_white_fraction": 0.010742,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 10,
+      "selected_month_name": "October",
+      "is_fallback_month": true,
+      "preferred_month": 9,
+      "selection_quality_score": 0.949996,
+      "fallback_reason": "preferred month had no sufficiently reliable candidate",
+      "rejected_candidates": [
+        {
+          "month": 9,
+          "item_id": "LE07_L2SP_189023_20010906_02_T1",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.5940638054363376
+        }
+      ]
+    },
+    {
+      "year": 2002,
+      "date": "2002-09-25",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_189023_20020925_02_T1",
+      "scene_cloud_cover_percent": 16.0,
+      "local_clear_fraction": 0.999871,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2002_2002-09-25_landsat-7_30m_7x9km_native.png",
+        "2002_2002-09-25_landsat-7_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "765072edb2148d801e80c05f098449c44a8eddc92de4def9aaeaeefe40ea0a8f",
+        "visual_std": 70.6792,
+        "near_black_fraction": 0.02034,
+        "near_white_fraction": 0.014511,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.991914,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2003,
+      "date": "2003-09-20",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20030920_02_T1",
+      "scene_cloud_cover_percent": 19.0,
+      "local_clear_fraction": 0.818819,
+      "local_valid_fraction": 0.999485,
+      "native_resolution_m": 30,
+      "files": [
+        "2003_2003-09-20_landsat-5_30m_7x9km_native.png",
+        "2003_2003-09-20_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "ddbf3295bcbcdac87ece9f4412d9ff37ed52a0bc350ee5432297ca40626c2f0c",
+        "visual_std": 53.6097,
+        "near_black_fraction": 0.03421,
+        "near_white_fraction": 0.016693,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.868965,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2004,
+      "date": "2004-10-06",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_191022_20041006_02_T2",
+      "scene_cloud_cover_percent": 64.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 0.951359,
+      "native_resolution_m": 30,
+      "files": [
+        "2004_2004-10-06_landsat-5_30m_7x9km_native.png",
+        "2004_2004-10-06_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "2c2c91cfc6d5c356659e411ab9fa483d97108712265a24a8a356ab8216071486",
+        "visual_std": 63.6313,
+        "near_black_fraction": 0.063156,
+        "near_white_fraction": 0.013489,
+        "dark_row_fraction": 0.019531,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 10,
+      "selected_month_name": "October",
+      "is_fallback_month": true,
+      "preferred_month": 9,
+      "selection_quality_score": 0.954381,
+      "fallback_reason": "preferred month had no sufficiently reliable candidate",
+      "rejected_candidates": [
+        {
+          "month": 9,
+          "item_id": "LT05_L2SP_190023_20040913_02_T1",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.29000000000000004
+        }
+      ]
+    },
+    {
+      "year": 2005,
+      "date": "2005-09-09",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20050909_02_T1",
+      "scene_cloud_cover_percent": 2.0,
+      "local_clear_fraction": 0.999599,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2005_2005-09-09_landsat-5_30m_7x9km_native.png",
+        "2005_2005-09-09_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "bffec23ad3a7051d3fb43cf7a9311b340eb925ce7a59332b1aaf76d44e9f2616",
+        "visual_std": 77.0222,
+        "near_black_fraction": 0.012985,
+        "near_white_fraction": 0.019257,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.998732,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2006,
+      "date": "2006-09-12",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20060912_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2006_2006-09-12_landsat-5_30m_7x9km_native.png",
+        "2006_2006-09-12_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "c9125a837b5833ea6fa01884d5aac9250d50ec9d988427c19a408fcbfccd120d",
+        "visual_std": 72.8451,
+        "near_black_fraction": 0.017853,
+        "near_white_fraction": 0.016953,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2007,
+      "date": "2007-09-15",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20070915_02_T1",
+      "scene_cloud_cover_percent": 56.0,
+      "local_clear_fraction": 0.970458,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2007_2007-09-15_landsat-5_30m_7x9km_native.png",
+        "2007_2007-09-15_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "c7dca5a7cc87c7abad69f21b674e678d19578aaa4f761caaa555b738a3250d1f",
+        "visual_std": 67.2766,
+        "near_black_fraction": 0.018845,
+        "near_white_fraction": 0.012268,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.952207,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2008,
+      "date": "2008-09-25",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_189023_20080925_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 0.989138,
+      "local_valid_fraction": 0.607153,
+      "native_resolution_m": 30,
+      "files": [
+        "2008_2008-09-25_landsat-7_30m_7x9km_native.png",
+        "2008_2008-09-25_landsat-7_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "b9307a26725d72f7f0b6e86686c63a9d648711fe272c90ebf78df18fe3af5d39",
+        "visual_std": 71.3722,
+        "near_black_fraction": 0.369995,
+        "near_white_fraction": 0.008224,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.832725,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2009,
+      "date": "2009-09-20",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20090920_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2009_2009-09-20_landsat-5_30m_7x9km_native.png",
+        "2009_2009-09-20_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "169d9d107d790652557ca7bdcb61a3004025b7e94333283ae0a2f2b0261aa4e4",
+        "visual_std": 79.3083,
+        "near_black_fraction": 0.019958,
+        "near_white_fraction": 0.016174,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.95,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2010,
+      "date": "2010-09-07",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20100907_02_T1",
+      "scene_cloud_cover_percent": 57.0,
+      "local_clear_fraction": 0.968712,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2010_2010-09-07_landsat-5_30m_7x9km_native.png",
+        "2010_2010-09-07_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "688a5530d90a7f7f76373062f8cd9e1cf2e76e301596b2b7370215ea6d6bcbae",
+        "visual_std": 68.4979,
+        "near_black_fraction": 0.019485,
+        "near_white_fraction": 0.012817,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.950537,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2011,
+      "date": "2011-09-01",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_20110901_02_T1",
+      "scene_cloud_cover_percent": 75.0,
+      "local_clear_fraction": 0.971917,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2011_2011-09-01_landsat-5_30m_7x9km_native.png",
+        "2011_2011-09-01_landsat-5_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "b6d66b19232201dac75c4ed9742dfb1e751283f1a28e7f0682416746466c8abd",
+        "visual_std": 69.2328,
+        "near_black_fraction": 0.022278,
+        "near_white_fraction": 0.01413,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.943684,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2012,
+      "date": "2012-09-11",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20120911_02_T1",
+      "scene_cloud_cover_percent": 2.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 0.995465,
+      "native_resolution_m": 30,
+      "files": [
+        "2012_2012-09-11_landsat-7_30m_7x9km_native.png",
+        "2012_2012-09-11_landsat-7_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "6b1f42429d8459626db9399ce20ed888202cd608bcca92676d8076c5de4d5db0",
+        "visual_std": 74.0724,
+        "near_black_fraction": 0.014191,
+        "near_white_fraction": 0.016373,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.99773,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2013,
+      "date": "2013-09-06",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-8",
+      "item_id": "LC08_L2SP_190023_20130906_02_T1",
+      "scene_cloud_cover_percent": 0.01,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2013_2013-09-06_landsat-8_30m_7x9km_native.png",
+        "2013_2013-09-06_landsat-8_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "033fa2e02090ae47a41cc49f69320a09495e1d94cd02f334139bdbf0aa7dde37",
+        "visual_std": 71.8912,
+        "near_black_fraction": 0.022217,
+        "near_white_fraction": 0.01767,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.999995,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2014,
+      "date": "2014-09-18",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-8",
+      "item_id": "LC08_L2SP_189023_20140918_02_T1",
+      "scene_cloud_cover_percent": 0.02,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 0.998526,
+      "native_resolution_m": 30,
+      "files": [
+        "2014_2014-09-18_landsat-8_30m_7x9km_native.png",
+        "2014_2014-09-18_landsat-8_30m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "264623f6b310c342cacb9e3e2874b7817d1aa4b5c309d6205cabadd41327ced6",
+        "visual_std": 76.3562,
+        "near_black_fraction": 0.023773,
+        "near_white_fraction": 0.01796,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.999577,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2015,
+      "date": "2015-09-29",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20150929T100016_R122_T34UCE_20210412T130945",
+      "scene_cloud_cover_percent": 17.578471,
+      "local_clear_fraction": 0.99334,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2015_2015-09-29_Sentinel-2A_10m_7x9km_native.png",
+        "2015_2015-09-29_Sentinel-2A_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "dad23e2e1e8336a95ae6af4768f34caf3c0935c0b349871f44bd2f4b8dc79732",
+        "visual_std": 71.0314,
+        "near_black_fraction": 0.020767,
+        "near_white_fraction": 0.007889,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 1.011748,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2016,
+      "date": "2016-09-13",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20160913T100022_R122_T34UCE_20210213T003126",
+      "scene_cloud_cover_percent": 0.752187,
+      "local_clear_fraction": 0.99974,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2016_2016-09-13_Sentinel-2A_10m_7x9km_native.png",
+        "2016_2016-09-13_Sentinel-2A_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "38177d2aa6490a3afc7f198ebfe47f19666376a2b5066f3a0350d3b3b0e7126b",
+        "visual_std": 65.5871,
+        "near_black_fraction": 0.005188,
+        "near_white_fraction": 0.010498,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 1.024449,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2017,
+      "date": "2017-09-28",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20170928T100021_R122_T33UYV_20210202T110611",
+      "scene_cloud_cover_percent": 2.730001,
+      "local_clear_fraction": 0.97894,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2017_2017-09-28_Sentinel-2A_10m_7x9km_native.png",
+        "2017_2017-09-28_Sentinel-2A_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "1646add1200084bdd9d011a9b8cf56deab2f84fa48a5973e7288677b7d655969",
+        "visual_std": 68.2397,
+        "near_black_fraction": 0.005859,
+        "near_white_fraction": 0.010437,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 1.009525,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2018,
+      "date": "2018-09-03",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20180903T100021_R122_T34UCE_20201011T075930",
+      "scene_cloud_cover_percent": 5.112681,
+      "local_clear_fraction": 0.999949,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2018_2018-09-03_Sentinel-2A_10m_7x9km_native.png",
+        "2018_2018-09-03_Sentinel-2A_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "99bae2eefeb655c538d9a25b1ddfa09a91bb077091335f64f08cfd1a9d54fbd0",
+        "visual_std": 69.8762,
+        "near_black_fraction": 0.023102,
+        "near_white_fraction": 0.010788,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 1.02241,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2019,
+      "date": "2019-09-05",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20190905T095031_R079_T33UYV_20201004T093058",
+      "scene_cloud_cover_percent": 31.99648,
+      "local_clear_fraction": 0.977079,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2019_2019-09-05_Sentinel-2A_10m_7x9km_native.png",
+        "2019_2019-09-05_Sentinel-2A_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "80b2e9c62fca0f09c227c9cec5605650fd3a99d5507a0a32ccc5a180e231a007",
+        "visual_std": 66.0262,
+        "near_black_fraction": 0.02829,
+        "near_white_fraction": 0.004868,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 0.993645,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2020,
+      "date": "2020-09-12",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20200912T100031_R122_T33UYV_20200918T134152",
+      "scene_cloud_cover_percent": 0.483824,
+      "local_clear_fraction": 0.999651,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2020_2020-09-12_Sentinel-2A_10m_7x9km_native.png",
+        "2020_2020-09-12_Sentinel-2A_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "caf4fa5cf13972f2541c0aff2b7c3cdcc1e6e5f4afb259542549e522e38bec1a",
+        "visual_std": 65.2491,
+        "near_black_fraction": 0.01593,
+        "near_white_fraction": 0.011627,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 1.024524,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2021,
+      "date": "2021-09-27",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20210927T100031_R122_T33UYV_20210927T175724",
+      "scene_cloud_cover_percent": 0.330401,
+      "local_clear_fraction": 0.999708,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2021_2021-09-27_Sentinel-2A_10m_7x9km_native.png",
+        "2021_2021-09-27_Sentinel-2A_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "07051707bb4a25fe5685b98f6407811634bb47c37917799ba6ff05c7dc0a1990",
+        "visual_std": 66.8833,
+        "near_black_fraction": 0.019669,
+        "near_white_fraction": 0.011017,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 1.024639,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2022,
+      "date": "2022-09-04",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20220904T094549_R079_T33UYV_20240731T165745",
+      "scene_cloud_cover_percent": 24.14601,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2022_2022-09-04_Sentinel-2B_10m_7x9km_native.png",
+        "2022_2022-09-04_Sentinel-2B_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "f8ccb202ccef19b1d602688f0318818cdf9e460bb5ee1b16700dca2315644bf3",
+        "visual_std": 69.0079,
+        "near_black_fraction": 0.019424,
+        "near_white_fraction": 0.011429,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 1.012927,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2023,
+      "date": "2023-09-12",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20230912T095609_R122_T33UYV_20241103T122113",
+      "scene_cloud_cover_percent": 0.123749,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2023_2023-09-12_Sentinel-2B_10m_7x9km_native.png",
+        "2023_2023-09-12_Sentinel-2B_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "4e0e9ddfabd63d561bc3d40b6c5d464432ec9e40815fcf6f4ea40475c234c807",
+        "visual_std": 70.4037,
+        "near_black_fraction": 0.006332,
+        "near_white_fraction": 0.010651,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 1.024938,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2024,
+      "date": "2024-09-08",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20240908T095031_R079_T33UYV_20240908T133147",
+      "scene_cloud_cover_percent": 0.007657,
+      "local_clear_fraction": 0.999835,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2024_2024-09-08_Sentinel-2A_10m_7x9km_native.png",
+        "2024_2024-09-08_Sentinel-2A_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "a67c0d41e6ffc71a14d42b276d5ae021bde809dbb300680f7575c71a7ab884fd",
+        "visual_std": 73.3114,
+        "near_black_fraction": 0.019791,
+        "near_white_fraction": 0.011551,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 1.024886,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2025,
+      "date": "2025-09-26",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2C",
+      "item_id": "S2C_MSIL2A_20250926T100041_R122_T33UYV_20250926T152116",
+      "scene_cloud_cover_percent": 0.012366,
+      "local_clear_fraction": 0.997276,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2025_2025-09-26_Sentinel-2C_10m_7x9km_native.png",
+        "2025_2025-09-26_Sentinel-2C_10m_7x9km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 7000,
+      "crop_height_m": 9000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Jezioro Stelchno",
+          "lat": 53.525217,
+          "lon": 18.46132
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "835a2374d194431b2195b48a5ac795aab729cbfaf9afb828c7e915dbbd774f02",
+        "visual_std": 70.8056,
+        "near_black_fraction": 0.021866,
+        "near_white_fraction": 0.007797,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "autumn",
+      "selected_month": 9,
+      "selected_month_name": "September",
+      "is_fallback_month": false,
+      "preferred_month": 9,
+      "selection_quality_score": 1.023169,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2026,
+      "status": "not_found_or_rejected",
+      "requested_season": "autumn",
+      "months_searched": [
+        9,
+        10,
+        11
+      ],
+      "rejected_candidates": []
+    }
+  ],
+  "count_ok": 35,
+  "count_missing_or_rejected": 2,
+  "targets": [
+    {
+      "name": "Jezioro Stelchno",
+      "lat": 53.525217,
+      "lon": 18.46132
+    }
+  ],
+  "aoi": {
+    "width_m": 7000,
+    "height_m": 9000,
+    "orientation": "portrait_north_up",
+    "purpose": "reference-height view covering all of Jezioro Stelchno plus Skrzynki, Czersk Swiecki, Lipinki and surrounding wetland/agricultural context"
+  },
+  "dataset_role": "independent TerraWater lake comparison case",
+  "test_number": 8,
+  "object_name": "Jezioro Stelchno",
+  "zip": "experiments/experiment_008_jezioro_stelchno/seasonal_evidence/autumn/TEST008_AUTUMN_1990_2026_37_YEARS_7x9km_53.525217_18.461320.zip"
+}
