@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#1b1208">
+  <meta name="description" content="Stacja badawcza Sahara — interaktywny symulator 3D terraformowania: góry, doliny, bilans materiału, cienie i kontekst paleorzek Sahary.">
+  <title>Stacja badawcza Sahara — symulator terraformowania 3D</title>
+  <link rel="stylesheet" href="./sahara-lab.css">
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.167.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.167.1/examples/jsm/"}}</script>
+</head>
+<body>
+<main>
+  <nav class="topbar" aria-label="Nawigacja laboratorium Sahara">
+    <strong>Terraforming Planet</strong>
+    <div>
+      <a href="../">← Terra Observation</a>
+      <a href="../arctic-90n/real-ice-lab.html">90°N — model referencyjny</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="tag">DEMO 3D / RESEARCH SANDBOX / NIE PROJEKT WYKONAWCZY</div>
+    <h1>Stacja badawcza Sahara — symulator terraformowania</h1>
+    <p>Model rozwija geometrię trapezowej „piramidki” używaną w laboratorium 90°N, ale przenosi ją na pustynny teren. Możesz wykopywać doliny o tej samej geometrii, używać uzyskanego materiału do budowy gór, powielać obiekty i przesuwać je po zaznaczeniu.</p>
+    <p class="warn"><strong>Ważne:</strong> to symulator geometrii i bilansu objętości, a nie model geotechniczny, hydrologiczny ani środowiskowy. Rzeczywiste roboty ziemne wymagałyby danych DEM, geologii, hydrogeologii, erozji, transportu urobku, stateczności skarp i pełnej oceny oddziaływania na środowisko.</p>
+  </header>
+
+  <section class="context-grid">
+    <article class="panel context-card">
+      <div class="eyebrow">PUNKT REFERENCYJNY</div>
+      <h2>23.515002°N, 11.998501°E</h2>
+      <p>Punkt ze zrzutu ekranu leży na Saharze w <strong>Nigrze</strong>. To osobna lokalizacja od Sahary Zachodniej. W tej wersji współrzędne są metadanymi scenariusza; model 3D jest lokalnym, proceduralnym sandboxem, a nie wiernym DEM tego punktu.</p>
+      <a class="button-link" href="https://www.google.com/maps?q=23.515002,11.998501" target="_blank" rel="noopener noreferrer">Otwórz punkt na mapie ↗</a>
+    </article>
+    <article class="panel context-card">
+      <div class="eyebrow">CEL BADAWCZY</div>
+      <h2>Góra ⇄ dolina, bez „materiału znikąd”</h2>
+      <p>Każda dolina zwiększa bank urobku. Nowa góra może powstać dopiero wtedy, gdy w banku jest wystarczająca objętość materiału. Dzięki temu symulator pilnuje podstawowego bilansu mas ziemnych dla zaplanowanej geometrii.</p>
+    </article>
+  </section>
+
+  <section class="lab-layout">
+    <div class="viewer-column">
+      <div id="viewer" class="panel viewer" aria-label="Interaktywny model 3D pustyni">
+        <div class="viewer-badge">3D: obrót = przeciągnij tło • zoom = kółko/pinch • wybór = kliknij górę/dolinę • przesuwanie = osie X/Z</div>
+        <div class="north">N ↑</div>
+        <div id="selectionHud" class="selection-hud">Zaznaczenie: brak</div>
+      </div>
+      <div class="panel help-panel">
+        <h2>Jak pracować z modelem</h2>
+        <ol>
+          <li>Ustaw wymiary trapezowej piramidki.</li>
+          <li>Najpierw wybierz <strong>„Wykop dolinę”</strong> — jej objętość trafia do banku materiału.</li>
+          <li>Wybierz <strong>„Zbuduj górę”</strong>. Jeśli bank jest za mały, model zablokuje operację.</li>
+          <li>Kliknij górę albo dolinę. Pojawi się manipulator — przeciągaj czerwony/niebieski uchwyt, aby zmienić położenie na osi X/Z.</li>
+          <li>„Powiel zaznaczony” kopiuje obiekt. Powielenie góry także wymaga odpowiedniej ilości materiału.</li>
+        </ol>
+      </div>
+    </div>
+
+    <aside class="panel controls">
+      <h2>Geometria nowego obiektu</h2>
+      <div class="control"><label for="baseSize">Podstawa <b id="baseOut">8.0 km</b></label><input id="baseSize" type="range" min="2" max="20" step="0.5" value="8"></div>
+      <div class="control"><label for="topSize">Szczyt / dno plateau <b id="topOut">2.0 km</b></label><input id="topSize" type="range" min="0.5" max="8" step="0.25" value="2"></div>
+      <div class="control"><label for="heightSize">Wysokość / głębokość <b id="heightOut">2.5 km</b></label><input id="heightSize" type="range" min="0.25" max="5" step="0.25" value="2.5"></div>
+      <div class="shape-preview">
+        <span>Objętość pojedynczej bryły</span>
+        <strong id="newVolume">—</strong>
+      </div>
+      <div class="button-grid">
+        <button id="digValley" class="action dig">▽ Wykop dolinę</button>
+        <button id="buildMountain" class="action build">△ Zbuduj górę</button>
+        <button id="duplicateSelected">Powiel zaznaczony</button>
+        <button id="deleteSelected">Usuń zaznaczony</button>
+      </div>
+      <div id="actionMessage" class="action-message" role="status" aria-live="polite">Gotowe. Kliknij obiekt, aby go zaznaczyć i przesunąć.</div>
+
+      <hr>
+      <h2>Słońce i cienie</h2>
+      <div class="control"><label for="sunAzimuth">Azymut Słońca <b id="sunAzOut">225°</b></label><input id="sunAzimuth" type="range" min="0" max="360" step="1" value="225"></div>
+      <div class="control"><label for="sunElevation">Wysokość Słońca <b id="sunElOut">28°</b></label><input id="sunElevation" type="range" min="5" max="85" step="1" value="28"></div>
+      <label class="check"><input id="showChannel" type="checkbox" checked> Pokaż wyschnięte koryto / paleokanał</label>
+      <label class="check"><input id="showGrid" type="checkbox"> Pokaż siatkę skali</label>
+      <button id="resetScene">Reset sceny demonstracyjnej</button>
+    </aside>
+  </section>
+
+  <section class="metrics" aria-label="Bilans materiału">
+    <div class="metric"><b id="mountainCount">0</b><span>góry</span></div>
+    <div class="metric"><b id="valleyCount">0</b><span>doliny</span></div>
+    <div class="metric"><b id="excavatedTotal">0 km³</b><span>wykopany materiał</span></div>
+    <div class="metric"><b id="usedTotal">0 km³</b><span>materiał użyty w górach</span></div>
+    <div class="metric bank"><b id="materialBank">0 km³</b><span>bank materiału</span></div>
+  </section>
+
+  <section class="panel research-section">
+    <div class="eyebrow">SCENARIUSZ PRZYSZŁOŚCIOWY</div>
+    <h2>Co ten sandbox ma badać</h2>
+    <div class="two-col">
+      <div>
+        <h3>1. Przekształcanie rzeźby terenu</h3>
+        <p>Testujemy rozmieszczenie sztucznych gór i dolin o kontrolowanej geometrii. Celem nie jest stwierdzenie, że taka operacja jest wykonalna, ale sprawdzenie konsekwencji geometrycznych: ile materiału wymaga góra, jaka dolina daje równoważną objętość oraz jak układ obiektów zmienia zacienienie powierzchni.</p>
+        <h3>2. Cień jako parametr środowiskowy</h3>
+        <p>Kąt Słońca można zmieniać, a model aktualizuje kierunek i długość cieni w czasie rzeczywistym. W kolejnych wersjach można połączyć to z bilansem promieniowania, temperaturą gruntu, parowaniem i scenariuszami nasadzeń.</p>
+      </div>
+      <div>
+        <h3>3. Doliny jako pierwszy etap</h3>
+        <p>Logika modelu wymusza kolejność „wykop → bank materiału → budowa”. To chroni symulację przed tworzeniem wielkich gór bez źródła materiału i pozwala później dodać koszt transportu, energię, odległość przewozu oraz ślad środowiskowy.</p>
+        <h3>4. Wyschnięte koryta</h3>
+        <p>W scenie pokazano schematyczny, meandrujący paleokanał. Nie jest on rekonstrukcją konkretnej rzeki z przesłanego zdjęcia. Ma przypominać, że stare systemy odpływu należy traktować jako osobną warstwę danych, którą w przyszłości powinny zasilać DEM, radar SAR i zweryfikowane mapy paleohydrologiczne.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel paleorivers">
+    <div class="eyebrow">PALEOHYDROLOGIA / KONTEKST</div>
+    <h2>Rzeki uchodzące do Morza Śródziemnego — dlaczego nie podajemy jednej „dokładnej liczby”</h2>
+    <p>Nie istnieje jedna uniwersalna, oficjalna liczba wszystkich cieków wpadających do Morza Śródziemnego. Wynik zależy od definicji rzeki, minimalnej długości i powierzchni zlewni, sezonowości, sposobu traktowania rozgałęzionych delt, cieków okresowych, kanałów oraz krótkich potoków nadbrzeżnych. Dlatego poniższe zestawienie jest jakościowe, a nie pozornie precyzyjnym licznikiem.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Region</th><th>Stałe systemy rzeczne</th><th>Mniejsze / okresowe cieki</th><th>Uwagi</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Europa</strong></td><td>dziesiątki dużych i średnich rzek</td><td>setki krótkich rzek i potoków nadbrzeżnych</td><td>liczba silnie zależy od przyjętego progu i klasyfikacji</td></tr>
+          <tr><td><strong>Afryka</strong></td><td>kilka znaczących stałych systemów, m.in. Nil, Medjerda, Chelif i Moulouya</td><td>liczne uedy/wadi i cieki epizodyczne</td><td>stwierdzenie „tylko Nil” byłoby zbyt dużym uproszczeniem</td></tr>
+          <tr><td><strong>Azja</strong></td><td>liczne rzeki stałe od Anatolii po Lewant</td><td>wiele krótkich, górskich i sezonowych cieków</td><td>również tutaj brak jednej uzgodnionej liczby wszystkich cieków</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="method-note"><strong>Weryfikacja terenowa:</strong> teledetekcja i mapy są bardzo użyteczne do wykrywania koryt i zmian, ale klasyfikacja konkretnego małego cieku jako stałego, okresowego, sztucznie zmienionego albo nieaktywnego może wymagać danych wielosezonowych i kontroli terenowej.</p>
+
+    <h3>Wielkie systemy kopalne Sahary trzeba rozdzielać według kierunku odpływu</h3>
+    <div class="paleo-cards">
+      <article><strong>Tamanrasett / Tamanrasset</strong><span>Zachodnia część Sahary i Mauretania → Atlantyk. Badania radarowe wskazują rozległą, dziś pogrzebaną sieć paleodrenażu reaktywowaną podczas wilgotnych faz Sahary. Nie należy zaliczać jej do rzek uchodzących do Morza Śródziemnego.</span></article>
+      <article><strong>Kufrah–Sahabi</strong><span>Libia. Dane radarowe i topograficzne wspierają istnienie dużego paleosystemu; w literaturze rozważane jest połączenie przez paleokanał Wadi Sahabi w kierunku Zatoki Wielka Syrta / Morza Śródziemnego.</span></article>
+      <article><strong>Nil i fazy „Green Sahara”</strong><span>W okresach wilgotnych odpływ z Afryki Północnej był znacznie większy niż dziś. Osady morskie i badania paleoklimatyczne dokumentują wielokrotne fazy reaktywacji systemów rzecznych.</span></article>
+    </div>
+  </section>
+
+  <section class="panel reference-grid">
+    <div>
+      <div class="eyebrow">MAPA REFERENCYJNA</div>
+      <h2>Topografia Sahary Zachodniej</h2>
+      <p>Mapa służy wyłącznie jako kontekst regionalny. Nie jest mapą wysokości używaną przez bieżący proceduralny model 3D.</p>
+      <p class="credit">Źródło: Sadalmelik, <em>Western Sahara Topography</em>, Wikimedia Commons — public domain.</p>
+    </div>
+    <a class="map-image-link" href="https://commons.wikimedia.org/wiki/File:Western_Sahara_Topography.png" target="_blank" rel="noopener noreferrer">
+      <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Western_Sahara_Topography.png?width=960" alt="Mapa topograficzna Sahary Zachodniej z wysokościami terenu">
+    </a>
+  </section>
+
+  <section class="panel sources">
+    <h2>Źródła i metodologia</h2>
+    <ul>
+      <li><a href="https://www.nature.com/articles/ncomms9751" target="_blank" rel="noopener noreferrer">Skonieczny et al., Nature Communications (2015)</a> — radarowe rozpoznanie dużego paleodrenażu Tamanrasett przy wybrzeżu Mauretanii.</li>
+      <li><a href="https://www.nature.com/articles/s41561-020-00671-3" target="_blank" rel="noopener noreferrer">Blanchet et al., Nature Geoscience (2021)</a> — reaktywacja rzek w Afryce Północnej podczas wilgotnych faz klimatu.</li>
+      <li><a href="https://commons.wikimedia.org/wiki/File:Western_Sahara_Topography.png" target="_blank" rel="noopener noreferrer">Wikimedia Commons — Western Sahara Topography</a> — mapa referencyjna, public domain.</li>
+    </ul>
+    <p class="footer-note">Następny logiczny krok: zastąpić proceduralną powierzchnię rzeczywistym DEM dla wybranego obszaru, dodać warstwy geologiczne i hydrologiczne oraz porównywać scenariusze bez traktowania wyniku jako projektu budowlanego.</p>
+  </section>
+</main>
+<script type="module" src="./sahara-lab.js"></script>
+</body>
+</html>
