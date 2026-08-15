@@ -52,7 +52,7 @@ def test_sahara_station_has_water_vegetation_and_real_tree_scale_controls() -> N
     assert "createTree" in js
 
 
-def test_sahara_station_uses_local_reference_images_and_location_only_from_third_screenshot() -> None:
+def test_sahara_station_uses_local_images_and_screenshot_location() -> None:
     html = PAGE.read_text(encoding="utf-8")
 
     assert "./assets/desert-paleochannel-reference.webp" in html
