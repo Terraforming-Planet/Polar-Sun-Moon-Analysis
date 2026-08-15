@@ -19,14 +19,14 @@ def test_source_navigation_contains_all_published_research_tabs() -> None:
     html = INDEX_HTML.read_text(encoding="utf-8")
 
     for number in range(1, 11):
-        assert f'./experiment-{number:03d}/' in html
-    assert './arctic-90n/' in html
-    assert './copernicus/' in html
-    assert './flood-map/' in html
-    assert './constellation/' in html
-    assert './multi-angle/' in html
-    assert './investigation/' in html
-    assert './forum/' in html
+        assert f"./experiment-{number:03d}/" in html
+    assert "./arctic-90n/" in html
+    assert "./copernicus/" in html
+    assert "./flood-map/" in html
+    assert "./constellation/" in html
+    assert "./multi-angle/" in html
+    assert "./investigation/" in html
+    assert "./forum/" in html
 
 
 def test_responsive_app_header_has_no_fixed_height_overlap() -> None:
@@ -36,4 +36,8 @@ def test_responsive_app_header_has_no_fixed_height_overlap() -> None:
     assert "height:auto;min-height:76px" in css
     assert ".main-tabs{display:grid" in css
     assert "grid-auto-rows:minmax(44px,auto)" in css
-    assert "@media(max-width:480px){.main-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}" in css
+    narrow_tabs = (
+        "@media(max-width:480px){.main-tabs{"
+        "grid-template-columns:repeat(2,minmax(0,1fr))}"
+    )
+    assert narrow_tabs in css
