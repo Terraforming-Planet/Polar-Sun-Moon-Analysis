@@ -1,0 +1,1775 @@
+{
+  "experiment": "Experiment 007 - Karas / Ilawa wide-view monitoring",
+  "center": {
+    "lat": 53.5639201,
+    "lon": 19.4706276
+  },
+  "crop": "2 km x 2 km centered exactly on coordinate for imagery; measurement stage uses larger AOI where needed",
+  "season": "spring",
+  "preferred_month": 5,
+  "fallback_months": [
+    4,
+    6
+  ],
+  "years_requested": [
+    1990,
+    1991,
+    1992,
+    1993,
+    1994,
+    1995,
+    1996,
+    1997,
+    1998,
+    1999,
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "filename_rule": "every image filename begins YYYY_YYYY-MM-DD_...",
+  "integrity_policy": "real public satellite pixels only; no AI filling/super-resolution; image-first broken-image check; exact cross-year SHA duplicate rejected",
+  "records": [
+    {
+      "year": 1990,
+      "date": "1990-05-11",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19900511_02_T1",
+      "scene_cloud_cover_percent": 3.0,
+      "local_clear_fraction": 0.952567,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1990_1990-05-11_landsat-5_30m_18x24km_native.png",
+        "1990_1990-05-11_landsat-5_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "24c646fb6c1097e14f0d87f851cbff8cd447812f3d3bf3c6cb8c42ce70ead59b",
+        "visual_std": 55.7856,
+        "near_black_fraction": 0.010849,
+        "near_white_fraction": 0.004272,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.96672,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1991,
+      "date": "1991-05-30",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19910530_02_T1",
+      "scene_cloud_cover_percent": 14.0,
+      "local_clear_fraction": 0.923446,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1991_1991-05-30_landsat-5_30m_18x24km_native.png",
+        "1991_1991-05-30_landsat-5_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "5c1008fa508b0e8570628ccf0dbad898563b666f2bb364cb10795978df8e5def",
+        "visual_std": 49.5579,
+        "near_black_fraction": 0.036728,
+        "near_white_fraction": 0.015228,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.941709,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1992,
+      "date": "1992-05-16",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19920516_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 0.999996,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1992_1992-05-16_landsat-5_30m_18x24km_native.png",
+        "1992_1992-05-16_landsat-5_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "c7cd4aa3d13680db6a489be9a5737527c0cb6fa12d2b5bc4a15cac5d9f592561",
+        "visual_std": 63.2957,
+        "near_black_fraction": 0.018066,
+        "near_white_fraction": 0.005905,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.949997,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1993,
+      "date": "1993-05-10",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19930510_02_T1",
+      "scene_cloud_cover_percent": 6.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1993_1993-05-10_landsat-5_30m_18x24km_native.png",
+        "1993_1993-05-10_landsat-5_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "e0df582ce332b6f1d23a08142430577db802c7f583a85af8c4ebbce4f77d28b8",
+        "visual_std": 66.7524,
+        "near_black_fraction": 0.016953,
+        "near_white_fraction": 0.005005,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.997,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1994,
+      "date": "1994-05-06",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19940506_02_T1",
+      "scene_cloud_cover_percent": 4.0,
+      "local_clear_fraction": 0.983575,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1994_1994-05-06_landsat-5_30m_18x24km_native.png",
+        "1994_1994-05-06_landsat-5_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "5e30ddad01c17b48c304a49c4cf45c618682fbb9094b06af346bf1ee366bcfca",
+        "visual_std": 66.463,
+        "near_black_fraction": 0.019653,
+        "near_white_fraction": 0.006638,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.986995,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1995,
+      "date": "1995-04-23",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19950423_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 0.99999,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1995_1995-04-23_landsat-5_30m_18x24km_native.png",
+        "1995_1995-04-23_landsat-5_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "125434956a5053904a58daf7f3d1a9dfd603153680abc324a8ecf539a22ed115",
+        "visual_std": 63.4305,
+        "near_black_fraction": 0.012329,
+        "near_white_fraction": 0.005814,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 4,
+      "selected_month_name": "April",
+      "is_fallback_month": true,
+      "preferred_month": 5,
+      "selection_quality_score": 0.949993,
+      "fallback_reason": "preferred month had no sufficiently reliable candidate",
+      "rejected_candidates": [
+        {
+          "month": 5,
+          "item_id": "LT05_L2SP_189023_19950509_02_T1",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.28900000000000003
+        }
+      ]
+    },
+    {
+      "year": 1996,
+      "date": "1996-05-11",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19960511_02_T2",
+      "scene_cloud_cover_percent": 54.0,
+      "local_clear_fraction": 0.996537,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1996_1996-05-11_landsat-5_30m_18x24km_native.png",
+        "1996_1996-05-11_landsat-5_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "8c96f62670d25fc184b54cf3bda2ec37a337d1af730b203a7b3d60944a7fc030",
+        "visual_std": 59.3759,
+        "near_black_fraction": 0.008286,
+        "near_white_fraction": 0.003693,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.97068,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1997,
+      "date": "1997-06-06",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_19970606_02_T1",
+      "scene_cloud_cover_percent": 11.0,
+      "local_clear_fraction": 0.847133,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1997_1997-06-06_landsat-5_30m_18x24km_native.png",
+        "1997_1997-06-06_landsat-5_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "d6b28b50121696228015b2fe91235d095dfc50567945c61f80a24269f9712f4a",
+        "visual_std": 48.7508,
+        "near_black_fraction": 0.082794,
+        "near_white_fraction": 0.016296,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 6,
+      "selected_month_name": "June",
+      "is_fallback_month": true,
+      "preferred_month": 5,
+      "selection_quality_score": 0.892079,
+      "fallback_reason": "preferred month had no sufficiently reliable candidate",
+      "rejected_candidates": [
+        {
+          "month": 5,
+          "item_id": "LT05_L2SP_189023_19970514_02_T1",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.6583984583333333
+        },
+        {
+          "month": 4,
+          "item_id": "LT05_L2SP_190023_19970419_02_T1",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.44340506250000006
+        }
+      ]
+    },
+    {
+      "year": 1998,
+      "date": "1998-05-17",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19980517_02_T1",
+      "scene_cloud_cover_percent": 11.0,
+      "local_clear_fraction": 0.951163,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1998_1998-05-17_landsat-5_30m_18x24km_native.png",
+        "1998_1998-05-17_landsat-5_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "56b88685588f8f91dfe0f8ec1c074575dcbbc47f47b6a1d13ca67668cd5d1f90",
+        "visual_std": 55.9324,
+        "near_black_fraction": 0.018494,
+        "near_white_fraction": 0.007156,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.961779,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 1999,
+      "date": "1999-05-20",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_19990520_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 0.999994,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "1999_1999-05-20_landsat-5_30m_18x24km_native.png",
+        "1999_1999-05-20_landsat-5_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "380584b17f78d456785888dd45dd1caaa8f0acd2f00e2e47a184ebac0f732725",
+        "visual_std": 57.2411,
+        "near_black_fraction": 0.019516,
+        "near_white_fraction": 0.003723,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.949996,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2000,
+      "date": "2000-05-13",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_20000513_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 0.999985,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2000_2000-05-13_landsat-5_30m_18x24km_native.png",
+        "2000_2000-05-13_landsat-5_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "52f1a1688358b1db35685733e5a95e24b278e0c216c1e518ce952f21fc5385c7",
+        "visual_std": 62.3565,
+        "near_black_fraction": 0.011688,
+        "near_white_fraction": 0.003067,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.94999,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2001,
+      "date": "2001-05-08",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20010508_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 0.999994,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2001_2001-05-08_landsat-7_30m_18x24km_native.png",
+        "2001_2001-05-08_landsat-7_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "4cd9b6edfee261c9ad142e159f304b066b9aa4d4c0fb6c554d3245939e0aa788",
+        "visual_std": 57.7597,
+        "near_black_fraction": 0.017517,
+        "near_white_fraction": 0.00531,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.949996,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2002,
+      "date": "2002-05-04",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_189023_20020504_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 0.999985,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2002_2002-05-04_landsat-7_30m_18x24km_native.png",
+        "2002_2002-05-04_landsat-7_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "481ad8e077b4e315f6c4df82d96ab261b926b5c942075addf385aee2e1fb9136",
+        "visual_std": 62.1697,
+        "near_black_fraction": 0.013229,
+        "near_white_fraction": 0.005341,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.94999,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2003,
+      "date": "2003-05-30",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20030530_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 0.999998,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2003_2003-05-30_landsat-7_30m_18x24km_native.png",
+        "2003_2003-05-30_landsat-7_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "ecb67dfff78397019f8f81088ca644aef68e23629bf1110656b459afa985d7b8",
+        "visual_std": 50.1284,
+        "near_black_fraction": 0.006439,
+        "near_white_fraction": 0.004288,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.949999,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2004,
+      "date": "2004-05-01",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20040501_02_T1",
+      "scene_cloud_cover_percent": 2.0,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2004_2004-05-01_landsat-5_30m_18x24km_native.png",
+        "2004_2004-05-01_landsat-5_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "c9085e9917565e54facf4822039b528e97bfdf7c2e5d1e50979a57e3f51d177d",
+        "visual_std": 59.5021,
+        "near_black_fraction": 0.018448,
+        "near_white_fraction": 0.005371,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.999,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2005,
+      "date": "2005-05-27",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_190023_20050527_02_T1",
+      "scene_cloud_cover_percent": 20.0,
+      "local_clear_fraction": 0.994694,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2005_2005-05-27_landsat-5_30m_18x24km_native.png",
+        "2005_2005-05-27_landsat-5_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "1bdd32b8c6d6485347bee14bf9d72b417fa9dfda032128609bcda5da32ee7a04",
+        "visual_std": 51.357,
+        "near_black_fraction": 0.012756,
+        "near_white_fraction": 0.00412,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.986445,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2006,
+      "date": "2006-05-07",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20060507_02_T1",
+      "scene_cloud_cover_percent": 5.0,
+      "local_clear_fraction": 0.928521,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2006_2006-05-07_landsat-5_30m_18x24km_native.png",
+        "2006_2006-05-07_landsat-5_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "4e68d5218739e9791706ced8aae5471f5f2a8ade53f8b2197fb9917945eb28b6",
+        "visual_std": 59.3876,
+        "near_black_fraction": 0.01358,
+        "near_white_fraction": 0.005249,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.949609,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2007,
+      "date": "2007-05-02",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_189023_20070502_02_T1",
+      "scene_cloud_cover_percent": 4.0,
+      "local_clear_fraction": 0.999981,
+      "local_valid_fraction": 0.86826,
+      "native_resolution_m": 30,
+      "files": [
+        "2007_2007-05-02_landsat-7_30m_18x24km_native.png",
+        "2007_2007-05-02_landsat-7_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "839c56fd987e518795bce2a101398457003cda6f2705bb5538d5edb55d16a029",
+        "visual_std": 58.7859,
+        "near_black_fraction": 0.053589,
+        "near_white_fraction": 0.003662,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.9611,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2008,
+      "date": "2008-05-28",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20080528_02_T1",
+      "scene_cloud_cover_percent": 0.0,
+      "local_clear_fraction": 0.99999,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2008_2008-05-28_landsat-5_30m_18x24km_native.png",
+        "2008_2008-05-28_landsat-5_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "8abb64a77654d6416fdc792723ef70332058c5b198f42c6b985613f62be2e254",
+        "visual_std": 52.5313,
+        "near_black_fraction": 0.014069,
+        "near_white_fraction": 0.003693,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.949993,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2009,
+      "date": "2009-05-15",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20090515_02_T1",
+      "scene_cloud_cover_percent": 8.0,
+      "local_clear_fraction": 0.771096,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2009_2009-05-15_landsat-5_30m_18x24km_native.png",
+        "2009_2009-05-15_landsat-5_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "2421a95960c1cd52e4ac368e71a46554234430d6b1d5ea446867735517ca32d6",
+        "visual_std": 46.6005,
+        "near_black_fraction": 0.044815,
+        "near_white_fraction": 0.013947,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.842634,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2010,
+      "date": "2010-04-16",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-5",
+      "item_id": "LT05_L2SP_189023_20100416_02_T1",
+      "scene_cloud_cover_percent": 14.0,
+      "local_clear_fraction": 0.795713,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2010_2010-04-16_landsat-5_30m_18x24km_native.png",
+        "2010_2010-04-16_landsat-5_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "f8e9c865e274b52d730118433839146ed9c0f2d16f49753dd1cc0bff0b28b409",
+        "visual_std": 61.7468,
+        "near_black_fraction": 0.014709,
+        "near_white_fraction": 0.005219,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 4,
+      "selected_month_name": "April",
+      "is_fallback_month": true,
+      "preferred_month": 5,
+      "selection_quality_score": 0.856127,
+      "fallback_reason": "preferred month had no sufficiently reliable candidate",
+      "rejected_candidates": [
+        {
+          "month": 5,
+          "item_id": "LT05_L2SP_189023_20100502_02_T1",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.7022552083333334
+        }
+      ]
+    },
+    {
+      "year": 2011,
+      "date": "2011-05-20",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20110520_02_T1",
+      "scene_cloud_cover_percent": 27.0,
+      "local_clear_fraction": 0.994151,
+      "local_valid_fraction": 0.66281,
+      "native_resolution_m": 30,
+      "files": [
+        "2011_2011-05-20_landsat-7_30m_18x24km_native.png",
+        "2011_2011-05-20_landsat-7_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "a7e66271b0dbd65a54dac2a80e961a36f87f748f5357bdbef269d64232fb9372",
+        "visual_std": 52.4762,
+        "near_black_fraction": 0.241776,
+        "near_white_fraction": 0.002029,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.888168,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2012,
+      "date": "2012-05-22",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-7",
+      "item_id": "LE07_L2SP_190023_20120522_02_T1",
+      "scene_cloud_cover_percent": 4.0,
+      "local_clear_fraction": 0.999914,
+      "local_valid_fraction": 0.633229,
+      "native_resolution_m": 30,
+      "files": [
+        "2012_2012-05-22_landsat-7_30m_18x24km_native.png",
+        "2012_2012-05-22_landsat-7_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "3b9739da8b9a6074d8cceca4cef39e75da782a857c532856a6189b84f64eae4a",
+        "visual_std": 46.1208,
+        "near_black_fraction": 0.291382,
+        "near_white_fraction": 0.002792,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.895247,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2013,
+      "date": "2013-05-17",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-8",
+      "item_id": "LC08_L2SP_190023_20130517_02_T1",
+      "scene_cloud_cover_percent": 19.49,
+      "local_clear_fraction": 0.999996,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2013_2013-05-17_landsat-8_30m_18x24km_native.png",
+        "2013_2013-05-17_landsat-8_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "84b874bbb103e6079758382040103b2efec9d1aebf20045d6a13292db87e02fd",
+        "visual_std": 55.5411,
+        "near_black_fraction": 0.019333,
+        "near_white_fraction": 0.004379,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.990252,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2014,
+      "date": "2014-04-02",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-8",
+      "item_id": "LC08_L2SP_190023_20140402_02_T1",
+      "scene_cloud_cover_percent": 1.96,
+      "local_clear_fraction": 0.999519,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2014_2014-04-02_landsat-8_30m_18x24km_native.png",
+        "2014_2014-04-02_landsat-8_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "9330b4101bc120fa6e5734747ff2d270d060a10c5f48df33bb43bb0293ce0761",
+        "visual_std": 53.5843,
+        "near_black_fraction": 0.022247,
+        "near_white_fraction": 0.005859,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 4,
+      "selected_month_name": "April",
+      "is_fallback_month": true,
+      "preferred_month": 5,
+      "selection_quality_score": 0.998698,
+      "fallback_reason": "preferred month had no sufficiently reliable candidate",
+      "rejected_candidates": [
+        {
+          "month": 5,
+          "item_id": "LC08_L2SP_190023_20140520_02_T1",
+          "reason": "quality_below_0.76_before_fallback",
+          "score": 0.7399055625000001
+        }
+      ]
+    },
+    {
+      "year": 2015,
+      "date": "2015-05-07",
+      "source": "USGS Landsat Collection 2 Level-2 Surface Reflectance via Microsoft Planetary Computer STAC",
+      "platform": "landsat-8",
+      "item_id": "LC08_L2SP_190023_20150507_02_T1",
+      "scene_cloud_cover_percent": 5.64,
+      "local_clear_fraction": 0.858125,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 30,
+      "files": [
+        "2015_2015-05-07_landsat-8_30m_18x24km_native.png",
+        "2015_2015-05-07_landsat-8_30m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Landsat Collection 2 surface-reflectance pixels; documented SR scale/offset plus display stretch only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "ac2fcba0bd67151fd5dfda95ae71641ca6c76309a018865ebdb5a81ec371ccb8",
+        "visual_std": 39.9997,
+        "near_black_fraction": 0.029373,
+        "near_white_fraction": 0.011795,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 0.902124,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2016,
+      "date": "2016-05-23",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20160523T095032_R079_T33UYV_20210211T133807",
+      "scene_cloud_cover_percent": 0.460278,
+      "local_clear_fraction": 0.999226,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2016_2016-05-23_Sentinel-2A_10m_18x24km_native.png",
+        "2016_2016-05-23_Sentinel-2A_10m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "2916849e59805826ce0d49303c4bc43ffeee111c7f9802f4744e57c2287c5fa1",
+        "visual_std": 44.3056,
+        "near_black_fraction": 0.011261,
+        "near_white_fraction": 0.003555,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.024251,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2017,
+      "date": "2017-05-18",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20170518T095031_R079_T34UCE_20210209T162325",
+      "scene_cloud_cover_percent": 0.055662,
+      "local_clear_fraction": 0.998822,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2017_2017-05-18_Sentinel-2A_10m_18x24km_native.png",
+        "2017_2017-05-18_Sentinel-2A_10m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "6ea66c623c7b4221dd56098fb083f9e585cead987d89b81757b3742753c6c9be",
+        "visual_std": 50.2128,
+        "near_black_fraction": 0.017288,
+        "near_white_fraction": 0.00264,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.024183,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2018,
+      "date": "2018-05-08",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20180508T095029_R079_T34UCE_20201012T072713",
+      "scene_cloud_cover_percent": 0.059469,
+      "local_clear_fraction": 0.998385,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2018_2018-05-08_Sentinel-2B_10m_18x24km_native.png",
+        "2018_2018-05-08_Sentinel-2B_10m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "7a930b629d2df0c902063bc7d1f2bcb9bc2190c845ad720c1423990bb757d553",
+        "visual_std": 51.6983,
+        "near_black_fraction": 0.021423,
+        "near_white_fraction": 0.003387,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.023888,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2019,
+      "date": "2019-05-01",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20190501T100031_R122_T33UYV_20201006T083634",
+      "scene_cloud_cover_percent": 2.765254,
+      "local_clear_fraction": 0.999407,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2019_2019-05-01_Sentinel-2A_10m_18x24km_native.png",
+        "2019_2019-05-01_Sentinel-2A_10m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "eb3acf25af0db408c6f2a2a7d85e9266245b5045c42fcd9d1b518703d346d40c",
+        "visual_std": 56.1745,
+        "near_black_fraction": 0.016281,
+        "near_white_fraction": 0.003067,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.02322,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2020,
+      "date": "2020-05-07",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20200507T095029_R079_T33UYV_20200920T222553",
+      "scene_cloud_cover_percent": 7.85342,
+      "local_clear_fraction": 0.997431,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2020_2020-05-07_Sentinel-2B_10m_18x24km_native.png",
+        "2020_2020-05-07_Sentinel-2B_10m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "26c36efc06e2ee3e072b3da95a005f59092ce53f3b48b1332f731186e22f5362",
+        "visual_std": 53.8539,
+        "near_black_fraction": 0.018311,
+        "near_white_fraction": 0.001953,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.019352,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2021,
+      "date": "2021-05-12",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2B",
+      "item_id": "S2B_MSIL2A_20210512T095029_R079_T34UCE_20210606T070040",
+      "scene_cloud_cover_percent": 0.104802,
+      "local_clear_fraction": 0.995454,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2021_2021-05-12_Sentinel-2B_10m_18x24km_native.png",
+        "2021_2021-05-12_Sentinel-2B_10m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "5e171f5d46fdeb05cc6e12d7710b17f033953c2f5fdec2ce2a142aa12ce5048c",
+        "visual_std": 51.6995,
+        "near_black_fraction": 0.018753,
+        "near_white_fraction": 0.003387,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.021902,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2022,
+      "date": "2022-05-02",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20220502T095031_R079_T33UYV_20220503T023437",
+      "scene_cloud_cover_percent": 5.472676,
+      "local_clear_fraction": 0.995922,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2022_2022-05-02_Sentinel-2A_10m_18x24km_native.png",
+        "2022_2022-05-02_Sentinel-2A_10m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "78fa3f2d44142553a15dc76e867ae688284b886f156b9f5e031442f94c68458f",
+        "visual_std": 50.9579,
+        "near_black_fraction": 0.016006,
+        "near_white_fraction": 0.002808,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.019532,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2023,
+      "date": "2023-05-30",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20230530T100031_R122_T33UYV_20230530T153352",
+      "scene_cloud_cover_percent": 0.739762,
+      "local_clear_fraction": 0.998425,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2023_2023-05-30_Sentinel-2A_10m_18x24km_native.png",
+        "2023_2023-05-30_Sentinel-2A_10m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "31c518535751a2e0b3962447c592e6cf5b71c4849c28c52650af961bd36ed6b6",
+        "visual_std": 51.8798,
+        "near_black_fraction": 0.009247,
+        "near_white_fraction": 0.00296,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.023575,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2024,
+      "date": "2024-05-01",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2A",
+      "item_id": "S2A_MSIL2A_20240501T095031_R079_T33UYV_20240501T154122",
+      "scene_cloud_cover_percent": 0.510306,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2024_2024-05-01_Sentinel-2A_10m_18x24km_native.png",
+        "2024_2024-05-01_Sentinel-2A_10m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "43c7aaba9663cd93ff46ce8d478cf672772977ef876278df33e2f95a4a2af368",
+        "visual_std": 53.6099,
+        "near_black_fraction": 0.016907,
+        "near_white_fraction": 0.002579,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.024745,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2025,
+      "date": "2025-05-06",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2C",
+      "item_id": "S2C_MSIL2A_20250506T095051_R079_T33UYV_20250506T121455",
+      "scene_cloud_cover_percent": 0.252054,
+      "local_clear_fraction": 0.999996,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2025_2025-05-06_Sentinel-2C_10m_18x24km_native.png",
+        "2025_2025-05-06_Sentinel-2C_10m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "7c0a803ae2968c2fb28faf350145701157226b26bbb9d4425a3b75084fdbd5d3",
+        "visual_std": 51.9683,
+        "near_black_fraction": 0.018631,
+        "near_white_fraction": 0.002701,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.024871,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    },
+    {
+      "year": 2026,
+      "date": "2026-05-01",
+      "source": "ESA/Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+      "platform": "Sentinel-2C",
+      "item_id": "S2C_MSIL2A_20260501T095031_R079_T33UYV_20260501T132213",
+      "scene_cloud_cover_percent": 0.000367,
+      "local_clear_fraction": 1.0,
+      "local_valid_fraction": 1.0,
+      "native_resolution_m": 10,
+      "files": [
+        "2026_2026-05-01_Sentinel-2C_10m_18x24km_native.png",
+        "2026_2026-05-01_Sentinel-2C_10m_18x24km_display1000x1000.jpg"
+      ],
+      "processing": "Natural-color RGB from real Sentinel-2 B04/B03/B02 pixels; percentile display stretch and 1024 px viewing copy only, no AI.",
+      "crop_width_m": 18000,
+      "crop_height_m": 24000,
+      "frame_orientation": "north_up",
+      "display_copy": "1000x1000 JPEG viewing copy; native-resolution PNG retained",
+      "targets_in_frame": [
+        {
+          "name": "Karas / Ilawa wide frame",
+          "lat": 53.5639201,
+          "lon": 19.4706276
+        }
+      ],
+      "status": "ok",
+      "image_integrity": {
+        "sha256": "a4f077382844429ef47b9086c07e0f9820555990b447af83183ae699a5bf0b1f",
+        "visual_std": 54.967,
+        "near_black_fraction": 0.017044,
+        "near_white_fraction": 0.002411,
+        "dark_row_fraction": 0.0,
+        "dark_col_fraction": 0.0,
+        "broken_visual": false
+      },
+      "requested_season": "spring",
+      "selected_month": 5,
+      "selected_month_name": "May",
+      "is_fallback_month": false,
+      "preferred_month": 5,
+      "selection_quality_score": 1.025,
+      "fallback_reason": null,
+      "rejected_candidates": []
+    }
+  ],
+  "count_ok": 37,
+  "count_missing_or_rejected": 0,
+  "targets": [
+    {
+      "name": "Karas / Ilawa wide frame",
+      "lat": 53.5639201,
+      "lon": 19.4706276
+    }
+  ],
+  "aoi": {
+    "width_m": 18000,
+    "height_m": 24000,
+    "orientation": "portrait_north_up",
+    "purpose": "wide reference-height view covering the Karas/Ilawa area, nearby lakes, wetlands, forest and agricultural context in every annual frame"
+  },
+  "dataset_role": "independent TerraWater wide-view comparison case",
+  "test_number": 7,
+  "object_name": "Karas / Ilawa wide frame",
+  "archive_delivery": "GitHub Actions artifact; bulk ZIP exceeds normal repository per-file limit"
+}
