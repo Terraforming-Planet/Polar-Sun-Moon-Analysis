@@ -3,19 +3,20 @@ import globeSource from './RealisticEarthGlobe.tsx?raw'
 import cesiumSource from './CleanRealisticEarthGlobe.tsx?raw'
 
 describe('RealisticEarthGlobe scene lifecycle', () => {
-  it('restores Cesium as the default scientific renderer with an error fallback', () => {
+  it('uses Cesium as the only public scientific renderer with an error boundary', () => {
     expect(globeSource).toContain("import { RealisticEarthGlobe as CesiumScientificEarth } from './CleanRealisticEarthGlobe'")
     expect(globeSource).toContain("import { EarthViewerErrorBoundary } from './EarthViewerErrorBoundary'")
-    expect(globeSource).toContain("const [satelliteMode, setSatelliteMode] = useState(true)")
     expect(globeSource).toContain('<CesiumScientificEarth selectedTime={selectedTime} markers={stableMarkers} />')
-    expect(globeSource).toContain('<EarthViewerErrorBoundary fallback={stableScientific}>')
+    expect(globeSource).toContain('<EarthViewerErrorBoundary fallback={<ScientificViewerFailure />}>')
+    expect(globeSource).not.toContain('satelliteMode')
   })
 
-  it('keeps the lightweight WGS84 and legacy renderers available as fallbacks', () => {
-    expect(globeSource).toContain('Lekki WGS84 · fallback')
-    expect(globeSource).toContain('Legacy sphere · fallback')
-    expect(globeSource).toContain('model="scientific"')
-    expect(globeSource).toContain('model="legacy"')
+  it('does not expose synthetic WGS84 or legacy sphere switches', () => {
+    expect(globeSource).not.toContain('Lekki WGS84 · fallback')
+    expect(globeSource).not.toContain('Legacy sphere · fallback')
+    expect(globeSource).not.toContain('StableEarthGlobe')
+    expect(globeSource).not.toContain('readEarthModel')
+    expect(globeSource).toContain('Nie pokazujemy zastępczej, umownej kuli ani sztucznej tekstury')
   })
 
   it('stabilizes unchanged hazard markers so periodic JSON refreshes do not recreate Cesium', () => {
@@ -41,6 +42,12 @@ describe('RealisticEarthGlobe scene lifecycle', () => {
     expect(cesiumSource).toContain('markers.slice(0, markerLimit)')
   })
 
+  it('keeps cloud coverage visible across the full globe without terminator clipping', () => {
+    expect(cesiumSource).toContain("const cloudCoverageMode = layer === 'full-live-earth' || layer === 'global-clouds' || layer === 'regional-clouds'")
+    expect(cesiumSource).toContain('viewer.scene.globe.enableLighting = solarLighting && !cloudCoverageMode')
+    expect(cesiumSource).toContain('disabled={cloudCoverageMode}')
+  })
+
   it('uses tiled Cesium imagery and request-render mode in the scientific viewer', () => {
     expect(cesiumSource).toContain('new Cesium.Viewer')
     expect(cesiumSource).toContain('requestRenderMode: true')
@@ -50,7 +57,7 @@ describe('RealisticEarthGlobe scene lifecycle', () => {
     expect(cesiumSource).toContain('CDSE_WMS')
   })
 
-  it('keeps the source registry visible next to the combined renderer', () => {
+  it('keeps the source registry visible next to the scientific renderer', () => {
     expect(globeSource).toContain("import { SatelliteSourceRegistry } from './satellite-source-registry'")
     expect(globeSource).toContain('<SatelliteSourceRegistry />')
   })

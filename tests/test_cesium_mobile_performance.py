@@ -54,6 +54,22 @@ def test_full_live_uses_one_global_viirs_cloud_bearing_layer() -> None:
     assert "Himawari_AHI_Band13_Clean_Infrared" in source
 
 
+def test_cloud_modes_do_not_hide_clouds_behind_cesium_terminator() -> None:
+    source = SOURCE.read_text(encoding="utf-8")
+
+    cloud_modes = (
+        "layer === 'full-live-earth' || layer === 'global-clouds' || "
+        "layer === 'regional-clouds'"
+    )
+    assert f"const cloudCoverageMode = {cloud_modes}" in source
+    assert (
+        "viewer.scene.globe.enableLighting = solarLighting && !cloudCoverageMode"
+        in source
+    )
+    assert "disabled={cloudCoverageMode}" in source
+    assert "bez odcięcia chmur" in source
+
+
 def test_mobile_full_live_reduces_expensive_overlays() -> None:
     source = SOURCE.read_text(encoding="utf-8")
     wave_condition = (

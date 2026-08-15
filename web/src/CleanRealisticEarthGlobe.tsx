@@ -148,6 +148,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   const animationStart = useMemo(() => new Date(animationEnd.getTime() - SEVEN_DAYS), [animationEnd])
   const animatedDate = useMemo(() => new Date(animationStart.getTime() + frameIndex * TEN_MINUTES), [animationStart, frameIndex])
   const animatedMode = layer === 'regional-clouds' || layer === 'ocean-waves'
+  const cloudCoverageMode = layer === 'full-live-earth' || layer === 'global-clouds' || layer === 'regional-clouds'
   const date = useMemo(() => animatedMode ? animatedDate : live ? new Date(nowTick) : new Date(selectedTime), [animatedMode, animatedDate, live, nowTick, selectedTime])
   const day = date.toISOString().slice(0, 10)
   const subdailyTime = date.toISOString().slice(0, 16) + ':00Z'
@@ -155,9 +156,9 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
     ? 'PEŁNA ZIEMIA · GLOBALNY TRUE COLOR + CHMURY'
     : 'PEŁNA ZIEMIA · GLOBALNY TRUE COLOR + CHMURY + FALE'
   const coverageNote = layer === 'regional-clouds'
-    ? 'Tryb regionalny: klatki geostacjonarne około 10 min są nakładane delikatnie na globalny VIIRS. Granice regionalnych sensorów są cechą źródła, nie globalną chmurą.'
+    ? 'Tryb regionalny: klatki geostacjonarne około 10 min są nakładane delikatnie na globalny VIIRS. Granice regionalnych sensorów są cechą źródła.'
     : layer === 'full-live-earth' || layer === 'global-clouds'
-      ? 'Chmury globalne: jedna warstwa NASA VIIRS True Color pokrywa cały glob w tej samej projekcji. Nie łączymy prostokątnych pełnych dysków GOES/Himawari w widoku globalnym, więc znika sztuczny szew.'
+      ? 'Chmury są renderowane bez cienia terminatora, aby pozostawały widoczne na całym globie. Warstwa NASA VIIRS ma jeden układ kafelków i nie jest zszywana z prostokątów GOES/Himawari.'
       : constrainedDevice
         ? 'Tryb mobilny: adaptacyjna jakość kafelków, mniejszy cache i bezpieczny zoom do ok. 25 m nad powierzchnią.'
         : 'Tryb pełny: szczegółowość zależy od rozdzielczości źródłowych kafelków dla danego miejsca.'
@@ -226,7 +227,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
     const usesGlobalTrueColor = layer === 'full-live-earth' || layer === 'global-clouds' || layer === 'regional-clouds' || layer === 'nasa-day'
     if (usesGlobalTrueColor) {
       const trueColor = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({ url: NASA_WMTS, layer: NASA_GLOBAL_TRUE_COLOR, style: 'default', format: 'image/jpeg', tileMatrixSetID: 'GoogleMapsCompatible_Level9', maximumLevel: 9, dimensions: { Time: day }, credit: 'NASA GIBS · Suomi NPP VIIRS True Color' }))
-      trueColor.alpha = layer === 'nasa-day' ? .94 : layer === 'regional-clouds' ? .86 : layer === 'global-clouds' ? .98 : .94
+      trueColor.alpha = layer === 'regional-clouds' ? .9 : 1
     }
 
     if (layer === 'regional-clouds') {
@@ -250,11 +251,12 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
       const copernicus = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapServiceImageryProvider({ url: CDSE_WMS, layers: import.meta.env.VITE_CDSE_LAYER || 'NATURAL-COLOR', rectangle: Cesium.Rectangle.fromDegrees(-180, -78, 180, 78), parameters: { transparent: true, format: 'image/png', time: `${day}/${day}`, maxcc: 100, showlogo: false }, credit: 'Copernicus Data Space' }))
       copernicus.alpha = .9
     }
-    viewer.scene.globe.enableLighting = solarLighting
+
+    viewer.scene.globe.enableLighting = solarLighting && !cloudCoverageMode
     viewer.scene.highDynamicRange = !constrainedDevice
     viewer.scene.postProcessStages.fxaa.enabled = !constrainedDevice
     viewer.scene.requestRender()
-  }, [ready, layer, day, subdailyTime, view, date, solarLighting, cloudOpacity, waveOpacity, constrainedDevice])
+  }, [ready, layer, day, subdailyTime, view, date, solarLighting, cloudOpacity, waveOpacity, constrainedDevice, cloudCoverageMode])
 
   const zoom = (factor: number) => {
     const viewer = viewerRef.current
@@ -287,12 +289,12 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
       <button type="button" className={view === 'north' ? 'is-active' : ''} onClick={() => setView('north')}>Arktyka — zdjęcie</button>
       <button type="button" className={view === 'south' ? 'is-active' : ''} onClick={() => setView('south')}>Antarktyda — zdjęcie</button>
       {view === 'globe' && <>
-        <label>Obraz<select value={layer} onChange={event => { setLayer(event.target.value as Layer); setPlaying(false) }}><option value="full-live-earth">PEŁNA PLANETA — globalny true color + chmury + fale</option><option value="global-clouds">Chmury globalne — NASA VIIRS, mozaika dzienna bez szwu sensorów</option><option value="regional-clouds">Chmury regionalne — GOES/Himawari, około 10 min</option><option value="ocean-waves">Fale oceaniczne — wysokość znacząca</option><option value="high-resolution">Szczegółowa mapa satelitarna — maksymalny zoom</option><option value="nasa-day">NASA VIIRS — prawdziwy kolor</option><option value="nasa-night">NASA VIIRS — nocne światła</option><option value="copernicus-safe">Copernicus — aktualna obserwacja</option></select></label>
+        <label>Obraz<select value={layer} onChange={event => { setLayer(event.target.value as Layer); setPlaying(false) }}><option value="full-live-earth">PEŁNA PLANETA — globalny obraz dzienny + chmury + fale</option><option value="global-clouds">Chmury globalne — NASA VIIRS, mozaika dzienna</option><option value="regional-clouds">Chmury regionalne — GOES/Himawari, około 10 min</option><option value="ocean-waves">Fale oceaniczne — wysokość znacząca</option><option value="high-resolution">Szczegółowa mapa satelitarna — maksymalny zoom</option><option value="nasa-day">NASA VIIRS — prawdziwy kolor</option><option value="nasa-night">NASA VIIRS — nocne światła</option><option value="copernicus-safe">Copernicus — aktualna obserwacja</option></select></label>
         <label><input type="checkbox" checked={live} onChange={event => setLive(event.target.checked)} /> czas rzeczywisty</label>
-        <label><input type="checkbox" checked={solarLighting} onChange={event => setSolarLighting(event.target.checked)} /> dzień/noc</label>
+        <label title={cloudCoverageMode ? 'Wyłączone w trybach chmurowych, aby terminator nie odcinał widoczności chmur.' : undefined}><input type="checkbox" checked={solarLighting} disabled={cloudCoverageMode} onChange={event => setSolarLighting(event.target.checked)} /> dzień/noc{cloudCoverageMode ? ' — bez odcięcia chmur' : ''}</label>
         <label><input type="checkbox" checked={nightVision} onChange={event => setNightVision(event.target.checked)} /> noktowizor</label>
       </>}
-      <div className="location-globe-status"><strong>{layer === 'full-live-earth' ? fullLiveTitle : layer === 'global-clouds' ? 'GLOBALNE CHMURY · NASA VIIRS · BEZ SZWU SENSORÓW' : animatedMode ? 'ANIMACJA ŹRÓDŁA · KROK 10 MINUT' : 'PEŁNA ZIEMIA · MAKSYMALNY ZOOM'}</strong><span>{date.toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span><span>{coverageNote}</span>{error && <span>{error}</span>}</div>
+      <div className="location-globe-status"><strong>{layer === 'full-live-earth' ? fullLiveTitle : layer === 'global-clouds' ? 'GLOBALNE CHMURY · NASA VIIRS · PEŁNA WIDOCZNOŚĆ GLOBU' : animatedMode ? 'ANIMACJA ŹRÓDŁA · KROK 10 MINUT' : 'PEŁNA ZIEMIA · MAKSYMALNY ZOOM'}</strong><span>{date.toLocaleString('pl-PL', { timeZone: 'UTC' })} UTC</span><span>{coverageNote}</span>{error && <span>{error}</span>}</div>
     </div>
     {view === 'globe' ? <>
       {animatedMode && <div className="scene-controls tiled-earth-playback"><button type="button" onClick={() => setPlaying(value => !value)}>{playing ? 'Ⅱ Pauza' : '▶ Odtwarzaj 7 dni'}</button><button type="button" onClick={() => { setPlaying(false); setFrameIndex(LAST_FRAME); setLive(true) }}>TERAZ</button><label>Prędkość<select value={speed} onChange={event => setSpeed(Number(event.target.value))}><option value={1}>1 kl./s</option><option value={2}>2 kl./s</option><option value={4}>4 kl./s</option></select></label>{layer === 'regional-clouds' && <label>Regionalne chmury {Math.round(cloudOpacity * 100)}%<input type="range" min="10" max="80" value={Math.round(cloudOpacity * 100)} onChange={event => setCloudOpacity(Number(event.target.value) / 100)} /></label>}{layer === 'ocean-waves' && <label>Fale {Math.round(waveOpacity * 100)}%<input type="range" min="10" max="90" value={Math.round(waveOpacity * 100)} onChange={event => setWaveOpacity(Number(event.target.value) / 100)} /></label>}<label>Klatka {frameIndex + 1}/1009<input type="range" min="0" max={LAST_FRAME} step="1" value={frameIndex} onChange={event => { setPlaying(false); setLive(false); setFrameIndex(Number(event.target.value)) }} /></label></div>}
