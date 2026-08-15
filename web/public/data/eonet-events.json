@@ -1,5 +1,5 @@
 {
-  "generatedUtc": "2026-08-15T00:01:23.430146Z",
+  "generatedUtc": "2026-08-15T01:37:19.238527Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
@@ -2163,33 +2163,6 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21972",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_21776",
-      "title": "Super Typhoon Dolphin",
-      "categories": [
-        "Severe Storms"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 65.0,
-        "magnitudeUnit": "kts",
-        "date": "2026-08-09T12:00:00Z",
-        "type": "Point",
-        "coordinates": [
-          120.6,
-          27.9
-        ]
-      },
-      "sources": [
-        {
-          "id": "JTWC",
-          "url": "https://www.metoc.navy.mil/jtwc/products/wp1226.tcw"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21776",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
@@ -5405,6 +5378,33 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21320",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_21318",
+      "title": "Wildfire Heavy Timber, Musselshell, Montana",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 500.0,
+        "magnitudeUnit": "acres",
+        "date": "2026-07-12T21:00:00Z",
+        "type": "Point",
+        "coordinates": [
+          -108.146,
+          46.44166
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-MTLG23-260727"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21318",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -7728,35 +7728,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-WYCMX-000338"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_21776",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          120.6,
-          27.9
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Super Typhoon Dolphin",
-        "categories": [
-          "Severe Storms"
-        ],
-        "observationUtc": "2026-08-09T12:00:00Z",
-        "observation_time": "2026-08-09T12:00:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21776",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21776",
-        "sources": [
-          {
-            "id": "JTWC",
-            "url": "https://www.metoc.navy.mil/jtwc/products/wp1226.tcw"
           }
         ]
       }
@@ -11208,6 +11179,35 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-NVEKD-010270"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_21318",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -108.146,
+          46.44166
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Wildfire Heavy Timber, Musselshell, Montana",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-07-12T21:00:00Z",
+        "observation_time": "2026-07-12T21:00:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21318",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21318",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-MTLG23-260727"
           }
         ]
       }
