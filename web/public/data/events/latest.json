@@ -1,12 +1,12 @@
 {
   "schema_version": "7.0",
   "project": "Terraforming Planet",
-  "generated_at": "2026-08-16T10:34:46.429211Z",
-  "event_count": 18038,
+  "generated_at": "2026-08-16T10:57:19.569967Z",
+  "event_count": 18091,
   "summary": {
-    "earthquake": 214,
+    "earthquake": 212,
     "storm": 29,
-    "fire": 17688,
+    "fire": 17743,
     "ice": 3,
     "volcano": 10,
     "other": 7,
@@ -19,7 +19,7 @@
     {
       "source": "USGS",
       "status": "ok",
-      "count": 206
+      "count": 204
     },
     {
       "source": "NASA EONET",
@@ -34,10 +34,26 @@
     {
       "source": "NASA FIRMS",
       "status": "ok",
-      "count": 17083
+      "count": 17138
     }
   ],
   "events": [
+    {
+      "id": "usgs-usd0015e7k",
+      "type": "earthquake",
+      "title": "M 5.1 - 81 km N of Ruteng, Indonesia",
+      "severity": "moderate",
+      "status": "reviewed",
+      "latitude": -7.8791,
+      "longitude": 120.5504,
+      "observed_at": "2026-08-16T10:31:34.822000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/usd0015e7k",
+      "metadata": {
+        "magnitude": 5.1,
+        "depth_km": 10
+      }
+    },
     {
       "id": "usgs-ci40673770",
       "type": "earthquake",
@@ -73,16 +89,16 @@
     {
       "id": "usgs-usd0015e7j",
       "type": "earthquake",
-      "title": "M 5.5 - 74 km N of Ruteng, Indonesia",
+      "title": "M 5.3 - 75 km NNE of Ruteng, Indonesia",
       "severity": "moderate",
       "status": "reviewed",
-      "latitude": -7.939,
-      "longitude": 120.5464,
-      "observed_at": "2026-08-16T10:14:36.545000Z",
+      "latitude": -7.9399,
+      "longitude": 120.5995,
+      "observed_at": "2026-08-16T10:14:36.343000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/usd0015e7j",
       "metadata": {
-        "magnitude": 5.5,
+        "magnitude": 5.3,
         "depth_km": 10
       }
     },
@@ -3284,54 +3300,6 @@
       "metadata": {
         "magnitude": 1.3,
         "depth_km": 126.3
-      }
-    },
-    {
-      "id": "usgs-us6000tkyk",
-      "type": "earthquake",
-      "title": "M 6.9 - 15 km NNW of Pematangsiantar, Indonesia",
-      "severity": "high",
-      "status": "reviewed",
-      "latitude": 3.0856,
-      "longitude": 99.015,
-      "observed_at": "2026-08-15T10:54:51.796000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tkyk",
-      "metadata": {
-        "magnitude": 6.9,
-        "depth_km": 172.526
-      }
-    },
-    {
-      "id": "usgs-ci40673106",
-      "type": "earthquake",
-      "title": "M 0.2 - 6 km SW of Banning, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 33.892,
-      "longitude": -116.921833333333,
-      "observed_at": "2026-08-15T10:48:21.200000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci40673106",
-      "metadata": {
-        "magnitude": 0.22,
-        "depth_km": 14.37
-      }
-    },
-    {
-      "id": "usgs-ci40673098",
-      "type": "earthquake",
-      "title": "M 0.5 - 6 km SW of Banning, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 33.8903333333333,
-      "longitude": -116.923333333333,
-      "observed_at": "2026-08-15T10:46:08.720000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci40673098",
-      "metadata": {
-        "magnitude": 0.49,
-        "depth_km": 13.52
       }
     },
     {
@@ -14447,7 +14415,7 @@
       "source_url": "https://mapping.emergency.copernicus.eu/activations/EMSR918",
       "metadata": {
         "code": "EMSR918",
-        "products": 1,
+        "products": 2,
         "countries": [
           "Greece"
         ],
@@ -288134,6 +288102,941 @@
       "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
       "metadata": {
         "frp": 1.03,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-00e49d0b3a414b151f74",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 6.72965,
+      "longitude": 81.52991,
+      "observed_at": "2026-08-16T07:48:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 7.91,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-8d46a6d298cfd5f8b51f",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 7.18742,
+      "longitude": 81.82262,
+      "observed_at": "2026-08-16T07:48:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 3.53,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-49265c76d7197fa15727",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 7.26022,
+      "longitude": 81.79184,
+      "observed_at": "2026-08-16T07:48:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 3.77,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-f6249bb9b34373ce021c",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 7.31004,
+      "longitude": 80.93993,
+      "observed_at": "2026-08-16T07:48:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 5.54,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-aab16242f6b958224c9e",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 7.4564,
+      "longitude": 81.34227,
+      "observed_at": "2026-08-16T07:48:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 4.99,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-187a7d8d0a3c3085f143",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 7.73834,
+      "longitude": 81.5024,
+      "observed_at": "2026-08-16T07:48:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 1.61,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-3f1b1bd6aa233e12f1dd",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 7.73887,
+      "longitude": 81.26031,
+      "observed_at": "2026-08-16T07:48:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 1.89,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-1a0da476f7d90c2695d8",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 7.86138,
+      "longitude": 81.47504,
+      "observed_at": "2026-08-16T07:48:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 10.54,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-20eca8e33461c93c075c",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 7.87655,
+      "longitude": 81.41111,
+      "observed_at": "2026-08-16T07:48:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 1.79,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-abf8ff9cdde0b2818b7d",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 7.87693,
+      "longitude": 81.48414,
+      "observed_at": "2026-08-16T07:48:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 5.64,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-ba8a37d013c03bd04f7e",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 7.87898,
+      "longitude": 81.48672,
+      "observed_at": "2026-08-16T07:48:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 10.65,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-a95baa8e902b4204832e",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 7.88076,
+      "longitude": 81.48351,
+      "observed_at": "2026-08-16T07:48:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 5.64,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-54c316ef2fdf4eb0b73a",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 8.05386,
+      "longitude": 81.24757,
+      "observed_at": "2026-08-16T07:48:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 3.58,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-2186b3ba093c31ae4b69",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 8.05624,
+      "longitude": 81.24507,
+      "observed_at": "2026-08-16T07:48:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 4.3,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-7efe6e6e406cab129113",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 8.05773,
+      "longitude": 81.24693,
+      "observed_at": "2026-08-16T07:48:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 3.58,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-fc5f4bb0096534a8981d",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 8.06344,
+      "longitude": 81.18587,
+      "observed_at": "2026-08-16T07:48:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 6.49,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-04a9477511148258b03b",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 8.76996,
+      "longitude": 78.10783,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 2.39,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-029a683b94cf8c94d51f",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 8.84015,
+      "longitude": 80.60784,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 3.8,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-4a4f3c53eed96b7d646a",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 8.8501,
+      "longitude": 80.42207,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 1.69,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-78efafbc09cb71800e38",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 8.90999,
+      "longitude": 80.47983,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 7.28,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-6893103098f5e2fdff47",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 9.319,
+      "longitude": 79.30539,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 4.67,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-7f356d4329a073b99feb",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 9.3233,
+      "longitude": 80.19555,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 3.18,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-4cd1cd1671beeb3560dd",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 9.45503,
+      "longitude": 80.47744,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 4.75,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-a69411431b3870e4ba95",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 9.45774,
+      "longitude": 77.60921,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 5.97,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-0b58e74574bffa498c78",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 9.45867,
+      "longitude": 77.61446,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 5.97,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-7260cdbe7cf99f602646",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 9.459,
+      "longitude": 80.47677,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 4.75,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-52e476ce46184815fd73",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 9.6554,
+      "longitude": 80.30992,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 9.63,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-c8667ea2a13fa5ca6bc1",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 9.85071,
+      "longitude": 77.88331,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 1.3,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-0f92c82ce5cb41e00fc9",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 9.85307,
+      "longitude": 77.88065,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 1.64,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-4f4d919d2e8541b38087",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 10.20671,
+      "longitude": 78.83601,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 3.96,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-cd1c5566e757c9669357",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 10.53129,
+      "longitude": 79.73779,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 2.77,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-399e24cd0091056d7819",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 10.8337,
+      "longitude": 79.31152,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 4.59,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-3fb23423aceb994589a6",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 10.85651,
+      "longitude": 79.07156,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 6.22,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-d24761b08e66c6ed24bc",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 10.92125,
+      "longitude": 78.4465,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 3.75,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-929b3a4ab39109fc2cac",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 10.95975,
+      "longitude": 78.94122,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 2.66,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-e8ce553cfbf930076452",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 11.08317,
+      "longitude": 79.47999,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 4.53,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-29e6d989eb536a640c4b",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 11.40386,
+      "longitude": 79.70392,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 2.19,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-c0ad937dafc9c146dac0",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 11.46932,
+      "longitude": 79.35802,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 2.64,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-e9d9f9c20d7b8eb207a2",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 11.92912,
+      "longitude": 79.67993,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 4.37,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-2581ab9c2d8cd4176cf7",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 11.94788,
+      "longitude": 79.04879,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 4.56,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-92de317d99ec1e2e1fb7",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 12.03929,
+      "longitude": 79.50043,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 3.09,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-664652f4a001f30dcc4c",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 12.21654,
+      "longitude": 79.85169,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 3.2,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-ed91deb6bdf3bb7d48e5",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 12.32878,
+      "longitude": 78.75077,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 15.33,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-b5e20e2b5a87422ce8ab",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 12.3682,
+      "longitude": 78.99841,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 6.01,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-474587fca9f995fcc85a",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 12.43197,
+      "longitude": 79.43339,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 3.07,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-8f7029fbc8e4f900eb23",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 12.61864,
+      "longitude": 80.07019,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 3.24,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-5b52fd14432562006242",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 14.06632,
+      "longitude": 77.34638,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 2.69,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-e98b7bf7fbf804677e0a",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 14.56593,
+      "longitude": 77.56482,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 4.13,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-f10c594bcce2c77f5ae0",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 14.56621,
+      "longitude": 77.56371,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 6.17,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-33b05402ebb400da7d3a",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 14.64689,
+      "longitude": 79.2653,
+      "observed_at": "2026-08-16T07:50:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 3.94,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-160320d166bd250a7aca",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 16.85509,
+      "longitude": 79.1368,
+      "observed_at": "2026-08-16T07:52:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 4.27,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-739c187b980e330b495b",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 22.36782,
+      "longitude": 87.30247,
+      "observed_at": "2026-08-16T07:52:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 2.37,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-bd36864129c4e9ecbd53",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 22.37709,
+      "longitude": 87.27881,
+      "observed_at": "2026-08-16T07:52:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 5.71,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-c6e2e50e6563a4f847db",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 23.71242,
+      "longitude": 86.45026,
+      "observed_at": "2026-08-16T07:52:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 2.04,
+        "satellite": "N",
+        "instrument": "VIIRS"
+      }
+    },
+    {
+      "id": "firms-215c68f6ad1a70c3b78b",
+      "type": "fire",
+      "title": "Satellite fire detection",
+      "severity": "low",
+      "status": "active_detection",
+      "latitude": 23.80482,
+      "longitude": 86.32938,
+      "observed_at": "2026-08-16T07:52:00Z",
+      "source": "NASA FIRMS",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/map/",
+      "metadata": {
+        "frp": 6.81,
         "satellite": "N",
         "instrument": "VIIRS"
       }
