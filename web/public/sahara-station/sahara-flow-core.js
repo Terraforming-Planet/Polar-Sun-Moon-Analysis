@@ -1,5 +1,6 @@
 const SAMPLE_SIZE = 33;
 const EARTH_RADIUS_M = 6371000;
+const FLAT_EPSILON_M = 0.001;
 const D8_NEIGHBORS = [
   [-1, -1], [-1, 0], [-1, 1],
   [0, -1], [0, 1],
@@ -22,6 +23,107 @@ export function cellDistances(lat) {
 
 function neighborDistance(dr, dc, distances) {
   return Math.hypot(dr * distances.northSouth, dc * distances.eastWest);
+}
+
+function pushHeap(heap, item) {
+  heap.push(item);
+  let index = heap.length - 1;
+  while (index > 0) {
+    const parent = Math.floor((index - 1) / 2);
+    if (heap[parent][0] <= item[0]) break;
+    heap[index] = heap[parent];
+    index = parent;
+  }
+  heap[index] = item;
+}
+
+function popHeap(heap) {
+  if (heap.length === 0) return null;
+  const root = heap[0];
+  const last = heap.pop();
+  if (heap.length === 0) return root;
+
+  let index = 0;
+  while (true) {
+    let child = index * 2 + 1;
+    if (child >= heap.length) break;
+    if (child + 1 < heap.length && heap[child + 1][0] < heap[child][0]) child += 1;
+    if (heap[child][0] >= last[0]) break;
+    heap[index] = heap[child];
+    index = child;
+  }
+  heap[index] = last;
+  return root;
+}
+
+function boundaryIndices() {
+  const indices = [];
+  for (let col = 0; col < SAMPLE_SIZE; col += 1) {
+    indices.push(col);
+    indices.push((SAMPLE_SIZE - 1) * SAMPLE_SIZE + col);
+  }
+  for (let row = 1; row < SAMPLE_SIZE - 1; row += 1) {
+    indices.push(row * SAMPLE_SIZE);
+    indices.push(row * SAMPLE_SIZE + SAMPLE_SIZE - 1);
+  }
+  return indices;
+}
+
+export function conditionDemForDrainage(elevations, epsilonM = FLAT_EPSILON_M) {
+  const conditioned = Float64Array.from(elevations);
+  const fillDepth = new Float64Array(elevations.length);
+  const visited = new Uint8Array(elevations.length);
+  const heap = [];
+
+  for (const index of boundaryIndices()) {
+    if (visited[index]) continue;
+    visited[index] = 1;
+    pushHeap(heap, [conditioned[index], index]);
+  }
+
+  while (heap.length > 0) {
+    const item = popHeap(heap);
+    if (!item) break;
+    const [spillElevation, index] = item;
+    const row = Math.floor(index / SAMPLE_SIZE);
+    const col = index % SAMPLE_SIZE;
+
+    for (const [dr, dc] of D8_NEIGHBORS) {
+      const nr = row + dr;
+      const nc = col + dc;
+      if (nr < 0 || nr >= SAMPLE_SIZE || nc < 0 || nc >= SAMPLE_SIZE) continue;
+      const neighbor = nr * SAMPLE_SIZE + nc;
+      if (visited[neighbor]) continue;
+      visited[neighbor] = 1;
+
+      const original = conditioned[neighbor];
+      const minimumDrainable = spillElevation + epsilonM;
+      if (original <= spillElevation) {
+        conditioned[neighbor] = minimumDrainable;
+        fillDepth[neighbor] = Math.max(0, minimumDrainable - elevations[neighbor]);
+      }
+      pushHeap(heap, [conditioned[neighbor], neighbor]);
+    }
+  }
+
+  let filledCellCount = 0;
+  let fillDepthSumM = 0;
+  let maxFillDepthM = 0;
+  for (const depth of fillDepth) {
+    if (depth <= epsilonM) continue;
+    filledCellCount += 1;
+    fillDepthSumM += depth;
+    maxFillDepthM = Math.max(maxFillDepthM, depth);
+  }
+
+  return {
+    conditionedElevations: conditioned,
+    fillDepth,
+    filledCellCount,
+    filledFraction: filledCellCount / elevations.length,
+    meanFillDepthM: filledCellCount > 0 ? fillDepthSumM / filledCellCount : 0,
+    maxFillDepthM,
+  };
 }
 
 export function computeD8Receivers(elevations, lat) {
@@ -116,17 +218,58 @@ export function percentile(values, fraction) {
   return sorted[index];
 }
 
-export function buildFlowProducts(values, lat) {
+function interiorSinkCount(receivers) {
+  let count = 0;
+  for (let row = 1; row < SAMPLE_SIZE - 1; row += 1) {
+    for (let col = 1; col < SAMPLE_SIZE - 1; col += 1) {
+      if (receivers[row * SAMPLE_SIZE + col] < 0) count += 1;
+    }
+  }
+  return count;
+}
+
+export function buildFlowProducts(values, lat, options = {}) {
   const elevations = Array.from(values, (value) => finiteElevation(Number(value)));
   if (elevations.length !== SAMPLE_SIZE * SAMPLE_SIZE) {
     throw new Error(`Expected ${SAMPLE_SIZE * SAMPLE_SIZE} DEM samples, got ${elevations.length}`);
   }
-  const receivers = computeD8Receivers(elevations, lat);
+
+  const useConditioning = options.condition !== false;
+  const conditioning = useConditioning
+    ? conditionDemForDrainage(elevations, options.epsilonM ?? FLAT_EPSILON_M)
+    : {
+        conditionedElevations: Float64Array.from(elevations),
+        fillDepth: new Float64Array(elevations.length),
+        filledCellCount: 0,
+        filledFraction: 0,
+        meanFillDepthM: 0,
+        maxFillDepthM: 0,
+      };
+  const routingElevations = conditioning.conditionedElevations;
+  const receivers = computeD8Receivers(routingElevations, lat);
   const accumulation = computeFlowAccumulation(receivers);
   let dominantOutlet = 0;
   for (let index = 1; index < accumulation.length; index += 1) {
     if (accumulation[index] > accumulation[dominantOutlet]) dominantOutlet = index;
   }
   const watershed = delineateWatershed(receivers, dominantOutlet);
-  return { elevations, receivers, accumulation, dominantOutlet, watershed };
+  const distances = cellDistances(lat);
+  const cellAreaM2 = distances.northSouth * distances.eastWest;
+  let fillVolumeNumericalM3 = 0;
+  for (const depth of conditioning.fillDepth) fillVolumeNumericalM3 += depth * cellAreaM2;
+
+  return {
+    elevations,
+    routingElevations,
+    receivers,
+    accumulation,
+    dominantOutlet,
+    watershed,
+    conditioning: {
+      ...conditioning,
+      cellAreaM2,
+      fillVolumeNumericalM3,
+      interiorSinkCountAfter: interiorSinkCount(receivers),
+    },
+  };
 }
