@@ -101,8 +101,7 @@ class GitAccessor:
             ["git", *args],
             cwd=self.cwd,
             check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            capture_output=True,
         )
         return process.stdout
 
