@@ -1,0 +1,74 @@
+name: Fast publish Test 011 integrity from validated artifact
+
+on:
+  push:
+    branches: [experiment-011-ilawa-zalewo-regional-53-760000-19-590000]
+    paths: ['.github/workflows/publish-integrity-from-artifact.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: fast-publish-test011-integrity
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      SOURCE_RUN_ID: '31907264831'
+      SOURCE_ARTIFACT: TEST011_ILAWA_ZALEWO_1990_2026_SPRING_AUTUMN
+      EXPERIMENT_DIR: experiments/experiment_011_ilawa_zalewo_regional
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment-011-ilawa-zalewo-regional-53-760000-19-590000
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            tools
+            published
+            .github
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install Pillow
+      - name: Download validated artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          rm -rf /tmp/test011 && mkdir -p /tmp/test011
+          gh run download "$SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$SOURCE_ARTIFACT" --dir /tmp/test011
+      - name: Restore active seasonal evidence from combined ZIP
+        run: |
+          python - <<'PY'
+          import os, shutil, zipfile
+          from pathlib import Path
+          src=Path('/tmp/test011')
+          candidates=[p for p in src.rglob('*.zip') if 'SPRING_AUTUMN' in p.name.upper()]
+          if not candidates: raise SystemExit('combined seasonal ZIP not found')
+          combined=max(candidates,key=lambda p:p.stat().st_size)
+          dest=Path(os.environ['EXPERIMENT_DIR'])/'seasonal_evidence'
+          shutil.rmtree(dest,ignore_errors=True); dest.mkdir(parents=True,exist_ok=True)
+          with zipfile.ZipFile(combined) as zf:
+              members=[n for n in zf.namelist() if n.startswith(('spring/','autumn/'))]
+              if not members: raise SystemExit('spring/autumn members not found')
+              zf.extractall(dest,members)
+          for season in ('spring','autumn'):
+              assert (dest/season/'manifest.json').exists()
+              assert any((dest/season/'images').iterdir())
+          PY
+      - name: Publish SHA-256 and perceptual hashes
+        run: python tools/publish_experiment_integrity.py --test 11 --experiment-dir "$EXPERIMENT_DIR"
+      - name: Commit lightweight publication
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add --sparse -f published/experiment-011
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'data(test011): publish validated integrity index'
+          git push origin HEAD:experiment-011-ilawa-zalewo-regional-53-760000-19-590000
