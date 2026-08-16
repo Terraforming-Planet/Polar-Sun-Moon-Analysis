@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "repository": "Terraforming-Planet/Polar-Sun-Moon-Analysis",
+  "policy": {
+    "years": [1990, 2026],
+    "seasons": ["spring", "autumn"],
+    "real_pixels_only": true,
+    "generative_fill_forbidden": true,
+    "ai_super_resolution_forbidden": true,
+    "require_successful_workflow": true,
+    "require_unexpired_artifact": true
+  },
+  "tests": [
+    {"id": 1, "name": "Kuchnia / forest pond baseline", "branch": "satellite-history-53-594070-19-000151", "kind": "lake_pond"},
+    {"id": 2, "name": "Water change 53.609856,19.055751", "branch": "experiment-002-water-change-53-609856-19-055751", "kind": "water_body"},
+    {"id": 3, "name": "Jezioro Nogat", "branch": "experiment-003-jezioro-nogat-53-578593-19-068364", "kind": "lake"},
+    {"id": 4, "name": "Kacze / Gleboczek", "branch": "experiment-004-kacze-gleboczek-53-611719-18-882321", "kind": "lake"},
+    {"id": 5, "name": "Jezioro Tarpno", "branch": "experiment-005-jezioro-tarpno-53-497670-18-822712", "kind": "lake"},
+    {"id": 6, "name": "Jezioro Wieczno", "branch": "experiment-006-jezioro-wieczno-53-270125-18-789994", "kind": "lake", "aliases_excluded_from_canonical_ranking": ["experiment-006-jezioro-tarpno-control-53-497670-18-822712"]},
+    {"id": 7, "name": "Karas Ilawa", "branch": "experiment-007-karas-ilawa-53-5639201-19-4706276", "kind": "lake", "aliases_excluded_from_canonical_ranking": ["experiment-007-jezioro-wieczno-53-270125-18-789994"]},
+    {"id": 8, "name": "Jezioro Stelchno", "branch": "experiment-008-jezioro-stelchno-53-525217-18-461320", "kind": "lake"},
+    {"id": 9, "name": "Jezioro Plowez", "branch": "experiment-009-jezioro-plowez-53-452516-19-212111", "kind": "lake"},
+    {"id": 10, "name": "Drweca wetlands", "branch": "experiment-010-drweca-wetlands-53-067318-18-872006", "kind": "river_wetland"},
+    {"id": 11, "name": "Ilawa-Zalewo regional", "branch": "experiment-011-ilawa-zalewo-regional-53-760000-19-590000", "kind": "regional_water_system"},
+    {"id": 12, "name": "Great Salt Lake", "branch": "experiment-012-great-salt-lake-41-150000--112-600000", "kind": "lake"},
+    {"id": 13, "name": "Cosmopolis / Grays Harbor", "branch": "experiment-013-cosmopolis-grays-harbor", "kind": "river_estuary", "aliases_excluded_from_canonical_ranking": ["experiment-013-cosmopolis-grays-harbor-46-965781--123-510786"]},
+    {"id": 14, "name": "Wisla Gniew-Grudziadz", "branch": "experiment-014-wisla-gniew-grudziadz", "kind": "river", "aliases_excluded_from_canonical_ranking": ["experiment-014-wisla-gniew-grudziadz-53-660000-18-790000"]},
+    {"id": 15, "name": "Himalaya / Tibet observation", "branch": "experiment-015-himalaya-tibet-v2-30-234961-83-056124", "kind": "mountain_water_system", "aliases_excluded_from_canonical_ranking": ["experiment-015-himalaya-tibet-30-234961-83-056124"]}
+  ]
+}
