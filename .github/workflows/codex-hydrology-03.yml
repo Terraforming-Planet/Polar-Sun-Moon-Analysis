@@ -17,69 +17,39 @@ jobs:
         with:
           ref: codex/night-agent-hydrology-features-03
           fetch-depth: 0
-
-      - name: Wire hydrology analysis and tests
+      - name: Apply hydrology wiring
         shell: bash
         run: |
           python - <<'PY'
+          import base64
           from pathlib import Path
-
-          pages = [
-              Path('web/public/sahara-station/index.html'),
-              Path('docs/sahara-station/index.html'),
-          ]
+          section = base64.b64decode('ICAgIDxkaXYgY2xhc3M9InBhbmVsIiBpZD0iaHlkcm9sb2d5LXNjcmVlbmluZy04IiBzdHlsZT0ibWFyZ2luLXRvcDoxcmVtIj4KICAgICAgPGRpdiBjbGFzcz0iZXllYnJvdyI+REVNIC8gQU5BTElaQSBUT1BPR1JBRklDWk5BIDggVEVTVMOTVzwvZGl2PgogICAgICA8aDM+UHJ6ZXNpZXcgcmV0ZW5jamkgbmEgQ29wZXJuaWN1cyBERU0gR0xPLTkwPC9oMz4KICAgICAgPHA+QW5hbGl6YSBwb2JpZXJhIHJlZ2lvbmFsbsSFIHByw7Nia8SZIERFTSB3b2vDs8WCIMWbcm9ka2Ega2HFvGRlZ28geiA4IHByenlwYWRrw7N3IGkgbGljenkgcmVsaWVmLCDFm3JlZG5pZSBuYWNoeWxlbmllLCB1ZHppYcWCIHRlcmVudSBvIHNwYWRrdSBwb25pxbxlaiAywrAgb3JheiBsb2thbG5lIG9ibmnFvGVuaWEuIFd5bmlrIDDigJMxMDAgamVzdCB3ecWCxIVjem5pZSB3c2thxbpuaWtpZW0gcHJ6ZXNpZXdvd3ltIGRvIHBvcsOzd25hbmlhIGxva2FsaXphY2ppIOKAlCBuaWUgamVzdCBvYmxpY3plbmllbSBwb2plbW5vxZtjaSB6Ymlvcm5pa2EsIGJlenBpZWN6ZcWEc3R3YSBwb3dvZHppb3dlZ28gYW5pIGRvd29kZW0gZGF3bmVnbyBwcnplcMWCeXd1LjwvcD4KICAgICAgPGJ1dHRvbiBpZD0icnVuSHlkcm9sb2d5OCIgY2xhc3M9ImFjdGlvbiI+VXJ1Y2hvbSBhbmFsaXrEmSBERU0gZGxhIDggdGVzdMOzdzwvYnV0dG9uPgogICAgICA8cCBpZD0iaHlkcm9sb2d5U3RhdHVzIiBjbGFzcz0iYWN0aW9uLW1lc3NhZ2UiIHJvbGU9InN0YXR1cyIgYXJpYS1saXZlPSJwb2xpdGUiPkFuYWxpemEgREVNIGN6ZWthIG5hIHVydWNob21pZW5pZS48L3A+CiAgICAgIDxkaXYgY2xhc3M9InRhYmxld3JhcCI+CiAgICAgICAgPHRhYmxlPgogICAgICAgICAgPHRoZWFkPjx0cj48dGg+VGVzdDwvdGg+PHRoPld5c29rb8WbxIc8L3RoPjx0aD5SZWxpZWY8L3RoPjx0aD7FmnIuIHNwYWRlazwvdGg+PHRoPlNwYWRlayAmbHQ7MsKwPC90aD48dGg+TG9rYWxuZSBvYm5pxbxlbmlhPC90aD48dGg+U2NyZWVuaW5nIHJldGVuY2ppPC90aD48L3RyPjwvdGhlYWQ+CiAgICAgICAgICA8dGJvZHkgaWQ9Imh5ZHJvbG9neVJvd3MiPjwvdGJvZHk+CiAgICAgICAgPC90YWJsZT4KICAgICAgPC9kaXY+CiAgICAgIDxwIGNsYXNzPSJtZXRob2Qtbm90ZSI+PHN0cm9uZz5JbnRlcnByZXRhY2phOjwvc3Ryb25nPiB3eXNva2kgc2NyZWVuaW5nIG96bmFjemEgdHlsa28sIMW8ZSB3IHRlaiByZWdpb25hbG5laiBwcsOzYmNlIHd5c3TEmXB1amUgd2nEmWNlaiBwxYJhc2tpZWdvIHRlcmVudSBpIGxva2FsbnljaCBvYm5pxbxlxYQuIEthxbxkeSBrYW5keWRhdCBkbyByZXRlbmNqaSB3eW1hZ2Egb3NvYm5laiBhbmFsaXp5IHpsZXduaSwgcHJ6ZXDFgnl3dSwgZ2VvbG9naWksIGluZmlsdHJhY2ppLCBwYXJvd2FuaWEsIHNlZHltZW50YWNqaSBpIHJ5enlrYS48L3A+CiAgICA8L2Rpdj4K').decode()
+          note_add = base64.b64decode('CgojIyBJdGVyYWNqYSAzIOKAlCBwcnplc2lldyB0b3BvZ3JhZmljem55IERFTQpEb2Rhbm8gcG9yw7N3bnl3YWxuxIUgYW5hbGl6xJkgMzPDlzMzIGRsYSDFm3JvZGthIGthxbxkZWdvIHogOCB0ZXN0w7N3LiBXeWxpY3phbmUgc8SFOiB6YWtyZXMgd3lzb2tvxZtjaSwgcmVsaWVmLCDFm3JlZG5pZSBuYWNoeWxlbmllLCB1ZHppYcWCIGtvbcOzcmVrIG8gc3BhZGt1IHBvbmnFvGVqIDLCsCwgdWR6aWHFgiBsb2thbG55Y2ggb2JuacW8ZcWEIG9yYXogamF3bmllIGhldXJ5c3R5Y3pueSBzY3JlZW5pbmcgcmV0ZW5jamkgMOKAkzEwMC4gU2NyZWVuaW5nIHPFgnXFvHkgd3nFgsSFY3puaWUgZG8gd3lib3J1IG1pZWpzYyB3eW1hZ2FqxIVjeWNoIGRva8WCYWRuaWVqc3plaiBhbmFsaXp5IGkgbmllIGplc3Qgb2JsaWN6ZW5pZW0gcG9qZW1ub8WbY2kgYW5pIHByb2dub3rEhSBoeWRyb2xvZ2ljem7EhS4KCk5vd2EgemFzYWRhIHJvYm9jemE6IHpkasSZY2llIG9wdHljem5lIHdza2F6dWplIGZvcm3EmSwgREVNIHNwcmF3ZHphIGdlb21ldHJpxJksIGEgZG9waWVybyBtb2RlbCB6bGV3bmkgaSBkYW5lIHRlcmVub3dlIG1vZ8SFIG9jZW5pYcSHIHJlYWxuxIUgbW/FvGxpd2/Fm8SHIG1hZ2F6eW5vd2FuaWEgd29keS4gTG9rYWxuYSBkZXByZXNqYSB3IERTTSBtb8W8ZSBiecSHIGFydGVmYWt0ZW0gcm96ZHppZWxjem/Fm2NpIGx1YiBwb2tyeWNpYSB0ZXJlbnUsIGRsYXRlZ28gbmllIGplc3QgYXV0b21hdHljem5pZSBuYXR1cmFsbnltIHpiaW9ybmlraWVtLgo=').decode()
+          test_add = base64.b64decode('CgoKZGVmIHRlc3Rfc2FoYXJhX3N0YXRpb25faGFzX2VpZ2h0X2Nhc2VfZGVtX2h5ZHJvbG9neV9zY3JlZW5pbmcoKSAtPiBOb25lOgogICAgaHRtbCA9IFBBR0UucmVhZF90ZXh0KGVuY29kaW5nPSJ1dGYtOCIpCiAgICBoeWRyb2xvZ3kgPSBST09UIC8gIndlYiIgLyAicHVibGljIiAvICJzYWhhcmEtc3RhdGlvbiIgLyAic2FoYXJhLWh5ZHJvbG9neS5qcyIKICAgIGRvY3NfaHlkcm9sb2d5ID0gUk9PVCAvICJkb2NzIiAvICJzYWhhcmEtc3RhdGlvbiIgLyAic2FoYXJhLWh5ZHJvbG9neS5qcyIKICAgIGpzID0gaHlkcm9sb2d5LnJlYWRfdGV4dChlbmNvZGluZz0idXRmLTgiKQoKICAgIGFzc2VydCAnaWQ9InJ1bkh5ZHJvbG9neTgiJyBpbiBodG1sCiAgICBhc3NlcnQgJ2lkPSJoeWRyb2xvZ3lSb3dzIicgaW4gaHRtbAogICAgYXNzZXJ0ICcuL3NhaGFyYS1oeWRyb2xvZ3kuanMnIGluIGh0bWwKICAgIGFzc2VydCAiYW5hbHl6ZURlbUdyaWQiIGluIGpzCiAgICBhc3NlcnQgInJldGVudGlvblNjcmVlbmluZ1Njb3JlIiBpbiBqcwogICAgYXNzZXJ0ICJsb3dTbG9wZUZyYWN0aW9uIiBpbiBqcwogICAgYXNzZXJ0ICJzaW5rRnJhY3Rpb24iIGluIGpzCiAgICBhc3NlcnQgaHlkcm9sb2d5LnJlYWRfdGV4dChlbmNvZGluZz0idXRmLTgiKSA9PSBkb2NzX2h5ZHJvbG9neS5yZWFkX3RleHQoZW5jb2Rpbmc9InV0Zi04IikK').decode()
+          pages = [Path('web/public/sahara-station/index.html'), Path('docs/sahara-station/index.html')]
           anchor = '    <p class="method-note"><strong>Baseline:</strong> histogramy RGB + deterministyczne klastry służą tylko do testu pipeline’u. To nie jest walidowany detektor paleokanałów.</p>'
-          section = '''    <div class="panel" id="hydrology-screening-8" style="margin-top:1rem">
-      <div class="eyebrow">DEM / ANALIZA TOPOGRAFICZNA 8 TESTÓW</div>
-      <h3>Przesiew retencji na Copernicus DEM GLO-90</h3>
-      <p>Analiza pobiera regionalną próbkę DEM wokół środka każdego z 8 przypadków i liczy relief, średnie nachylenie, udział terenu o spadku poniżej 2° oraz lokalne obniżenia. Wynik 0–100 jest wyłącznie wskaźnikiem przesiewowym do porównania lokalizacji — nie jest obliczeniem pojemności zbiornika, bezpieczeństwa powodziowego ani dowodem dawnego przepływu.</p>
-      <button id="runHydrology8" class="action">Uruchom analizę DEM dla 8 testów</button>
-      <p id="hydrologyStatus" class="action-message" role="status" aria-live="polite">Analiza DEM czeka na uruchomienie.</p>
-      <div class="tablewrap">
-        <table>
-          <thead><tr><th>Test</th><th>Wysokość</th><th>Relief</th><th>Śr. spadek</th><th>Spadek &lt;2°</th><th>Lokalne obniżenia</th><th>Screening retencji</th></tr></thead>
-          <tbody id="hydrologyRows"></tbody>
-        </table>
-      </div>
-      <p class="method-note"><strong>Interpretacja:</strong> wysoki screening oznacza tylko, że w tej regionalnej próbce występuje więcej płaskiego terenu i lokalnych obniżeń. Każdy kandydat do retencji wymaga osobnej analizy zlewni, przepływu, geologii, infiltracji, parowania, sedymentacji i ryzyka.</p>
-    </div>
-'''
-
           for page in pages:
               text = page.read_text(encoding='utf-8')
               if 'id="hydrology-screening-8"' not in text:
                   if anchor not in text:
-                      raise SystemExit(f'gallery anchor missing in {page}')
+                      raise SystemExit(f'anchor missing in {page}')
                   text = text.replace(anchor, section + anchor, 1)
               script = '<script type="module" src="./sahara-hydrology.js"></script>'
+              globe = '<script type="module" src="./sahara-globe.js"></script>'
               if script not in text:
-                  globe = '<script type="module" src="./sahara-globe.js"></script>'
-                  if globe not in text:
-                      raise SystemExit(f'globe script missing in {page}')
                   text = text.replace(globe, globe + '\n' + script, 1)
               page.write_text(text, encoding='utf-8')
-
-          notes = [
-              Path('web/public/sahara-station/paleoriver-tests/research-note.md'),
-              Path('docs/sahara-station/paleoriver-tests/research-note.md'),
-          ]
-          addition = '''\n\n## Iteracja 3 — przesiew topograficzny DEM\nDodano porównywalną analizę 33×33 dla środka każdego z 8 testów. Wyliczane są: zakres wysokości, relief, średnie nachylenie, udział komórek o spadku poniżej 2°, udział lokalnych obniżeń oraz jawnie heurystyczny screening retencji 0–100. Screening służy wyłącznie do wyboru miejsc wymagających dokładniejszej analizy i nie jest obliczeniem pojemności ani prognozą hydrologiczną.\n\nNowa zasada robocza: zdjęcie optyczne wskazuje formę, DEM sprawdza geometrię, a dopiero model zlewni i dane terenowe mogą oceniać realną możliwość magazynowania wody. Lokalna depresja w DSM może być artefaktem rozdzielczości lub pokrycia terenu, dlatego nie jest automatycznie naturalnym zbiornikiem.\n'''
-          for note in notes:
+          for note in [Path('web/public/sahara-station/paleoriver-tests/research-note.md'), Path('docs/sahara-station/paleoriver-tests/research-note.md')]:
               text = note.read_text(encoding='utf-8')
               if '## Iteracja 3 — przesiew topograficzny DEM' not in text:
-                  note.write_text(text.rstrip() + addition + '\n', encoding='utf-8')
-
+                  note.write_text(text.rstrip() + note_add + '\n', encoding='utf-8')
           test_file = Path('tests/test_sahara_station_page.py')
           tests = test_file.read_text(encoding='utf-8')
-          marker = 'def test_sahara_station_has_eight_case_dem_hydrology_screening() -> None:'
-          if marker not in tests:
-              tests += '''\n\n\ndef test_sahara_station_has_eight_case_dem_hydrology_screening() -> None:\n    html = PAGE.read_text(encoding="utf-8")\n    hydrology = ROOT / "web" / "public" / "sahara-station" / "sahara-hydrology.js"\n    docs_hydrology = ROOT / "docs" / "sahara-station" / "sahara-hydrology.js"\n    js = hydrology.read_text(encoding="utf-8")\n\n    assert 'id="runHydrology8"' in html\n    assert 'id="hydrologyRows"' in html\n    assert './sahara-hydrology.js' in html\n    assert "analyzeDemGrid" in js\n    assert "retentionScreeningScore" in js\n    assert "lowSlopeFraction" in js\n    assert "sinkFraction" in js\n    assert hydrology.read_text(encoding="utf-8") == docs_hydrology.read_text(encoding="utf-8")\n'''
-              test_file.write_text(tests, encoding='utf-8')
+          if 'def test_sahara_station_has_eight_case_dem_hydrology_screening() -> None:' not in tests:
+              test_file.write_text(tests.rstrip() + test_add + '\n', encoding='utf-8')
           PY
-
       - name: Run Sahara tests
         run: python -m pytest tests/test_sahara_station_page.py -q
-
       - name: Remove one-time workflow and commit
         shell: bash
         run: |
