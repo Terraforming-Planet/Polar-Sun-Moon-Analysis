@@ -1,0 +1,46 @@
+name: TerraWater global satellite integrity audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - audit/terrwater-global-integrity-001-015
+    paths:
+      - "config/terrawater_tests_001_015.json"
+      - "tools/global_satellite_integrity_audit.py"
+      - ".github/workflows/global-satellite-integrity-audit.yml"
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  provenance-inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install audit dependency
+        run: python -m pip install --disable-pip-version-check requests
+      - name: Audit canonical TEST 001-015 runs and artifacts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python tools/global_satellite_integrity_audit.py \
+            --registry config/terrawater_tests_001_015.json \
+            --output audit_output
+      - name: Show audit report
+        if: always()
+        run: |
+          if [ -f audit_output/GLOBAL_INTEGRITY_AUDIT.md ]; then cat audit_output/GLOBAL_INTEGRITY_AUDIT.md; fi
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TERRAWATER_GLOBAL_INTEGRITY_AUDIT_001_015
+          path: audit_output/
+          if-no-files-found: error
+          retention-days: 90
