@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RegionalDemOverlay } from './sahara-dem-relief.js';
+import { GlobalDemTileEngine } from './sahara-global-dem-tiles.js';
 import { DrainagePathComparisonOverlay } from './sahara-drainage-path-overlay.js';
 import './sahara-hydrology.js';
 import './sahara-path-concordance.js';
@@ -18,12 +19,13 @@ if (host) {
   const textureCache = new Map();
   let activeLod = -1;
   let buildGeneration = 0;
+  let terrainLod = -1;
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.setClearColor(0x02060c, 1);
-  renderer.domElement.setAttribute('aria-label', 'Kafelkowy model 3D Ziemi z NASA GIBS i regionalnym Copernicus DEM');
+  renderer.domElement.setAttribute('aria-label', 'Kafelkowy model 3D Ziemi z NASA GIBS i dynamicznym Copernicus DEM');
   host.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
@@ -51,6 +53,7 @@ if (host) {
 
   const markerGroup = new THREE.Group();
   scene.add(markerGroup);
+  const globalDem = new GlobalDemTileEngine(scene, radius, status);
   const demOverlay = new RegionalDemOverlay(scene, radius, status);
   const pathOverlay = new DrainagePathComparisonOverlay(scene, radius);
 
@@ -181,7 +184,10 @@ if (host) {
     camera.position.copy(point.clone().normalize().multiplyScalar(8.4));
     controls.target.set(0, 0, 0);
     controls.update();
-    if (status) status.textContent = `${place.label}: ${place.lat.toFixed(3)}°, ${place.lon.toFixed(3)}° • NASA GIBS + Copernicus DEM`;
+    const cameraDistance = camera.position.length();
+    terrainLod = globalDem.lodForDistance(cameraDistance);
+    if (status) status.textContent = `${place.label}: ${place.lat.toFixed(3)}°, ${place.lon.toFixed(3)}° • NASA GIBS + globalny Copernicus DEM`;
+    void globalDem.setFocus(place, cameraDistance);
     void demOverlay.setPlace(place);
   }
 
@@ -220,8 +226,14 @@ if (host) {
   function animate() {
     requestAnimationFrame(animate);
     controls.update();
-    const nextLod = camera.position.length() < 9.0 ? 1 : 0;
+    const cameraDistance = camera.position.length();
+    const nextLod = cameraDistance < 9.0 ? 1 : 0;
     if (nextLod !== activeLod) void buildLod(nextLod);
+    const nextTerrainLod = globalDem.lodForDistance(cameraDistance);
+    if (nextTerrainLod !== terrainLod) {
+      terrainLod = nextTerrainLod;
+      globalDem.updateForCamera(cameraDistance);
+    }
     renderer.render(scene, camera);
   }
 
