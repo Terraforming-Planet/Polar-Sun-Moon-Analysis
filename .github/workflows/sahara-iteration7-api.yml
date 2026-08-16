@@ -84,6 +84,8 @@ jobs:
                   target.write_text(content, encoding='utf-8')
                   shas[path] = sha
 
+              (root / 'data/training/paleoriver_8').mkdir(parents=True, exist_ok=True)
+              (root / 'tests').mkdir(parents=True, exist_ok=True)
               subprocess.run(['python', str(root / 'scripts/sahara_iteration7_mosaic.py')], check=True)
 
               outputs = [
