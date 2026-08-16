@@ -1,3 +1,5 @@
+import { ensureSar8 } from './sahara-sar-preview.js';
+
 const PIPELINES = [
   ['runHydrology8', '__paleoriverHydrology8'],
   ['runHydrologyMosaic8', '__paleoriverMosaicHydrology8'],
@@ -42,7 +44,7 @@ function numberOrNull(value) {
   return Number.isFinite(number) ? number : null;
 }
 
-function flattenRecord(test, optical, hydro, mosaic, stability, path) {
+function flattenRecord(test, optical, sar, hydro, mosaic, stability, path) {
   return {
     id: test.id,
     continent: test.continent,
@@ -54,6 +56,18 @@ function flattenRecord(test, optical, hydro, mosaic, stability, path) {
     optical_mean_r: numberOrNull(optical?.mean_r),
     optical_mean_g: numberOrNull(optical?.mean_g),
     optical_mean_b: numberOrNull(optical?.mean_b),
+    sar_provider: sar?.source ?? 'NASA OPERA RTC-S1 / Sentinel-1',
+    sar_status: sar?.status ?? null,
+    sar_product_name: sar?.product_name ?? null,
+    sar_polarization: sar?.polarization ?? null,
+    sar_acquisition_start: sar?.acquisition_start ?? null,
+    sar_preview_mean_luma: sar?.preview_mean_luma ?? null,
+    sar_preview_std_luma: sar?.preview_std_luma ?? null,
+    sar_feature_status: sar?.sar_feature_status ?? null,
+    sar_feature_kind: sar?.sar_feature_kind ?? 'rendered-preview-intensity-not-calibrated-backscatter',
+    hydrologic_context_label: sar?.hydrologic_context_label ?? null,
+    context_label_confidence: sar?.context_label_confidence ?? null,
+    paleochannel_ground_truth: sar?.paleochannel_ground_truth ?? 'not-labelled',
     dem_relief_m: hydro?.reliefM ?? null,
     dem_mean_slope_deg: hydro?.meanSlopeDeg ?? null,
     dem_low_slope_fraction: hydro?.lowSlopeFraction ?? null,
@@ -110,24 +124,29 @@ async function buildUnifiedRecords() {
   button.disabled = true;
   rows.innerHTML = '';
   try {
-    status.textContent = 'Uruchamianie czterech warstw analizy dla 8 testów…';
-    const manifestResponse = await fetch('./paleoriver-tests/manifest.json', { cache: 'no-store' });
-    const opticalResponse = await fetch('./paleoriver-tests/training_features.csv', { cache: 'no-store' });
+    status.textContent = 'Pobieranie oficjalnej warstwy Sentinel-1 SAR dla 8 testów…';
+    const [manifestResponse, opticalResponse, sar] = await Promise.all([
+      fetch('./paleoriver-tests/manifest.json', { cache: 'no-store' }),
+      fetch('./paleoriver-tests/training_features.csv', { cache: 'no-store' }),
+      ensureSar8(),
+    ]);
     if (!manifestResponse.ok || !opticalResponse.ok) throw new Error('Nie można pobrać manifestu lub cech RGB');
     const manifest = await manifestResponse.json();
     const optical = parseCsv(await opticalResponse.text());
     const results = [];
     for (const [buttonId, globalName] of PIPELINES) {
-      status.textContent = `Obliczenia: ${buttonId}…`;
+      status.textContent = `Obliczenia DEM/D8: ${buttonId}…`;
       // Existing modules perform the real Copernicus DEM computations in-browser.
       // eslint-disable-next-line no-await-in-loop
       results.push(await ensurePipeline(buttonId, globalName));
     }
     const [hydroRows, mosaicRows, stabilityRows, pathRows] = results.map(byId);
     const opticalRows = byId(optical);
+    const sarRows = byId(sar);
     const records = manifest.tests.map((test) => flattenRecord(
       test,
       opticalRows.get(test.id),
+      sarRows.get(test.id),
       hydroRows.get(test.id),
       mosaicRows.get(test.id),
       stabilityRows.get(test.id),
@@ -135,11 +154,12 @@ async function buildUnifiedRecords() {
     ));
     window.__paleoriverUnifiedTraining8 = records;
     for (const record of records) {
-      rows.insertAdjacentHTML('beforeend', `<tr><td><strong>${record.id}</strong></td><td>${record.kind}</td><td>${record.dem_relief_m == null ? '—' : `${Math.round(record.dem_relief_m)} m`}</td><td>${record.drainage_stability ?? '—'}</td><td>${record.path_concordance ?? '—'}</td><td>${record.retention_screening_score ?? '—'}</td></tr>`);
+      const sarDate = record.sar_acquisition_start?.slice(0, 10) ?? '—';
+      rows.insertAdjacentHTML('beforeend', `<tr><td><strong>${record.id}</strong></td><td>${record.kind}</td><td>${sarDate}</td><td>${record.hydrologic_context_label ?? '—'}</td><td>${record.dem_relief_m == null ? '—' : `${Math.round(record.dem_relief_m)} m`}</td><td>${record.drainage_stability ?? '—'}</td><td>${record.path_concordance ?? '—'}</td><td>${record.retention_screening_score ?? '—'}</td></tr>`);
     }
     document.getElementById('downloadUnifiedTrainingJson').disabled = false;
     document.getElementById('downloadUnifiedTrainingCsv').disabled = false;
-    status.textContent = `Gotowe: ${records.length}/8 zunifikowanych rekordów. To zestaw cech do dalszego treningu i walidacji, nie automatyczne potwierdzenie paleorzek.`;
+    status.textContent = `Gotowe: ${records.length}/8 rekordów RGB + Sentinel-1 SAR + DEM/D8. SAR luma jest cechą obrazu podglądowego, nie skalibrowanym backscatterem; paleochannel_ground_truth pozostaje not-labelled.`;
   } catch (error) {
     status.textContent = `Nie ukończono rekordów treningowych: ${error?.message || 'błąd'}`;
   } finally {
@@ -155,17 +175,17 @@ export function mountUnifiedTrainingRecords() {
   panel.className = 'panel';
   panel.style.marginTop = '1rem';
   panel.innerHTML = `
-    <div class="eyebrow">TRENING / 8 REKORDÓW / OPTYKA + DEM + D8</div>
+    <div class="eyebrow">TRENING / 8 REKORDÓW / OPTYKA + SENTINEL-1 SAR + DEM + D8</div>
     <h3>Jeden rekord treningowy dla każdego testu satelitarnego</h3>
-    <p>Moduł łączy istniejące cechy RGB z rzeczywistym Copernicus DEM, Priority-Flood, D8, mozaiką 3×3, stabilnością drenażu i zgodnością całej ścieżki 1°/3°. Nie tworzy etykiety „paleorzeka = prawda”; zachowuje osobno obserwacje i wyniki modelowe.</p>
+    <p>Moduł łączy cechy RGB z oficjalnym NASA OPERA RTC-S1/Sentinel-1, rzeczywistym Copernicus DEM, Priority-Flood, D8, mozaiką 3×3, stabilnością drenażu i zgodnością całej ścieżki 1°/3°. Etykiety SAR opisują potwierdzony kontekst hydrologiczny, ale nie tworzą sztucznej etykiety „paleorzeka = prawda”.</p>
     <div class="button-grid compact">
       <button id="buildUnifiedTraining8" class="action" type="button">Zbuduj 8 pełnych rekordów</button>
       <button id="downloadUnifiedTrainingJson" type="button" disabled>Pobierz unified JSON</button>
       <button id="downloadUnifiedTrainingCsv" type="button" disabled>Pobierz unified CSV</button>
     </div>
     <p id="unifiedTrainingStatus" class="action-message" role="status" aria-live="polite">Zunifikowany trening czeka na uruchomienie.</p>
-    <div class="tablewrap"><table><thead><tr><th>ID</th><th>Typ</th><th>Relief</th><th>Stabilność D8</th><th>Zgodność ścieżki</th><th>Screening retencji</th></tr></thead><tbody id="unifiedTrainingRows"></tbody></table></div>
-    <p class="method-note"><strong>Ograniczenie:</strong> cechy RGB, DEM i zgodność D8 są materiałem treningowym/screeningowym. Bez niezależnych masek referencyjnych, SAR, geologii i danych terenowych nie wolno traktować wyniku jako automatycznej klasyfikacji dawnej rzeki.</p>`;
+    <div class="tablewrap"><table><thead><tr><th>ID</th><th>Typ</th><th>SAR</th><th>Etykieta kontekstu</th><th>Relief</th><th>Stabilność D8</th><th>Zgodność ścieżki</th><th>Screening retencji</th></tr></thead><tbody id="unifiedTrainingRows"></tbody></table></div>
+    <p class="method-note"><strong>Ograniczenie:</strong> RGB, wyświetleniowa jasność SAR, DEM i zgodność D8 są materiałem treningowym/screeningowym. Jasność eksportowanego obrazu RTC-S1 nie jest skalibrowanym sigma0/gamma0. Bez niezależnych masek referencyjnych, geologii i danych terenowych nie wolno traktować wyniku jako automatycznej klasyfikacji dawnej rzeki.</p>`;
   suite.appendChild(panel);
   document.getElementById('buildUnifiedTraining8').addEventListener('click', buildUnifiedRecords);
   document.getElementById('downloadUnifiedTrainingJson').addEventListener('click', () => download(
