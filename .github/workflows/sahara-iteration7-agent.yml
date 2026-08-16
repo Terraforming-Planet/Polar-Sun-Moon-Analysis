@@ -1,0 +1,36 @@
+name: Sahara iteration 7 agent
+
+on:
+  push:
+    branches:
+      - agent/sahara-iteration-7-dem-mosaic
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-test:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/sahara-iteration-7-dem-mosaic
+          fetch-depth: 0
+
+      - name: Apply iteration 7 changes
+        run: python scripts/sahara_iteration7_mosaic.py
+
+      - name: Run targeted Sahara tests
+        run: |
+          python -m pytest tests/test_sahara_station_page.py tests/test_sahara_flow_conditioning.py tests/test_sahara_dem_mosaic.py -q
+
+      - name: Commit generated changes
+        shell: bash
+        run: |
+          rm -f scripts/sahara_iteration7_mosaic.py .github/workflows/sahara-iteration7-agent.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add web/public/sahara-station docs/sahara-station data/training/paleoriver_8 tests/test_sahara_dem_mosaic.py scripts/sahara_iteration7_mosaic.py .github/workflows/sahara-iteration7-agent.yml
+          git commit -m "feat(sahara): add 3x3 Copernicus DEM mosaic routing"
+          git push origin HEAD:agent/sahara-iteration-7-dem-mosaic
