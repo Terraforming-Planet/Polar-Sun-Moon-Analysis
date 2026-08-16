@@ -1,4 +1,4 @@
-# Notatka badawcza — iteracje 1–2
+# Notatka badawcza — iteracje 1–3
 
 ## Obserwacje z 8 testów satelitarnych
 - **Death Valley:** zamknięta misa i wachlarze aluwialne pokazują rolę progów odpływu; USGS dokumentuje dawne fazy jeziorne.
@@ -15,6 +15,11 @@ Do globalnego widoku NASA GIBS dołączono regionalną siatkę wysokościową Co
 
 Ta warstwa pozwala porównywać zdjęcie satelitarne z realną rzeźbą terenu w tych samych lokalizacjach. Nie jest jeszcze pełnym globalnym DEM: ładowany jest regionalny kafel wokół wybranego punktu. Jest to krok pośredni przed pełnym kafelkowaniem geometrii wysokościowej i selekcją kafli według pola widzenia.
 
+## Iteracja 3 — przesiew topograficzny DEM
+Dodano porównywalną analizę 33×33 dla środka każdego z 8 testów. Wyliczane są: zakres wysokości, relief, średnie nachylenie, udział komórek o spadku poniżej 2°, udział lokalnych obniżeń oraz jawnie heurystyczny screening retencji 0–100. Screening służy wyłącznie do wyboru miejsc wymagających dokładniejszej analizy i nie jest obliczeniem pojemności ani prognozą hydrologiczną.
+
+Nowa zasada robocza: zdjęcie optyczne wskazuje formę, DEM sprawdza geometrię, a dopiero model zlewni i dane terenowe mogą oceniać realną możliwość magazynowania wody. Lokalna depresja w DSM może być artefaktem rozdzielczości lub pokrycia terenu, dlatego nie jest automatycznie naturalnym zbiornikiem.
+
 ## Wnioski modelowe do testowania, nie fakty wykonawcze
 1. Najpierw wyznaczać zlewnie, obniżenia i progi odpływu z DEM.
 2. Liczyć czas retencji, infiltrację, parowanie, erozję i sedymentację, a nie tylko objętość.
@@ -23,6 +28,7 @@ Ta warstwa pozwala porównywać zdjęcie satelitarne z realną rzeźbą terenu w
 5. Łączyć optykę z SAR i DEM na pustyniach.
 6. Porównywać liniowe ślady widoczne na RGB z kierunkiem spadku DEM; zgodność zwiększa wiarygodność hipotezy o dawnym spływie, ale nadal nie stanowi samodzielnego dowodu paleohydrologicznego.
 7. Przy projektowaniu retencji szukać najpierw naturalnych niecek i przewężeń odpływu, ponieważ wymagają mniejszej ingerencji niż sztuczne formowanie całego krajobrazu.
+8. Ranking retencji traktować jako filtr do dalszych badań, nie jako wynik projektowy; kolejnym krokiem jest kierunek przepływu, akumulacja przepływu i pełna zlewnia.
 
 ## Trening
-Zbudowano 8-obrazowy zestaw kontrolny i baseline K-means na histogramach RGB. To test pipeline’u, nie walidowany detektor. Iteracja 2 dodaje warstwę DEM do wizualnej weryfikacji lokalizacji. Następny etap treningu powinien tworzyć cechy topograficzne: lokalne nachylenie, relief, krzywiznę i zgodność potencjalnego kanału z kierunkiem spadku, a następnie łączyć je z Sentinel-1 SAR i ręcznie zweryfikowanymi maskami.
+Zbudowano 8-obrazowy zestaw kontrolny i baseline K-means na histogramach RGB. To test pipeline’u, nie walidowany detektor. Iteracja 2 dodała warstwę DEM do wizualnej weryfikacji lokalizacji. Iteracja 3 dodaje cechy topograficzne do interaktywnego przesiewu: lokalne nachylenie, relief, udział płaskiego terenu i lokalnych obniżeń. Następny etap powinien dodać kierunek i akumulację przepływu, a następnie połączyć te cechy z Sentinel-1 SAR i ręcznie zweryfikowanymi maskami.

@@ -172,3 +172,22 @@ def test_sahara_night_agent_iteration_two_adds_dem_relief_to_globe() -> None:
     assert "verticalExaggeration = 24" in relief
     assert globe == docs_globe_path.read_text(encoding="utf-8")
     assert relief == docs_relief_path.read_text(encoding="utf-8")
+
+
+def test_sahara_station_has_eight_case_dem_hydrology_screening() -> None:
+    web_root = ROOT / "web" / "public" / "sahara-station"
+    docs_root = ROOT / "docs" / "sahara-station"
+    hydrology = web_root / "sahara-hydrology.js"
+    docs_hydrology = docs_root / "sahara-hydrology.js"
+    globe = (web_root / "sahara-globe.js").read_text(encoding="utf-8")
+    js = hydrology.read_text(encoding="utf-8")
+
+    assert "import './sahara-hydrology.js';" in globe
+    assert "mountHydrologyScreening" in js
+    assert "runHydrology8" in js
+    assert "hydrologyRows" in js
+    assert "analyzeDemGrid" in js
+    assert "retentionScreeningScore" in js
+    assert "lowSlopeFraction" in js
+    assert "sinkFraction" in js
+    assert js == docs_hydrology.read_text(encoding="utf-8")
