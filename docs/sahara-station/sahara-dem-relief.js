@@ -1,9 +1,9 @@
 import * as THREE from 'three';
+import { buildFlowProducts, percentile, SAMPLE_SIZE } from './sahara-flow-core.js';
 
 const COPERNICUS_DEM_90M = 'https://copernicus-dem-90m.s3.amazonaws.com';
 const GEOTIFF_MODULE_URL = 'https://cdn.jsdelivr.net/npm/geotiff@2.1.3/+esm';
 const EARTH_RADIUS_KM = 6371.0;
-const SAMPLE_SIZE = 33;
 
 function tileCode(lat, lon) {
   const latFloor = Math.floor(lat);
@@ -75,6 +75,20 @@ export class RegionalDemOverlay {
     return promise;
   }
 
+  displayRadius(elevationM, extra = 0.008) {
+    const physicalOffset = this.radius * (elevationM / 1000) / EARTH_RADIUS_KM;
+    return this.radius + physicalOffset * this.verticalExaggeration + extra;
+  }
+
+  samplePoint(sample, index, extra = 0.008) {
+    const row = Math.floor(index / SAMPLE_SIZE);
+    const col = index % SAMPLE_SIZE;
+    const lat = sample.latFloor + 1 - row / (SAMPLE_SIZE - 1);
+    const lon = sample.lonFloor + col / (SAMPLE_SIZE - 1);
+    const elevationM = finiteElevation(Number(sample.values[index]));
+    return latLonToVector(lat, lon, this.displayRadius(elevationM, extra));
+  }
+
   buildGeometry(sample) {
     const { values, latFloor, lonFloor } = sample;
     const positions = [];
@@ -90,9 +104,7 @@ export class RegionalDemOverlay {
         const elevationM = finiteElevation(Number(values[row * SAMPLE_SIZE + col]));
         minElevation = Math.min(minElevation, elevationM);
         maxElevation = Math.max(maxElevation, elevationM);
-        const physicalOffset = this.radius * (elevationM / 1000) / EARTH_RADIUS_KM;
-        const displayRadius = this.radius + physicalOffset * this.verticalExaggeration + 0.008;
-        const point = latLonToVector(lat, lon, displayRadius);
+        const point = latLonToVector(lat, lon, this.displayRadius(elevationM));
         positions.push(point.x, point.y, point.z);
         const normalized = THREE.MathUtils.clamp((elevationM + 200) / 5200, 0, 1);
         colors.push(0.30 + normalized * 0.55, 0.34 + normalized * 0.42, 0.18 + normalized * 0.36);
@@ -117,6 +129,51 @@ export class RegionalDemOverlay {
     geometry.computeBoundingSphere();
     geometry.userData = { minElevation, maxElevation };
     return geometry;
+  }
+
+  buildFlowOverlay(sample) {
+    const centerLat = sample.latFloor + 0.5;
+    const products = buildFlowProducts(sample.values, centerLat);
+    const threshold = Math.max(3, percentile(products.accumulation, 0.90));
+    const positions = [];
+    let segmentCount = 0;
+
+    for (let index = 0; index < products.receivers.length; index += 1) {
+      const receiver = products.receivers[index];
+      if (receiver < 0 || products.accumulation[index] < threshold) continue;
+      const start = this.samplePoint(sample, index, 0.014);
+      const end = this.samplePoint(sample, receiver, 0.014);
+      positions.push(start.x, start.y, start.z, end.x, end.y, end.z);
+      segmentCount += 1;
+    }
+
+    if (positions.length > 0) {
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      const lines = new THREE.LineSegments(
+        geometry,
+        new THREE.LineBasicMaterial({ color: 0x53c8ff, transparent: true, opacity: 0.88 }),
+      );
+      lines.name = 'd8-flow-accumulation-lines';
+      lines.frustumCulled = true;
+      this.group.add(lines);
+    }
+
+    const outletPoint = this.samplePoint(sample, products.dominantOutlet, 0.020);
+    const outlet = new THREE.Mesh(
+      new THREE.SphereGeometry(0.012, 12, 8),
+      new THREE.MeshBasicMaterial({ color: 0xffd36a }),
+    );
+    outlet.position.copy(outletPoint);
+    outlet.name = 'd8-dominant-outlet';
+    this.group.add(outlet);
+
+    return {
+      segmentCount,
+      threshold,
+      maxAccumulation: products.accumulation[products.dominantOutlet],
+      watershedFraction: products.watershed.size / products.accumulation.length,
+    };
   }
 
   async setPlace(place) {
@@ -153,9 +210,10 @@ export class RegionalDemOverlay {
       wire.frustumCulled = true;
       this.group.add(wire);
 
+      const flow = this.buildFlowOverlay(sample);
       const { minElevation, maxElevation } = geometry.userData;
       if (this.status) {
-        this.status.textContent = `${place.label} • Copernicus DEM GLO-90: ${Math.round(minElevation)}–${Math.round(maxElevation)} m • relief ×${this.verticalExaggeration} dla czytelności`;
+        this.status.textContent = `${place.label} • Copernicus DEM: ${Math.round(minElevation)}–${Math.round(maxElevation)} m • D8: ${flow.segmentCount} odcinków, max ${Math.round(flow.maxAccumulation)} kom. • relief ×${this.verticalExaggeration}`;
       }
     } catch (error) {
       if (generation !== this.generation) return;
