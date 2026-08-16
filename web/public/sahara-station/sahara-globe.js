@@ -1,7 +1,9 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RegionalDemOverlay } from './sahara-dem-relief.js';
+import { DrainagePathComparisonOverlay } from './sahara-drainage-path-overlay.js';
 import './sahara-hydrology.js';
+import './sahara-path-concordance.js';
 
 const host = document.getElementById('planetViewer');
 const status = document.getElementById('planetStatus');
@@ -50,6 +52,7 @@ if (host) {
   const markerGroup = new THREE.Group();
   scene.add(markerGroup);
   const demOverlay = new RegionalDemOverlay(scene, radius, status);
+  const pathOverlay = new DrainagePathComparisonOverlay(scene, radius);
 
   const places = {
     sahara: { lat: SITE.lat, lon: SITE.lon, label: 'Sahara Station' },
@@ -161,8 +164,7 @@ if (host) {
     );
   }
 
-  function focusPlace(placeKey = 'sahara') {
-    const place = places[placeKey] ?? places.sahara;
+  function focusCoordinates(place) {
     const point = latLonToVector(place.lat, place.lon, radius * 1.03);
     markerGroup.clear();
     const pin = new THREE.Mesh(
@@ -181,6 +183,11 @@ if (host) {
     controls.update();
     if (status) status.textContent = `${place.label}: ${place.lat.toFixed(3)}°, ${place.lon.toFixed(3)}° • NASA GIBS + Copernicus DEM`;
     void demOverlay.setPlace(place);
+  }
+
+  function focusPlace(placeKey = 'sahara') {
+    pathOverlay.clear();
+    focusCoordinates(places[placeKey] ?? places.sahara);
   }
 
   function bindPlaceButtons() {
@@ -218,6 +225,15 @@ if (host) {
     renderer.render(scene, camera);
   }
 
+  window.addEventListener('sahara:show-drainage-paths', (event) => {
+    const result = event.detail;
+    if (!result?.center) return;
+    focusCoordinates({ ...result.center, label: result.name || 'Porównanie drenażu' });
+    pathOverlay.show(result);
+    if (status) {
+      status.textContent = `${result.name}: złota ścieżka = 1°, niebieska = 3° • zgodność ${Math.round(result.concordantFraction * 100)}% • Δ odpływu ${result.outletDistanceKm.toFixed(1)} km`;
+    }
+  });
   window.addEventListener('resize', resize);
   if ('ResizeObserver' in window) new ResizeObserver(resize).observe(host);
   bindPlaceButtons();
