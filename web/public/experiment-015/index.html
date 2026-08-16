@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TEST 015 — Himalaje / Tybet</title>
+  <style>
+    :root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#050b14;color:#eaf6ff;font-family:Inter,system-ui,sans-serif}main{max-width:1250px;margin:auto;padding:20px}h1{color:#7be5ff;font-size:clamp(28px,6vw,52px);margin-bottom:10px}a{color:#8ce8ff}.btn{display:inline-block;background:#087da3;color:#fff;text-decoration:none;font-weight:800;padding:12px 16px;border-radius:10px;margin:8px 8px 8px 0}.note,.status{background:#0b1828;border:1px solid #274966;border-radius:14px;padding:16px;margin:16px 0;line-height:1.55}.status{border-color:#43d49f;background:#0b211c}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:12px;margin-top:20px}.shot{background:#0b1828;border:1px solid #274966;border-radius:12px;overflow:hidden}.shot img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;background:#02060a}.shot b,.shot span{display:block;padding:7px 9px}.shot span{font-size:.76rem;color:#a8bac9;padding-top:0;overflow-wrap:anywhere}.bad{border-color:#d66;background:#271313}
+  </style>
+</head>
+<body>
+<main>
+  <p><a href="../">← Centrum Terraforming Planet</a></p>
+  <h1>🏔 TEST 015 — Himalaje / Wyżyna Tybetańska</h1>
+  <div id="status" class="status"><b>Ładowanie zwalidowanego indeksu zdjęć…</b></div>
+  <p><a class="btn" href="https://github.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/actions/runs/31940856890">GitHub Actions / pełne dane</a></p>
+  <div class="note"><b>Integralność:</b> galeria korzysta z lekkich kopii podglądowych. Indeks zachowuje rok, sezon, datę, platformę, identyfikator produktu, SHA-256 obrazu źródłowego i hash percepcyjny. Jesień 2026 pozostaje niezaakceptowana przed wrześniem 2026.</div>
+  <div id="grid" class="grid"></div>
+</main>
+<script>
+const branch='experiment-015-himalaya-tibet-v2-30-234961-83-056124';
+const base=`https://raw.githubusercontent.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/${branch}/published/experiment-015`;
+const statusBox=document.getElementById('status');
+const grid=document.getElementById('grid');
+fetch(`${base}/integrity.json`,{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(`HTTP ${r.status}`);return r.json()}).then(data=>{
+  const accepted=(data.records||[]).filter(r=>r.status==='ok');
+  statusBox.innerHTML=`<b>ZWALIDOWANY INDEKS: ${accepted.length} zaakceptowanych obserwacji</b><br>Test 015 · lata 1990–2026 · wiosna + jesień · 80 × 80 km · środek 30.234961, 83.056124.`;
+  accepted.sort((a,b)=>(a.year-b.year)||a.season.localeCompare(b.season));
+  for(const r of accepted){
+    const article=document.createElement('article');article.className='shot';
+    const label=r.season==='spring'?'WIOSNA':'JESIEŃ';
+    const img=`${base}/gallery/${r.season}/${r.year}.jpg`;
+    article.innerHTML=`<img loading="lazy" src="${img}" alt="Test 015 ${r.year} ${label}"><b>${r.year} — ${label}</b><span>${r.date||'brak daty'} · ${r.platform||'brak platformy'}</span><span>SHA-256: ${(r.sha256||'brak').slice(0,16)}…</span>`;
+    grid.appendChild(article);
+  }
+}).catch(err=>{statusBox.classList.add('bad');statusBox.innerHTML=`<b>Indeks chwilowo niedostępny.</b><br>${err.message}. Sprawdź bieżący run GitHub Actions.`});
+</script>
+</body>
+</html>
