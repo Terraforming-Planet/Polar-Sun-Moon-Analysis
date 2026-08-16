@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'web/**'
+      - 'published/**'
       - '.github/workflows/force-pages-deploy.yml'
   workflow_dispatch:
 
@@ -61,16 +62,24 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p docs
-          rm -rf docs/assets
+          rm -rf docs/assets docs/published
           cp -R web/dist/. docs/
+          if [ -d published ]; then
+            mkdir -p docs/published
+            cp -R published/. docs/published/
+            find docs/published -type f \( -iname '*.tif' -o -iname '*.tiff' -o -iname '*.zip' \) -delete
+          fi
           cp docs/index.html docs/404.html
           touch docs/.nojekyll
           printf '%s\n' "$GITHUB_SHA" > docs/deployment-probe.txt
           test -s docs/index.html
           test -d docs/assets
           test -s docs/deployment-probe.txt
+          if [ -f published/experiment-011/integrity.json ]; then
+            test -s docs/published/experiment-011/integrity.json
+          fi
           echo 'Published docs files:'
-          find docs -maxdepth 2 -type f | sort | head -200
+          find docs -maxdepth 4 -type f | sort | head -300
 
       - name: Commit generated Pages files with rebase retry
         shell: bash
