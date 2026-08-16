@@ -1,2 +1,112 @@
 <!doctype html>
-<html lang="pl"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>TEST 011 — Iława–Zalewo — Terraforming Planet</title><style>:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#050b14;color:#eaf6ff;font-family:Inter,system-ui,sans-serif}.wrap{max-width:1050px;margin:auto;padding:24px}.card{background:#0b1828;border:1px solid #274966;border-radius:16px;padding:20px;margin:16px 0}.warn{border-color:#f0bd55;background:#241d0d}h1{font-size:clamp(28px,6vw,56px);margin:.2em 0;color:#7be5ff}h2{color:#bfefff}a.btn{display:inline-block;margin:8px 8px 8px 0;padding:12px 16px;border-radius:10px;background:#087da3;color:white;text-decoration:none;font-weight:800}a.secondary{background:#17324a}.back{color:#9fdcff;text-decoration:none}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.metric{background:#081522;border:1px solid #24435c;border-radius:12px;padding:14px}.metric b{display:block;font-size:1.35rem;color:#8ce8ff}p,li{line-height:1.65}</style></head><body><main class="wrap"><a class="back" href="../">← Centrum Terraforming Planet</a><h1>💧 TEST 011 — Iława–Susz–Zalewo–Miłomłyn–Małdyty</h1><div class="card warn"><strong>STATUS: POPRZEDNI BUILD NIE ZOSTAŁ ZAAKCEPTOWANY</strong><p>Generowanie obrazów zakończyło się, ale końcowa walidacja Testu 011 zatrzymała publikację. Dlatego nie ma jeszcze poprawnego artifactu do pobrania i nie oznaczamy tej paczki jako wynik badawczy.</p></div><div class="grid"><div class="metric"><b>1990–2026</b>wiosna + jesień</div><div class="metric"><b>65 × 60 km</b>kadr regionalny</div><div class="metric"><b>30 m/piksel</b>docelowa siatka</div><div class="metric"><b>CI zatrzymało ZIP</b>ochrona przed błędnym wynikiem</div></div><div class="card"><h2>Co się stało?</h2><p>Run 31889436979 wykonał etap budowy, ale krok <strong>Validate Test 011 dates, frames and duplicate integrity</strong> zakończył się błędem. Upload został więc prawidłowo pominięty.</p><a class="btn secondary" href="https://github.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/actions/runs/31889436979">Otwórz run Testu 011</a></div><div class="card"><h2>Zasada</h2><p>Nie publikujemy obrazów, które nie przejdą kontroli dat, kompletności kadru i duplikatów. Test 011 wymaga poprawnego regionalnego mosaikowania podobnie jak naprawiony Test 012.</p></div></main></body></html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>Experiment 011 · Iława–Zalewo · Terraforming Planet</title>
+  <style>
+    :root{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#eaf6ff;background:#030914}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% 0,#0b2540 0,#030914 42rem);min-height:100vh}
+    a{color:inherit}.shell{width:min(1500px,100%);margin:auto;padding:18px}.top{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:14px 0 20px}
+    .back,.pill{display:inline-flex;align-items:center;border:1px solid #27516d;border-radius:999px;padding:9px 13px;text-decoration:none;background:#081829}.pill{color:#7ee7ff}
+    h1{font-size:clamp(1.7rem,4vw,3.4rem);margin:.25rem 0}.lead{max-width:900px;color:#a9c0d1;line-height:1.65}.status{margin:18px 0;padding:14px;border:1px solid #24506f;border-radius:14px;background:#071728}
+    .season{margin:34px 0}.season-head{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap}.season-head h2{font-size:clamp(1.35rem,3vw,2.1rem);margin:0}.season-head span{color:#9ab0c1}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:14px;margin-top:14px}.card{overflow:hidden;border:1px solid #1f405b;border-radius:14px;background:#081626;min-width:0}
+    .frame{aspect-ratio:1.08/1;display:grid;place-items:center;background:#020710}.frame img{display:block;width:100%;height:100%;object-fit:cover}.missing{padding:18px;text-align:center;color:#ffcf75}
+    .meta{padding:12px}.year{font-size:1.25rem;font-weight:900}.date{color:#70dfff;font-weight:750;margin-top:3px}.source{color:#9ab0c1;font-size:.88rem;margin-top:6px;overflow-wrap:anywhere}.hash{font:11px ui-monospace,SFMono-Regular,Menlo,monospace;color:#60798d;margin-top:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .empty{padding:24px;border:1px dashed #3c5c73;border-radius:14px;color:#a9c0d1}.error{color:#ffd3d3;border-color:#8a3e46;background:#2a1116}.summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.summary b{display:inline-flex;padding:8px 11px;border-radius:10px;background:#0a1e31;border:1px solid #244b68}
+    footer{margin:40px 0 12px;color:#6f8798;font-size:.85rem}@media(max-width:560px){.shell{padding:10px}.grid{grid-template-columns:1fr 1fr;gap:8px}.meta{padding:9px}.source{font-size:.76rem}.year{font-size:1rem}}@media(max-width:390px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="top"><a class="back" href="../">← Centrum Terraforming Planet</a><span class="pill">TEST 011 · PUBLIC EVIDENCE</span></div>
+    <h1>Iława–Zalewo · zdjęcia sezonowe 1990–2026</h1>
+    <p class="lead">Lekka galeria internetowa wygenerowana z zatwierdzonego pakietu Experiment 011. Podglądy JPEG są publikowane w repozytorium, więc strona nie zależy od wygasających linków SAS. Oryginalne duże pliki pozostają artefaktami GitHub Actions.</p>
+    <div id="status" class="status">Ładowanie indeksu zdjęć…</div>
+    <div id="summary" class="summary" hidden></div>
+    <section class="season"><div class="season-head"><h2>🌱 Wiosna</h2><span id="springCount"></span></div><div id="spring" class="grid"></div></section>
+    <section class="season"><div class="season-head"><h2>🍂 Jesień</h2><span id="autumnCount"></span></div><div id="autumn" class="grid"></div></section>
+    <footer>Terraforming Planet · oficjalne/publiczne dane źródłowe · podglądy do kontroli wizualnej, nie zastępują walidacji naukowej.</footer>
+  </main>
+  <script>
+    (() => {
+      const projectRoot = new URL('../', window.location.href)
+      const manifestUrl = new URL('published/experiment-011/integrity.json', projectRoot)
+      const status = document.getElementById('status')
+      const summary = document.getElementById('summary')
+
+      const text = (value, fallback = 'brak') => value === null || value === undefined || value === '' ? fallback : String(value)
+
+      function card(record) {
+        const article = document.createElement('article')
+        article.className = 'card'
+        const frame = document.createElement('div')
+        frame.className = 'frame'
+        const image = document.createElement('img')
+        image.loading = 'lazy'
+        image.decoding = 'async'
+        image.alt = `${record.season === 'spring' ? 'Wiosna' : 'Jesień'} ${text(record.year)} · ${text(record.date)}`
+        image.src = new URL(record.gallery_path, projectRoot).href
+        image.addEventListener('error', () => {
+          frame.replaceChildren()
+          const fallback = document.createElement('div')
+          fallback.className = 'missing'
+          fallback.textContent = `Podgląd ${text(record.year)} chwilowo niedostępny.`
+          frame.appendChild(fallback)
+        })
+        frame.appendChild(image)
+
+        const meta = document.createElement('div')
+        meta.className = 'meta'
+        const year = document.createElement('div'); year.className = 'year'; year.textContent = text(record.year)
+        const date = document.createElement('div'); date.className = 'date'; date.textContent = text(record.date)
+        const source = document.createElement('div'); source.className = 'source'; source.textContent = [record.platform, record.collection, record.item_id].filter(Boolean).join(' · ') || 'Źródło zapisane w manifeście'
+        const hash = document.createElement('div'); hash.className = 'hash'; hash.title = text(record.sha256); hash.textContent = record.sha256 ? `SHA-256 ${record.sha256}` : 'SHA-256: brak'
+        meta.append(year, date, source, hash)
+        article.append(frame, meta)
+        return article
+      }
+
+      function renderSeason(name, records) {
+        const host = document.getElementById(name)
+        const count = document.getElementById(`${name}Count`)
+        const available = records.filter(record => record.status === 'ok' && record.gallery_path)
+        count.textContent = `${available.length} podglądów`
+        if (!available.length) {
+          const empty = document.createElement('div')
+          empty.className = 'empty'
+          empty.textContent = 'Brak opublikowanych podglądów dla tego sezonu. Indeks istnieje, ale galeria nie została jeszcze wygenerowana.'
+          host.replaceChildren(empty)
+          return
+        }
+        available.sort((a,b) => Number(a.year) - Number(b.year))
+        host.replaceChildren(...available.map(card))
+      }
+
+      fetch(`${manifestUrl.href}?refresh=${Date.now()}`, { cache: 'no-store' })
+        .then(response => {
+          if (!response.ok) throw new Error(`HTTP ${response.status}`)
+          return response.json()
+        })
+        .then(data => {
+          const records = Array.isArray(data.records) ? data.records : []
+          renderSeason('spring', records.filter(record => record.season === 'spring'))
+          renderSeason('autumn', records.filter(record => record.season === 'autumn'))
+          status.textContent = `Indeks załadowany. Rekordy: ${text(data.record_count, records.length)} · zaakceptowane: ${text(data.accepted_count, records.filter(r => r.status === 'ok').length)}.`
+          summary.hidden = false
+          summary.innerHTML = `<b>Test ${text(data.test, 11)}</b><b>${records.filter(r => r.season === 'spring' && r.status === 'ok').length} wiosna OK</b><b>${records.filter(r => r.season === 'autumn' && r.status === 'ok').length} jesień OK</b>`
+        })
+        .catch(error => {
+          status.classList.add('error')
+          status.textContent = `Nie udało się załadować galerii: ${error}. Sprawdź publikację published/experiment-011/integrity.json.`
+          for (const name of ['spring','autumn']) {
+            const empty = document.createElement('div'); empty.className = 'empty'; empty.textContent = 'Galeria oczekuje na publikację indeksu.'
+            document.getElementById(name).replaceChildren(empty)
+          }
+        })
+    })()
+  </script>
+</body>
+</html>
