@@ -40,6 +40,17 @@
     </article>
   </section>
 
+
+  <section class="panel research-section" id="global-planet-lab">
+    <div class="eyebrow">PRAWDZIWY MODEL PLANETY / NASA GIBS + COPERNICUS DEM</div>
+    <h2>Globalny model 3D Ziemi — kafelki, LOD i lokalne laboratorium terenu</h2>
+    <p>Glob nie używa jednej tekstury planety. Powierzchnia jest składana z niezależnych kafelków NASA GIBS, ładowanych asynchronicznie i przełączanych między poziomami szczegółowości zależnie od odległości kamery. Lokalna scena Sahara nadal korzysta z Copernicus DEM.</p>
+    <div id="planetViewer" data-imagery-date="2026-08-12" style="height:min(62vh,620px);min-height:380px;border-radius:14px;overflow:hidden;background:#02060c"></div>
+    <p id="planetStatus" class="method-note">NASA GIBS: inicjalizacja kafelków…</p>
+    <div class="button-grid compact"><button data-globe-place="sahara">Sahara Station</button><button data-globe-place="himalaya">Himalaje / Tybet</button><button data-globe-place="deathvalley">Death Valley</button><button data-globe-place="lopnur">Lop Nur</button><button data-globe-place="aral">Aral</button></div>
+    <p class="warn"><strong>Granica eksperymentu:</strong> globalny glob pokazuje rzeczywiste zobrazowanie satelitarne. Góry i doliny są modyfikowane wyłącznie w symulatorze DEM.</p>
+  </section>
+
   <section class="lab-layout">
     <div class="viewer-column">
       <div id="viewer" class="panel viewer" aria-label="Interaktywny model 3D pustyni">
@@ -208,6 +219,17 @@
     </div>
   </section>
 
+
+  <section class="panel references" id="paleoriver-test-suite">
+    <div class="eyebrow">8 TESTÓW SATELITARNYCH / DANE TRENINGOWE</div>
+    <h2>Dawne, wyschnięte i częściowo aktywne systemy wodne — USA, Europa, Afryka, Azja</h2>
+    <p>Każdy test ma jawny bounding box, datę i oficjalne źródło. Obraz jest materiałem obserwacyjnym; interpretacja jest oddzielona od danych.</p>
+    <p><a class="button-link" href="./paleoriver-tests/paleoriver_tests_8.zip" download>Pobierz ZIP — 8 testów + manifest + cechy treningowe</a></p>
+    <div class="reference-gallery" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))"><figure style="margin:0"><a href="./paleoriver-tests/usa-death-valley.jpg" target="_blank" rel="noopener"><img src="./paleoriver-tests/usa-death-valley.jpg" loading="lazy" alt="Test satelitarny: Death Valley / Lake Manly basin" style="width:100%;border-radius:10px"></a><figcaption><strong>Death Valley / Lake Manly basin</strong><span>North America · paleolake-and-active-washes · 2024-05-27</span><span>USGS documents paleolake history and satellite mapping of active channels/alluvial fans.</span><a href="https://www.usgs.gov/publications/unified-200-kyr-paleohydrologic-history-southern-great-basin-death-valley-searles" target="_blank" rel="noopener noreferrer">Oficjalne źródło ↗</a></figcaption></figure><figure style="margin:0"><a href="./paleoriver-tests/usa-bonneville.jpg" target="_blank" rel="noopener"><img src="./paleoriver-tests/usa-bonneville.jpg" loading="lazy" alt="Test satelitarny: Bonneville Salt Flats / Lake Bonneville remnant basin" style="width:100%;border-radius:10px"></a><figcaption><strong>Bonneville Salt Flats / Lake Bonneville remnant basin</strong><span>North America · paleolake-remnant-basin · 2024-08-15</span><span>Dry-basin analogue. This test limits interpretation to visible geomorphology until DEM/geology validation is added.</span><a href="https://www.usgs.gov/landsat-missions" target="_blank" rel="noopener noreferrer">Oficjalne źródło ↗</a></figcaption></figure><figure style="margin:0"><a href="./paleoriver-tests/eu-ebro-aragon.jpg" target="_blank" rel="noopener"><img src="./paleoriver-tests/eu-ebro-aragon.jpg" loading="lazy" alt="Test satelitarny: Ebro valley / Aragón semi-arid river corridor" style="width:100%;border-radius:10px"></a><figcaption><strong>Ebro valley / Aragón semi-arid river corridor</strong><span>Europe · active-river-arid-analogue · 2021-07-15</span><span>ESA describes an arid setting with irrigation and a major active river; this is a retention analogue, not a paleoriver claim.</span><a href="https://www.esa.int/Applications/Observing_the_Earth/Copernicus/Earth_from_Space_Zaragoza_Spain" target="_blank" rel="noopener noreferrer">Oficjalne źródło ↗</a></figcaption></figure><figure style="margin:0"><a href="./paleoriver-tests/eu-po-low-water.jpg" target="_blank" rel="noopener"><img src="./paleoriver-tests/eu-po-low-water.jpg" loading="lazy" alt="Test satelitarny: Po River low-water corridor" style="width:100%;border-radius:10px"></a><figcaption><strong>Po River low-water corridor</strong><span>Europe · partially-active-low-water-analogue · 2022-06-20</span><span>ESA documented exceptional low water in 2022; useful for exposed-bar and channel-contraction comparison.</span><a href="https://www.esa.int/ESA_Multimedia/Images/2022/06/Po_River_dries_up" target="_blank" rel="noopener noreferrer">Oficjalne źródło ↗</a></figcaption></figure><figure style="margin:0"><a href="./paleoriver-tests/af-tanezrouft.jpg" target="_blank" rel="noopener"><img src="./paleoriver-tests/af-tanezrouft.jpg" loading="lazy" alt="Test satelitarny: Tanezrouft Basin ancient water-erosion terrain" style="width:100%;border-radius:10px"></a><figcaption><strong>Tanezrouft Basin ancient water-erosion terrain</strong><span>Africa · ancient-water-erosion-desert · 2020-01-12</span><span>ESA explicitly notes evidence of water erosion from a wetter Sahara.</span><a href="https://www.esa.int/ESA_Multimedia/Images/2021/01/Tanezrouft_Basin" target="_blank" rel="noopener noreferrer">Oficjalne źródło ↗</a></figcaption></figure><figure style="margin:0"><a href="./paleoriver-tests/af-tsauchab.jpg" target="_blank" rel="noopener"><img src="./paleoriver-tests/af-tsauchab.jpg" loading="lazy" alt="Test satelitarny: Tsauchab River / Sossusvlei" style="width:100%;border-radius:10px"></a><figcaption><strong>Tsauchab River / Sossusvlei</strong><span>Africa · ephemeral-river-endorheic-basin · 2019-10-27</span><span>ESA identifies the Tsauchab as an ephemeral river ending in Sossusvlei; historically flow reached farther west.</span><a href="https://www.esa.int/ESA_Multimedia/Images/2020/04/Namib_Desert" target="_blank" rel="noopener noreferrer">Oficjalne źródło ↗</a></figcaption></figure><figure style="margin:0"><a href="./paleoriver-tests/asia-lop-nur.jpg" target="_blank" rel="noopener"><img src="./paleoriver-tests/asia-lop-nur.jpg" loading="lazy" alt="Test satelitarny: Lop Nur / Tarim terminal basin" style="width:100%;border-radius:10px"></a><figcaption><strong>Lop Nur / Tarim terminal basin</strong><span>Asia · dry-terminal-lake-paleodrainage · 2024-10-01</span><span>Dry terminal-basin morphology is used to inspect old inflow patterns; specific paleochannels require SAR/DEM confirmation.</span><a href="https://earthobservatory.nasa.gov/images/2046/the-wandering-lake" target="_blank" rel="noopener noreferrer">Oficjalne źródło ↗</a></figcaption></figure><figure style="margin:0"><a href="./paleoriver-tests/asia-aral.jpg" target="_blank" rel="noopener"><img src="./paleoriver-tests/asia-aral.jpg" loading="lazy" alt="Test satelitarny: Aral Sea / Amu Darya–Syr Darya terminal basin" style="width:100%;border-radius:10px"></a><figcaption><strong>Aral Sea / Amu Darya–Syr Darya terminal basin</strong><span>Asia · partially-active-shrunken-terminal-basin · 2024-08-30</span><span>ESA documents long-term shrinkage after river diversion; used as a storage-and-routing cautionary analogue.</span><a href="https://www.esa.int/ESA_Multimedia/Images/2025/04/Earth_from_Space_The_shrinking_Aral_Sea" target="_blank" rel="noopener noreferrer">Oficjalne źródło ↗</a></figcaption></figure></div>
+    <p class="method-note"><strong>Baseline:</strong> histogramy RGB + deterministyczne klastry służą tylko do testu pipeline’u. To nie jest walidowany detektor paleokanałów.</p>
+    <p><a href="./paleoriver-tests/research-note.md" target="_blank" rel="noopener">Notatka badawcza ↗</a></p>
+  </section>
+
   <section class="panel references">
     <div class="eyebrow">PRZYKŁADY / MATERIAŁ REFERENCYJNY</div>
     <h2>Obrazy dodane do projektu</h2>
@@ -236,5 +258,6 @@
   </section>
 </main>
 <script type="module" src="./sahara-lab.js"></script>
+<script type="module" src="./sahara-globe.js"></script>
 </body>
 </html>

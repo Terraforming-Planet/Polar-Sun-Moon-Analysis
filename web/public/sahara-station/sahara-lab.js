@@ -635,17 +635,63 @@ function updateMetrics() {
   updateGridOccupancy();
 }
 
+
+function updateShapeLimits() {
+  const baseInput = $('baseSize');
+  const topInput = $('topSize');
+  if (!baseInput || !topInput) return;
+  const base = Math.max(0.5, Number(baseInput.value || 0.5));
+  const safeMax = Math.max(Number(topInput.min || 0.2), base - 0.1);
+  topInput.max = String(safeMax);
+  if (Number(topInput.value) > safeMax) topInput.value = String(safeMax);
+}
+
+function placementRadius(shape) {
+  return Math.max(2.2, shape.base * 0.58);
+}
+
+function placementIsFree(shape, x, z) {
+  const margin = shape.base / 2 + 0.8;
+  if (Math.abs(x) > WORLD_LIMIT - margin || Math.abs(z) > WORLD_LIMIT - margin) return false;
+  const radius = placementRadius(shape);
+  return objects.every((object) => {
+    const required = radius + placementRadius(object.userData.shape);
+    return Math.hypot(x - object.position.x, z - object.position.z) >= required;
+  });
+}
+
+function findFreePlacement(shape, preferred = { x: 0, z: 0 }) {
+  const startX = clamp(preferred.x, -WORLD_LIMIT, WORLD_LIMIT);
+  const startZ = clamp(preferred.z, -WORLD_LIMIT, WORLD_LIMIT);
+  if (placementIsFree(shape, startX, startZ)) return { x: startX, z: startZ };
+  const step = Math.max(CELL_SIZE, shape.base * 0.72);
+  for (let ring = 1; ring <= 8; ring += 1) {
+    const candidates = [];
+    for (let dx = -ring; dx <= ring; dx += 1) candidates.push([dx, -ring], [dx, ring]);
+    for (let dz = -ring + 1; dz < ring; dz += 1) candidates.push([-ring, dz], [ring, dz]);
+    for (const [dx, dz] of candidates) {
+      const x = clamp(startX + dx * step, -WORLD_LIMIT, WORLD_LIMIT);
+      const z = clamp(startZ + dz * step, -WORLD_LIMIT, WORLD_LIMIT);
+      if (placementIsFree(shape, x, z)) return { x, z };
+    }
+  }
+  return { x: startX, z: startZ };
+}
+
 function updateShapeOutputs() {
+  updateShapeLimits();
   const shape = currentShape();
   if ($('baseOut')) $('baseOut').textContent = `${fmt(shape.base, 1)} km`;
   if ($('topOut')) $('topOut').textContent = `${fmt(shape.top, 1)} km`;
   if ($('heightOut')) $('heightOut').textContent = `${fmt(shape.height, 1)} km`;
   if ($('newVolume')) $('newVolume').textContent = `${fmt(shape.volume)} km³`;
+  const preview = document.querySelector('.shape-preview span');
+  if (preview) preview.textContent = `NOWY OBIEKT: ${fmt(shape.base, 1)} × ${fmt(shape.top, 1)} × ${fmt(shape.height, 1)} km • objętość`;
   updateMetrics();
 }
 
 function digValley(shape = currentShape(), at = null) {
-  const placement = at ?? { x: 17, z: -11 };
+  const placement = at ?? findFreePlacement(shape, { x: 17, z: -11 });
   const valley = createValley(shape, clamp(placement.x, -WORLD_LIMIT, WORLD_LIMIT), clamp(placement.z, -WORLD_LIMIT, WORLD_LIMIT));
   updateMetrics();
   updateWaterAndVegetation();
@@ -660,7 +706,7 @@ function buildMountain(shape = currentShape(), at = null, options = {}) {
     setMessage('Najpierw wykop dolinę o identycznej geometrii. Model 1:1 nie tworzy materiału z niczego.', 'error');
     return null;
   }
-  const placement = at ?? { x: -12, z: 8 };
+  const placement = at ?? findFreePlacement(shape, { x: -12, z: 8 });
   const mountain = createMountain(
     shape,
     clamp(placement.x, -WORLD_LIMIT, WORLD_LIMIT),
@@ -676,15 +722,11 @@ function buildMountain(shape = currentShape(), at = null, options = {}) {
 }
 
 function createPair(shape = currentShape(), near = null) {
-  const center = near ?? { x: 8, z: 10 };
-  const valley = digValley(shape, {
-    x: clamp(center.x + 8, -WORLD_LIMIT, WORLD_LIMIT),
-    z: clamp(center.z - 6, -WORLD_LIMIT, WORLD_LIMIT),
-  });
-  const mountain = buildMountain(shape, {
-    x: clamp(center.x - 8, -WORLD_LIMIT, WORLD_LIMIT),
-    z: clamp(center.z + 5, -WORLD_LIMIT, WORLD_LIMIT),
-  }, { sourceValley: valley });
+  const center = near ?? findFreePlacement(shape, { x: 8, z: 10 });
+  const valleySpot = findFreePlacement(shape, { x: center.x + Math.max(8, shape.base * 0.7), z: center.z - Math.max(6, shape.base * 0.45) });
+  const valley = digValley(shape, valleySpot);
+  const mountainSpot = findFreePlacement(shape, { x: center.x - Math.max(8, shape.base * 0.7), z: center.z + Math.max(5, shape.base * 0.45) });
+  const mountain = buildMountain(shape, mountainSpot, { sourceValley: valley });
   return { valley, mountain };
 }
 
