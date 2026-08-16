@@ -1,9 +1,9 @@
 import json
+import pathlib
 import subprocess
-from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = pathlib.Path(__file__).resolve().parents[1]
 FLOW_CORE = ROOT / "web" / "public" / "sahara-station" / "sahara-flow-core.js"
 DOCS_FLOW_CORE = ROOT / "docs" / "sahara-station" / "sahara-flow-core.js"
 HYDROLOGY = ROOT / "web" / "public" / "sahara-station" / "sahara-hydrology.js"
