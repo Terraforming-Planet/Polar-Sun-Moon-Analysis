@@ -69,8 +69,8 @@ jobs:
               assert next(x for x in am['records'] if x['year']==2026).get('status')!='ok'
           print('EXPERIMENT_011_VALIDATED')
           PY
-      - name: Build lightweight integrity index
-        run: python tools/publish_experiment_integrity.py --test 11 --experiment-dir experiments/experiment_011_ilawa_zalewo_regional
+      - name: Build lightweight integrity index and seasonal gallery
+        run: python tools/publish_experiment_integrity.py --test 11 --experiment-dir experiments/experiment_011_ilawa_zalewo_regional --gallery
       - name: Upload Test 011 downloadable ZIPs
         uses: actions/upload-artifact@v4
         with:
@@ -100,6 +100,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No lightweight publication changes"
           else
-            git commit -m "data(test011): publish integrity index"
+            git commit -m "data(test011): publish integrity index and seasonal gallery"
             git push origin HEAD:experiment-011-ilawa-zalewo-regional-53-760000-19-590000
           fi
