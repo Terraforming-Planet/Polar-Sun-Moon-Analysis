@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { buildFlowProducts, percentile, SAMPLE_SIZE } from './sahara-flow-core.js';
 
+// SAMPLE_SIZE = 33 is defined once in sahara-flow-core.js and shared by DEM + D8 modules.
 const COPERNICUS_DEM_90M = 'https://copernicus-dem-90m.s3.amazonaws.com';
 const GEOTIFF_MODULE_URL = 'https://cdn.jsdelivr.net/npm/geotiff@2.1.3/+esm';
 const EARTH_RADIUS_KM = 6371.0;
