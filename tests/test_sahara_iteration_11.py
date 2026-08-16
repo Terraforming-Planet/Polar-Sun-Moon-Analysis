@@ -74,6 +74,7 @@ def test_iteration_11_note_keeps_observation_separate_from_inference() -> None:
     note = (DATA / "research_note_iteration_11.md").read_text(encoding="utf-8")
 
     assert "does **not** claim temporal coincidence" in note
-    assert "not calibrated sigma0/gamma0 backscatter" in note
+    assert "calibrated sigma0/gamma0 backscatter" in note
+    assert "They are **not** calibrated" in note
     assert "paleochannel_ground_truth = not-labelled" in note
     assert "does not establish that the structure is a paleoriver" in note
