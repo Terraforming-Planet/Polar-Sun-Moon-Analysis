@@ -14,15 +14,15 @@
     {
       "year": 2015,
       "status": "not_found",
-      "read_error": "HTTPError('504 Server Error: Gateway Time-out for url: https://planetarycomputer.microsoft.com/api/sas/v1/token/alos-palsar-mosaic')"
+      "read_error": "RasterioIOError('HTTP response code: 409')"
     },
     {
       "year": 2020,
       "status": "not_found",
-      "read_error": "HTTPError('504 Server Error: Gateway Time-out for url: https://planetarycomputer.microsoft.com/api/sas/v1/token/alos-palsar-mosaic')"
+      "read_error": "RasterioIOError('HTTP response code: 409')"
     }
   ],
-  "note": "SAR radar, real annual mosaic pixels. Time selection uses item metadata/ID because annual mosaics may not expose a normal datetime.",
+  "note": "Anonymous read retry of real JAXA annual SAR mosaics; no AI.",
   "inventory_sample": [
     {
       "id": "N54E019_21_F02DAR_MOS",

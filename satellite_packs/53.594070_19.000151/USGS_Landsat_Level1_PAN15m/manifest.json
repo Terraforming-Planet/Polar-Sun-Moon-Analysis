@@ -8,20 +8,40 @@
   "years": [
     {
       "year": 2000,
-      "status": "not_found"
+      "status": "not_found",
+      "platforms_seen": [
+        "LANDSAT_5",
+        "LANDSAT_7"
+      ],
+      "read_error": "RasterioIOError(\"'/vsicurl/https://landsatlook.usgs.gov/data/collection02/level-1/standard/etm/2000/190/023/LE07_L1TP_190023_20000724_20200918_02_T1/LE07_L1TP_190023_20000724_20200918_02_T1_B8.TIF' not recognized as being in a supported file format.\")"
     },
     {
       "year": 2015,
-      "status": "not_found"
+      "status": "not_found",
+      "platforms_seen": [
+        "LANDSAT_7",
+        "LANDSAT_8"
+      ],
+      "read_error": "RasterioIOError(\"'/vsicurl/https://landsatlook.usgs.gov/data/collection02/level-1/standard/oli-tirs/2015/189/023/LC08_L1TP_189023_20151210_20200908_02_T1/LC08_L1TP_189023_20151210_20200908_02_T1_B8.TIF' not recognized as being in a supported file format.\")"
     },
     {
       "year": 2020,
-      "status": "not_found"
+      "status": "not_found",
+      "platforms_seen": [
+        "LANDSAT_7",
+        "LANDSAT_8"
+      ],
+      "read_error": "RasterioIOError(\"'/vsicurl/https://landsatlook.usgs.gov/data/collection02/level-1/standard/oli-tirs/2020/190/023/LC08_L1TP_190023_20200301_20200822_02_T1/LC08_L1TP_190023_20200301_20200822_02_T1_B8.TIF' not recognized as being in a supported file format.\")"
     },
     {
       "year": 2026,
-      "status": "not_found"
+      "status": "not_found",
+      "platforms_seen": [
+        "LANDSAT_8",
+        "LANDSAT_9"
+      ],
+      "read_error": "RasterioIOError(\"'/vsicurl/https://landsatlook.usgs.gov/data/collection02/level-1/standard/oli-tirs/2026/190/023/LC09_L1TP_190023_20260427_20260427_02_T1/LC09_L1TP_190023_20260427_20260427_02_T1_B8.TIF' not recognized as being in a supported file format.\")"
     }
   ],
-  "note": "15 m panchromatic pixels where sensor provides Band 8. Color pansharpened view combines real 30 m RGB with real 15 m PAN; deterministic processing, no AI."
+  "note": "Native 15 m panchromatic Band 8 where available; pansharpened color uses only real RGB+PAN pixels, no AI."
 }
