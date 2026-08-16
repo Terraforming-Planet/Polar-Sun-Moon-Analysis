@@ -62,13 +62,13 @@ jobs:
               assert (dest/season/'manifest.json').exists()
               assert any((dest/season/'images').iterdir())
           PY
-      - name: Publish SHA-256 and perceptual hashes
-        run: python tools/publish_experiment_integrity.py --test 11 --experiment-dir "$EXPERIMENT_DIR"
+      - name: Publish hashes and lightweight seasonal gallery
+        run: python tools/publish_experiment_integrity.py --test 11 --experiment-dir "$EXPERIMENT_DIR" --gallery
       - name: Commit lightweight publication
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add --sparse -f published/experiment-011
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m 'data(test011): publish validated integrity index'
+          git commit -m 'data(test011): publish validated integrity index and gallery'
           git push origin HEAD:experiment-011-ilawa-zalewo-regional-53-760000-19-590000
