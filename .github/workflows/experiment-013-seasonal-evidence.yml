@@ -6,11 +6,12 @@ on:
       - experiment-013-cosmopolis-grays-harbor-46-965781--123-510786
     paths:
       - 'tools/build_experiment_013_seasonal_evidence.py'
+      - 'tools/publish_experiment_integrity.py'
       - '.github/workflows/experiment-013-seasonal-evidence.yml'
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -24,6 +25,7 @@ jobs:
           filter: blob:none
           sparse-checkout: |
             tools
+            published
           sparse-checkout-cone-mode: true
       - uses: actions/setup-python@v5
         with:
@@ -66,6 +68,8 @@ jobs:
               assert next(x for x in am['records'] if x['year']==2026).get('status')!='ok'
           print('EXPERIMENT_013_VALIDATED')
           PY
+      - name: Build lightweight integrity index and gallery
+        run: python tools/publish_experiment_integrity.py --test 13 --experiment-dir experiments/experiment_013_cosmopolis_grays_harbor --gallery
       - name: Upload Test 013 downloadable ZIPs
         uses: actions/upload-artifact@v4
         with:
@@ -83,3 +87,20 @@ jobs:
             experiments/experiment_013_cosmopolis_grays_harbor/seasonal_evidence/autumn/CONTACT_SHEET_AUTUMN_1990_2026.jpg
           retention-days: 90
           compression-level: 0
+      - name: Upload Test 013 lightweight integrity metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: TEST013_INTEGRITY_INDEX_AND_GALLERY
+          path: published/experiment-013
+          retention-days: 90
+      - name: Commit lightweight integrity metadata and gallery
+        run: |
+          git config user.name "terraforming-planet-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add --sparse -f published/experiment-013
+          if git diff --cached --quiet; then
+            echo "No lightweight publication changes"
+          else
+            git commit -m "data(test013): publish integrity index and gallery"
+            git push origin HEAD:experiment-013-cosmopolis-grays-harbor-46-965781--123-510786
+          fi
