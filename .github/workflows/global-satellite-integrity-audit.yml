@@ -1,0 +1,70 @@
+name: Global satellite integrity audit
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - 'terra_integrity/**'
+      - 'config/satellite_integrity_sources.json'
+      - 'tests/test_global_satellite_integrity.py'
+      - '.github/workflows/global-satellite-integrity-audit.yml'
+  push:
+    branches: ["main"]
+    paths:
+      - 'terra_integrity/**'
+      - 'config/satellite_integrity_sources.json'
+      - '.github/workflows/global-satellite-integrity-audit.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '17 5 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - name: Checkout audit code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install audit runtime
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install Pillow
+
+      - name: Run Tests 001-015 global integrity audit
+        run: |
+          python -m terra_integrity.audit --no-fail
+
+      - name: Upload integrity report
+        uses: actions/upload-artifact@v4
+        with:
+          name: GLOBAL_DATA_INTEGRITY_REPORT
+          path: |
+            docs/data/integrity/GLOBAL_DATA_INTEGRITY_REPORT.json
+            docs/data/integrity/GLOBAL_DATA_INTEGRITY_REPORT.md
+          retention-days: 90
+
+      - name: Enforce integrity gate
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(
+              Path('docs/data/integrity/GLOBAL_DATA_INTEGRITY_REPORT.json').read_text()
+          )
+          print('Status:', report['status'])
+          print('Summary:', report['summary'])
+          if report['status'] != 'PASS':
+              raise SystemExit('Global satellite integrity audit failed')
+          PY
