@@ -1,3 +1,4 @@
+import './sahara-drainage-stability.js';
 import { loadCopernicusDemMosaic } from './sahara-dem-mosaic.js';
 import { buildMosaicFlowProducts } from './sahara-flow-grid.js';
 
