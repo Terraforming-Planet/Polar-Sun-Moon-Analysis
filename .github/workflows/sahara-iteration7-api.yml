@@ -1,0 +1,114 @@
+name: Sahara iteration 7 API patch
+
+on:
+  push:
+    branches:
+      - agent/sahara-iteration-7-dem-mosaic
+
+permissions:
+  contents: write
+
+jobs:
+  patch-without-checkout:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Patch branch through GitHub contents API
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          BRANCH: agent/sahara-iteration-7-dem-mosaic
+        shell: bash
+        run: |
+          python - <<'PY'
+          import base64
+          import json
+          import os
+          import subprocess
+          import tempfile
+          import urllib.request
+          from pathlib import Path
+
+          token = os.environ['GH_TOKEN']
+          repo = os.environ['REPO']
+          branch = os.environ['BRANCH']
+          api = f'https://api.github.com/repos/{repo}/contents'
+          headers = {
+              'Authorization': f'Bearer {token}',
+              'Accept': 'application/vnd.github+json',
+              'X-GitHub-Api-Version': '2022-11-28',
+          }
+
+          def request(method, url, payload=None):
+              data = None if payload is None else json.dumps(payload).encode()
+              req = urllib.request.Request(url, data=data, headers=headers, method=method)
+              with urllib.request.urlopen(req) as response:
+                  return json.loads(response.read().decode())
+
+          def fetch(path):
+              item = request('GET', f'{api}/{path}?ref={branch}')
+              return base64.b64decode(item['content']).decode(), item['sha']
+
+          def put(path, content, message, sha=None):
+              payload = {
+                  'message': message,
+                  'content': base64.b64encode(content.encode()).decode(),
+                  'branch': branch,
+              }
+              if sha:
+                  payload['sha'] = sha
+              return request('PUT', f'{api}/{path}', payload)
+
+          def delete(path, message):
+              try:
+                  _, sha = fetch(path)
+              except Exception:
+                  return
+              request('DELETE', f'{api}/{path}', {'message': message, 'sha': sha, 'branch': branch})
+
+          needed = [
+              'scripts/sahara_iteration7_mosaic.py',
+              'web/public/sahara-station/sahara-flow-core.js',
+              'docs/sahara-station/sahara-flow-core.js',
+              'web/public/sahara-station/sahara-hydrology.js',
+              'docs/sahara-station/sahara-hydrology.js',
+          ]
+
+          with tempfile.TemporaryDirectory() as temp:
+              root = Path(temp)
+              shas = {}
+              for path in needed:
+                  content, sha = fetch(path)
+                  target = root / path
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  target.write_text(content, encoding='utf-8')
+                  shas[path] = sha
+
+              subprocess.run(['python', str(root / 'scripts/sahara_iteration7_mosaic.py')], check=True)
+
+              outputs = [
+                  'web/public/sahara-station/sahara-dem-mosaic-core.js',
+                  'docs/sahara-station/sahara-dem-mosaic-core.js',
+                  'web/public/sahara-station/sahara-dem-mosaic.js',
+                  'docs/sahara-station/sahara-dem-mosaic.js',
+                  'web/public/sahara-station/sahara-flow-core.js',
+                  'docs/sahara-station/sahara-flow-core.js',
+                  'web/public/sahara-station/sahara-hydrology.js',
+                  'docs/sahara-station/sahara-hydrology.js',
+                  'data/training/paleoriver_8/research_note_iteration_7.md',
+                  'tests/test_sahara_dem_mosaic.py',
+              ]
+              for path in outputs:
+                  target = root / path
+                  content = target.read_text(encoding='utf-8')
+                  sha = shas.get(path)
+                  if sha is None:
+                      try:
+                          _, sha = fetch(path)
+                      except Exception:
+                          sha = None
+                  put(path, content, 'feat(sahara): add 3x3 Copernicus DEM mosaic routing', sha)
+
+          delete('scripts/sahara_iteration7_mosaic.py', 'chore: remove one-time Sahara iteration 7 patch script')
+          delete('.github/workflows/sahara-iteration7-api.yml', 'chore: remove one-time Sahara iteration 7 API workflow')
+          PY
