@@ -256,7 +256,7 @@ export function mountHydrologyScreening() {
     panel.className = 'panel';
     panel.style.marginTop = '1rem';
     panel.innerHTML = `
-      <div class="eyebrow">DEM / PRIORITY-FLOOD / D8 / ZLEWNIE — 8 TESTÓW</div>
+      <div class="eyebrow">DEM / D8 / ZLEWNIE — 8 TESTÓW · PRIORITY-FLOOD</div>
       <h3>Kondycjonowany przesiew odpływu na Copernicus DEM GLO-90</h3>
       <p>Regionalna próbka 33×33 wokół środka każdego testu zachowuje surowy DEM do oceny reliefu i retencji, a osobną kopię numerycznie kondycjonuje metodą Priority-Flood. Minimalny gradient 1 mm służy wyłącznie do rozwiązania płaskich powierzchni i zamkniętych niecek przed D8.</p>
       <div class="button-grid compact">
