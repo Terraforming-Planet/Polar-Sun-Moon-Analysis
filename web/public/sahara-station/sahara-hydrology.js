@@ -18,9 +18,8 @@ function centerOfBbox(bbox) {
 
 function cellDistances(lat) {
   const dLat = Math.PI / 180 / (SAMPLE_SIZE - 1);
-  const dLon = dLat;
   const northSouth = EARTH_RADIUS_M * dLat;
-  const eastWest = EARTH_RADIUS_M * Math.cos(lat * Math.PI / 180) * dLon;
+  const eastWest = EARTH_RADIUS_M * Math.cos(lat * Math.PI / 180) * dLat;
   return { northSouth, eastWest: Math.max(1, Math.abs(eastWest)) };
 }
 
@@ -34,7 +33,6 @@ export function analyzeDemGrid(values, lat) {
   const max = Math.max(...elevations);
   const mean = elevations.reduce((sum, value) => sum + value, 0) / elevations.length;
   const distances = cellDistances(lat);
-
   let slopeSum = 0;
   let slopeCount = 0;
   let lowSlopeCells = 0;
@@ -75,9 +73,6 @@ export function analyzeDemGrid(values, lat) {
   const sinkFraction = sinkCells / Math.max(1, interiorCells);
   const lowSlopeFraction = lowSlopeCells / Math.max(1, interiorCells);
   const valleyFraction = valleyCells / Math.max(1, interiorCells);
-
-  // Screening index only: prioritises low-gradient terrain and local depressions.
-  // It is not a storage-volume or flood-safety calculation.
   const retentionScreeningScore = Math.round(Math.max(0, Math.min(100,
     100 * (0.50 * lowSlopeFraction + 0.30 * sinkFraction + 0.20 * valleyFraction),
   )));
@@ -132,13 +127,11 @@ async function runEightTestHydrology() {
   button.disabled = true;
   rows.innerHTML = '';
   status.textContent = 'Ładowanie manifestu 8 testów…';
-
   try {
-    const manifestResponse = await fetch('./paleoriver-tests/manifest.json', { cache: 'no-store' });
-    if (!manifestResponse.ok) throw new Error(`manifest HTTP ${manifestResponse.status}`);
-    const manifest = await manifestResponse.json();
+    const response = await fetch('./paleoriver-tests/manifest.json', { cache: 'no-store' });
+    if (!response.ok) throw new Error(`manifest HTTP ${response.status}`);
+    const manifest = await response.json();
     const results = [];
-
     for (let index = 0; index < manifest.tests.length; index += 1) {
       const test = manifest.tests[index];
       const center = centerOfBbox(test.bbox);
@@ -153,10 +146,9 @@ async function runEightTestHydrology() {
         rows.insertAdjacentHTML('beforeend', `<tr><td><strong>${test.name}</strong></td><td colspan="6">DEM chwilowo niedostępny: ${error?.message || 'błąd sieci'}</td></tr>`);
       }
     }
-
     window.__paleoriverHydrology8 = results;
     const completed = results.filter((item) => !item.error).length;
-    status.textContent = `Gotowe: ${completed}/${manifest.tests.length} regionalnych próbek DEM. Wyniki są wskaźnikami przesiewowymi, nie projektem hydrologicznym.`;
+    status.textContent = `Gotowe: ${completed}/${manifest.tests.length} regionalnych próbek DEM. To screening, nie projekt hydrologiczny.`;
   } catch (error) {
     status.textContent = `Analiza DEM nie została ukończona: ${error?.message || 'błąd'}`;
   } finally {
@@ -164,4 +156,31 @@ async function runEightTestHydrology() {
   }
 }
 
-document.getElementById('runHydrology8')?.addEventListener('click', runEightTestHydrology);
+export function mountHydrologyScreening() {
+  const suite = document.getElementById('paleoriver-test-suite');
+  if (!suite) return false;
+  let panel = document.getElementById('hydrology-screening-8');
+  if (!panel) {
+    panel = document.createElement('div');
+    panel.id = 'hydrology-screening-8';
+    panel.className = 'panel';
+    panel.style.marginTop = '1rem';
+    panel.innerHTML = `
+      <div class="eyebrow">DEM / ANALIZA TOPOGRAFICZNA 8 TESTÓW</div>
+      <h3>Przesiew retencji na Copernicus DEM GLO-90</h3>
+      <p>Regionalna próbka 33×33 wokół środka każdego testu liczy relief, spadek, płaski teren i lokalne obniżenia. Wynik 0–100 jest wskaźnikiem przesiewowym, a nie pojemnością zbiornika ani dowodem dawnej rzeki.</p>
+      <button id="runHydrology8" class="action" type="button">Uruchom analizę DEM dla 8 testów</button>
+      <p id="hydrologyStatus" class="action-message" role="status" aria-live="polite">Analiza DEM czeka na uruchomienie.</p>
+      <div class="tablewrap"><table><thead><tr><th>Test</th><th>Wysokość</th><th>Relief</th><th>Śr. spadek</th><th>Spadek &lt;2°</th><th>Obniżenia</th><th>Screening</th></tr></thead><tbody id="hydrologyRows"></tbody></table></div>
+      <p class="method-note"><strong>Interpretacja:</strong> Copernicus DEM jest DSM. Wynik wymaga późniejszej analizy zlewni, przepływu, geologii, infiltracji, parowania, sedymentacji i danych terenowych.</p>`;
+    suite.appendChild(panel);
+  }
+  const button = document.getElementById('runHydrology8');
+  if (button && !button.dataset.hydrologyBound) {
+    button.dataset.hydrologyBound = '1';
+    button.addEventListener('click', runEightTestHydrology);
+  }
+  return true;
+}
+
+mountHydrologyScreening();
