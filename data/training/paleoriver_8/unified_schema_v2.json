@@ -1,0 +1,54 @@
+{
+  "schema_version": 2,
+  "name": "paleoriver_unified_training_8",
+  "record_count_expected": 8,
+  "interpretation": "screening-not-geological-proof",
+  "sensor_status": {
+    "optical": "NASA GIBS / MODIS Terra true color",
+    "sar": "NASA OPERA RTC-S1 / Sentinel-1 VV via Earthdata ImageServer",
+    "dem": "Copernicus DEM"
+  },
+  "groups": {
+    "identity": ["id", "continent", "country", "kind", "imagery_date", "imagery_provider", "reference"],
+    "optical": ["optical_mean_r", "optical_mean_g", "optical_mean_b"],
+    "sar": [
+      "sar_provider",
+      "sar_status",
+      "sar_product_name",
+      "sar_polarization",
+      "sar_acquisition_start",
+      "sar_preview_mean_luma",
+      "sar_preview_std_luma",
+      "sar_feature_status",
+      "sar_feature_kind"
+    ],
+    "reference_labels": [
+      "hydrologic_context_label",
+      "context_label_confidence",
+      "paleochannel_ground_truth"
+    ],
+    "dem_1deg": [
+      "dem_relief_m",
+      "dem_mean_slope_deg",
+      "dem_low_slope_fraction",
+      "dem_valley_fraction",
+      "retention_screening_score",
+      "d8_max_accumulation_cells_1deg",
+      "dominant_watershed_fraction_1deg",
+      "conditioned_fraction_1deg"
+    ],
+    "dem_3deg": ["d8_max_accumulation_cells_3deg", "dominant_watershed_fraction_3deg", "conditioned_fraction_3deg"],
+    "stability": ["drainage_angle_delta_deg", "drainage_watershed_delta", "drainage_stability"],
+    "path_concordance": [
+      "path_1deg_km",
+      "path_3deg_km",
+      "path_mean_nearest_km",
+      "path_concordant_fraction_25km",
+      "outlet_distance_km",
+      "path_concordance"
+    ],
+    "provenance_and_caution": ["evidence_note", "interpretation_status"]
+  },
+  "sar_feature_caution": "sar_preview_mean_luma and sar_preview_std_luma are statistics of the rendered dB-stretched preview PNG. They are not calibrated sigma0/gamma0 backscatter values.",
+  "ground_truth_policy": "hydrologic_context_label is source-backed context only; paleochannel_ground_truth stays not-labelled until an independently verified channel mask exists."
+}
