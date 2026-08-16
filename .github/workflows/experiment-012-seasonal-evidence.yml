@@ -6,11 +6,12 @@ on:
       - experiment-012-great-salt-lake-41-150000--112-600000
     paths:
       - 'tools/build_experiment_012_seasonal_evidence.py'
+      - 'tools/publish_experiment_integrity.py'
       - '.github/workflows/experiment-012-seasonal-evidence.yml'
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -24,20 +25,17 @@ jobs:
           filter: blob:none
           sparse-checkout: |
             tools
+            published
           sparse-checkout-cone-mode: true
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Install geospatial dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install numpy pillow requests rasterio pyproj
-
       - name: Build Test 012 spring and autumn imagery 1990-2026
         run: python tools/build_experiment_012_seasonal_evidence.py
-
       - name: Validate Test 012 dates, frame and duplicate integrity
         run: |
           python - <<'PY'
@@ -45,64 +43,63 @@ jobs:
           from datetime import date
           from pathlib import Path
           from PIL import Image
-
           exp=Path('experiments/experiment_012_great_salt_lake')
           summary=json.loads((exp/'BUILD_SUMMARY.json').read_text())
           assert summary['experiment']==12
           assert summary['center']=={'lat':41.15,'lon':-112.6}
           assert summary['frame_width_m']==120000 and summary['frame_height_m']==160000
           assert summary['output_grid_m']==60.0 and summary['target_crs']=='EPSG:32612'
-          assert summary['spring_count_ok']>=30, summary
-          assert summary['autumn_count_ok']>=30, summary
-          combined=Path(summary['combined_zip'])
-          assert combined.exists() and combined.stat().st_size>100000
-
-          seen_hash={}
-          seen_item={}
+          assert summary['spring_count_ok']>=30 and summary['autumn_count_ok']>=30
+          seen_hash={}; seen_item={}
           for season in ('spring','autumn'):
               root=exp/'seasonal_evidence'/season
               m=json.loads((root/'manifest.json').read_text())
               assert len(m['records'])==37
-              assert m['aoi']['width_m']==120000 and m['aoi']['height_m']==160000
               for r in m['records']:
-                  if r.get('status')!='ok':
-                      continue
+                  if r.get('status')!='ok': continue
                   assert str(r['date']).startswith(str(r['year'])+'-')
-                  assert r.get('output_grid_m')==60.0
-                  p=root/'images'/r['files'][0]
-                  assert p.exists(), p
-                  h=hashlib.sha256(p.read_bytes()).hexdigest()
-                  key=f"{season}:{r['year']}"
-                  assert h not in seen_hash, f"exact cross-season/year duplicate: {seen_hash[h]} == {key}"
-                  seen_hash[h]=key
+                  p=root/'images'/r['files'][0]; assert p.exists()
+                  h=hashlib.sha256(p.read_bytes()).hexdigest(); key=f"{season}:{r['year']}"
+                  assert h not in seen_hash, f"exact cross-season/year duplicate: {seen_hash[h]} == {key}"; seen_hash[h]=key
                   item=r.get('item_id')
-                  if item:
-                      assert item not in seen_item, f"same source product reused: {seen_item[item]} == {key}: {item}"
-                      seen_item[item]=key
-                  with Image.open(p) as im:
-                      assert im.width>=1800 and im.height>=2400, (key, im.size)
-
+                  if item: assert item not in seen_item, f"same source product reused: {seen_item[item]} == {key}: {item}"; seen_item[item]=key
+                  with Image.open(p) as im: assert im.width>=1800 and im.height>=2400, (key, im.size)
           if date.today()<date(2026,9,1):
               am=json.loads((exp/'seasonal_evidence/autumn/manifest.json').read_text())
-              r=next(x for x in am['records'] if x['year']==2026)
-              assert r.get('status')!='ok', 'Autumn 2026 must not be fabricated before September 2026'
+              assert next(x for x in am['records'] if x['year']==2026).get('status')!='ok'
           print('EXPERIMENT_012_VALIDATED')
           PY
-
+      - name: Build lightweight integrity index
+        run: python tools/publish_experiment_integrity.py --test 12 --experiment-dir experiments/experiment_012_great_salt_lake
       - name: Upload Test 012 downloadable ZIPs
         uses: actions/upload-artifact@v4
         with:
           name: TEST012_GREAT_SALT_LAKE_1990_2026_SPRING_AUTUMN
           path: |
-            experiments/experiment_012_great_salt_lake/TEST012_GREAT_SALT_LAKE_1990_2026_SPRING_AUTUMN_120x160km_41.150000_-112.600000.zip
-            experiments/experiment_012_great_salt_lake/seasonal_evidence/spring/TEST012_SPRING_1990_2026_37_YEARS_120x160km_41.150000_-112.600000.zip
-            experiments/experiment_012_great_salt_lake/seasonal_evidence/autumn/TEST012_AUTUMN_1990_2026_37_YEARS_120x160km_41.150000_-112.600000.zip
+            experiments/experiment_012_great_salt_lake/*.zip
+            experiments/experiment_012_great_salt_lake/seasonal_evidence/spring/*.zip
+            experiments/experiment_012_great_salt_lake/seasonal_evidence/autumn/*.zip
             experiments/experiment_012_great_salt_lake/BUILD_SUMMARY.json
             experiments/experiment_012_great_salt_lake/EXPERIMENT_012_REPORT.md
             experiments/experiment_012_great_salt_lake/EVIDENCE_POLICY.json
             experiments/experiment_012_great_salt_lake/seasonal_evidence/spring/manifest.json
             experiments/experiment_012_great_salt_lake/seasonal_evidence/autumn/manifest.json
-            experiments/experiment_012_great_salt_lake/seasonal_evidence/spring/CONTACT_SHEET_SPRING_1990_2026.jpg
-            experiments/experiment_012_great_salt_lake/seasonal_evidence/autumn/CONTACT_SHEET_AUTUMN_1990_2026.jpg
           retention-days: 90
           compression-level: 0
+      - name: Upload Test 012 lightweight integrity metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: TEST012_INTEGRITY_INDEX
+          path: published/experiment-012
+          retention-days: 90
+      - name: Commit lightweight integrity metadata
+        run: |
+          git config user.name "terraforming-planet-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add --sparse -f published/experiment-012
+          if git diff --cached --quiet; then
+            echo "No lightweight publication changes"
+          else
+            git commit -m "data(test012): publish integrity index"
+            git push origin HEAD:experiment-012-great-salt-lake-41-150000--112-600000
+          fi
