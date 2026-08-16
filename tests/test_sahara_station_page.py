@@ -151,3 +151,24 @@ def test_sahara_night_agent_iteration_one() -> None:
     assert len(manifest["tests"]) == 8
     continents = {item["continent"] for item in manifest["tests"]}
     assert continents == {"North America", "Europe", "Africa", "Asia"}
+
+
+def test_sahara_night_agent_iteration_two_adds_dem_relief_to_globe() -> None:
+    globe_path = ROOT / "web" / "public" / "sahara-station" / "sahara-globe.js"
+    docs_globe_path = ROOT / "docs" / "sahara-station" / "sahara-globe.js"
+    relief_path = ROOT / "web" / "public" / "sahara-station" / "sahara-dem-relief.js"
+    docs_relief_path = ROOT / "docs" / "sahara-station" / "sahara-dem-relief.js"
+    globe = globe_path.read_text(encoding="utf-8")
+    relief = relief_path.read_text(encoding="utf-8")
+
+    assert "RegionalDemOverlay" in globe
+    assert "void demOverlay.setPlace(place)" in globe
+    assert "const batchSize = 6" in globe
+    assert "Promise.all" in globe
+    assert "frustumCulled = true" in globe
+    assert "Copernicus_DSM_COG_30_" in relief
+    assert "readRasters" in relief
+    assert "SAMPLE_SIZE = 33" in relief
+    assert "verticalExaggeration = 24" in relief
+    assert globe == docs_globe_path.read_text(encoding="utf-8")
+    assert relief == docs_relief_path.read_text(encoding="utf-8")
