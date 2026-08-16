@@ -1,10 +1,10 @@
 {
-  "generatedUtc": "2026-08-16T13:09:30.041347Z",
+  "generatedUtc": "2026-08-16T13:44:41.352416Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
       "id": "EONET_22562",
-      "title": "Tropical Storm Hernan",
+      "title": "Cyclone Hernan",
       "categories": [
         "Severe Storms"
       ],
@@ -408,33 +408,6 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22612",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_22386",
-      "title": "Tropical Storm 15W",
-      "categories": [
-        "Severe Storms"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 25.0,
-        "magnitudeUnit": "kts",
-        "date": "2026-08-11T00:00:00Z",
-        "type": "Point",
-        "coordinates": [
-          160.8,
-          28.4
-        ]
-      },
-      "sources": [
-        {
-          "id": "JTWC",
-          "url": "https://www.metoc.navy.mil/jtwc/products/wp1526.tcw"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22386",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
@@ -5405,6 +5378,33 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21318",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_21328",
+      "title": "Wildfire Cow Canyon, Oneida, Idaho",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 2000.0,
+        "magnitudeUnit": "acres",
+        "date": "2026-07-12T16:15:00Z",
+        "type": "Point",
+        "coordinates": [
+          -112.947187,
+          42.11216
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-IDIFD-000128"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21328",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -5421,7 +5421,7 @@
       "properties": {
         "source": "NASA EONET",
         "evidenceType": "event-catalogue",
-        "title": "Tropical Storm Hernan",
+        "title": "Cyclone Hernan",
         "categories": [
           "Severe Storms"
         ],
@@ -5843,35 +5843,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-NVTMFX-030698"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_22386",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          160.8,
-          28.4
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Tropical Storm 15W",
-        "categories": [
-          "Severe Storms"
-        ],
-        "observationUtc": "2026-08-11T00:00:00Z",
-        "observation_time": "2026-08-11T00:00:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22386",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22386",
-        "sources": [
-          {
-            "id": "JTWC",
-            "url": "https://www.metoc.navy.mil/jtwc/products/wp1526.tcw"
           }
         ]
       }
@@ -11208,6 +11179,35 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-MTLG23-260727"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_21328",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -112.947187,
+          42.11216
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Wildfire Cow Canyon, Oneida, Idaho",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-07-12T16:15:00Z",
+        "observation_time": "2026-07-12T16:15:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21328",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21328",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-IDIFD-000128"
           }
         ]
       }
