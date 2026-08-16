@@ -150,6 +150,7 @@ export function HydrologyPanel({ baseUrl }: Props) {
     <p className="muted">Daty źródłowe przeglądu GDO: globalny obraz — koniec czerwca 2026; europejski przegląd — połowa lipca 2026. System nie podnosi tych opisów do rangi bieżącego alarmu lokalnego.</p>
 
     <div className="hero-actions">
+      <a className="button-link" href={`${baseUrl}experiment-011/`}>Test 011 · Iława–Zalewo 1990–2026</a>
       <a className="button-link" href={`${baseUrl}water-local/`}>ALARM · Olszówka multi-sensor</a>
       <a className="button-link" href={`${baseUrl}flood-map/`}>Otwórz mapę powodzi Sentinel-1</a>
       <a className="button-link" href={`${baseUrl}copernicus/`}>Otwórz panel Copernicus</a>
