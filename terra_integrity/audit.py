@@ -195,14 +195,21 @@ def _manifest_records(source: SourceConfig, git: GitAccessor) -> list[AuditRecor
             if status == "ok":
                 files_any = record.get("files")
                 if not isinstance(files_any, list) or not files_any:
-                    raise ValueError(f"Missing files for Test {source.test} {season} {record.get('year')}")
+                    raise ValueError(
+                        f"Missing files for Test {source.test} {season} "
+                        f"{record.get('year')}"
+                    )
                 files = [str(value) for value in files_any]
                 native_file = _resolve_image_path(manifest_path, files[0])
                 native_bytes = git.show_bytes(source.branch, native_file)
                 sha256 = hashlib.sha256(native_bytes).hexdigest()
                 preview_name = files[1] if len(files) > 1 else files[0]
                 preview_path = _resolve_image_path(manifest_path, preview_name)
-                preview_bytes = native_bytes if preview_path == native_file else git.show_bytes(source.branch, preview_path)
+                preview_bytes = (
+                    native_bytes
+                    if preview_path == native_file
+                    else git.show_bytes(source.branch, preview_path)
+                )
                 average_hash_16 = _average_hash(preview_bytes)
             records.append(
                 AuditRecord(
@@ -317,8 +324,13 @@ def _coverage_findings(records: list[AuditRecord], today: date) -> list[AuditFin
                     AuditFinding(
                         severity="error",
                         code="duplicate_year_slot",
-                        message=f"Test {test:03d} {season}: duplicate year slots {duplicate_years}",
-                        slots=tuple(f"T{test:03d}:{season}:{year}" for year in duplicate_years),
+                        message=(
+                            f"Test {test:03d} {season}: duplicate year slots "
+                            f"{duplicate_years}"
+                        ),
+                        slots=tuple(
+                            f"T{test:03d}:{season}:{year}" for year in duplicate_years
+                        ),
                     )
                 )
             missing = [year for year in EXPECTED_YEARS if year not in years]
@@ -337,17 +349,28 @@ def _coverage_findings(records: list[AuditRecord], today: date) -> list[AuditFin
                     AuditFinding(
                         severity="error",
                         code="insufficient_accepted_observations",
-                        message=f"Test {test:03d} {season}: only {len(accepted)} accepted observations",
+                        message=(
+                            f"Test {test:03d} {season}: only {len(accepted)} "
+                            "accepted observations"
+                        ),
                         slots=(f"T{test:03d}:{season}",),
                     )
                 )
             for record in accepted:
-                if record.year is None or record.date is None or not record.date.startswith(f"{record.year}-"):
+                date_matches = (
+                    record.year is not None
+                    and record.date is not None
+                    and record.date.startswith(f"{record.year}-")
+                )
+                if not date_matches:
                     findings.append(
                         AuditFinding(
                             severity="error",
                             code="date_year_mismatch",
-                            message=f"{record.slot}: accepted date does not match assigned year ({record.date})",
+                            message=(
+                                f"{record.slot}: accepted date does not match "
+                                f"assigned year ({record.date})"
+                            ),
                             slots=(record.slot,),
                         )
                     )
@@ -358,14 +381,19 @@ def _coverage_findings(records: list[AuditRecord], today: date) -> list[AuditFin
                         AuditFinding(
                             severity="error",
                             code="future_autumn_2026_fabricated",
-                            message=f"Test {test:03d}: autumn 2026 cannot be accepted before September 2026",
+                            message=(
+                                f"Test {test:03d}: autumn 2026 cannot be accepted "
+                                "before September 2026"
+                            ),
                             slots=(f"T{test:03d}:autumn:2026",),
                         )
                     )
     return findings
 
 
-def _duplicate_findings(records: list[AuditRecord], near_threshold: int) -> list[AuditFinding]:
+def _duplicate_findings(
+    records: list[AuditRecord], near_threshold: int
+) -> list[AuditFinding]:
     findings: list[AuditFinding] = []
     accepted = [record for record in records if record.status == "ok"]
 
@@ -397,7 +425,10 @@ def _duplicate_findings(records: list[AuditRecord], near_threshold: int) -> list
             AuditFinding(
                 severity=severity,
                 code=code,
-                message=f"Exact SHA-256 duplicate {digest[:16]}… across {', '.join(slots)}",
+                message=(
+                    f"Exact SHA-256 duplicate {digest[:16]}… across "
+                    f"{', '.join(slots)}"
+                ),
                 slots=slots,
             )
         )
@@ -414,7 +445,10 @@ def _duplicate_findings(records: list[AuditRecord], near_threshold: int) -> list
                 AuditFinding(
                     severity="error",
                     code="source_product_reused_within_test",
-                    message=f"Source product {item_id} reused within one test across evidence slots",
+                    message=(
+                        f"Source product {item_id} reused within one test "
+                        "across evidence slots"
+                    ),
                     slots=slots,
                 )
             )
@@ -423,7 +457,10 @@ def _duplicate_findings(records: list[AuditRecord], near_threshold: int) -> list
                 AuditFinding(
                     severity="info",
                     code="shared_source_scene_cross_test",
-                    message=f"Source product {item_id} is shared by multiple tests; review is informational",
+                    message=(
+                        f"Source product {item_id} is shared by multiple tests; "
+                        "review is informational"
+                    ),
                     slots=slots,
                 )
             )
@@ -437,7 +474,12 @@ def _duplicate_findings(records: list[AuditRecord], near_threshold: int) -> list
                 continue
             if left.item_id and right.item_id and left.item_id == right.item_id:
                 continue
-            if left.test == right.test and left.season == right.season and left.year == right.year:
+            same_slot = (
+                left.test == right.test
+                and left.season == right.season
+                and left.year == right.year
+            )
+            if same_slot:
                 continue
             distance = _hamming_hex(left.average_hash_16, right.average_hash_16)
             if distance is None or distance > near_threshold:
@@ -452,7 +494,10 @@ def _duplicate_findings(records: list[AuditRecord], near_threshold: int) -> list
                 AuditFinding(
                     severity=severity,
                     code=code,
-                    message=f"Perceptual hash distance {distance} between {left.slot} and {right.slot}",
+                    message=(
+                        f"Perceptual hash distance {distance} between "
+                        f"{left.slot} and {right.slot}"
+                    ),
                     slots=tuple(sorted((left.slot, right.slot))),
                 )
             )
@@ -468,7 +513,14 @@ def analyze_records(
     audit_date = today or datetime.now(UTC).date()
     findings = _coverage_findings(records, audit_date)
     findings.extend(_duplicate_findings(records, near_threshold))
-    findings.sort(key=lambda finding: ({"error": 0, "warning": 1, "info": 2}[finding.severity], finding.code, finding.slots))
+    severity_rank = {"error": 0, "warning": 1, "info": 2}
+    findings.sort(
+        key=lambda finding: (
+            severity_rank[finding.severity],
+            finding.code,
+            finding.slots,
+        )
+    )
     errors = sum(finding.severity == "error" for finding in findings)
     accepted = [record for record in records if record.status == "ok"]
     return AuditReport(
@@ -478,7 +530,9 @@ def analyze_records(
         accepted_count=len(accepted),
         tests=tuple(sorted({record.test for record in records})),
         exact_hash_coverage=sum(record.sha256 is not None for record in accepted),
-        perceptual_hash_coverage=sum(record.average_hash_16 is not None for record in accepted),
+        perceptual_hash_coverage=sum(
+            record.average_hash_16 is not None for record in accepted
+        ),
         findings=tuple(findings),
     )
 
@@ -493,12 +547,18 @@ def render_markdown(report: AuditReport) -> str:
         f"- Records: {report.record_count}",
         f"- Accepted observations: {report.accepted_count}",
         f"- SHA-256 coverage: {report.exact_hash_coverage}/{report.accepted_count}",
-        f"- Perceptual-hash coverage: {report.perceptual_hash_coverage}/{report.accepted_count}",
+        (
+            "- Perceptual-hash coverage: "
+            f"{report.perceptual_hash_coverage}/{report.accepted_count}"
+        ),
         f"- Errors: {report.error_count}",
         f"- Warnings: {report.warning_count}",
         f"- Info: {report.info_count}",
         "",
-        "Archived/rejected evidence under error-review directories is intentionally excluded; only active seasonal evidence slots are audited.",
+        (
+            "Archived/rejected evidence under error-review directories is intentionally "
+            "excluded; only active seasonal evidence slots are audited."
+        ),
         "",
         "## Findings",
         "",
@@ -508,7 +568,10 @@ def render_markdown(report: AuditReport) -> str:
     else:
         for finding in report.findings:
             slots = ", ".join(finding.slots)
-            lines.append(f"- **{finding.severity.upper()} · {finding.code}** — {finding.message} [{slots}]")
+            lines.append(
+                f"- **{finding.severity.upper()} · {finding.code}** — "
+                f"{finding.message} [{slots}]"
+            )
     lines.append("")
     return "\n".join(lines)
 
@@ -516,13 +579,22 @@ def render_markdown(report: AuditReport) -> str:
 def write_report(report: AuditReport, json_path: Path, markdown_path: Path) -> None:
     json_path.parent.mkdir(parents=True, exist_ok=True)
     markdown_path.parent.mkdir(parents=True, exist_ok=True)
-    json_path.write_text(json.dumps(report.to_dict(), indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    json_path.write_text(
+        json.dumps(report.to_dict(), indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
     markdown_path.write_text(render_markdown(report), encoding="utf-8")
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Audit satellite evidence across Tests 001-015")
-    parser.add_argument("--config", type=Path, default=Path("config/satellite_integrity_sources.json"))
+    parser = argparse.ArgumentParser(
+        description="Audit satellite evidence across Tests 001-015"
+    )
+    parser.add_argument(
+        "--config",
+        type=Path,
+        default=Path("config/satellite_integrity_sources.json"),
+    )
     parser.add_argument("--repo", type=Path, default=Path.cwd())
     parser.add_argument(
         "--json-out",
