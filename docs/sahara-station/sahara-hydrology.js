@@ -34,6 +34,11 @@ function flowScreening(values, lat) {
     dominantWatershedFraction: products.watershed.size / products.accumulation.length,
     drainageConcentrationFraction: concentratedCells / products.accumulation.length,
     dominantOutletIndex: products.dominantOutlet,
+    conditionedFilledFraction: products.conditioning.filledFraction,
+    conditionedMeanFillDepthM: products.conditioning.meanFillDepthM,
+    conditionedMaxFillDepthM: products.conditioning.maxFillDepthM,
+    conditionedNumericalFillVolumeM3: products.conditioning.fillVolumeNumericalM3,
+    conditionedInteriorSinkCount: products.conditioning.interiorSinkCountAfter,
   };
 }
 
@@ -131,7 +136,7 @@ function rowHtml(test, metrics) {
     + `<td>${metrics.meanSlopeDeg.toFixed(2)}°</td>`
     + `<td>${Math.round(metrics.flowAccumulationMaxCells)} kom.</td>`
     + `<td>${percent(metrics.dominantWatershedFraction)}</td>`
-    + `<td>${percent(metrics.drainageConcentrationFraction)}</td>`
+    + `<td>${percent(metrics.conditionedFilledFraction)} / ${metrics.conditionedMaxFillDepthM.toFixed(1)} m</td>`
     + `<td><strong>${metrics.retentionScreeningScore}/100</strong></td></tr>`;
 }
 
@@ -157,6 +162,8 @@ function resultsCsv(results) {
     'reliefM', 'meanSlopeDeg', 'sinkFraction', 'lowSlopeFraction', 'valleyFraction',
     'retentionScreeningScore', 'flowAccumulationMaxCells', 'flowAccumulationP95Cells',
     'dominantWatershedFraction', 'drainageConcentrationFraction', 'dominantOutletIndex',
+    'conditionedFilledFraction', 'conditionedMeanFillDepthM', 'conditionedMaxFillDepthM',
+    'conditionedNumericalFillVolumeM3', 'conditionedInteriorSinkCount',
   ];
   const lines = [fields.join(',')];
   for (const item of results) {
@@ -214,7 +221,7 @@ async function runEightTestHydrology() {
     for (let index = 0; index < manifest.tests.length; index += 1) {
       const test = manifest.tests[index];
       const center = centerOfBbox(test.bbox);
-      status.textContent = `Copernicus DEM + D8: ${index + 1}/${manifest.tests.length} — ${test.name}`;
+      status.textContent = `Copernicus DEM + Priority-Flood + D8: ${index + 1}/${manifest.tests.length} — ${test.name}`;
       try {
         const { values, url } = await loadDemAt(center.lat, center.lon);
         const metrics = analyzeDemGrid(values, center.lat);
@@ -231,7 +238,7 @@ async function runEightTestHydrology() {
     window.__paleoriverHydrology8 = results;
     const completed = results.filter((item) => !item.error).length;
     updateDownloadButtons(completed > 0);
-    status.textContent = `Gotowe: ${completed}/${manifest.tests.length} próbek DEM z D8. Wyniki można zapisać jako JSON/CSV. To screening, nie projekt hydrologiczny.`;
+    status.textContent = `Gotowe: ${completed}/${manifest.tests.length} próbek DEM z kondycjonowaniem i D8. Eksport JSON/CSV zawiera surowe cechy oraz diagnostykę Priority-Flood. To screening, nie projekt hydrologiczny.`;
   } catch (error) {
     status.textContent = `Analiza DEM nie została ukończona: ${error?.message || 'błąd'}`;
   } finally {
@@ -249,17 +256,17 @@ export function mountHydrologyScreening() {
     panel.className = 'panel';
     panel.style.marginTop = '1rem';
     panel.innerHTML = `
-      <div class="eyebrow">DEM / D8 / ZLEWNIE — 8 TESTÓW</div>
-      <h3>Przesiew retencji i kierunku spływu na Copernicus DEM GLO-90</h3>
-      <p>Regionalna próbka 33×33 wokół środka każdego testu liczy relief, spadek, lokalne obniżenia oraz D8 flow direction, flow accumulation i dominującą zlewnię. Wyniki są wskaźnikami przesiewowymi, a nie pojemnością zbiornika ani dowodem dawnej rzeki.</p>
+      <div class="eyebrow">DEM / D8 / ZLEWNIE — 8 TESTÓW · PRIORITY-FLOOD</div>
+      <h3>Kondycjonowany przesiew odpływu na Copernicus DEM GLO-90</h3>
+      <p>Regionalna próbka 33×33 wokół środka każdego testu zachowuje surowy DEM do oceny reliefu i retencji, a osobną kopię numerycznie kondycjonuje metodą Priority-Flood. Minimalny gradient 1 mm służy wyłącznie do rozwiązania płaskich powierzchni i zamkniętych niecek przed D8.</p>
       <div class="button-grid compact">
-        <button id="runHydrology8" class="action" type="button">Uruchom DEM + D8 dla 8 testów</button>
+        <button id="runHydrology8" class="action" type="button">Uruchom Priority-Flood + D8 dla 8 testów</button>
         <button id="downloadHydrologyJson" type="button" disabled>Pobierz wyniki JSON</button>
         <button id="downloadHydrologyCsv" type="button" disabled>Pobierz cechy CSV</button>
       </div>
-      <p id="hydrologyStatus" class="action-message" role="status" aria-live="polite">Analiza DEM i D8 czeka na uruchomienie.</p>
-      <div class="tablewrap"><table><thead><tr><th>Test</th><th>Wysokość</th><th>Relief</th><th>Śr. spadek</th><th>Max akumulacja</th><th>Dominująca zlewnia</th><th>Koncentracja odpływu</th><th>Retencja</th></tr></thead><tbody id="hydrologyRows"></tbody></table></div>
-      <p class="method-note"><strong>Interpretacja:</strong> D8 wyznacza lokalnie najbardziej stromy odpływ do jednego z 8 sąsiadów. Płaskie powierzchnie i zamknięte obniżenia pozostają bez odbiorcy, więc wynik jest screeningiem. Na globie regionalny relief pokazuje teraz także najbardziej skoncentrowane linie D8 i dominujący punkt odpływu. Copernicus DEM jest DSM; przed decyzjami terenowymi potrzebne są hydrologiczne kondycjonowanie DEM, większy zasięg zlewni, geologia, infiltracja, parowanie, sedymentacja i dane terenowe.</p>`;
+      <p id="hydrologyStatus" class="action-message" role="status" aria-live="polite">Analiza DEM czeka na uruchomienie.</p>
+      <div class="tablewrap"><table><thead><tr><th>Test</th><th>Wysokość</th><th>Relief</th><th>Śr. spadek</th><th>Max akumulacja</th><th>Dominująca zlewnia</th><th>Kondycjonowanie: udział / max</th><th>Retencja</th></tr></thead><tbody id="hydrologyRows"></tbody></table></div>
+      <p class="method-note"><strong>Interpretacja:</strong> Priority-Flood modyfikuje wyłącznie kopię roboczą DEM przeznaczoną do trasowania przepływu. Raportowane „wypełnienie numeryczne” jest diagnostyką algorytmu, a nie objętością zbiornika ani dostępną wodą. Surowe obniżenia pozostają osobną obserwacją. Po kondycjonowaniu D8 prowadzi komórki wnętrza do odbiorców i ogranicza sztuczne zatrzymanie na płaskich powierzchniach. Copernicus DEM jest DSM; przed decyzjami terenowymi potrzebne są większy zasięg zlewni, geologia, infiltracja, parowanie, sedymentacja i dane terenowe.</p>`;
     suite.appendChild(panel);
   }
   const button = document.getElementById('runHydrology8');
