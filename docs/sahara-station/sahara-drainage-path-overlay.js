@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import './sahara-training-records.js';
 
 function latLonToVector(lat, lon, radius) {
   const phi = THREE.MathUtils.degToRad(90 - lat);
