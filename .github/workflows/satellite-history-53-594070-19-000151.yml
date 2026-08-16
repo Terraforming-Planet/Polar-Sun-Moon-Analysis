@@ -31,6 +31,19 @@ jobs:
         run: |
           export PYTHONPATH="$PWD/tools:$PYTHONPATH"
           python tools/retry_highres_2km.py
+      - name: Verify Test 001 output exists
+        run: |
+          test -d satellite_packs/53.594070_19.000151
+          count=$(find satellite_packs/53.594070_19.000151 -type f | wc -l)
+          echo "files=$count"
+          test "$count" -gt 0
+      - name: Upload Test 001 satellite packs
+        uses: actions/upload-artifact@v4
+        with:
+          name: TEST001_SATELLITE_HISTORY_53.594070_19.000151
+          path: satellite_packs/53.594070_19.000151/
+          if-no-files-found: error
+          retention-days: 90
       - name: Commit final packs
         run: |
           git config user.name "terraforming-planet-bot"
