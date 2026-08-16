@@ -1,6 +1,5 @@
 import subprocess
 
-
 FLOW_CORE = "web/public/sahara-station/sahara-flow-core.js"
 DOCS_FLOW_CORE = "docs/sahara-station/sahara-flow-core.js"
 HYDROLOGY = "web/public/sahara-station/sahara-hydrology.js"
