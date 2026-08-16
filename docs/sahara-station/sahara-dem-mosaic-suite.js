@@ -106,7 +106,7 @@ export function mountMosaicHydrologyScreening() {
   panel.className = 'panel';
   panel.style.marginTop = '1rem';
   panel.innerHTML = `
-    <div class="eyebrow">DEM 3×3 / D8 / TEST GRANICY KAFKA</div>
+    <div class="eyebrow">DEM 3×3 / D8 / TEST GRANICY KAFLA</div>
     <h3>Mozaika 9 kafli Copernicus DEM dla 8 przypadków</h3>
     <p>Każdy przypadek używa 9 sąsiednich kafli DEM. Próbki 17×17 są składane bez dublowania wspólnych krawędzi do siatki 49×49 obejmującej około 3°×3°. To pozwala sprawdzić, czy dominująca zlewnia i odpływ nie były artefaktem granicy pojedynczego kafla 1°×1°.</p>
     <div class="button-grid compact">
