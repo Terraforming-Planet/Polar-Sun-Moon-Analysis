@@ -1,3 +1,4 @@
+import './sahara-dem-mosaic-suite.js';
 import * as THREE from 'three';
 import { buildFlowProducts, percentile, SAMPLE_SIZE } from './sahara-flow-core.js';
 
