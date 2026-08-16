@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RegionalDemOverlay } from './sahara-dem-relief.js';
 
 const host = document.getElementById('planetViewer');
 const status = document.getElementById('planetStatus');
@@ -19,7 +20,7 @@ if (host) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.setClearColor(0x02060c, 1);
-  renderer.domElement.setAttribute('aria-label', 'Kafelkowy model 3D Ziemi z oficjalnymi obrazami NASA GIBS');
+  renderer.domElement.setAttribute('aria-label', 'Kafelkowy model 3D Ziemi z NASA GIBS i regionalnym Copernicus DEM');
   host.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
@@ -47,11 +48,17 @@ if (host) {
 
   const markerGroup = new THREE.Group();
   scene.add(markerGroup);
+  const demOverlay = new RegionalDemOverlay(scene, radius, status);
 
   const places = {
     sahara: { lat: SITE.lat, lon: SITE.lon, label: 'Sahara Station' },
     himalaya: { lat: 28.0, lon: 86.0, label: 'Himalaje / Tybet' },
     deathvalley: { lat: 36.25, lon: -116.82, label: 'Death Valley' },
+    bonneville: { lat: 40.75, lon: -113.8, label: 'Bonneville / Great Salt Desert' },
+    ebro: { lat: 41.65, lon: -0.85, label: 'Ebro / Aragón' },
+    po: { lat: 45.05, lon: 9.7, label: 'Po River' },
+    tanezrouft: { lat: 25.0, lon: 0.5, label: 'Tanezrouft' },
+    tsauchab: { lat: -24.75, lon: 15.35, label: 'Tsauchab / Sossusvlei' },
     lopnur: { lat: 40.3, lon: 90.5, label: 'Lop Nur' },
     aral: { lat: 44.5, lon: 59.5, label: 'Aral' },
   };
@@ -91,7 +98,7 @@ if (host) {
 
   async function createTile(west, south, east, north, segments, generation) {
     const texture = await loadTexture(gibsTileUrl(west, south, east, north));
-    if (generation !== buildGeneration) return;
+    if (generation !== buildGeneration) return false;
     const geometry = new THREE.SphereGeometry(
       radius,
       segments,
@@ -109,7 +116,9 @@ if (host) {
     });
     const mesh = new THREE.Mesh(geometry, material);
     mesh.userData = { west, south, east, north };
+    mesh.frustumCulled = true;
     tileRoot.add(mesh);
+    return true;
   }
 
   async function buildLod(lod) {
@@ -129,14 +138,13 @@ if (host) {
     }
     if (status) status.textContent = `NASA GIBS ${GIBS_DATE}: LOD ${lod} • ładowanie ${jobs.length} kafelków…`;
     let loaded = 0;
-    for (const job of jobs) {
+    const batchSize = 6;
+    for (let offset = 0; offset < jobs.length; offset += batchSize) {
       if (generation !== buildGeneration) return;
-      // Progressive asynchronous loading keeps the globe interactive.
-      // eslint-disable-next-line no-await-in-loop
-      await createTile(...job, segments, generation);
-      loaded += 1;
-      if (status && loaded % 4 === 0) status.textContent = `NASA GIBS ${GIBS_DATE}: LOD ${lod} • ${loaded}/${jobs.length} kafelków`;
-      // eslint-disable-next-line no-await-in-loop
+      const batch = jobs.slice(offset, offset + batchSize);
+      const results = await Promise.all(batch.map((job) => createTile(...job, segments, generation)));
+      loaded += results.filter(Boolean).length;
+      if (status) status.textContent = `NASA GIBS ${GIBS_DATE}: LOD ${lod} • ${loaded}/${jobs.length} kafelków`;
       await new Promise((resolve) => setTimeout(resolve, 0));
     }
     if (status) status.textContent = `NASA GIBS ${GIBS_DATE}: LOD ${lod} gotowy • ${jobs.length} kafelków • cache aktywny`;
@@ -167,15 +175,31 @@ if (host) {
       point.clone().multiplyScalar(1.12),
     ]);
     markerGroup.add(new THREE.Line(lineGeometry, new THREE.LineBasicMaterial({ color: 0xffc65b })));
-    camera.position.copy(point.clone().normalize().multiplyScalar(12.2));
+    camera.position.copy(point.clone().normalize().multiplyScalar(8.4));
     controls.target.set(0, 0, 0);
     controls.update();
-    if (status) status.textContent = `${place.label}: ${place.lat.toFixed(3)}°, ${place.lon.toFixed(3)}° • NASA GIBS + lokalny Copernicus DEM`;
+    if (status) status.textContent = `${place.label}: ${place.lat.toFixed(3)}°, ${place.lon.toFixed(3)}° • NASA GIBS + Copernicus DEM`;
+    void demOverlay.setPlace(place);
   }
 
-  document.querySelectorAll('[data-globe-place]').forEach((button) => {
-    button.addEventListener('click', () => focusPlace(button.dataset.globePlace));
-  });
+  function bindPlaceButtons() {
+    const existingButtons = [...document.querySelectorAll('[data-globe-place]')];
+    existingButtons.forEach((button) => {
+      button.addEventListener('click', () => focusPlace(button.dataset.globePlace));
+    });
+    const buttonHost = existingButtons[0]?.parentElement;
+    if (!buttonHost) return;
+    const extraKeys = ['bonneville', 'ebro', 'po', 'tanezrouft', 'tsauchab'];
+    for (const key of extraKeys) {
+      if (buttonHost.querySelector(`[data-globe-place="${key}"]`)) continue;
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.dataset.globePlace = key;
+      button.textContent = places[key].label;
+      button.addEventListener('click', () => focusPlace(key));
+      buttonHost.appendChild(button);
+    }
+  }
 
   function resize() {
     const width = Math.max(host.clientWidth, 1);
@@ -189,14 +213,15 @@ if (host) {
     requestAnimationFrame(animate);
     controls.update();
     const nextLod = camera.position.length() < 9.0 ? 1 : 0;
-    if (nextLod !== activeLod) buildLod(nextLod);
+    if (nextLod !== activeLod) void buildLod(nextLod);
     renderer.render(scene, camera);
   }
 
   window.addEventListener('resize', resize);
   if ('ResizeObserver' in window) new ResizeObserver(resize).observe(host);
+  bindPlaceButtons();
   resize();
   focusPlace('sahara');
-  buildLod(0);
+  void buildLod(0);
   animate();
 }
