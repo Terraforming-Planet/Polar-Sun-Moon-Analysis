@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "sensor": "Sentinel-1 C-SAR",
+  "derived_product": "NASA OPERA Level-2 Radiometric Terrain Corrected SAR Backscatter (RTC-S1) Version 1",
+  "provider": "NASA JPL OPERA / NASA ASF DAAC / modified Copernicus Sentinel data",
+  "coverage_note": "OPERA RTC-S1 service coverage begins in October 2023. The runtime selects the latest raster intersecting each test center; it does not pretend to match the older optical acquisition date when that date predates OPERA RTC-S1.",
+  "vv_image_service": "https://gis.earthdata.nasa.gov/image/rest/services/OPERA_L2_RTC_S1_V1/OPERA_L2_RTC_S1_V1_VV/ImageServer",
+  "vh_image_service": "https://gis.earthdata.nasa.gov/image/rest/services/OPERA_L2_RTC_S1_V1/OPERA_L2_RTC_S1_V1_VH/ImageServer",
+  "gibs_layer_metadata": "https://gibs.earthdata.nasa.gov/layer-metadata/v1.0/OPERA_L2_Radiometric_Terrain_Corrected_SAR_Sentinel-1.json",
+  "copernicus_catalogue": "https://stac.dataspace.copernicus.eu/v1/",
+  "asf_search_documentation": "https://docs.asf.alaska.edu/api/basics/",
+  "rendering": {
+    "primary_polarization": "VV",
+    "raster_function": "Sentinel-1 RTC dB Stretch",
+    "preview_feature_kind": "rendered-preview-intensity-not-calibrated-backscatter"
+  },
+  "scientific_caution": "Preview luma statistics are display-space screening features. They are not calibrated sigma0/gamma0 backscatter values and must not be interpreted as soil moisture or channel presence without additional processing and validation."
+}
