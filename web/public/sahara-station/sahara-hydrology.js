@@ -3,6 +3,11 @@ import { copernicusDemTileUrl } from './sahara-dem-relief.js';
 const GEOTIFF_MODULE_URL = 'https://cdn.jsdelivr.net/npm/geotiff@2.1.3/+esm';
 const SAMPLE_SIZE = 33;
 const EARTH_RADIUS_M = 6371000;
+const D8_NEIGHBORS = [
+  [-1, -1], [-1, 0], [-1, 1],
+  [0, -1], [0, 1],
+  [1, -1], [1, 0], [1, 1],
+];
 
 function finiteElevation(value) {
   if (!Number.isFinite(value) || Math.abs(value) > 12000) return 0;
@@ -21,6 +26,123 @@ function cellDistances(lat) {
   const northSouth = EARTH_RADIUS_M * dLat;
   const eastWest = EARTH_RADIUS_M * Math.cos(lat * Math.PI / 180) * dLat;
   return { northSouth, eastWest: Math.max(1, Math.abs(eastWest)) };
+}
+
+function neighborDistance(dr, dc, distances) {
+  return Math.hypot(dr * distances.northSouth, dc * distances.eastWest);
+}
+
+export function computeD8Receivers(elevations, lat) {
+  const distances = cellDistances(lat);
+  const receivers = new Int32Array(elevations.length);
+  receivers.fill(-1);
+
+  for (let row = 0; row < SAMPLE_SIZE; row += 1) {
+    for (let col = 0; col < SAMPLE_SIZE; col += 1) {
+      const index = row * SAMPLE_SIZE + col;
+      const z = elevations[index];
+      let bestReceiver = -1;
+      let bestGradient = 0;
+
+      for (const [dr, dc] of D8_NEIGHBORS) {
+        const nr = row + dr;
+        const nc = col + dc;
+        if (nr < 0 || nr >= SAMPLE_SIZE || nc < 0 || nc >= SAMPLE_SIZE) continue;
+        const neighborIndex = nr * SAMPLE_SIZE + nc;
+        const drop = z - elevations[neighborIndex];
+        if (drop <= 0) continue;
+        const gradient = drop / neighborDistance(dr, dc, distances);
+        if (gradient > bestGradient) {
+          bestGradient = gradient;
+          bestReceiver = neighborIndex;
+        }
+      }
+      receivers[index] = bestReceiver;
+    }
+  }
+  return receivers;
+}
+
+export function computeFlowAccumulation(receivers) {
+  const count = receivers.length;
+  const indegree = new Int32Array(count);
+  const accumulation = new Float64Array(count);
+  accumulation.fill(1);
+
+  for (let index = 0; index < count; index += 1) {
+    const receiver = receivers[index];
+    if (receiver >= 0) indegree[receiver] += 1;
+  }
+
+  const queue = [];
+  for (let index = 0; index < count; index += 1) {
+    if (indegree[index] === 0) queue.push(index);
+  }
+
+  let head = 0;
+  while (head < queue.length) {
+    const index = queue[head];
+    head += 1;
+    const receiver = receivers[index];
+    if (receiver < 0) continue;
+    accumulation[receiver] += accumulation[index];
+    indegree[receiver] -= 1;
+    if (indegree[receiver] === 0) queue.push(receiver);
+  }
+  return accumulation;
+}
+
+export function delineateWatershed(receivers, outletIndex) {
+  const donors = Array.from({ length: receivers.length }, () => []);
+  for (let index = 0; index < receivers.length; index += 1) {
+    const receiver = receivers[index];
+    if (receiver >= 0) donors[receiver].push(index);
+  }
+
+  const visited = new Uint8Array(receivers.length);
+  const stack = [outletIndex];
+  visited[outletIndex] = 1;
+  let size = 0;
+  while (stack.length > 0) {
+    const index = stack.pop();
+    size += 1;
+    for (const donor of donors[index]) {
+      if (visited[donor]) continue;
+      visited[donor] = 1;
+      stack.push(donor);
+    }
+  }
+  return { mask: visited, size };
+}
+
+function percentile(values, fraction) {
+  const sorted = Array.from(values).sort((a, b) => a - b);
+  const index = Math.min(sorted.length - 1, Math.max(0, Math.floor(fraction * (sorted.length - 1))));
+  return sorted[index];
+}
+
+function flowScreening(elevations, lat) {
+  const receivers = computeD8Receivers(elevations, lat);
+  const accumulation = computeFlowAccumulation(receivers);
+  let dominantOutlet = 0;
+  for (let index = 1; index < accumulation.length; index += 1) {
+    if (accumulation[index] > accumulation[dominantOutlet]) dominantOutlet = index;
+  }
+
+  const watershed = delineateWatershed(receivers, dominantOutlet);
+  const p95 = percentile(accumulation, 0.95);
+  let concentratedCells = 0;
+  for (const value of accumulation) {
+    if (value >= p95 && value > 1) concentratedCells += 1;
+  }
+
+  return {
+    flowAccumulationMaxCells: accumulation[dominantOutlet],
+    flowAccumulationP95Cells: p95,
+    dominantWatershedFraction: watershed.size / accumulation.length,
+    drainageConcentrationFraction: concentratedCells / accumulation.length,
+    dominantOutletIndex: dominantOutlet,
+  };
 }
 
 export function analyzeDemGrid(values, lat) {
@@ -76,6 +198,7 @@ export function analyzeDemGrid(values, lat) {
   const retentionScreeningScore = Math.round(Math.max(0, Math.min(100,
     100 * (0.50 * lowSlopeFraction + 0.30 * sinkFraction + 0.20 * valleyFraction),
   )));
+  const flow = flowScreening(elevations, lat);
 
   return {
     minElevationM: min,
@@ -87,6 +210,7 @@ export function analyzeDemGrid(values, lat) {
     lowSlopeFraction,
     valleyFraction,
     retentionScreeningScore,
+    ...flow,
   };
 }
 
@@ -113,8 +237,9 @@ function rowHtml(test, metrics) {
     + `<td>${Math.round(metrics.minElevationM)}–${Math.round(metrics.maxElevationM)} m</td>`
     + `<td>${Math.round(metrics.reliefM)} m</td>`
     + `<td>${metrics.meanSlopeDeg.toFixed(2)}°</td>`
-    + `<td>${percent(metrics.lowSlopeFraction)}</td>`
-    + `<td>${percent(metrics.sinkFraction)}</td>`
+    + `<td>${Math.round(metrics.flowAccumulationMaxCells)} kom.</td>`
+    + `<td>${percent(metrics.dominantWatershedFraction)}</td>`
+    + `<td>${percent(metrics.drainageConcentrationFraction)}</td>`
     + `<td><strong>${metrics.retentionScreeningScore}/100</strong></td></tr>`;
 }
 
@@ -135,7 +260,7 @@ async function runEightTestHydrology() {
     for (let index = 0; index < manifest.tests.length; index += 1) {
       const test = manifest.tests[index];
       const center = centerOfBbox(test.bbox);
-      status.textContent = `Copernicus DEM: ${index + 1}/${manifest.tests.length} — ${test.name}`;
+      status.textContent = `Copernicus DEM + D8: ${index + 1}/${manifest.tests.length} — ${test.name}`;
       try {
         const { values, url } = await loadDemAt(center.lat, center.lon);
         const metrics = analyzeDemGrid(values, center.lat);
@@ -143,12 +268,12 @@ async function runEightTestHydrology() {
         rows.insertAdjacentHTML('beforeend', rowHtml(test, metrics));
       } catch (error) {
         results.push({ id: test.id, name: test.name, center, error: error?.message || 'DEM unavailable' });
-        rows.insertAdjacentHTML('beforeend', `<tr><td><strong>${test.name}</strong></td><td colspan="6">DEM chwilowo niedostępny: ${error?.message || 'błąd sieci'}</td></tr>`);
+        rows.insertAdjacentHTML('beforeend', `<tr><td><strong>${test.name}</strong></td><td colspan="7">DEM chwilowo niedostępny: ${error?.message || 'błąd sieci'}</td></tr>`);
       }
     }
     window.__paleoriverHydrology8 = results;
     const completed = results.filter((item) => !item.error).length;
-    status.textContent = `Gotowe: ${completed}/${manifest.tests.length} regionalnych próbek DEM. To screening, nie projekt hydrologiczny.`;
+    status.textContent = `Gotowe: ${completed}/${manifest.tests.length} próbek DEM z D8. To screening, nie projekt hydrologiczny.`;
   } catch (error) {
     status.textContent = `Analiza DEM nie została ukończona: ${error?.message || 'błąd'}`;
   } finally {
@@ -166,13 +291,13 @@ export function mountHydrologyScreening() {
     panel.className = 'panel';
     panel.style.marginTop = '1rem';
     panel.innerHTML = `
-      <div class="eyebrow">DEM / ANALIZA TOPOGRAFICZNA 8 TESTÓW</div>
-      <h3>Przesiew retencji na Copernicus DEM GLO-90</h3>
-      <p>Regionalna próbka 33×33 wokół środka każdego testu liczy relief, spadek, płaski teren i lokalne obniżenia. Wynik 0–100 jest wskaźnikiem przesiewowym, a nie pojemnością zbiornika ani dowodem dawnej rzeki.</p>
-      <button id="runHydrology8" class="action" type="button">Uruchom analizę DEM dla 8 testów</button>
-      <p id="hydrologyStatus" class="action-message" role="status" aria-live="polite">Analiza DEM czeka na uruchomienie.</p>
-      <div class="tablewrap"><table><thead><tr><th>Test</th><th>Wysokość</th><th>Relief</th><th>Śr. spadek</th><th>Spadek &lt;2°</th><th>Obniżenia</th><th>Screening</th></tr></thead><tbody id="hydrologyRows"></tbody></table></div>
-      <p class="method-note"><strong>Interpretacja:</strong> Copernicus DEM jest DSM. Wynik wymaga późniejszej analizy zlewni, przepływu, geologii, infiltracji, parowania, sedymentacji i danych terenowych.</p>`;
+      <div class="eyebrow">DEM / D8 / ZLEWNIE — 8 TESTÓW</div>
+      <h3>Przesiew retencji i kierunku spływu na Copernicus DEM GLO-90</h3>
+      <p>Regionalna próbka 33×33 wokół środka każdego testu liczy relief, spadek, lokalne obniżenia oraz D8 flow direction, flow accumulation i dominującą zlewnię. Wyniki są wskaźnikami przesiewowymi, a nie pojemnością zbiornika ani dowodem dawnej rzeki.</p>
+      <button id="runHydrology8" class="action" type="button">Uruchom DEM + D8 dla 8 testów</button>
+      <p id="hydrologyStatus" class="action-message" role="status" aria-live="polite">Analiza DEM i D8 czeka na uruchomienie.</p>
+      <div class="tablewrap"><table><thead><tr><th>Test</th><th>Wysokość</th><th>Relief</th><th>Śr. spadek</th><th>Max akumulacja</th><th>Dominująca zlewnia</th><th>Koncentracja odpływu</th><th>Retencja</th></tr></thead><tbody id="hydrologyRows"></tbody></table></div>
+      <p class="method-note"><strong>Interpretacja:</strong> D8 wyznacza lokalnie najbardziej stromy odpływ do jednego z 8 sąsiadów. Płaskie powierzchnie i zamknięte obniżenia pozostają bez odbiorcy, więc wynik jest screeningiem. Copernicus DEM jest DSM; przed decyzjami terenowymi potrzebne są hydrologiczne kondycjonowanie DEM, większy zasięg zlewni, geologia, infiltracja, parowanie, sedymentacja i dane terenowe.</p>`;
     suite.appendChild(panel);
   }
   const button = document.getElementById('runHydrology8');
