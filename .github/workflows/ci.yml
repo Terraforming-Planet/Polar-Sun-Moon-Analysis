@@ -40,7 +40,7 @@ jobs:
         run: python -m ruff check .
 
       - name: Mypy type check
-        run: python -m mypy polar_equinox_analysis terra_hazards terra_integrity
+        run: python -m mypy polar_equinox_analysis terra_hazards terra_integrity terra_water
 
       - name: Validate CDSE Python modules
         run: |
@@ -56,6 +56,7 @@ jobs:
             polar_equinox_analysis \
             terra_hazards \
             terra_integrity \
+            terra_water \
             scripts/cdse \
             tests
 
