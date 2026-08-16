@@ -191,3 +191,22 @@ def test_sahara_station_has_eight_case_dem_hydrology_screening() -> None:
     assert "lowSlopeFraction" in js
     assert "sinkFraction" in js
     assert js == docs_hydrology.read_text(encoding="utf-8")
+
+
+def test_sahara_iteration_four_adds_d8_flow_and_watersheds() -> None:
+    web_root = ROOT / "web" / "public" / "sahara-station"
+    docs_root = ROOT / "docs" / "sahara-station"
+    hydrology = (web_root / "sahara-hydrology.js").read_text(encoding="utf-8")
+    docs_hydrology = (docs_root / "sahara-hydrology.js").read_text(encoding="utf-8")
+    note = ROOT / "data" / "training" / "paleoriver_8" / "research_note_iteration_4.md"
+
+    assert "computeD8Receivers" in hydrology
+    assert "computeFlowAccumulation" in hydrology
+    assert "delineateWatershed" in hydrology
+    assert "flowAccumulationMaxCells" in hydrology
+    assert "dominantWatershedFraction" in hydrology
+    assert "drainageConcentrationFraction" in hydrology
+    assert "DEM / D8 / ZLEWNIE — 8 TESTÓW" in hydrology
+    assert hydrology == docs_hydrology
+    assert note.exists()
+    assert "D8" in note.read_text(encoding="utf-8")
