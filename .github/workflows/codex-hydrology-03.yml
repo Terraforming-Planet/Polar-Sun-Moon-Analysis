@@ -1,0 +1,91 @@
+name: Codex hydrology iteration 3
+
+on:
+  push:
+    branches:
+      - codex/night-agent-hydrology-features-03
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/night-agent-hydrology-features-03
+          fetch-depth: 0
+
+      - name: Wire hydrology analysis and tests
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          pages = [
+              Path('web/public/sahara-station/index.html'),
+              Path('docs/sahara-station/index.html'),
+          ]
+          anchor = '    <p class="method-note"><strong>Baseline:</strong> histogramy RGB + deterministyczne klastry służą tylko do testu pipeline’u. To nie jest walidowany detektor paleokanałów.</p>'
+          section = '''    <div class="panel" id="hydrology-screening-8" style="margin-top:1rem">
+      <div class="eyebrow">DEM / ANALIZA TOPOGRAFICZNA 8 TESTÓW</div>
+      <h3>Przesiew retencji na Copernicus DEM GLO-90</h3>
+      <p>Analiza pobiera regionalną próbkę DEM wokół środka każdego z 8 przypadków i liczy relief, średnie nachylenie, udział terenu o spadku poniżej 2° oraz lokalne obniżenia. Wynik 0–100 jest wyłącznie wskaźnikiem przesiewowym do porównania lokalizacji — nie jest obliczeniem pojemności zbiornika, bezpieczeństwa powodziowego ani dowodem dawnego przepływu.</p>
+      <button id="runHydrology8" class="action">Uruchom analizę DEM dla 8 testów</button>
+      <p id="hydrologyStatus" class="action-message" role="status" aria-live="polite">Analiza DEM czeka na uruchomienie.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Test</th><th>Wysokość</th><th>Relief</th><th>Śr. spadek</th><th>Spadek &lt;2°</th><th>Lokalne obniżenia</th><th>Screening retencji</th></tr></thead>
+          <tbody id="hydrologyRows"></tbody>
+        </table>
+      </div>
+      <p class="method-note"><strong>Interpretacja:</strong> wysoki screening oznacza tylko, że w tej regionalnej próbce występuje więcej płaskiego terenu i lokalnych obniżeń. Każdy kandydat do retencji wymaga osobnej analizy zlewni, przepływu, geologii, infiltracji, parowania, sedymentacji i ryzyka.</p>
+    </div>
+'''
+
+          for page in pages:
+              text = page.read_text(encoding='utf-8')
+              if 'id="hydrology-screening-8"' not in text:
+                  if anchor not in text:
+                      raise SystemExit(f'gallery anchor missing in {page}')
+                  text = text.replace(anchor, section + anchor, 1)
+              script = '<script type="module" src="./sahara-hydrology.js"></script>'
+              if script not in text:
+                  globe = '<script type="module" src="./sahara-globe.js"></script>'
+                  if globe not in text:
+                      raise SystemExit(f'globe script missing in {page}')
+                  text = text.replace(globe, globe + '\n' + script, 1)
+              page.write_text(text, encoding='utf-8')
+
+          notes = [
+              Path('web/public/sahara-station/paleoriver-tests/research-note.md'),
+              Path('docs/sahara-station/paleoriver-tests/research-note.md'),
+          ]
+          addition = '''\n\n## Iteracja 3 — przesiew topograficzny DEM\nDodano porównywalną analizę 33×33 dla środka każdego z 8 testów. Wyliczane są: zakres wysokości, relief, średnie nachylenie, udział komórek o spadku poniżej 2°, udział lokalnych obniżeń oraz jawnie heurystyczny screening retencji 0–100. Screening służy wyłącznie do wyboru miejsc wymagających dokładniejszej analizy i nie jest obliczeniem pojemności ani prognozą hydrologiczną.\n\nNowa zasada robocza: zdjęcie optyczne wskazuje formę, DEM sprawdza geometrię, a dopiero model zlewni i dane terenowe mogą oceniać realną możliwość magazynowania wody. Lokalna depresja w DSM może być artefaktem rozdzielczości lub pokrycia terenu, dlatego nie jest automatycznie naturalnym zbiornikiem.\n'''
+          for note in notes:
+              text = note.read_text(encoding='utf-8')
+              if '## Iteracja 3 — przesiew topograficzny DEM' not in text:
+                  note.write_text(text.rstrip() + addition + '\n', encoding='utf-8')
+
+          test_file = Path('tests/test_sahara_station_page.py')
+          tests = test_file.read_text(encoding='utf-8')
+          marker = 'def test_sahara_station_has_eight_case_dem_hydrology_screening() -> None:'
+          if marker not in tests:
+              tests += '''\n\n\ndef test_sahara_station_has_eight_case_dem_hydrology_screening() -> None:\n    html = PAGE.read_text(encoding="utf-8")\n    hydrology = ROOT / "web" / "public" / "sahara-station" / "sahara-hydrology.js"\n    docs_hydrology = ROOT / "docs" / "sahara-station" / "sahara-hydrology.js"\n    js = hydrology.read_text(encoding="utf-8")\n\n    assert 'id="runHydrology8"' in html\n    assert 'id="hydrologyRows"' in html\n    assert './sahara-hydrology.js' in html\n    assert "analyzeDemGrid" in js\n    assert "retentionScreeningScore" in js\n    assert "lowSlopeFraction" in js\n    assert "sinkFraction" in js\n    assert hydrology.read_text(encoding="utf-8") == docs_hydrology.read_text(encoding="utf-8")\n'''
+              test_file.write_text(tests, encoding='utf-8')
+          PY
+
+      - name: Run Sahara tests
+        run: python -m pytest tests/test_sahara_station_page.py -q
+
+      - name: Remove one-time workflow and commit
+        shell: bash
+        run: |
+          rm -f .github/workflows/codex-hydrology-03.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add web/public/sahara-station docs/sahara-station tests/test_sahara_station_page.py .github/workflows/codex-hydrology-03.yml
+          git commit -m "Add DEM hydrology screening for eight paleoriver tests"
+          git push origin HEAD:codex/night-agent-hydrology-features-03
