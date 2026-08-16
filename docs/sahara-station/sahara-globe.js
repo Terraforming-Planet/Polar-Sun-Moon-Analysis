@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RegionalDemOverlay } from './sahara-dem-relief.js';
+import './sahara-hydrology.js';
 
 const host = document.getElementById('planetViewer');
 const status = document.getElementById('planetStatus');
