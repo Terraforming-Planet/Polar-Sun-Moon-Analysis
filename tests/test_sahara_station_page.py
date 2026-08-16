@@ -117,7 +117,6 @@ def test_sahara_research_copy_separates_atlantic_paleoriver_context() -> None:
     assert expected in html
 
 
-
 def test_himalaya_article_is_experiment_two() -> None:
     html = PAGE.read_text(encoding="utf-8")
 
@@ -126,15 +125,17 @@ def test_himalaya_article_is_experiment_two() -> None:
     assert "Eksperyment 2 — Himalaje: jak rzeźba terenu steruje wodą" in html
 
 
-
 def test_sahara_night_agent_iteration_one() -> None:
     import json
 
     html = PAGE.read_text(encoding="utf-8")
     js = SCRIPT.read_text(encoding="utf-8")
-    globe = (ROOT / "web" / "public" / "sahara-station" / "sahara-globe.js").read_text(encoding="utf-8")
-    docs_globe = (ROOT / "docs" / "sahara-station" / "sahara-globe.js").read_text(encoding="utf-8")
-    manifest = json.loads((ROOT / "data" / "training" / "paleoriver_8" / "manifest.json").read_text(encoding="utf-8"))
+    globe_path = ROOT / "web" / "public" / "sahara-station" / "sahara-globe.js"
+    docs_globe_path = ROOT / "docs" / "sahara-station" / "sahara-globe.js"
+    manifest_path = ROOT / "data" / "training" / "paleoriver_8" / "manifest.json"
+    globe = globe_path.read_text(encoding="utf-8")
+    docs_globe = docs_globe_path.read_text(encoding="utf-8")
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 
     assert 'id="global-planet-lab"' in html
     assert 'id="planetViewer"' in html
@@ -148,4 +149,5 @@ def test_sahara_night_agent_iteration_one() -> None:
     assert globe == docs_globe
     assert manifest["count"] == 8
     assert len(manifest["tests"]) == 8
-    assert {item["continent"] for item in manifest["tests"]} == {"North America", "Europe", "Africa", "Asia"}
+    continents = {item["continent"] for item in manifest["tests"]}
+    assert continents == {"North America", "Europe", "Africa", "Asia"}
