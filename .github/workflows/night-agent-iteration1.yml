@@ -18,8 +18,8 @@ jobs:
           ref: codex/night-agent-sahara-globe-01
           fetch-depth: 0
 
-      - name: Install image dependency
-        run: python -m pip install --disable-pip-version-check --quiet pillow
+      - name: Install test and image dependencies
+        run: python -m pip install --disable-pip-version-check --quiet pillow pytest
 
       - name: Build Sahara iteration
         run: python scripts/night_agent_iteration1.py
