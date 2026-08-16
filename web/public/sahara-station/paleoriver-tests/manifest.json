@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "purpose": "training-and-visual-test-set",
+  "count": 8,
+  "imagery_provider": "NASA GIBS WMS / MODIS Terra true color",
+  "tests": [
+    {
+      "id": "usa-death-valley",
+      "continent": "North America",
+      "country": "USA",
+      "name": "Death Valley / Lake Manly basin",
+      "bbox": [
+        -117.45,
+        35.7,
+        -116.15,
+        36.8
+      ],
+      "date": "2024-05-27",
+      "kind": "paleolake-and-active-washes",
+      "evidence": "USGS documents paleolake history and satellite mapping of active channels/alluvial fans.",
+      "reference": "https://www.usgs.gov/publications/unified-200-kyr-paleohydrologic-history-southern-great-basin-death-valley-searles"
+    },
+    {
+      "id": "usa-bonneville",
+      "continent": "North America",
+      "country": "USA",
+      "name": "Bonneville Salt Flats / Lake Bonneville remnant basin",
+      "bbox": [
+        -114.55,
+        40.25,
+        -113.2,
+        41.25
+      ],
+      "date": "2024-08-15",
+      "kind": "paleolake-remnant-basin",
+      "evidence": "Dry-basin analogue. This test limits interpretation to visible geomorphology until DEM/geology validation is added.",
+      "reference": "https://www.usgs.gov/landsat-missions"
+    },
+    {
+      "id": "eu-ebro-aragon",
+      "continent": "Europe",
+      "country": "Spain",
+      "name": "Ebro valley / Aragón semi-arid river corridor",
+      "bbox": [
+        -1.55,
+        41.15,
+        -0.15,
+        42.05
+      ],
+      "date": "2021-07-15",
+      "kind": "active-river-arid-analogue",
+      "evidence": "ESA describes an arid setting with irrigation and a major active river; this is a retention analogue, not a paleoriver claim.",
+      "reference": "https://www.esa.int/Applications/Observing_the_Earth/Copernicus/Earth_from_Space_Zaragoza_Spain"
+    },
+    {
+      "id": "eu-po-low-water",
+      "continent": "Europe",
+      "country": "Italy",
+      "name": "Po River low-water corridor",
+      "bbox": [
+        8.9,
+        44.7,
+        10.35,
+        45.35
+      ],
+      "date": "2022-06-20",
+      "kind": "partially-active-low-water-analogue",
+      "evidence": "ESA documented exceptional low water in 2022; useful for exposed-bar and channel-contraction comparison.",
+      "reference": "https://www.esa.int/ESA_Multimedia/Images/2022/06/Po_River_dries_up"
+    },
+    {
+      "id": "af-tanezrouft",
+      "continent": "Africa",
+      "country": "Algeria/Mali",
+      "name": "Tanezrouft Basin ancient water-erosion terrain",
+      "bbox": [
+        -1.5,
+        23.0,
+        2.5,
+        27.0
+      ],
+      "date": "2020-01-12",
+      "kind": "ancient-water-erosion-desert",
+      "evidence": "ESA explicitly notes evidence of water erosion from a wetter Sahara.",
+      "reference": "https://www.esa.int/ESA_Multimedia/Images/2021/01/Tanezrouft_Basin"
+    },
+    {
+      "id": "af-tsauchab",
+      "continent": "Africa",
+      "country": "Namibia",
+      "name": "Tsauchab River / Sossusvlei",
+      "bbox": [
+        14.6,
+        -25.2,
+        16.0,
+        -24.1
+      ],
+      "date": "2019-10-27",
+      "kind": "ephemeral-river-endorheic-basin",
+      "evidence": "ESA identifies the Tsauchab as an ephemeral river ending in Sossusvlei; historically flow reached farther west.",
+      "reference": "https://www.esa.int/ESA_Multimedia/Images/2020/04/Namib_Desert"
+    },
+    {
+      "id": "asia-lop-nur",
+      "continent": "Asia",
+      "country": "China",
+      "name": "Lop Nur / Tarim terminal basin",
+      "bbox": [
+        88.5,
+        39.0,
+        92.5,
+        41.8
+      ],
+      "date": "2024-10-01",
+      "kind": "dry-terminal-lake-paleodrainage",
+      "evidence": "Dry terminal-basin morphology is used to inspect old inflow patterns; specific paleochannels require SAR/DEM confirmation.",
+      "reference": "https://earthobservatory.nasa.gov/images/2046/the-wandering-lake"
+    },
+    {
+      "id": "asia-aral",
+      "continent": "Asia",
+      "country": "Kazakhstan/Uzbekistan",
+      "name": "Aral Sea / Amu Darya–Syr Darya terminal basin",
+      "bbox": [
+        56.5,
+        42.0,
+        62.5,
+        46.8
+      ],
+      "date": "2024-08-30",
+      "kind": "partially-active-shrunken-terminal-basin",
+      "evidence": "ESA documents long-term shrinkage after river diversion; used as a storage-and-routing cautionary analogue.",
+      "reference": "https://www.esa.int/ESA_Multimedia/Images/2025/04/Earth_from_Space_The_shrinking_Aral_Sea"
+    }
+  ]
+}

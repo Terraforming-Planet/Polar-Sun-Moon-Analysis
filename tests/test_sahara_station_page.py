@@ -124,3 +124,28 @@ def test_himalaya_article_is_experiment_two() -> None:
     assert 'id="experiment-2-himalaya"' in html
     assert "EKSPERYMENT 2 / HIMALAJE / TOPOGRAFIA I WODA" in html
     assert "Eksperyment 2 — Himalaje: jak rzeźba terenu steruje wodą" in html
+
+
+
+def test_sahara_night_agent_iteration_one() -> None:
+    import json
+
+    html = PAGE.read_text(encoding="utf-8")
+    js = SCRIPT.read_text(encoding="utf-8")
+    globe = (ROOT / "web" / "public" / "sahara-station" / "sahara-globe.js").read_text(encoding="utf-8")
+    docs_globe = (ROOT / "docs" / "sahara-station" / "sahara-globe.js").read_text(encoding="utf-8")
+    manifest = json.loads((ROOT / "data" / "training" / "paleoriver_8" / "manifest.json").read_text(encoding="utf-8"))
+
+    assert 'id="global-planet-lab"' in html
+    assert 'id="planetViewer"' in html
+    assert "function updateShapeLimits()" in js
+    assert "function findFreePlacement(shape" in js
+    assert "NOWY OBIEKT:" in js
+    assert "gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi" in globe
+    assert "function buildLod(lod)" in globe
+    assert "textureCache" in globe
+    assert "snapshot?REQUEST=GetSnapshot" not in globe
+    assert globe == docs_globe
+    assert manifest["count"] == 8
+    assert len(manifest["tests"]) == 8
+    assert {item["continent"] for item in manifest["tests"]} == {"North America", "Europe", "Africa", "Asia"}
