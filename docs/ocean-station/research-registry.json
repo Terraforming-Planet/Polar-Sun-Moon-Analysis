@@ -1,0 +1,177 @@
+{
+  "schema_version": "1.0",
+  "updated_utc": "2026-08-17T21:15:00Z",
+  "station": {
+    "name": "Stacja badawcza oceanów",
+    "demo_region": "Sunda/Java Trench, south of Java, Indonesia",
+    "demo_coordinate": {"latitude": -10.5, "longitude": 110.0},
+    "coordinate_note": "Punkt demonstracyjny modelu; nie oznacza lokalizacji infrastruktury ani miejsca planowanej ingerencji."
+  },
+  "earth_geometry_wgs84": {
+    "semi_major_axis_km": 6378.137,
+    "inverse_flattening": 298.257223563,
+    "equatorial_circumference_km": 40075.016686,
+    "meridional_circumference_km": 40007.862917,
+    "north_to_south_pole_surface_km": 20003.931459,
+    "equatorial_diameter_km": 12756.274,
+    "polar_diameter_km": 12713.504628,
+    "reference_diagonal_45_a_km": 12734.83545,
+    "reference_diagonal_45_b_km": 12734.83545,
+    "diagonal_note": "Przekątna Ziemi nie jest standardową wielkością geodezyjną. Dwie wartości 45° są roboczymi cięciwami przez środek elipsoidy WGS-84 w dwóch przeciwnych płaszczyznach referencyjnych."
+  },
+  "seafloor_mapping": {
+    "gebco_2026_modern_standard_percent": 28.7,
+    "mapped_area_million_km2": 104.0,
+    "previous_2025_percent": 27.3,
+    "added_last_year_million_km2": 5.0,
+    "grid_interval_arcsec": 15,
+    "note": "28.7% oznacza część dna zmapowaną do nowoczesnych standardów i włączoną do GEBCO/Seabed 2030; nie oznacza, że pozostałe 71.3% jest całkowicie nieznane. Istnieją mapy globalne o niższej rozdzielczości oparte m.in. na altimetrii satelitarnej i starszych pomiarach."
+  },
+  "sources": [
+    {
+      "id": "gebco-2026",
+      "organization": "GEBCO / Nippon Foundation-GEBCO Seabed 2030",
+      "role": "global bathymetric grid / mapping progress",
+      "url": "https://www.gebco.net/news/release-gebco2026-grid",
+      "data_url": "https://download.gebco.net/",
+      "access": "public-domain grid; attribution requested",
+      "status": "official-public-verified"
+    },
+    {
+      "id": "noaa-ocean-exploration",
+      "organization": "NOAA Ocean Exploration / NCEI",
+      "role": "multibeam sonar, ocean mapping, seamounts, ridges",
+      "url": "https://oceanexplorer.noaa.gov/explainers/mapping/",
+      "access": "public",
+      "status": "official-public-verified"
+    },
+    {
+      "id": "bmkg-earthquake",
+      "organization": "BMKG Indonesia",
+      "role": "Indonesia earthquake JSON/XML and shakemap feeds",
+      "url": "https://data.bmkg.go.id/gempabumi/",
+      "api": "https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json",
+      "access": "public; 60 requests/minute/IP; BMKG attribution required",
+      "status": "official-public-verified"
+    },
+    {
+      "id": "cdse-stac",
+      "organization": "Copernicus Data Space Ecosystem",
+      "role": "Sentinel discovery / STAC",
+      "url": "https://documentation.dataspace.copernicus.eu/APIs/STAC.html",
+      "api": "https://stac.dataspace.copernicus.eu/v1/",
+      "access": "public catalogue; some product downloads/services require account/token",
+      "status": "official-public-verified"
+    },
+    {
+      "id": "usgs-landsat-stac",
+      "organization": "USGS LandsatLook",
+      "role": "Landsat STAC catalogue",
+      "url": "https://landsatlook.usgs.gov/stac-server/api.html",
+      "api": "https://landsatlook.usgs.gov/stac-server",
+      "access": "public catalogue",
+      "status": "official-public-verified"
+    },
+    {
+      "id": "nasa-cmr-stac",
+      "organization": "NASA Earthdata CMR",
+      "role": "multi-mission discovery / STAC",
+      "url": "https://cmr.earthdata.nasa.gov/stac/docs/index.html",
+      "api": "https://cmr.earthdata.nasa.gov/stac/",
+      "access": "public discovery; many downloads require Earthdata Login",
+      "status": "official-public-verified"
+    },
+    {
+      "id": "nasa-altimetry",
+      "organization": "NASA Earthdata",
+      "role": "sea-surface topography, marine gravity and bathymetry estimation support",
+      "url": "https://gcmd.earthdata.nasa.gov/KeywordViewer/scheme/instruments/faef1e3c-e201-4fbc-8f7e-5ab2818c0a62/",
+      "access": "public metadata / mission-dependent data access",
+      "status": "official-public-verified"
+    }
+  ],
+  "knowledge_registry": [
+    {
+      "id": "seamount-volcanic-origin",
+      "status": "established-generalization",
+      "statement": "Znane góry podwodne o dużym reliefie są często pozostałościami wygasłych wulkanów; NOAA podaje, że seamounty są często lub w większości takiego pochodzenia w zbadanej populacji.",
+      "guardrail": "Nie traktować tego jako kompletnego spisu genezy każdego niezbadanego obiektu na całej planecie."
+    },
+    {
+      "id": "seamount-count",
+      "status": "estimate",
+      "statement": "NOAA podaje, że liczba seamountów o reliefie co najmniej 1000 m może przekraczać 100 000; mniej niż 0.1% światowych seamountów zostało bezpośrednio zbadanych eksploracyjnie.",
+      "guardrail": "Szacunek zależy od definicji, rozdzielczości i danych satelitarnych/batymetrycznych."
+    },
+    {
+      "id": "mid-ocean-ridge",
+      "status": "established",
+      "statement": "Globalny system grzbietów śródoceanicznych ma około 65 000 km i jest najdłuższym systemem górskim Ziemi; ponad 90% leży pod wodą."
+    },
+    {
+      "id": "earthquake-control-by-seafloor-mass",
+      "status": "not-established",
+      "statement": "Brak zweryfikowanej metody zatrzymywania lub bezpiecznego sterowania trzęsieniami ziemi przez lokalne dodawanie, usuwanie lub przemieszczanie masy dna oceanicznego.",
+      "guardrail": "Model może wyłącznie porównywać scenariusze numeryczne i wskazywać potrzebę modeli geomechanicznych; nie generuje zaleceń wykonawczych."
+    },
+    {
+      "id": "deep-mantle-water",
+      "status": "established-research-topic",
+      "statement": "Woda może być magazynowana jako wodór związany w minerałach płaszcza, m.in. w wadsleyicie i ringwoodycie w strefie przejściowej płaszcza.",
+      "guardrail": "To nie jest dowód na globalny ciekły 'drugi ocean' pod warstwą lawy."
+    },
+    {
+      "id": "deep-liquid-second-ocean",
+      "status": "speculation-no-global-evidence",
+      "statement": "Hipoteza globalnego ciekłego drugiego oceanu pod skorupą/lawą nie ma obecnie wystarczających dowodów obserwacyjnych."
+    },
+    {
+      "id": "deep-caves-life",
+      "status": "open-question-and-speculation",
+      "statement": "W skorupie istnieją szczeliny, systemy hydrotermalne i głęboka biosfera, ale rozległe puste jaskinie schodzące 10–15 km pod górami oceanicznymi oraz nieznane duże ekosystemy w takich pustkach nie są obecnie wykazane globalnie."
+    },
+    {
+      "id": "100km-trapezoid-access",
+      "status": "far-future-speculation",
+      "statement": "Koncepcja zejścia konstrukcją trapezową około 100 km w głąb Ziemi pozostaje spekulacją daleko poza możliwościami dzisiejszego budownictwa i wierceń."
+    },
+    {
+      "id": "mass-redistribution-rotation",
+      "status": "established-small-effect",
+      "statement": "Duże, globalne przesunięcia masy lodu, wody i wnętrza Ziemi mierzalnie wpływają na ruch bieguna i długość doby.",
+      "guardrail": "Efekty geodezyjne są małe; scenariusz nie oznacza, że lokalna sztuczna góra może skierować Ziemię na kurs kolizyjny z planetą lub kometą."
+    },
+    {
+      "id": "ancient-trajectory-engineering",
+      "status": "cultural-speculation-no-evidence",
+      "statement": "Pomysł, że pradawna cywilizacja celowo zniszczyła część planety, aby zmienić jej trajektorię, nie ma obecnie wiarygodnego potwierdzenia geologicznego lub astronomicznego."
+    },
+    {
+      "id": "666-self-destruction",
+      "status": "religious-cultural-speculation",
+      "statement": "Interpretacja motywu 666/apokalipsy jako zaplanowanej samodestrukcji planety jest rozważaniem kulturowo-religijnym, nie ustalonym modelem geofizycznym."
+    },
+    {
+      "id": "eden-fruit-ecology",
+      "status": "cultural-hypothesis",
+      "statement": "Interpretacja historii Ewy i owocu jako metafory dawnej degradacji środowiska może być zapisana jako refleksja kulturowa, lecz nie stanowi dowodu na dawną zmianę klimatu lub geometrii Ziemi."
+    },
+    {
+      "id": "desert-greening",
+      "status": "valid-modeling-question",
+      "statement": "Duże zazielenianie pustyń może zmieniać albedo, ewapotranspirację, lokalne i regionalne chmury, opady, wiatr, gospodarkę wodną, ekosystemy i rolnictwo.",
+      "guardrail": "Skala i kierunek skutków wymagają sprzężonych modeli klimatu, hydrologii i ekologii; nie można zakładać prostego proporcjonalnego wzrostu tlenu ani długości życia."
+    }
+  ],
+  "gpu_scenarios": {
+    "scope": "Orientacyjny jeden przebieg kafelkowej analizy istniejącej globalnej siatki GEBCO po pobraniu i przygotowaniu danych; nie czas pozyskania brakujących pomiarów sonarowych.",
+    "not_a_benchmark": true,
+    "ranges": [
+      {"hardware": "telefon / mobilne GPU", "estimate": "30–180+ min, zwykle kafelkami", "notes": "termika, RAM i I/O są głównym ograniczeniem"},
+      {"hardware": "standardowy PC RTX-class", "estimate": "5–30 min", "notes": "zależne od modelu i VRAM"},
+      {"hardware": "NVIDIA L4", "estimate": "3–15 min", "notes": "dobry kompromis inference / pamięć / koszt"},
+      {"hardware": "NVIDIA H100", "estimate": "1–5 min obliczeń", "notes": "I/O może dominować"},
+      {"hardware": "8× NVIDIA H100", "estimate": "~20–90 s compute; zwykle kilka minut end-to-end", "notes": "wymaga poprawnego shardingu, szybkiego storage i interconnect"}
+    ]
+  }
+}
