@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#03121d" />
+  <meta name="description" content="Stacja badawcza oceanów Terraforming Planet — bezpieczny symulator 3D batymetrii, rowów oceanicznych, gór podwodnych, danych sonarowych i TP-26." />
+  <title>Stacja badawcza oceanów | Terraforming Planet</title>
+  <link rel="stylesheet" href="./ocean-lab.css" />
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.167.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.167.1/examples/jsm/"}}</script>
+</head>
+<body>
+<nav class="topbar" aria-label="Nawigacja Stacji badawczej oceanów">
+  <strong>Terraforming Planet · Ocean Research Station</strong>
+  <a href="../">← Terra Observation</a>
+  <a href="../sahara-station/">Sahara</a>
+  <a href="../arctic-90n/">90°N</a>
+  <a href="../constellation/">TP-26</a>
+  <a href="../forum/">Forum</a>
+</nav>
+<main>
+  <header class="hero">
+    <div class="eyebrow">RESEARCH SANDBOX · INDONEZJA / OCEAN INDYJSKI · WEBGL · 512 KOMÓREK</div>
+    <h1>Stacja badawcza oceanów</h1>
+    <p>Nowe laboratorium przenosi ideę Stacji Sahara pod powierzchnię oceanu. Pierwszym obszarem demonstracyjnym jest ocean na południe od Jawy, w sąsiedztwie systemu Rowu Sundajskiego/Jawajskiego. Model służy do nauki geometrii dna, rowów oceanicznych, gór podwodnych, stref płyt tektonicznych, sejsmiczności i fuzji danych satelitarnych z sonarowymi. Współrzędna demonstracyjna <strong>10.5°S, 110.0°E</strong> nie oznacza miejsca budowy ani proponowanej ingerencji.</p>
+    <div class="safety"><strong>Granica bezpieczeństwa:</strong> to wyłącznie symulator badawczy. Nie projektuje fizycznego pogłębiania, wysadzania, obciążania ani przemieszczania dna. Nie ma dziś zweryfikowanej metody, która pozwalałaby bezpiecznie „zatrzymywać” trzęsienia ziemi przez lokalne dodawanie lub usuwanie masy. Możemy badać korelacje, geometrię, naprężenia w modelach i skutki hipotetycznych zmian — nie wykonywać ich w rzeczywistym oceanie.</div>
+
+    <div class="geometry" aria-label="Geometria Ziemi WGS-84">
+      <div class="geo emphasis"><b>40 075.017 km</b><span>obwód Ziemi na równiku</span></div>
+      <div class="geo"><b>40 007.863 km</b><span>pełny obwód południkowy</span></div>
+      <div class="geo emphasis"><b>20 003.931 km</b><span>90°N → 90°S po powierzchni</span></div>
+      <div class="geo"><b>12 713.505 km</b><span>średnica polarna przez środek</span></div>
+      <div class="geo"><b>12 756.274 km</b><span>średnica równikowa</span></div>
+      <div class="geo"><b>12 734.835 km</b><span>przekątna referencyjna 45° A</span></div>
+      <div class="geo"><b>12 734.835 km</b><span>przekątna referencyjna 45° B</span></div>
+      <div class="geo"><b>WGS‑84</b><span>a = 6378.137 km · 1/f = 298.257223563</span></div>
+    </div>
+    <p class="small">„Przekątna Ziemi” nie jest standardową wielkością geodezyjną. Na potrzeby laboratorium definiujemy dwie równoważne cięciwy 45° przechodzące przez środek przekroju elipsoidy WGS‑84. Dzięki temu symulator ma jednoznaczną geometrię roboczą zamiast traktować Ziemię jak idealną kulę.</p>
+  </header>
+
+  <section class="section" id="lab">
+    <div class="eyebrow">MODEL 3D / PROCEDURALNA BATYMETRIA</div>
+    <h2>Podwodna góra + dolina/rów — wariant 1:1</h2>
+    <p class="lead">Tak jak w Stacji Sahara, możemy tworzyć pary geometryczne o tej samej objętości. Tutaj są one całkowicie wirtualne: służą do uczenia AI zależności między objętością, głębokością, topografią i rozkładem masy. Model nie symuluje prawdziwej mechaniki uskoku ani nie wylicza miejsca rzeczywistej ingerencji.</p>
+    <div class="lab-layout">
+      <div>
+        <div id="oceanViewer" class="viewer" aria-label="Interaktywny model 3D dna oceanicznego">
+          <div class="viewer-badge">3D: przeciągnij = obrót · kółko/pinch = zoom · kliknij górę/rów = zaznacz · pomarańczowa linia = poglądowa granica tektoniczna · czerwone punkty = syntetyczne markery demonstracyjne</div>
+          <div class="site-marker">Punkt demonstracyjny: 10.5°S · 110.0°E · południe od Jawy</div>
+          <div id="selectionHud" class="hud">Zaznaczenie: brak</div>
+        </div>
+        <div class="metrics" aria-label="Metryki sceny">
+          <div class="metric"><b id="mountainCount">0</b><span>góry podwodne</span></div>
+          <div class="metric"><b id="trenchCount">0</b><span>rowy / doliny</span></div>
+          <div class="metric"><b id="pairCount">0</b><span>pary 1:1</span></div>
+          <div class="metric"><b id="materialBalance">0 km³</b><span>bilans objętości</span></div>
+          <div class="metric"><b id="massProxy">0%</b><span>mass-distribution proxy</span></div>
+        </div>
+      </div>
+      <aside class="controls">
+        <h2>Geometria scenariusza</h2>
+        <div class="control"><label for="baseSize">Podstawa <b id="baseOut">12.0 km</b></label><input id="baseSize" type="range" min="3" max="34" step="0.5" value="12"></div>
+        <div class="control"><label for="topSize">Szczyt / dno plateau <b id="topOut">3.0 km</b></label><input id="topSize" type="range" min="0.5" max="12" step="0.5" value="3"></div>
+        <div class="control"><label for="heightSize">Wysokość / głębokość <b id="heightOut">4.0 km</b></label><input id="heightSize" type="range" min="0.5" max="9" step="0.25" value="4"></div>
+        <div class="readout"><span>Objętość bryły</span><b id="volumeOut">—</b></div>
+        <div class="button-grid">
+          <button id="addMountain" class="mountain">△ Dodaj górę</button>
+          <button id="addTrench" class="trench">▽ Dodaj rów/dolinę</button>
+          <button id="addPair" class="pair">◇ Dodaj parę 1:1</button>
+          <button id="removeSelected" class="dangerless">Usuń z symulacji</button>
+          <button id="grid512">Włącz siatkę 8×8×8 = 512</button>
+          <button id="resetScene">Reset sceny</button>
+        </div>
+        <hr>
+        <div class="control"><label for="verticalExaggeration">Przewyższenie pionowe <b id="verticalOut">1.0×</b></label><input id="verticalExaggeration" type="range" min="0.5" max="4" step="0.1" value="1"></div>
+        <label class="check"><input id="showWater" type="checkbox" checked> Pokaż powierzchnię oceanu</label>
+        <label class="check"><input id="showBoundary" type="checkbox" checked> Pokaż poglądową strefę tektoniczną i syntetyczne markery</label>
+        <div id="actionMessage" class="message">Gotowe. Model startuje od jednej wirtualnej pary góra–rów 1:1.</div>
+        <p class="small">Wskaźnik <strong>mass-distribution proxy</strong> pokazuje jedynie brak równowagi objętości w tej scenie. Nie jest naprężeniem uskoku, prawdopodobieństwem trzęsienia, zmianą osi Ziemi ani prognozą orbity.</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section" id="mapping">
+    <div class="eyebrow">CO NAPRAWDĘ WIEMY O DNIE OCEANU</div>
+    <h2>Nie 25%, lecz 28,7% według GEBCO_2026 — i to nadal ogromna luka</h2>
+    <p>W kwietniu 2026 GEBCO podało, że <strong>28,7% światowego dna oceanicznego</strong> zostało zmapowane do nowoczesnych standardów, wobec 27,3% w wydaniu 2025. To około <strong>104 mln km²</strong> dna; w ciągu roku dołożono niemal 5 mln km². Globalny GEBCO_2026 ma siatkę 15 arc-sekund. Wcześniejsze „około 25%” było rozsądnym zaokrągleniem dla starszego stanu, ale na stronie zapisujemy aktualną liczbę.</p>
+    <div class="note"><strong>Kluczowe rozróżnienie:</strong> pozostałe 71,3% nie jest całkowicie „czarną dziurą”. Mamy globalne, mniej dokładne modele z altimetrii satelitarnej, grawitacji, starszych sondowań i interpolacji. Brakuje natomiast nowoczesnego, bezpośredniego pokrycia wysokiej jakości na całej powierzchni. Satelita może wskazać duże formy dna przez subtelne zmiany powierzchni morza i pola grawitacyjnego, ale wielowiązkowy sonar statku/AUV dostarcza znacznie dokładniejszej batymetrii.</div>
+    <div class="cards">
+      <article class="card"><b>GEBCO / Seabed 2030</b><span>Globalna kompilacja batymetrii; program Nippon Foundation–GEBCO, wspierany przez społeczność IHO/IOC. Łączy dane państw, instytutów i ekspedycji.</span></article>
+      <article class="card"><b>NOAA Ocean Exploration / NCEI</b><span>Statki, multibeam, ROV/AUV, archiwizacja i QA/QC. Mapowanie jest częścią eksploracji geologii, ekosystemów i zagrożeń.</span></article>
+      <article class="card"><b>Krajowe służby hydrograficzne</b><span>Marynarki, instytuty oceanograficzne, urzędy hydrograficzne, uczelnie i prywatne statki zbierają dane w różnych standardach i reżimach dostępu.</span></article>
+    </div>
+
+    <h3>Dlaczego to idzie tak wolno?</h3>
+    <p>Wysokiej jakości sonar nie robi „zdjęcia całego oceanu z góry”. Statek lub autonomiczny pojazd musi fizycznie przejść nad obszarem. Szerokość pasa pomiarowego zależy od głębokości i geometrii wiązki. Trzeba kalibrować sonar, mierzyć prędkość dźwięku w wodzie, korygować ruch statku, pozycję, pływy i poziom odniesienia, usuwać błędne echa, policzyć niepewność, przetworzyć ogrom danych i zachować metadane. Pogoda, głębia, paliwo, czas statku, przepisy i rozproszenie starych danych dodatkowo zwalniają proces.</p>
+
+    <h3>Prosty scenariusz arytmetyczny — nie prognoza</h3>
+    <p>Jeśli 104 mln km² stanowi 28,7%, to całkowita powierzchnia oceanu w tej proporcji wynosi około 362 mln km², a do nowoczesnego standardu pozostaje około 258 mln km². Gdyby tempo przyrostu było stale tylko ~5 mln km²/rok, samo dzielenie daje około <strong>52 lata</strong>. Aby czysto arytmetycznie pokryć pozostały obszar w około cztery lata, potrzebny byłby rząd wielkości ~65 mln km²/rok, około <strong>13×</strong> tempa przyrostu 2025→2026. To nie jest prognoza Seabed 2030: część postępu może przyjść z ujawnienia i standaryzacji już istniejących danych, a nie wyłącznie z nowych rejsów.</p>
+  </section>
+
+  <section class="section" id="seamounts">
+    <div class="eyebrow">GÓRY PODWODNE · GUYOTY · WZGÓRZA ABISALNE · GRZBIETY</div>
+    <h2>Czy stwierdzenie „większość seamountów to wulkany” przeczy temu, że słabo znamy dno?</h2>
+    <p>Nie musi przeczyć, ale trzeba mówić precyzyjnie. NOAA opisuje seamounty jako formy często — a na stronie faktograficznej nawet „w większości” — będące pozostałościami wygasłych wulkanów i szacuje, że obiektów o reliefie co najmniej 1000 m może być <strong>ponad 100 000</strong>. Jednocześnie NOAA podaje, że bezpośrednio eksplorowano mniej niż 0,1% światowych seamountów. To pokazuje różnicę między <strong>rozpoznaniem formy/geofizycznym wnioskowaniem o genezie</strong> a bezpośrednią eksploracją każdego obiektu.</p>
+    <div class="note warn"><strong>Twoja uwaga jest dobra metodologicznie:</strong> AI nie może zamienić generalizacji z próbki w pewność o każdym nieznanym obiekcie. Dlatego w naszym zbiorze zapisujemy „znane seamounty są często pochodzenia wulkanicznego” zamiast „wiemy, z czego powstała każda góra podwodna na planecie”.</div>
+    <p>Globalny system grzbietów śródoceanicznych ma około <strong>65 000 km</strong> i jest najdłuższym systemem górskim Ziemi; ponad 90% leży pod wodą. To obszar tworzenia nowej skorupy oceanicznej na rozbieżnych granicach płyt. Guyoty są podwodnymi górami o spłaszczonych szczytach. Wzgórza abisalne są niższymi formami dna i należą do bardzo powszechnych elementów oceanicznej rzeźby.</p>
+    <p class="small">W przytoczonym przez Ciebie tekście pojawił się również szacunek „ponad 100 milionów” mniejszych wzniesień 100–1000 m oraz „ponad 30% dna” dla wzgórz abisalnych. W tej wersji raportu <strong>nie zapisujemy tych dwóch dokładnych liczb jako zweryfikowanego faktu</strong>, bo nie potwierdziliśmy ich w użytych oficjalnych źródłach. Zostają na liście do dalszej walidacji literaturą pierwotną.</p>
+  </section>
+
+  <section class="section" id="tp26">
+    <div class="eyebrow">TP‑26 GLOBAL VIRTUAL CONSTELLATION</div>
+    <h2>Co daje połączenie danych satelitarnych wielu państw?</h2>
+    <p>Największa wartość nie polega na udawaniu, że satelity zastąpią sonar. Fuzja TP‑26 może zbudować <strong>warstwę inteligentnego planowania</strong>: wykrywać niespójności globalnej batymetrii, łączyć altimetrię i grawitację z sejsmicznością, obserwować płytkie wody optycznie, śledzić deformacje i zmiany powierzchni, oceniać aktualność kafli oraz wskazywać, gdzie rejs sonarowy da największy przyrost wiedzy.</p>
+    <div class="status-grid">
+      <article class="status-card"><span class="state">PUBLIC</span><h3>Copernicus Data Space STAC</h3><p>Aktualny oficjalny katalog: STAC v1. Legacy endpoint został wycofany. Katalog jest publiczny; część pobrań/usług wymaga konta lub tokena.</p></article>
+      <article class="status-card"><span class="state">PUBLIC</span><h3>USGS LandsatLook STAC</h3><p>Publiczne wyszukiwanie scen Landsat. Przydatne głównie dla lądu, linii brzegowej i płytkiej optycznej obserwacji, nie dla głębokiej batymetrii.</p></article>
+      <article class="status-card"><span class="state">PUBLIC</span><h3>NASA CMR / STAC</h3><p>Federacyjne wyszukiwanie wielu misji. Metadane są publiczne; część danych wymaga Earthdata Login.</p></article>
+      <article class="status-card"><span class="state">PUBLIC</span><h3>GEBCO 2026</h3><p>Public-domain grid, subset download oraz OPeNDAP. To pierwsza warstwa batymetryczna dla laboratorium.</p></article>
+      <article class="status-card"><span class="state">PUBLIC</span><h3>BMKG Indonesia</h3><p>Oficjalne XML/JSON trzęsień w Indonezji; limit 60 zapytań/min/IP. Aplikacja musi podawać BMKG jako źródło.</p></article>
+      <article class="status-card"><span class="state account">ACCOUNT/TOKEN</span><h3>Źródła wymagające autoryzacji</h3><p>EUMETSAT, część CDSE, JAXA/ISRO i inni dostawcy mają różne zasady. TP‑26 ma rejestrować oficjalną ścieżkę dostępu, nigdy token w kodzie GitHub Pages.</p></article>
+    </div>
+    <p id="registryStatus" class="small">Rejestr badawczy: ładowanie…</p>
+  </section>
+
+  <section class="section" id="gpu">
+    <div class="eyebrow">AI / GPU — PRZETWARZANIE ≠ POMIAR</div>
+    <h2>Ile może dać telefon, zwykłe GPU, L4, H100 i 8×H100?</h2>
+    <p>Najważniejsze: GPU może bardzo przyspieszyć <strong>analizę już istniejących danych</strong>, ale nie może wyczarować wysokorozdzielczego sonaru z obszaru, nad którym nikt nie wykonał pomiaru. Poniższe liczby są rzędem wielkości dla jednego kafelkowego przebiegu klasyfikacji/ekstrakcji cech z przygotowanej globalnej siatki GEBCO. Nie są benchmarkiem i mogą różnić się ponad 10× zależnie od modelu, I/O, formatu i pamięci.</p>
+    <div class="gpu">
+      <article><b>Telefon / mobilne GPU</b><strong>30–180+ min</strong><span>kafelkami; termika i RAM ograniczają</span></article>
+      <article><b>Standardowy PC RTX</b><strong>5–30 min</strong><span>dobry do lokalnych i globalnych batchy</span></article>
+      <article><b>NVIDIA L4</b><strong>3–15 min</strong><span>efektywne inference i 24 GB VRAM</span></article>
+      <article><b>NVIDIA H100</b><strong>~1–5 min</strong><span>obliczenia; storage może być wolniejszy niż GPU</span></article>
+      <article><b>8× H100</b><strong>~20–90 s compute</strong><span>zwykle kilka minut end-to-end przez I/O i sharding</span></article>
+    </div>
+    <div class="note"><strong>Gdzie AI naprawdę skraca czas mapowania:</strong> automatyczne QA/QC, wykrywanie błędów i artefaktów, kompresja/indeksowanie, priorytetyzacja obszarów, planowanie tras AUV/statków, fuzja danych państw, detekcja potencjalnych seamountów i rowów oraz szybkie przeliczanie globalnych warstw. Największym ograniczeniem pozostaje fizyczne pozyskanie dobrych danych z niezmierzonego dna.</div>
+  </section>
+
+  <section class="section" id="deep-earth">
+    <div class="eyebrow">WODA WEWNĄTRZ ZIEMI · GRANICA WIEDZY</div>
+    <h2>„Drugie dno oceanu” i woda w głębi Ziemi — co jest realne, a co nadal spekulacją?</h2>
+    <p>Tu rzeczywiście jest bardzo ciekawy obszar nauki. Minerały strefy przejściowej płaszcza, takie jak <strong>wadsleyit i ringwoodit</strong>, mogą wiązać znaczne ilości wodoru odpowiadającego wodzie. Badania mineralogiczne wskazują, że potencjalny magazyn wody w skałach wnętrza Ziemi może być ogromny. To jednak nie znaczy, że pod skorupą znajduje się jeden globalny, pusty, ciekły ocean przykryty „lawą”. Woda głęboka występuje w różnych formach: chemicznie związana w minerałach, w płynach w porach/szczelinach i lokalnych systemach hydrotermalnych.</p>
+    <table class="knowledge">
+      <thead><tr><th>Pomysł</th><th>Status w projekcie</th><th>Jak AI ma go traktować</th></tr></thead>
+      <tbody>
+        <tr><td>Woda związana w minerałach płaszcza</td><td>realny temat naukowy</td><td>szukać danych sejsmicznych, mineralogicznych i eksperymentalnych</td></tr>
+        <tr><td>Globalny ciekły „drugi ocean” pod lawą</td><td>brak potwierdzenia</td><td>hipoteza, nigdy etykieta prawdy</td></tr>
+        <tr><td>Jaskinie/szczeliny 10–15 km i nieznane życie</td><td>częściowo otwarte pytanie, skala spekulacyjna</td><td>odróżniać znaną głęboką biosferę i systemy hydrotermalne od niepotwierdzonych wielkich pustych jaskiń</td></tr>
+        <tr><td>Trapezowe zejście ~100 km</td><td>daleka spekulacja inżynieryjna</td><td>badać temperaturę, ciśnienie i materiały; nie przedstawiać jako wykonalnego planu</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section" id="rotation">
+    <div class="eyebrow">MASA · OŚ OBROTU · ORBITA</div>
+    <h2>Tak — rozkład masy wpływa na obrót Ziemi. Ale skala ma znaczenie.</h2>
+    <p>NASA pokazuje, że globalna redystrybucja masy lodu, wody gruntowej i oceanów mierzalnie zmienia ruch bieguna i długość doby. Oś obrotu przesunęła swoje położenie względem skorupy o około 10 m w ciągu 120 lat, a duża część okresowych wahań wiąże się z przemieszczaniem wody i lodu. To jest prawdziwa fizyka momentu bezwładności.</p>
+    <div class="note red"><strong>Nie wynika z tego</strong>, że ustawienie pojedynczej góry, doliny lub lokalne pogłębienie oceanu może zmienić orbitę Ziemi tak, aby planeta zderzyła się z kometą czy inną planetą. W naszym modelu odróżniamy mierzalny, bardzo mały efekt geodezyjny od scenariuszy orbitalnych wymagających niewyobrażalnie większych zmian pędu i energii.</div>
+    <p>Pomysł, że wcześniejsza cywilizacja celowo zmodyfikowała planetę, aby zmienić jej trajektorię, oraz pomysł o „zaprogramowanej samodestrukcji” związanej z motywem 666 zapisujemy wyłącznie jako <strong>spekulacje kulturowe</strong>. Nie ma obecnie danych geologicznych ani astronomicznych, które pozwalałyby traktować je jako historię fizyczną Ziemi.</p>
+  </section>
+
+  <section class="section" id="life">
+    <div class="eyebrow">KLIMAT · ROŚLINY · PUSTYNIE · HISTORIE KULTUROWE</div>
+    <h2>Dlaczego ten sam gatunek nie zawsze daje takie same owoce w każdej szerokości geograficznej?</h2>
+    <p>To obserwacja, którą da się badać bez odwoływania się od razu do jednej wielkiej przyczyny. Dojrzewanie owoców zależy m.in. od temperatury, długości sezonu, mrozu, wymaganego okresu chłodu, fotoperiodu, nasłonecznienia, opadów, gleby, zasolenia, zapylaczy i odmiany. Roślina może rosnąć poza swoim optimum, ale nie zdążyć prawidłowo wydać owocu.</p>
+    <p>Interpretację historii o Ewie i owocu jako możliwej metafory dawnej degradacji środowiska można zachować w dziale historii idei. Nie jest ona jednak dowodem geologicznym, że pradawni ludzie zniszczyli klimat planety.</p>
+    <h3>Co gdyby wielkie pustynie silnie zazielenić?</h3>
+    <p>To już jest sensowne pytanie modelowe: zmieniłyby się albedo, ewapotranspiracja, strumienie ciepła, wilgotność, zapylenie, obieg wody, chmury, lokalne i regionalne opady, wiatry, ekosystemy i gospodarka rolna. Skutek nie musi być wszędzie korzystny i wymaga sprzężonego modelu atmosfera–gleba–woda–roślinność–ocean. Nie możemy też założyć prostego równania „więcej zieleni = proporcjonalnie więcej tlenu = dłuższe życie”; atmosferyczny bilans tlenu działa w ogromnych skalach i zależy również od oddychania, rozkładu, oceanów i cyklu węgla.</p>
+  </section>
+
+  <section class="section" id="research-program">
+    <div class="eyebrow">PROGRAM DALSZYCH BADAŃ</div>
+    <h2>Jak z tego zrobić system, który realnie pomaga ludziom i przyrodzie</h2>
+    <div class="cards">
+      <article class="card"><b>1. Zbudować indeks luk</b><p>Dla każdego kafla Ziemi zapisać rozdzielczość, rok, sensor, sonar/satelita, niepewność i pochodzenie. AI ma wiedzieć, gdzie naprawdę brakuje danych.</p></article>
+      <article class="card"><b>2. Połączyć batymetrię i sejsmikę</b><p>GEBCO + BMKG + USGS + oficjalne katalogi tektoniczne. Analizować korelacje geometryczne bez obiecywania sterowania trzęsieniami.</p></article>
+      <article class="card"><b>3. TP‑26 jako warstwa discovery</b><p>Wspólny rejestr NASA, ESA, NOAA, USGS, BMKG i kolejnych legalnych źródeł; brakujące tokeny mają status „wymaga dostępu”, nie martwy przycisk.</p></article>
+      <article class="card"><b>4. Jupyter/CDSE jako centrum</b><p>Pobierać tylko potrzebne subsety, budować kafle/LOD, indeksy, miniatury, GeoJSON i raporty zamiast kopiować całe archiwa.</p></article>
+      <article class="card"><b>5. AI uczy się „nie wiem”</b><p>Oddzielać obserwację od hipotezy. Jeśli geneza obiektu, zawartość wody lub struktura skorupy jest niepewna, model ma zachować tę niepewność.</p></article>
+      <article class="card"><b>6. Bezpieczna planetarna inżynieria</b><p>Każdy pomysł ingerencji najpierw przechodzi modele geomechaniki, hydrodynamiki, ekologii, rotacji i skutków ubocznych. Symulator ma służyć do odrzucania niebezpiecznych wariantów, a nie do ich wdrażania.</p></article>
+    </div>
+  </section>
+
+  <section class="section" id="sources">
+    <div class="eyebrow">OFICJALNE ŹRÓDŁA STARTOWE</div>
+    <h2>Dane do dalszego podłączania</h2>
+    <div class="links">
+      <a href="https://www.gebco.net/news/release-gebco2026-grid" target="_blank" rel="noopener noreferrer">GEBCO_2026 ↗</a>
+      <a href="https://download.gebco.net/" target="_blank" rel="noopener noreferrer">GEBCO Download ↗</a>
+      <a href="https://oceanexplorer.noaa.gov/explainers/mapping/" target="_blank" rel="noopener noreferrer">NOAA Seafloor Mapping ↗</a>
+      <a href="https://oceanexplorer.noaa.gov/ocean-fact/seamounts/" target="_blank" rel="noopener noreferrer">NOAA Seamounts ↗</a>
+      <a href="https://oceanexplorer.noaa.gov/ocean-fact/mid-ocean-ridge/" target="_blank" rel="noopener noreferrer">NOAA Mid-Ocean Ridge ↗</a>
+      <a href="https://data.bmkg.go.id/gempabumi/" target="_blank" rel="noopener noreferrer">BMKG Earthquakes ↗</a>
+      <a href="https://documentation.dataspace.copernicus.eu/APIs/STAC.html" target="_blank" rel="noopener noreferrer">CDSE STAC ↗</a>
+      <a href="https://landsatlook.usgs.gov/stac-server/api.html" target="_blank" rel="noopener noreferrer">USGS Landsat STAC ↗</a>
+      <a href="https://cmr.earthdata.nasa.gov/stac/docs/index.html" target="_blank" rel="noopener noreferrer">NASA CMR STAC ↗</a>
+      <a href="https://earth-info.nga.mil/?action=wgs84&dir=wgs84" target="_blank" rel="noopener noreferrer">NGA WGS‑84 ↗</a>
+      <a href="https://www.nasa.gov/missions/grace/nasa-funded-studies-explain-how-climate-is-changing-earths-rotation/" target="_blank" rel="noopener noreferrer">NASA Earth Rotation ↗</a>
+    </div>
+    <p class="small">Źródła komercyjne lub wymagające konta nie są automatycznie odpytywane z GitHub Pages. Sekrety i tokeny pozostają poza frontendem.</p>
+  </section>
+
+  <p class="footer">Terraforming Planet · Ocean Research Station · obserwacja → pomiar → niepewność → hipoteza → test · symulacja, nie projekt wykonawczy</p>
+</main>
+<script type="module" src="./ocean-lab.js"></script>
+</body>
+</html>
