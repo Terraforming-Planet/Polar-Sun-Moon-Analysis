@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0.0",
+  "created": "2026-08-17",
+  "experiment": "016",
+  "title": "Observational report: rivers, lakes, mountains, deserts and planetary geometry",
+  "purpose": "Prepare evidence-first training guidance for AI analysis of water resources, drought, flood extent, river morphology, exposed sediment, paleochannels, terrain and later astronomical geometry.",
+  "principles": [
+    "Keep raw satellite pixels unchanged and reproducible.",
+    "Separate observation from interpretation, causal hypothesis and speculation.",
+    "Do not label a suspected cause as truth without independent hydrological or geological evidence.",
+    "Store acquisition date, sensor, platform, spatial resolution, cloud/shadow quality and provenance.",
+    "Use display brightness/contrast only for visualization; never overwrite measurement imagery.",
+    "Prefer official, legal and public data sources."
+  ],
+  "core_labels": [
+    "open_water",
+    "historical_water_footprint",
+    "wet_soil_or_marsh",
+    "dry_exposed_bed",
+    "sandbar_or_sediment_island",
+    "active_river_channel",
+    "secondary_channel",
+    "tributary_or_outflow",
+    "paleochannel_candidate",
+    "vegetation",
+    "forest_shadow",
+    "terrain_shadow",
+    "snow_or_ice",
+    "cloud",
+    "sensor_artifact",
+    "uncertain"
+  ],
+  "change_labels": [
+    "water_retreat",
+    "water_advance",
+    "channel_shift",
+    "sediment_growth",
+    "sediment_reduction",
+    "seasonal_variation",
+    "long_term_transition",
+    "uncertain_change"
+  ],
+  "research_cases": [
+    {"id": "001", "topic": "forest pond near Lake Kuchnia", "role": "local long-term water-loss evidence"},
+    {"id": "002", "topic": "1990-2026 local water comparison", "role": "multi-year baseline"},
+    {"id": "003", "topic": "Lake Nogat", "role": "regional lake response"},
+    {"id": "004", "topic": "Kacze and Gleboczek lakes", "role": "comparison controls"},
+    {"id": "005", "topic": "Lake Tarpno", "role": "comparison controls"},
+    {"id": "006", "topic": "Lake Wieczno", "role": "comparison controls"},
+    {"id": "007", "topic": "Karas / Ilawa", "role": "wetland-lake comparison"},
+    {"id": "008", "topic": "Stelchno", "role": "lake shoreline comparison"},
+    {"id": "009", "topic": "Lake Plowez", "role": "lake shoreline comparison"},
+    {"id": "010", "topic": "Drweca valley", "role": "river-valley morphology"},
+    {"id": "011", "topic": "Ilawa-Zalewo", "role": "regional network comparison"},
+    {"id": "012", "topic": "Great Salt Lake, Utah", "role": "training example with repeated shoreline retreat and advance"},
+    {"id": "013", "topic": "Grays Harbor", "role": "coastal/estuarine morphology comparison"},
+    {"id": "014", "topic": "Vistula, Grudziadz-Gniew", "role": "river channel, exposed sediment and sandbar analysis"},
+    {"id": "015", "topic": "Himalaya / Tibetan Plateau", "role": "terrain, elevation, rain-shadow and paleohydrology investigation"}
+  ],
+  "hypothesis_registry": [
+    {
+      "id": "H-WISLA-01",
+      "statement": "Changes in channel morphology and sediment accumulation may influence hydraulic connectivity with side channels, tributaries or managed outflows.",
+      "status": "requires_hydraulic_validation",
+      "required_evidence": ["water-level gauges", "discharge", "bathymetry", "sediment surveys", "hydraulic structures", "tributary/outflow condition", "groundwater data"]
+    },
+    {
+      "id": "H-WISLA-02",
+      "statement": "Any dredging or channel intervention should be evaluated together with side-channel/outflow connectivity before implementation.",
+      "status": "risk_management_principle",
+      "required_evidence": ["2D/3D hydraulic model", "flood scenarios", "sediment transport model", "environmental assessment"]
+    },
+    {
+      "id": "H-HIMALAYA-01",
+      "statement": "Terrain height, valley geometry, orographic precipitation and rain-shadow effects should be jointly analysed when comparing the Indian and Tibetan sides of the Himalaya.",
+      "status": "scientifically_testable",
+      "required_evidence": ["DEM", "precipitation", "snow cover", "glacier mass balance", "river network", "evapotranspiration"]
+    },
+    {
+      "id": "H-ANCIENT-01",
+      "statement": "Ancient-civilization or intentional large-scale landscape-engineering explanations are speculative unless direct archaeological and geological evidence is found.",
+      "status": "speculation_not_training_truth",
+      "required_evidence": ["archaeological context", "datable structures", "stratigraphy", "geochemistry", "independent replication"]
+    },
+    {
+      "id": "H-GEOMETRY-01",
+      "statement": "River, lake, mountain and stellar geometries may be searched for repeated patterns, but candidate patterns must be compared with randomized/null models to avoid false pattern detection.",
+      "status": "exploratory",
+      "required_evidence": ["statistical significance", "null-model comparison", "independent validation"]
+    }
+  ],
+  "recommended_pipeline": [
+    "radiometric and geometric metadata validation",
+    "cloud/shadow/snow masking",
+    "water segmentation with uncertainty",
+    "shoreline extraction",
+    "river centerline and width extraction",
+    "sandbar/exposed-bed segmentation",
+    "change detection across matched seasons",
+    "DEM and drainage-network fusion",
+    "hydrological and meteorological data fusion",
+    "causal-hypothesis scoring kept separate from visual detection",
+    "human review and reproducible report generation"
+  ],
+  "astronomy_extension": {
+    "goal": "Use learned geometric reasoning for Earth observation and later for time-aware 3D analysis of stars, planets and visible sky geometry.",
+    "requirements": [
+      "observer location and time",
+      "celestial coordinate systems",
+      "proper motion and epoch",
+      "camera calibration",
+      "uncertainty-aware pattern detection",
+      "null-model tests for apparent shapes"
+    ]
+  }
+}
