@@ -1,5 +1,5 @@
 {
-  "generatedUtc": "2026-08-17T05:30:36.305122Z",
+  "generatedUtc": "2026-08-17T06:02:45.181203Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
@@ -70,10 +70,10 @@
       "latestGeometry": {
         "magnitudeValue": 55.0,
         "magnitudeUnit": "kts",
-        "date": "2026-08-16T18:00:00Z",
+        "date": "2026-08-17T00:00:00Z",
         "type": "Point",
         "coordinates": [
-          -158.8,
+          -160.9,
           20.8
         ]
       },
@@ -948,33 +948,6 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22196",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_22306",
-      "title": "Tropical Cyclone Chan-Hom",
-      "categories": [
-        "Severe Storms"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 30.0,
-        "magnitudeUnit": "kts",
-        "date": "2026-08-11T18:00:00Z",
-        "type": "Point",
-        "coordinates": [
-          137.4,
-          35.8
-        ]
-      },
-      "sources": [
-        {
-          "id": "JTWC",
-          "url": "https://www.metoc.navy.mil/jtwc/products/wp1426.tcw"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22306",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
@@ -5405,6 +5378,33 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21328",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_21332",
+      "title": "Wildfire ELEPHANT, Plumas, California",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 6436.0,
+        "magnitudeUnit": "acres",
+        "date": "2026-07-11T16:35:00Z",
+        "type": "Point",
+        "coordinates": [
+          -120.193167,
+          39.710833
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-CATNF-001154"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21332",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -5476,7 +5476,7 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -158.8,
+          -160.9,
           20.8
         ]
       },
@@ -5487,8 +5487,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-08-16T18:00:00Z",
-        "observation_time": "2026-08-16T18:00:00Z",
+        "observationUtc": "2026-08-17T00:00:00Z",
+        "observation_time": "2026-08-17T00:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22563",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22563",
         "sources": [
@@ -6423,35 +6423,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-ORFWF-260286"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_22306",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          137.4,
-          35.8
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Tropical Cyclone Chan-Hom",
-        "categories": [
-          "Severe Storms"
-        ],
-        "observationUtc": "2026-08-11T18:00:00Z",
-        "observation_time": "2026-08-11T18:00:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22306",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22306",
-        "sources": [
-          {
-            "id": "JTWC",
-            "url": "https://www.metoc.navy.mil/jtwc/products/wp1426.tcw"
           }
         ]
       }
@@ -11208,6 +11179,35 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-IDIFD-000128"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_21332",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.193167,
+          39.710833
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Wildfire ELEPHANT, Plumas, California",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-07-11T16:35:00Z",
+        "observation_time": "2026-07-11T16:35:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21332",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21332",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-CATNF-001154"
           }
         ]
       }
