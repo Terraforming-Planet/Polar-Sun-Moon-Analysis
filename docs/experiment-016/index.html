@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#06111b" />
+  <meta name="description" content="Terraforming Planet — TEST 016: raport obserwacyjny rzek, jezior, gór, pustyń oraz plan treningu AI do analizy zasobów wodnych i geometrii planety." />
+  <title>TEST 016 — Raport obserwacyjny wody, terenu i geometrii | Terraforming Planet</title>
+  <style>
+    :root{color-scheme:dark;--bg:#06111b;--panel:#0a1b29;--panel2:#0d2435;--line:#244b63;--text:#edf8ff;--muted:#a9c5d5;--cyan:#67ddff;--green:#72e6a8;--amber:#ffd66e;--red:#ff8585;--purple:#caa0ff}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 15% 0,#103c52 0,#06111b 36%,#02070c 100%);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.62}
+    a{color:var(--cyan)}.top{position:sticky;top:0;z-index:50;display:flex;gap:.55rem;align-items:center;flex-wrap:wrap;padding:.7rem 1rem;background:#05111cf2;border-bottom:1px solid var(--line);backdrop-filter:blur(14px)}.top strong{color:var(--cyan);margin-right:auto}.top a{text-decoration:none;padding:.45rem .7rem;border:1px solid #2b5972;border-radius:.55rem;background:#0b2131;color:#eef9ff;font-weight:700}.top a:hover,.top a:focus{border-color:var(--cyan);background:#10334a}
+    main{width:min(1240px,calc(100% - 28px));margin:0 auto;padding:32px 0 72px}.hero{padding:clamp(24px,5vw,46px);border:1px solid #275b74;border-radius:24px;background:linear-gradient(145deg,#0a2b3fdd,#081521ed);box-shadow:0 28px 90px #0008}.kicker{font-size:.82rem;letter-spacing:.15em;text-transform:uppercase;color:var(--cyan);font-weight:900}.hero h1{font-size:clamp(2.15rem,5.8vw,4.8rem);line-height:1.02;margin:.4rem 0 1rem}.hero p{max-width:980px;color:#cde4f1;font-size:1.08rem}.mission{margin-top:20px;padding:16px 18px;border-left:4px solid var(--green);border-radius:10px;background:#0c2b21;color:#d5f9e3;font-weight:650}
+    .legend,.cards{display:grid;gap:14px}.legend{grid-template-columns:repeat(4,minmax(0,1fr));margin:20px 0}.tag{padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#071824}.tag b{display:block;margin-bottom:4px}.evidence{border-color:#31815c;background:#0b2b20}.hypothesis{border-color:#8b6c28;background:#2a230e}.speculation{border-color:#7b5c9e;background:#21172d}.unknown{border-color:#7e4850;background:#29151a}
+    section{margin-top:28px;padding:26px;border:1px solid #193f54;border-radius:20px;background:#071824d9}h2{margin:0 0 14px;font-size:clamp(1.45rem,3vw,2rem)}h3{margin:1.45rem 0 .55rem;color:#eaf8ff}.lead{color:#c7deea;font-size:1.03rem}.note{padding:14px 16px;border-left:4px solid var(--amber);border-radius:9px;background:#30260e;color:#ffefc1;margin:14px 0}.note.good{border-left-color:var(--green);background:#0c2c21;color:#d5f9e3}.note.risk{border-left-color:var(--red);background:#311619;color:#ffd8dc}.note.space{border-left-color:var(--purple);background:#20182c;color:#f0e2ff}
+    .cards{grid-template-columns:repeat(3,minmax(0,1fr))}.card{padding:18px;border:1px solid var(--line);border-radius:15px;background:#0a1f2e}.card b{display:block;color:#fff;font-size:1.05rem;margin-bottom:5px}.card span{color:var(--muted)}
+    .viewer{display:grid;grid-template-columns:minmax(260px,330px) 1fr;gap:16px;align-items:start}.controls{position:sticky;top:86px;padding:18px;border:1px solid #2a566f;border-radius:16px;background:#0a1e2d}.controls label{display:block;font-weight:800;margin:.65rem 0 .25rem}.controls select,.controls input{width:100%}.controls select{background:#06131e;color:#fff;border:1px solid #315e78;border-radius:9px;padding:10px}.controls input[type=range]{accent-color:#66dfff}.value{display:flex;justify-content:space-between;color:#b7d2e0;font-size:.88rem}.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.btn{cursor:pointer;padding:10px 12px;border:1px solid #39738f;border-radius:9px;background:#0d3045;color:#fff;font-weight:800}.btn:hover{background:#12425d}.framewrap{min-height:760px;border:1px solid #2b5369;border-radius:16px;overflow:hidden;background:#02080d}.framewrap iframe{display:block;width:100%;height:78vh;min-height:760px;border:0;background:#050b14}
+    table{width:100%;border-collapse:collapse;margin-top:12px}th,td{padding:11px 12px;text-align:left;vertical-align:top;border-bottom:1px solid #173b4f}th{background:#0c2536;color:#9ee7ff}td{color:#d9e9f1}.status{display:inline-block;padding:.15rem .45rem;border-radius:999px;font-size:.74rem;font-weight:900;border:1px solid #38677f;background:#112c3d}.status.ok{border-color:#3b8d66;background:#113727;color:#c7f6d8}.status.test{border-color:#9a7a32;background:#382e13;color:#ffe7a4}.status.spec{border-color:#8a62ad;background:#2c1e3a;color:#f0d7ff}
+    .pipeline{counter-reset:step;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.pipeline div{counter-increment:step;padding:14px 15px;border:1px solid #21495f;border-radius:12px;background:#091d2b}.pipeline div:before{content:counter(step);display:inline-grid;place-items:center;width:27px;height:27px;border-radius:50%;background:#0b6481;color:#fff;font-weight:900;margin-right:8px}.links{display:flex;flex-wrap:wrap;gap:10px}.links a{padding:.65rem .8rem;border:1px solid #2e627d;border-radius:.65rem;background:#0a2638;text-decoration:none;font-weight:800}.footer{margin-top:30px;text-align:center;color:#86a8ba;font-size:.88rem}
+    code{color:#b5edff}.small{font-size:.87rem;color:#9fbdcc}
+    @media(max-width:980px){.legend{grid-template-columns:1fr 1fr}.cards{grid-template-columns:1fr 1fr}.viewer{grid-template-columns:1fr}.controls{position:static}.framewrap,.framewrap iframe{min-height:650px;height:70vh}.pipeline{grid-template-columns:1fr}}
+    @media(max-width:620px){main{width:min(100% - 18px,1240px);padding-top:18px}.hero,section{padding:19px}.legend,.cards{grid-template-columns:1fr}.top strong{width:100%;margin-right:0}.framewrap,.framewrap iframe{min-height:580px;height:68vh}}
+  </style>
+</head>
+<body>
+  <nav class="top" aria-label="Nawigacja raportu">
+    <strong>Terraforming Planet · TEST 016</strong>
+    <a href="../">← Główna</a>
+    <a href="#report">Raport</a>
+    <a href="#viewer">Zdjęcia</a>
+    <a href="#ai">Trening AI</a>
+    <a href="#space">Planeta i gwiazdy</a>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Raport testów obserwacyjnych · rzeki · jeziora · góry · pustynie · 1990–2026</div>
+      <h1>Od zdjęcia satelitarnego<br/>do pytania badawczego</h1>
+      <p>Ten raport podsumowuje serię eksperymentów Terraforming Planet dotyczących zmian wody, linii brzegowych, koryt rzecznych, odsłoniętego osadu, rzeźby terenu oraz długoterminowej geometrii krajobrazu. Jego celem nie jest ogłaszanie jednej z góry założonej odpowiedzi. Celem jest nauczenie systemu AI, aby potrafił wykryć zmianę, określić jej niepewność, znaleźć możliwe zależności i dopiero później testować przyczyny na podstawie dodatkowych danych.</p>
+      <div class="mission">Autor projektu szanuje wiedzę naukową i wyniki wcześniejszych badań, ale świadomie szuka także drugiego i trzeciego wyjaśnienia. Nie chodzi o stawianie człowieka ani AI ponad nauką. Chodzi o użycie obrazów, pomiarów i geometrii do zadawania lepszych pytań — po to, aby AI mogła kiedyś zrobić coś dobrego dla ludzi, przyrody, zasobów wodnych i badań planety, a w dalszej przyszłości również otoczenia poza Ziemią.</div>
+    </header>
+
+    <div class="legend" aria-label="Poziomy pewności">
+      <div class="tag evidence"><b>OBSERWACJA</b>To, co rzeczywiście widać lub można zmierzyć w danych.</div>
+      <div class="tag hypothesis"><b>HIPOTEZA</b>Możliwe wyjaśnienie, które trzeba sprawdzić niezależnymi danymi.</div>
+      <div class="tag speculation"><b>SPEKULACJA</b>Pomysł eksploracyjny, którego nie wolno zapisywać AI jako fakt.</div>
+      <div class="tag unknown"><b>NIEUSTALONE</b>Brak danych wystarczających do przypisania przyczyny.</div>
+    </div>
+
+    <section id="report">
+      <h2>1. Najważniejszy wynik serii 1990–2026: AI ma najpierw widzieć zmianę, a dopiero później szukać przyczyny</h2>
+      <p class="lead">Dotychczasowe testy pokazały, że pojedyncze zdjęcie jest zbyt słabym dowodem. Największą wartość daje dopiero wieloletni ciąg obrazów: ten sam obszar, możliwie podobna pora roku, znana data akwizycji, sensor i kontrola jakości. Dzięki temu można odróżnić sezonowe wahanie od trwałej zmiany krajobrazu.</p>
+      <p>W lokalnym przypadku stawu leśnego koło Jeziora Kuchnia zarejestrowano bardzo silną zmianę widocznego historycznego śladu otwartej wody. W Jeziorze Kuchnia, Nogacie i kilku innych zbiornikach obserwowane są zmiany linii brzegowych o różnym nasileniu, natomiast część jezior zachowuje się stabilniej. To właśnie zróżnicowanie jest szczególnie wartościowe dla treningu: model potrzebuje zarówno przykładów zaniku, jak i przypadków kontrolnych, w których zmiana jest mała, sezonowa albo odwracalna.</p>
+      <div class="note good"><strong>Wniosek metodologiczny:</strong> model nie powinien być trenowany wyłącznie na „wyschniętych” przykładach. Musi widzieć również jeziora stabilne, okresowo rosnące, cofające się i ponownie napełniające. Inaczej nauczy się potwierdzać oczekiwaną katastrofę zamiast rozpoznawać rzeczywisty stan.</div>
+    </section>
+
+    <section>
+      <h2>2. Wisła: od Grudziądza do rejonu Gniewu — obserwacja łach, wysp osadowych i zmiennego koryta</h2>
+      <p>Jednym z najmocniejszych pytań wynikających z Testu 014 jest zachowanie około kilkudziesięciokilometrowego odcinka Wisły między rejonem Grudziądza i Gniewu. W starszych obrazach również można znaleźć odsłonięte łachy i wyspy piaszczyste, ale w niektórych nowszych okresach ich liczba i rozległość wizualnie zwracają większą uwagę. Sama obecność piasku nie oznacza jednak automatycznie „zablokowanej rzeki”. Łacha może powstawać wskutek niskiego przepływu, transportu rumowiska, geometrii koryta, regulacji brzegów, zmian przepływu lub kombinacji tych zjawisk.</p>
+      <p>Hipoteza projektu jest bardziej konkretna: należy sprawdzić, czy zmiany morfologii głównego koryta mogą korelować ze spadkiem sprawności hydraulicznej połączeń z bocznymi kanałami, dopływami, odpływami i systemem jeziornym regionu. Tego nie da się potwierdzić samą fotografią satelitarną. Potrzebne są poziomy wody, przepływy, batymetria, profile dna, stan budowli hydrotechnicznych, dane o rumowisku, rowach i kanałach oraz lokalna sytuacja wód podziemnych.</p>
+      <div class="note risk"><strong>Ważne:</strong> z obrazów nie można uczciwie wywnioskować, że pogłębienie Wisły samo w sobie rozwiąże problem ani że brak pogłębienia jest jedyną przyczyną niedoboru wody. Każda ingerencja w dno może zmienić prędkość przepływu, poziomy wód, erozję, sedymentację, kontakt z wodami podziemnymi i ryzyko powodziowe. Dlatego pomysł projektu „najpierw zbadać i udrożnić cały układ połączeń, a dopiero potem rozważać zmianę głębokości głównego koryta” należy traktować jako zasadę ostrożności wymagającą pełnego modelu hydraulicznego.</div>
+      <p>Stwierdzenie o możliwej „największej powodzi w historii” nie jest obecnie wynikiem pomiaru i nie powinno być publikowane jako prognoza. Można natomiast zapisać je jako hipotezę ryzyka: nieprzemyślana ingerencja w jeden element systemu rzecznego może przenieść lub zwiększyć zagrożenie w innym miejscu. Skala takiego zagrożenia musi być policzona scenariuszami hydraulicznymi.</p>
+    </section>
+
+    <section>
+      <h2>3. Jeziora i stawy jako sieć, a nie osobne punkty</h2>
+      <div class="cards">
+        <div class="card"><b>Staw leśny / Jezioro Kuchnia</b><span>Przykład silnej długoterminowej zmiany i potrzeby rozróżniania śladu historycznego od bieżącej otwartej wody.</span></div>
+        <div class="card"><b>Nogat i zbiorniki regionalne</b><span>Przykłady do analizy, czy zmiana jest lokalna, regionalna, sezonowa czy powiązana z większą siecią hydrologiczną.</span></div>
+        <div class="card"><b>Jeziora umiarkowanie stabilne</b><span>Niezbędne przypadki kontrolne, aby AI nie uznawała każdej różnicy zdjęć za suszę.</span></div>
+        <div class="card"><b>Great Salt Lake</b><span>Bardzo dobry materiał do nauki ruchomej linii brzegowej: model może obserwować zarówno cofanie, jak i ponowne rozszerzanie wody.</span></div>
+        <div class="card"><b>Dolina Drwęcy</b><span>Przypadek do nauki geometrii doliny, koryta, terenów podmokłych i sezonowej łączności wodnej.</span></div>
+        <div class="card"><b>Grays Harbor</b><span>Porównanie z układem ujściowym i strefą, w której linia woda–osad jest naturalnie bardzo dynamiczna.</span></div>
+      </div>
+      <p class="note"><strong>Cel treningowy:</strong> AI ma nauczyć się, że „mniej niebieskiego” nie zawsze oznacza tę samą przyczynę. Powinna oddzielić zmianę powierzchni wody od możliwych przyczyn: opadu, parowania, temperatury, poboru wody, odpływu, infiltracji, zmiany koryta, działania budowli, rumowiska, roślinności lub błędu sensora.</p>
+    </section>
+
+    <section>
+      <h2>4. Czy dno „musi zostać pogłębione”?</h2>
+      <p>Głębsza woda ma mniejszy stosunek powierzchni do objętości i w pewnych warunkach może wolniej reagować termicznie niż bardzo płytka warstwa, ale z tego nie wynika prosta zasada „im głębiej, tym lepiej”. Rzeka jest systemem transportu wody i osadu, a nie zbiornikiem o stałych ścianach. Pogłębianie może lokalnie zwiększyć przekrój, lecz może również zmienić spadek energii, erozję, poziom zwierciadła, połączenie z terenami zalewowymi i warunki ekologiczne.</p>
+      <p>Dlatego TEST 016 nie rekomenduje pogłębiania. Rekomenduje najpierw stworzenie cyfrowego modelu całej sieci: główne koryto, boczne kanały, dopływy, odpływy, jeziora, obwałowania, śluzy, jazy, rowy, tereny zalewowe, wysokość terenu i wody podziemne. Dopiero taki model może odpowiedzieć, gdzie rzeczywiście występuje opór hydrauliczny i czy jest on naturalny, sezonowy, osadowy czy infrastrukturalny.</p>
+    </section>
+
+    <section>
+      <h2>5. Himalaje, Indie i Wyżyna Tybetańska: teren, cień opadowy i dawne rzeki</h2>
+      <p>Test 015 otwiera drugi rodzaj problemu: nie tylko „gdzie jest woda?”, ale „dlaczego po dwóch stronach tego samego systemu górskiego krajobraz może być tak różny?”. Wysokość terenu, orientacja stoków, doliny, przepływ wilgotnych mas powietrza, opad orograficzny, cień opadowy, śnieg, lodowce i położenie kontynentalne muszą być analizowane razem.</p>
+      <p>Intuicja, że kształt i położenie płyt tektonicznych powinny tworzyć prosty, jednostronny „wał”, jest ciekawym pytaniem, ale rzeczywista kolizja płyt nie działa jak uderzenie dwóch sztywnych desek. Skorupa może się skracać, fałdować, nasuwać, podsuwać pod drugą płytę i grubieć na dużym obszarze. Dlatego geometria Himalajów i Wyżyny Tybetańskiej jest tematem, który AI powinna porównywać z modelami tektonicznymi i cyfrowym modelem wysokości, a nie rozstrzygać na podstawie samego kształtu mapy.</p>
+      <p>Pomysł badawczy dotyczący pradawnych rzek i jezior jest natomiast bardzo wartościowy. Suche koryta, stożki napływowe, paleojeziora i dawne delty mogą pozostawiać ślady geometryczne widoczne w danych optycznych, radarowych i wysokościowych. AI może szukać ciągłości takich struktur, ale każdy kandydat musi być później sprawdzony geologicznie.</p>
+      <div class="note"><strong>Rozdzielenie hipotez:</strong> naturalne procesy tektoniczne, erozja, klimat, uderzenia dużych ciał i działalność człowieka są różnymi klasami wyjaśnień. Nie należy ich mieszać w jedną etykietę. Model powinien najpierw wykryć strukturę, a dopiero osobny etap ma oceniać, które wyjaśnienia są zgodne z dowodami.</div>
+    </section>
+
+    <section>
+      <h2>6. Wieża Babel, dawne cywilizacje i inne niezwykłe hipotezy — jak badać bez udawania, że są faktem</h2>
+      <p>W projekcie mogą pojawiać się skojarzenia kulturowe: wieża Babel, dawna cywilizacja, celowe przekształcenie krajobrazu, „znak” utworzony przez góry, rzeki lub jeziora. Takie pomysły mogą być zapisywane w rejestrze hipotez eksploracyjnych, ale nie mogą być używane jako prawdziwe etykiety treningowe bez niezależnego dowodu archeologicznego i geologicznego.</p>
+      <p>To samo dotyczy wizualnych wzorów. Człowiek i AI bardzo łatwo znajdują znajome kształty w skomplikowanych danych. Dlatego jeśli system odkryje figurę, symbol, okrąg, linię albo układ przypominający znak, powinien automatycznie porównać go z tysiącami losowych lub naturalnych sieci o podobnej złożoności. Dopiero wzór statystycznie wyjątkowy, powtarzalny i powiązany z niezależnym kontekstem zasługuje na dalsze badanie.</p>
+      <div class="note space"><strong>Zasada projektu:</strong> ciekawość jest dozwolona, ale poziom pewności musi być zawsze widoczny. „To przypomina znak” i „to zostało celowo zbudowane” są dwiema całkowicie różnymi wypowiedziami.</div>
+    </section>
+
+    <section id="viewer">
+      <h2>7. Panel testów 001–015 z regulacją jasności zdjęć</h2>
+      <p>Niektóre obrazy satelitarne są bardzo ciemne, a las, cień i woda mogą się wizualnie zlewać. Poniższy panel pozwala zmieniać jasność i kontrast obrazów w wybranym teście. Jest to wyłącznie efekt wyświetlania CSS — oryginalne pliki, hashe i dane pomiarowe pozostają niezmienione.</p>
+      <div class="viewer">
+        <div class="controls">
+          <label for="testSelect">Wybierz test</label>
+          <select id="testSelect">
+            <option value="001">TEST 001 — Staw / Kuchnia</option>
+            <option value="002">TEST 002 — 1990–2026</option>
+            <option value="003">TEST 003 — Nogat</option>
+            <option value="004">TEST 004 — Kacze + Głęboczek</option>
+            <option value="005">TEST 005 — Tarpno</option>
+            <option value="006">TEST 006 — Wieczno</option>
+            <option value="007">TEST 007 — Karaś / Iława</option>
+            <option value="008">TEST 008 — Stelchno</option>
+            <option value="009">TEST 009 — Płowęź</option>
+            <option value="010">TEST 010 — Dolina Drwęcy</option>
+            <option value="011">TEST 011 — Iława–Zalewo</option>
+            <option value="012">TEST 012 — Great Salt Lake</option>
+            <option value="013">TEST 013 — Grays Harbor</option>
+            <option value="014" selected>TEST 014 — Wisła</option>
+            <option value="015">TEST 015 — Himalaje / Tybet</option>
+          </select>
+
+          <label for="brightness">Jasność</label>
+          <div class="value"><span>40%</span><strong id="brightnessValue">100%</strong><span>220%</span></div>
+          <input id="brightness" type="range" min="40" max="220" value="100" step="5" />
+
+          <label for="contrast">Kontrast</label>
+          <div class="value"><span>50%</span><strong id="contrastValue">100%</strong><span>180%</span></div>
+          <input id="contrast" type="range" min="50" max="180" value="100" step="5" />
+
+          <div class="btnrow">
+            <button class="btn" id="resetView" type="button">Reset 100%</button>
+            <button class="btn" id="openTest" type="button">Otwórz test osobno</button>
+          </div>
+          <p class="small">Regulacja działa na zdjęcia w osadzonym teście. Nie zapisuje zmodyfikowanych pikseli i nie może być używana jako źródło pomiaru powierzchni.</p>
+        </div>
+        <div class="framewrap"><iframe id="testFrame" title="Wybrany test obserwacyjny" src="../experiment-014/"></iframe></div>
+      </div>
+    </section>
+
+    <section id="ai">
+      <h2>8. Jak z tych testów zrobić trening AI do suszy, powodzi i zasobów wodnych</h2>
+      <p>Najważniejsze jest rozdzielenie dwóch problemów: <strong>detekcji</strong> i <strong>wyjaśnienia przyczyny</strong>. Model obrazu może bardzo dobrze wykrywać wodę, suche dno, piasek, roślinność, śnieg, cień i zmianę koryta. Nie powinien jednak z samego obrazu stwierdzać, że przyczyną jest np. zatkany odpływ albo niewłaściwa gospodarka wodna.</p>
+      <div class="pipeline">
+        <div>Walidacja źródła, daty, sensora, rozdzielczości i geometrii obrazu.</div>
+        <div>Maskowanie chmur, cienia, śniegu, lodu oraz artefaktów sensora.</div>
+        <div>Segmentacja otwartej wody z mapą niepewności.</div>
+        <div>Ekstrakcja linii brzegowej i jej zmiany w czasie.</div>
+        <div>Ekstrakcja koryta, osi rzeki, szerokości i kanałów bocznych.</div>
+        <div>Detekcja łach piaskowych, odsłoniętego dna i zmian osadu.</div>
+        <div>Łączenie z DEM: spadki, doliny, działy wodne, potencjalne paleokoryta.</div>
+        <div>Łączenie z opadem, temperaturą, parowaniem, przepływem i wodą podziemną.</div>
+        <div>Osobny model oceny hipotez przyczynowych — bez mieszania z segmentacją obrazu.</div>
+        <div>Kontrola człowieka, raport niepewności i pełna możliwość odtworzenia wyniku.</div>
+      </div>
+
+      <h3>Minimalny słownik etykiet</h3>
+      <table>
+        <tr><th>Klasa</th><th>Co AI ma rozpoznać</th><th>Pułapka</th></tr>
+        <tr><td>open_water</td><td>bieżąca otwarta woda</td><td>ciemny las i cień mogą wyglądać podobnie</td></tr>
+        <tr><td>historical_water_footprint</td><td>obszar, który w przeszłości wielokrotnie był wodą</td><td>nie oznacza, że dziś powinien być zalany</td></tr>
+        <tr><td>dry_exposed_bed</td><td>odsłonięte dno lub sucha misa</td><td>jasny grunt rolny może być podobny</td></tr>
+        <tr><td>sandbar_or_sediment_island</td><td>łacha / wyspa osadowa</td><td>jej obecność nie dowodzi niedrożności</td></tr>
+        <tr><td>active_river_channel</td><td>główne aktywne koryto</td><td>koryto może się dzielić sezonowo</td></tr>
+        <tr><td>paleochannel_candidate</td><td>możliwe dawne koryto</td><td>wymaga geologicznej walidacji</td></tr>
+        <tr><td>uncertain</td><td>obszar, którego nie da się pewnie sklasyfikować</td><td>nie wolno wymuszać odpowiedzi</td></tr>
+      </table>
+      <p class="note good">Plik <code>training-plan.json</code> zawiera maszynowy odpowiednik tego planu: etykiety, przypadki 001–015, rejestr hipotez oraz wymagane dane do ich weryfikacji.</p>
+    </section>
+
+    <section>
+      <h2>9. Great Salt Lake jako wzorzec nauki „woda może znikać i wracać”</h2>
+      <p>TEST 012 jest ważny nie dlatego, że każde jezioro zachowuje się jak Great Salt Lake, lecz dlatego, że wieloletnia seria pokazuje AI coś bardzo potrzebnego: linia brzegowa może zmieniać się w obie strony. Model powinien uczyć się regresji i ekspansji, a nie tylko spadku. Dzięki temu można testować odporność algorytmu na sezon, pogodę, różne sensory i duże zmiany powierzchni.</p>
+      <p>Ten sam mechanizm można później wykorzystać przy rzekach, zbiornikach, mokradłach, lodowcach, deltach i obszarach pustynnych, na których dawne jeziora pozostawiły geometryczne ślady.</p>
+    </section>
+
+    <section>
+      <h2>10. Od suszy do powodzi: ten sam model powinien rozumieć oba kierunki zmiany</h2>
+      <p>Model zasobów wodnych nie może być wyłącznie „detektorem suszy”. Powinien widzieć całe kontinuum: sucha misa → wilgotny grunt → płytka woda → normalny poziom → wysoki poziom → rozlewisko → powódź. Wtedy ta sama architektura może pomagać w wykrywaniu zarówno niedoboru, jak i nadmiaru wody.</p>
+      <p>Przy powodzi kluczowe będą Sentinel-1 i inne dane radarowe, bo w wielu sytuacjach obraz optyczny jest zasłonięty chmurami. Przy suszy ważny jest długi rekord historyczny i porównanie podobnych sezonów. W obu przypadkach wynik powinien być mapą prawdopodobieństwa i niepewności, a nie jedną kategoryczną odpowiedzią.</p>
+    </section>
+
+    <section id="space">
+      <h2>11. Notatka: stacja 90°N, geometria planety i późniejsze badanie gwiazd</h2>
+      <p>Stacja badawcza dokładnie na 90°N ma w projekcie sens jako wyjątkowy punkt referencyjny dla geometrii Ziemi, nieba, Słońca i Księżyca. Długoterminowy, dobrze opisany punkt obserwacyjny może łączyć dane satelitarne, atmosferę, lód, ocean, pozycję Słońca, Księżyca i obiektów niebieskich.</p>
+      <p>Jeżeli AI nauczy się poprawnie rozumieć geometrię powierzchni Ziemi — współrzędne, wysokość, krzywiznę, kierunki, czas i zmianę obserwatora — można tę samą dyscyplinę przenieść na analizę nocnego nieba. Człowiek patrzący na tysiące gwiazd łatwo traci orientację przestrzenną; AI również może popełniać ten błąd, jeśli nie otrzyma czasu, pozycji obserwatora, układu współrzędnych i kalibracji kamery.</p>
+      <p>System może później rekonstruować trójwymiarowe położenia gwiazd i planet, porównywać geometryczne układy w czasie, rysować wykryte wzory i modelować ich zmianę. Tak jak przy rzekach, powinien jednak używać testów statystycznych, aby nie mylić przypadkowych kształtów z czymś intencjonalnym.</p>
+      <div class="note space"><strong>Wspólna idea:</strong> rzeka na mapie i gwiazda na niebie są różnymi obiektami, ale problem AI jest podobny — poprawnie zrozumieć pozycję, skalę, czas, geometrię i niepewność, zanim zacznie interpretować wzór.</div>
+      <div class="links">
+        <a href="../arctic-90n/">90°N — stacja badawcza</a>
+        <a href="../constellation/">TP-26 — konstelacja</a>
+        <a href="../multi-angle/">Obserwacja wielokątowa</a>
+        <a href="../investigation/">Investigation Support</a>
+      </div>
+    </section>
+
+    <section>
+      <h2>12. Co AI powinna próbować znaleźć w następnych latach</h2>
+      <div class="cards">
+        <div class="card"><b>Sieci przyczynowe</b><span>Czy zmiana w głównej rzece poprzedza lub koreluje ze zmianą w konkretnych jeziorach i kanałach.</span></div>
+        <div class="card"><b>Wąskie gardła hydrauliczne</b><span>Miejsca, w których geometria, osad albo infrastruktura mogą ograniczać wymianę wody — do późniejszej walidacji pomiarami.</span></div>
+        <div class="card"><b>Dawne koryta</b><span>Paleorzeki i paleojeziora na terenach dzisiejszych pustyń oraz ich związek z ukształtowaniem terenu.</span></div>
+        <div class="card"><b>Zmiany lodu i śniegu</b><span>Powiązanie górskich zasobów śniegu z późniejszym przepływem i stanem jezior.</span></div>
+        <div class="card"><b>Globalne anomalie</b><span>Obszary, w których trend wody odbiega od klimatycznie i geograficznie podobnych regionów.</span></div>
+        <div class="card"><b>Geometria bez apofenii</b><span>Wyszukiwanie powtarzalnych wzorów w rzekach, jeziorach, górach i gwiazdach z obowiązkowym testem przeciw modelom losowym.</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>13. Zasada końcowa raportu</h2>
+      <p>Największą wartością tych eksperymentów nie jest jedna odważna teoria. Jest nią budowa systemu, który potrafi zachować historię obrazu planety i wrócić do niej po latach. Jeżeli za trzydzieści lat będziemy mieli dla każdej rzeki, jeziora, lodowca i pustyni dobrze opisany zapis zmian, AI będzie mogła zadawać pytania, których dziś nie umiemy jeszcze sformułować.</p>
+      <p>Projekt powinien więc pozostać jednocześnie ciekawy i rygorystyczny: obserwować bez uprzedzeń, nie usuwać wyników niewygodnych dla hipotezy, pokazywać niepewność, porównywać wiele źródeł, odróżniać fakt od interpretacji i nigdy nie zamieniać spekulacji w „dowód” tylko dlatego, że wygląda interesująco.</p>
+      <p class="mission">Terraforming Planet ma służyć temu, aby dane i AI pomagały lepiej rozumieć Ziemię, chronić wodę, życie i środowisko oraz rozwijać narzędzia badawcze, które w przyszłości mogą zostać zastosowane również poza naszą planetą.</p>
+    </section>
+
+    <div class="footer">Terraforming Planet · TEST 016 · Raport obserwacyjny rzek, jezior, gór i pustyń · Evidence first, hypotheses second, speculation clearly labelled</div>
+  </main>
+
+  <script>
+    const select=document.getElementById('testSelect');
+    const frame=document.getElementById('testFrame');
+    const brightness=document.getElementById('brightness');
+    const contrast=document.getElementById('contrast');
+    const brightnessValue=document.getElementById('brightnessValue');
+    const contrastValue=document.getElementById('contrastValue');
+    const reset=document.getElementById('resetView');
+    const openTest=document.getElementById('openTest');
+
+    function testUrl(){return `../experiment-${select.value}/`;}
+    function applyVisualAdjustment(){
+      brightnessValue.textContent=`${brightness.value}%`;
+      contrastValue.textContent=`${contrast.value}%`;
+      try{
+        const doc=frame.contentDocument;
+        if(!doc) return;
+        let style=doc.getElementById('tp-report-visual-adjustment');
+        if(!style){style=doc.createElement('style');style.id='tp-report-visual-adjustment';doc.head.appendChild(style);}
+        style.textContent=`img{filter:brightness(${brightness.value}%) contrast(${contrast.value}%) !important;transition:filter .12s linear}`;
+      }catch(err){console.warn('Visual adjustment unavailable for this embedded page',err);}
+    }
+    select.addEventListener('change',()=>{frame.src=testUrl();});
+    frame.addEventListener('load',applyVisualAdjustment);
+    brightness.addEventListener('input',applyVisualAdjustment);
+    contrast.addEventListener('input',applyVisualAdjustment);
+    reset.addEventListener('click',()=>{brightness.value='100';contrast.value='100';applyVisualAdjustment();});
+    openTest.addEventListener('click',()=>window.open(testUrl(),'_blank','noopener'));
+  </script>
+</body>
+</html>
