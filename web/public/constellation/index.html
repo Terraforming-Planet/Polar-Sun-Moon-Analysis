@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="./constellation.css" />
 </head>
 <body>
-  <header class="topbar"><a href="../">← Terra Observation</a><strong>TP-26 GLOBAL VIRTUAL CONSTELLATION</strong><a href="../forum/">Forum</a></header>
+  <header class="topbar"><a href="../">← Terra Observation</a><strong>TP-26 GLOBAL VIRTUAL CONSTELLATION</strong><a href="../ocean-station/">Ocean Station</a><a href="../forum/">Forum</a></header>
   <main>
     <section class="hero">
       <div><p class="eyebrow">26 KIERUNKÓW · WIELE PAŃSTW · ORYGINALNE PRODUKTY</p><h1>Światowa wirtualna konstelacja obserwacji Ziemi</h1><p>Rejestr łączy oficjalne katalogi wielu agencji. Każdy produkt zachowuje identyfikator, czas rejestracji, footprint, rozdzielczość i warunki dostępu.</p></div>
@@ -25,9 +25,16 @@
     </section>
 
     <section class="architecture"><h2>Jak synchronizujemy dane</h2><div class="steps"><article><b>1. Discovery</b><span>Wyszukiwanie produktu w oficjalnym katalogu.</span></article><article><b>2. Verification</b><span>Kontrola ID, czasu, footprintu, sensora i licencji.</span></article><article><b>3. Assignment</b><span>Przypisanie produktu do sektora.</span></article><article><b>4. Frame</b><span>Budowa klatki UTC z wiekiem fragmentów.</span></article><article><b>5. Scientific view</b><span>Braki pozostają brakami.</span></article></div></section>
+
+    <section class="safety-monitor" id="api-health">
+      <div class="section-head"><div><p class="eyebrow">API ACCESS REGISTRY · PUBLIC FIRST</p><h2>Zweryfikowane endpointy TP‑26</h2></div><div class="live-state"><i id="apiDot"></i><span id="apiStatus">Ładowanie rejestru…</span><small id="apiCheckedAt"></small></div></div>
+      <p>Rejestr rozdziela źródła publiczne od tych, które wymagają konta, tokena lub licencji. Frontend nigdy nie zapisuje sekretów. Status „LIVE PUBLIC” oznacza endpoint zweryfikowany odpowiedzią HTTP/JSON podczas przygotowania tej wersji, a nie gwarancję nieprzerwanej dostępności.</p>
+      <div id="apiRegistryCards" class="provider-grid"><p class="empty">Ładowanie statusów API…</p></div>
+    </section>
+
     <section class="filters"><label>Szukaj<input id="search" type="search" placeholder="kraj, agencja, misja…" /></label><label>Status<select id="status"><option value="">Wszystkie</option><option value="active-adapter">Aktywny adapter</option><option value="ready-for-adapter">Gotowe do adaptera</option><option value="planned-adapter">Planowany adapter</option><option value="registered-source">Zarejestrowane źródło</option><option value="discovery-backbone">Federacja katalogów</option><option value="licence-gated">Dostęp licencjonowany</option></select></label><label>Dostęp<select id="access"><option value="">Każdy rodzaj</option><option value="public">Publiczny</option><option value="account">Konto / token</option><option value="commercial">Komercyjny / ograniczony</option></select></label></section>
     <section id="providers" class="provider-grid" aria-live="polite"></section>
-    <section class="rules"><h2>Zasady integralności naukowej</h2><p>Tryb naukowy nie wygładza różnic czasowych i nie zasłania NoData. Automatyczne wykrycia wymagają potwierdzenia przez właściwe służby lub niezależne źródło.</p></section>
+    <section class="rules"><h2>Zasady integralności naukowej</h2><p>Tryb naukowy nie wygładza różnic czasowych i nie zasłania NoData. Automatyczne wykrycia wymagają potwierdzenia przez właściwe służby lub niezależne źródło. Dane satelitarne mogą priorytetyzować miejsca dla sonarów i badań terenowych, ale nie są automatycznie wysokorozdzielczą mapą niezmierzonego dna oceanu.</p></section>
   </main>
   <script type="module" src="./constellation.js"></script>
 </body>

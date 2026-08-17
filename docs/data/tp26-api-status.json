@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "checked_utc": "2026-08-17T21:25:00Z",
+  "policy": "Public discovery first. Never place account passwords, client secrets or bearer tokens in GitHub Pages.",
+  "endpoints": [
+    {
+      "id": "cdse-stac",
+      "name": "Copernicus Data Space STAC",
+      "endpoint": "https://stac.dataspace.copernicus.eu/v1/",
+      "status": "live-public",
+      "checked": "HTTP/JSON landing catalog returned",
+      "auth": "public discovery; some downloads/services require account/token",
+      "docs": "https://documentation.dataspace.copernicus.eu/APIs/STAC.html"
+    },
+    {
+      "id": "usgs-landsat-stac",
+      "name": "USGS LandsatLook STAC",
+      "endpoint": "https://landsatlook.usgs.gov/stac-server",
+      "status": "live-public",
+      "checked": "HTTP/JSON STAC catalog returned",
+      "auth": "public discovery",
+      "docs": "https://landsatlook.usgs.gov/stac-server/api.html"
+    },
+    {
+      "id": "nasa-cmr-stac",
+      "name": "NASA Earthdata CMR-STAC",
+      "endpoint": "https://cmr.earthdata.nasa.gov/stac/",
+      "status": "live-public",
+      "checked": "HTTP/JSON root catalog returned with provider children",
+      "auth": "public discovery; many asset downloads require Earthdata Login",
+      "docs": "https://cmr.earthdata.nasa.gov/stac/docs/index.html"
+    },
+    {
+      "id": "bmkg-earthquakes",
+      "name": "BMKG Indonesia Earthquakes",
+      "endpoint": "https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json",
+      "status": "live-public",
+      "checked": "HTTP/JSON current M5+ list returned",
+      "auth": "none; limit 60 requests/minute/IP; BMKG attribution required",
+      "docs": "https://data.bmkg.go.id/gempabumi/"
+    },
+    {
+      "id": "gebco-2026",
+      "name": "GEBCO_2026 bathymetric grid",
+      "endpoint": "https://download.gebco.net/",
+      "status": "public-data",
+      "checked": "official 2026 subset download and OPeNDAP documented",
+      "auth": "no account required for public grid; conditions/disclaimer apply",
+      "docs": "https://www.gebco.net/data-products/gridded-bathymetry-data"
+    },
+    {
+      "id": "eumetsat",
+      "name": "EUMETSAT Data Store / APIs",
+      "endpoint": "https://api.eumetsat.int/",
+      "status": "account-required",
+      "checked": "registered provider; do not expose credentials in frontend",
+      "auth": "account/token",
+      "docs": "https://user.eumetsat.int/resources/user-guides/eumetsat-data-store-detailed-guide"
+    },
+    {
+      "id": "jaxa",
+      "name": "JAXA G-Portal",
+      "endpoint": null,
+      "status": "account-or-provider-workflow",
+      "checked": "official portal registered; no unrestricted global endpoint promoted by TP-26",
+      "auth": "registration/provider rules depend on product",
+      "docs": "https://gportal.jaxa.jp/gpr/?lang=en"
+    },
+    {
+      "id": "isro",
+      "name": "ISRO / NRSC Bhoonidhi",
+      "endpoint": "https://bhoonidhi.nrsc.gov.in/bhoonidhi-api/",
+      "status": "account-token-product-dependent",
+      "checked": "official API registered; access varies by product",
+      "auth": "registration/token/licence dependent",
+      "docs": "https://bhoonidhi.nrsc.gov.in/bhoonidhi/home.html"
+    }
+  ]
+}

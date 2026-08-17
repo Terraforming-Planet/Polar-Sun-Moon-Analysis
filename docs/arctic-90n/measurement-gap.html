@@ -11,7 +11,7 @@
     main{max-width:1050px;margin:auto;padding:2rem 1rem 4rem}.top{display:flex;justify-content:space-between;gap:1rem;align-items:center;margin-bottom:1.5rem}.top a{color:var(--accent)}
     .hero,.card{background:#071725dd;border:1px solid var(--line);border-radius:18px;padding:1.35rem 1.45rem;box-shadow:0 18px 60px #0006}.hero h1{font-size:clamp(2rem,6vw,4rem);line-height:1.02;margin:.3rem 0}.tag{color:var(--good);font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:.8rem}
     h2{margin-top:2.2rem;color:#bcefff}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}.card h3{margin-top:0;color:var(--accent)}
-    .warn{border-left:4px solid var(--warn);padding-left:1rem;color:#ffe9b3}.ok{border-left:4px solid var(--good);padding-left:1rem}.muted{color:var(--muted)}li{margin:.45rem 0}a{color:#87e7ff}code{background:#0c2638;padding:.1rem .3rem;border-radius:.3rem}
+    .warn{border-left:4px solid var(--warn);padding-left:1rem;color:#ffe9b3}.ok{border-left:4px solid var(--good);padding-left:1rem}.muted{color:var(--muted)}li{margin:.45rem 0}a{color:#87e7ff}code{background:#0c2638;padding:.1rem .3rem;border-radius:.3rem}.numbers{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin-top:1rem}.numbers div{padding:.9rem;border:1px solid #2c617b;border-radius:.8rem;background:#092438}.numbers b{display:block;color:#fff;font-size:1.22rem}.numbers span{display:block;color:#a9c8d6;font-size:.78rem}@media(max-width:650px){.numbers{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -20,15 +20,21 @@
   <section class="hero">
     <div class="tag">Stanowisko naukowe / wersja weryfikowalna</div>
     <h1>Luka pomiarowa 88°N → 90°N</h1>
-    <p><strong>Najważniejsze rozróżnienie:</strong> 88°N nie jest „oszacowanym położeniem bieguna”. Dla ICESat-2 i CryoSat jest to udokumentowana granica wynikająca z geometrii orbity. Jednak <strong>pomiar do 88°N nie jest bezpośrednim pomiarem środowiska dokładnie na 90°N</strong>.</p>
-    <p class="warn">Między 88°N a biegunem pozostaje około <strong>222 km</strong> odległości wzdłuż południka. Ciągła mapa może w tym obszarze zawierać dane bezpośrednie, dane innych sensorów, agregację do siatki, interpolację, asymilację modelową lub pomiary dryfujące. Tych kategorii nie wolno przedstawiać jako identycznych.</p>
+    <p><strong>Najważniejsze rozróżnienie:</strong> 88°N nie jest „oszacowanym położeniem bieguna”. Dla ICESat‑2 i CryoSat jest to udokumentowana granica wynikająca z geometrii orbity. Pomiar do 88°N nie jest bezpośrednim pomiarem środowiska dokładnie na 90°N.</p>
+    <p class="warn">Dokładna odległość 88°N → 90°N po południku elipsoidy WGS‑84 wynosi około <strong>223,4 km</strong>. Uproszczenie „2 × 111 km” daje ~222 km i jest wystarczające do szybkiego szacunku. Wcześniejsze ~250 km jest o około 27 km większe od wartości geodezyjnej.</p>
+    <div class="numbers">
+      <div><b>223,4 km</b><span>88°N → 90°N po południku WGS‑84</span></div>
+      <div><b>222,64 km</b><span>2° długości łuku na równiku (40 075,017 km / 360 × 2)</span></div>
+      <div><b>2°</b><span>różnica szerokości geograficznej; nie oznacza 2° długości geograficznej przy biegunie</span></div>
+    </div>
+    <p class="muted">Ciągła mapa może w centralnym obszarze polarnym zawierać dane bezpośrednie innych sensorów, agregację do siatki, interpolację, asymilację modelową lub pomiary dryfujące. Tych kategorii nie wolno przedstawiać jako identycznych.</p>
   </section>
 
   <h2>Co wiemy z dokumentacji misji</h2>
   <div class="grid">
-    <section class="card"><h3>ICESat-2</h3><p>NASA podaje inklinację orbity 92° i pokrycie do około 88°N/S. Produkt ATL10 mierzy freeboard wzdłuż toru i ma pokrycie do 88°N. NASA wymaga dla miesięcznego freeboardu niepewności ≤3 cm na odcinkach 25 km przy dostępnych szczelinach wodnych i bezchmurnych warunkach.</p></section>
-    <section class="card"><h3>CryoSat</h3><p>ESA podaje, że CryoSat osiąga około 88°N/S. Program walidacyjny ESA wykorzystuje jednoczesne pomiary satelitarne, lotnicze i naziemne właśnie po to, aby ilościowo określać niepewność pomiarów lodu.</p></section>
-    <section class="card"><h3>Grubość lodu</h3><p>Altymetr mierzy wysokość/freeboard, natomiast grubość lodu jest produktem pochodnym zależnym także od śniegu, gęstości lodu, poziomu morza i modelu hydrostatycznego. ESA raportowała w przeglądach walidacyjnych różnice RMS rzędu 0,3–0,6 m dla grubości lodu względem niezależnych obserwacji w analizowanych skalach.</p></section>
+    <section class="card"><h3>ICESat‑2</h3><p>NASA podaje inklinację orbity 92° i pokrycie do około 88°N/S. Produkt ATL10 mierzy freeboard wzdłuż toru i ma pokrycie do 88°N. NASA wymaga dla miesięcznego freeboardu niepewności ≤3 cm na odcinkach 25 km przy określonych warunkach.</p></section>
+    <section class="card"><h3>CryoSat</h3><p>ESA podaje, że CryoSat osiąga około 88°N/S. Program walidacyjny ESA wykorzystuje jednoczesne pomiary satelitarne, lotnicze i naziemne, aby ilościowo określać niepewność pomiarów lodu.</p></section>
+    <section class="card"><h3>Grubość lodu</h3><p>Altymetr mierzy wysokość/freeboard, natomiast grubość lodu jest produktem pochodnym zależnym także od śniegu, gęstości lodu, poziomu morza i modelu hydrostatycznego. Precyzja instrumentu i niepewność końcowego produktu geofizycznego to dwie różne rzeczy.</p></section>
     <section class="card"><h3>Dane siatkowe</h3><p>Produkty gridded mogą sięgać bliżej bieguna niż bezpośredni tor ATL10. To jest użyteczne naukowo, ale komórka siatki nie jest tym samym co impuls lasera lub radarowy pomiar wykonany fizycznie w punkcie 90°N.</p></section>
   </div>
 
@@ -38,37 +44,29 @@
 
   <h2>Nieuczciwe byłoby podanie jednej liczby błędu</h2>
   <p>Nie istnieje jedna uczciwa wartość typu „biegun jest mierzony z błędem 30%”. Każda zmienna ma inny budżet niepewności: freeboard, grubość lodu, pokrycie lodowe, śnieg, temperatura, zasolenie, strumień ciepła, ciśnienie i parametry atmosferyczne.</p>
-  <ul>
-    <li>NASA: wymóg niepewności freeboardu ICESat-2 ≤3 cm na 25 km przy określonych warunkach.</li>
-    <li>NASA: pointing knowledge około 6,5 m, pointing control około 45 m.</li>
-    <li>NASA: oczekiwany 100-shot standard deviation dla zasięgu nad lodem morskim około 3–8 cm zależnie od wiązki i warunków.</li>
-    <li>ESA: w przeglądach walidacyjnych grubości lodu CryoSat pojawiają się RMS differences około 0,3–0,6 m względem niezależnych metod w analizowanych skalach.</li>
-  </ul>
-  <p>Te liczby nie są jednym „błędem Arktyki”. Pokazują natomiast, że <strong>precyzja instrumentu i dokładność końcowego produktu geofizycznego to nie to samo</strong>.</p>
 
   <h2>Eksperyment, który powinien rozstrzygnąć spór</h2>
   <ol>
     <li>utworzyć możliwie stabilny, precyzyjnie pozycjonowany punkt referencyjny przy 90°N,</li>
     <li>rozmieścić redundantne GNSS, meteorologię, śnieg, lód, ocean i radiometrię,</li>
     <li>utrzymywać pełny rejestr kalibracji i wymian sensorów,</li>
-    <li>porównywać pomiary z ICESat-2, CryoSat, Sentinel, SMOS i produktami siatkowymi,</li>
+    <li>porównywać pomiary z ICESat‑2, CryoSat, Sentinel, SMOS i produktami siatkowymi,</li>
     <li>równolegle utrzymywać sensory dryfujące,</li>
     <li>oddzielnie policzyć błędy czasu, miejsca, kolokacji, przestrzeni, sensorów i algorytmów,</li>
     <li>opublikować wynik nawet wtedy, jeśli wykaże, że stała stacja daje mniejszą korzyść niż zakładano.</li>
   </ol>
 
   <h2>Wniosek</h2>
-  <p class="ok"><strong>88°N jest znanym limitem orbitalnym wybranych misji. Nie jest pomiarem 90°N.</strong> To, czego nie znamy dziś jedną prostą liczbą, to dodatkowa niepewność wynikająca z reprezentowania centralnego obszaru polarnego przez mieszaninę torów satelitarnych, produktów pochodnych, modeli i ruchomych obserwacji. Stały punkt 90°N miałby sens naukowy właśnie po to, aby tę niepewność zmierzyć zamiast o niej spekulować.</p>
+  <p class="ok"><strong>88°N jest znanym limitem orbitalnym wybranych misji. Nie jest pomiarem 90°N.</strong> Luka geometryczna do bieguna ma około 223,4 km po WGS‑84. To, czego nie znamy jedną prostą liczbą, to dodatkowa niepewność wynikająca z reprezentowania centralnego obszaru polarnego przez mieszaninę torów satelitarnych, produktów pochodnych, modeli i ruchomych obserwacji.</p>
 
   <h2>Oficjalne źródła</h2>
   <ul class="muted">
-    <li><a href="https://icesat-2.gsfc.nasa.gov/science/specs">NASA ICESat-2 — Technical Specs</a></li>
-    <li><a href="https://icesat-2.gsfc.nasa.gov/pages/icesat-2-technical-requirements">NASA ICESat-2 — Technical Requirements</a></li>
+    <li><a href="https://earth-info.nga.mil/?action=wgs84&dir=wgs84">NGA — WGS 84</a></li>
+    <li><a href="https://icesat-2.gsfc.nasa.gov/science/specs">NASA ICESat‑2 — Technical Specs</a></li>
+    <li><a href="https://icesat-2.gsfc.nasa.gov/pages/icesat-2-technical-requirements">NASA ICESat‑2 — Technical Requirements</a></li>
     <li><a href="https://nsidc.org/data/atl10/versions/7">NASA/NSIDC — ATL10 Sea Ice Freeboard V7</a></li>
-    <li><a href="https://icesat-2.gsfc.nasa.gov/sea-ice-data">NASA — ICESat-2 Sea Ice Data</a></li>
     <li><a href="https://www.esa.int/Applications/Observing_the_Earth/FutureEO/CryoSat/Satellite">ESA — CryoSat Satellite / Orbit</a></li>
     <li><a href="https://blogs.esa.int/cryosat-ice-blog/arctic-campaign/">ESA — CryoSat Arctic Validation Campaign</a></li>
-    <li><a href="https://lps16.esa.int/page_session56.php">ESA — CryoSat Sea-Ice Validation Summary</a></li>
   </ul>
 </main>
 </body>

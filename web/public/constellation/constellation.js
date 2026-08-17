@@ -147,3 +147,38 @@ for (const node of [safety.type, safety.severity, safety.search]) {
 $('#refreshEvents').addEventListener('click', loadEvents)
 loadEvents()
 setInterval(loadEvents, 60000)
+
+function endpointStateLabel(status='') {
+  if (status === 'live-public') return 'LIVE PUBLIC'
+  if (status === 'public-data') return 'PUBLIC DATA'
+  if (status.includes('account')) return 'ACCOUNT / TOKEN'
+  return status.toUpperCase().replaceAll('-', ' ')
+}
+
+async function loadApiRegistry() {
+  const target = $('#apiRegistryCards')
+  if (!target) return
+  try {
+    const response = await fetch(`../data/tp26-api-status.json?t=${Date.now()}`, {cache:'no-store'})
+    if (!response.ok) throw new Error(`HTTP ${response.status}`)
+    const data = await response.json()
+    target.replaceChildren()
+    for (const item of data.endpoints || []) {
+      const card = document.createElement('article')
+      card.className = `provider ${item.status === 'live-public' ? 'active-adapter' : item.status === 'public-data' ? 'ready-for-adapter' : 'registered-source'}`
+      const endpoint = item.endpoint ? `<a href="${item.endpoint}" target="_blank" rel="noreferrer">Endpoint</a>` : '<span class="no-api">Brak otwartego endpointu</span>'
+      card.innerHTML = `<div class="provider-head"><span>${endpointStateLabel(item.status)}</span><b>${item.checked || ''}</b></div><h2>${item.name}</h2><p>${item.auth || ''}</p><div class="links"><a href="${item.docs}" target="_blank" rel="noreferrer">Oficjalne info</a>${endpoint}</div>`
+      target.append(card)
+    }
+    $('#apiStatus').textContent = `${(data.endpoints || []).filter(x => x.status === 'live-public').length} publiczne endpointy zweryfikowane odpowiedzią`
+    $('#apiCheckedAt').textContent = formatTime(data.checked_utc)
+    $('#apiDot').className = 'active'
+  } catch (error) {
+    target.innerHTML = `<p class="empty">Nie udało się wczytać rejestru API: ${String(error)}</p>`
+    $('#apiStatus').textContent = 'Rejestr API niedostępny'
+    $('#apiCheckedAt').textContent = String(error)
+    $('#apiDot').className = 'error'
+  }
+}
+
+loadApiRegistry()
