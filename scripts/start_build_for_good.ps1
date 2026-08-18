@@ -98,9 +98,9 @@ LAUNCHER CONTEXT / REQUIRED OUTCOME
 $prompt = $brief + $launcherContext
 
 Write-Host 'Starting Codex implementation from the v2 repository brief...' -ForegroundColor Green
-Write-Host 'Auto Edit may request approval for shell commands/tests. Reject unrelated or destructive commands.' -ForegroundColor Yellow
+Write-Host 'Using current non-interactive Codex exec mode with workspace-write sandbox.' -ForegroundColor Yellow
 
-& codex --auto-edit $prompt
+& codex exec --sandbox workspace-write $prompt
 if ($LASTEXITCODE -ne 0) {
     throw "Codex exited with code $LASTEXITCODE. Review its last output before continuing."
 }
