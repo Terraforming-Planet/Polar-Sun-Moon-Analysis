@@ -13,7 +13,7 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 Set-Location $repoRoot
 
-Write-Host '=== Terraforming Planet / BUILD FOR GOOD v2 ===' -ForegroundColor Cyan
+Write-Host '=== Terraforming Planet / BUILD FOR GOOD v3 ===' -ForegroundColor Cyan
 Write-Host 'Public language target: ENGLISH ONLY' -ForegroundColor Cyan
 Write-Host 'Research stations: Arctic 90N / Sahara / Oceans / Earth-Space 512' -ForegroundColor Cyan
 Write-Host "Repository: $repoRoot"
@@ -27,9 +27,6 @@ if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
 if (-not (Get-Command codex -ErrorAction SilentlyContinue)) {
     throw 'Codex CLI was not found. Install/update it first with: npm install -g @openai/codex'
 }
-if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
-    throw 'Python is required.'
-}
 if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
     throw 'Node.js/npm is required for the web application.'
 }
@@ -38,7 +35,6 @@ Write-Host 'Tool versions:' -ForegroundColor DarkCyan
 git --version
 gh --version | Select-Object -First 1
 codex --version
-python --version
 npm --version
 
 $expectedBranch = 'agent/build-for-good-ui-l4'
@@ -94,13 +90,15 @@ LAUNCHER CONTEXT / REQUIRED OUTCOME
 - Keep the existing working UI accessible as an English Legacy / Classic Interface.
 - Build the language-audit script and make it pass on source and deployable output.
 - Do not invent a discovery. The real one-hour L4 research sprint runs only after implementation/validation.
+- IMPORTANT WINDOWS WORKAROUND: focus this Codex session on editing source, tests, scripts and docs. Do not run heavyweight npm/Python test or build commands inside the Codex sandbox. The host PowerShell launcher will run validation after Codex exits.
 "@
 $prompt = $brief + $launcherContext
 
-Write-Host 'Starting Codex implementation from the v2 repository brief...' -ForegroundColor Green
-Write-Host 'Using current non-interactive Codex exec mode with workspace-write sandbox.' -ForegroundColor Yellow
+Write-Host 'Starting Codex implementation from the v3 repository brief...' -ForegroundColor Green
+Write-Host 'Native Windows workaround: forcing the unelevated Windows sandbox backend for workspace edits.' -ForegroundColor Yellow
+Write-Host 'Host PowerShell will run builds/tests after Codex exits.' -ForegroundColor Yellow
 
-& codex exec --sandbox workspace-write $prompt
+& codex -c 'windows.sandbox="unelevated"' exec --sandbox workspace-write $prompt
 if ($LASTEXITCODE -ne 0) {
     throw "Codex exited with code $LASTEXITCODE. Review its last output before continuing."
 }
@@ -114,18 +112,37 @@ if (-not (Test-Path $languageAudit)) {
     throw 'Codex did not create scripts/audit_public_language.py. Full-English public-site migration is not verified.'
 }
 
+$pythonExe = $null
+$pythonArgs = @()
+if (Get-Command python -ErrorAction SilentlyContinue) {
+    & python -c "import sys; print(sys.version)" *> $null
+    if ($LASTEXITCODE -eq 0) {
+        $pythonExe = 'python'
+    }
+}
+if (-not $pythonExe -and (Get-Command py -ErrorAction SilentlyContinue)) {
+    & py -3 -c "import sys; print(sys.version)" *> $null
+    if ($LASTEXITCODE -eq 0) {
+        $pythonExe = 'py'
+        $pythonArgs = @('-3')
+    }
+}
+if (-not $pythonExe) {
+    throw 'A real Python 3 installation was not found. The Microsoft Store alias is not sufficient. Install Python 3, then rerun this launcher.'
+}
+
 Write-Host 'Running mandatory public-language audit...' -ForegroundColor Cyan
-python $languageAudit
+& $pythonExe @pythonArgs $languageAudit
 if ($LASTEXITCODE -ne 0) {
     throw 'Public-language audit failed. Fix remaining Polish user-facing strings before the L4 research sprint.'
 }
 
 if (-not $SkipValidation) {
     Write-Host 'Running Python quality gates...' -ForegroundColor Cyan
-    python -m ruff check .
+    & $pythonExe @pythonArgs -m ruff check .
     if ($LASTEXITCODE -ne 0) { throw 'Ruff failed.' }
 
-    python -m pytest -q
+    & $pythonExe @pythonArgs -m pytest -q
     if ($LASTEXITCODE -ne 0) { throw 'Pytest failed.' }
 
     Write-Host 'Running web quality gates...' -ForegroundColor Cyan
@@ -143,7 +160,7 @@ if (-not $SkipValidation) {
     }
 
     Write-Host 'Re-running language audit after web build...' -ForegroundColor Cyan
-    python $languageAudit
+    & $pythonExe @pythonArgs $languageAudit
     if ($LASTEXITCODE -ne 0) { throw 'Post-build language audit failed.' }
 } else {
     Write-Host 'Full validation was explicitly skipped; mandatory language audit still passed.' -ForegroundColor Yellow
