@@ -10,7 +10,7 @@ from .device import write_device_json
 from .training import (
     TrainingConfig,
     assess_training_labels,
-    discover_training_images,
+    discover_training_dataset,
     run_self_supervised_training,
 )
 
@@ -58,13 +58,30 @@ def main() -> int:
 
     labels = assess_training_labels(repo_root / "data" / "training")
     _write_json(run_dir / "label_audit.json", labels)
-    images = discover_training_images(repo_root, max_images=args.max_images)
+
+    records, dataset_manifest = discover_training_dataset(
+        repo_root,
+        start_year=args.start_year,
+        end_year=args.end_year,
+        max_images=args.max_images,
+    )
+    _write_json(run_dir / "dataset_manifest.json", dataset_manifest)
+    train_records = [record for record in records if record.split == "train"]
+    train_images = [repo_root / record.path for record in train_records]
     _write_json(
         run_dir / "source_manifest.json",
         {
-            "image_count": len(images),
-            "images": [path.as_posix() for path in images],
-            "source_rule": "local cached/published Earth-observation imagery only",
+            "dataset_schema": dataset_manifest["schema"],
+            "selected_count": dataset_manifest["selected_count"],
+            "train_image_count": len(train_images),
+            "validation_count": sum(record.split == "validation" for record in records),
+            "test_count": sum(record.split == "test" for record in records),
+            "counts_by_source": dataset_manifest["counts_by_source"],
+            "counts_by_domain": dataset_manifest["counts_by_domain"],
+            "source_rule": (
+                "local cached/published Earth-observation imagery; deterministic "
+                "train/validation/test split"
+            ),
         },
     )
 
@@ -72,8 +89,22 @@ def main() -> int:
     print(
         json.dumps(
             {
+                "event": "dataset_ready",
+                "selected_count": len(records),
+                "train_count": len(train_images),
+                "validation_count": sum(record.split == "validation" for record in records),
+                "test_count": sum(record.split == "test" for record in records),
+                "counts_by_source": dataset_manifest["counts_by_source"],
+                "counts_by_domain": dataset_manifest["counts_by_domain"],
+            }
+        ),
+        flush=True,
+    )
+    print(
+        json.dumps(
+            {
                 "event": "training_input",
-                "image_count": len(images),
+                "image_count": len(train_images),
                 "supervised_status": labels["supervised_training"],
                 "run_dir": run_dir.as_posix(),
             }
@@ -90,10 +121,17 @@ def main() -> int:
         batch_size=args.batch_size,
         max_images=args.max_images,
     )
-    metrics = run_self_supervised_training(images, run_dir, training_config)
+    metrics = run_self_supervised_training(train_images, run_dir, training_config)
     summary = {
         "started_at": run_dir.name,
         "completed_at": datetime.now(UTC).isoformat(),
+        "dataset": {
+            "schema": dataset_manifest["schema"],
+            "selected_count": dataset_manifest["selected_count"],
+            "train_count": len(train_images),
+            "counts_by_source": dataset_manifest["counts_by_source"],
+            "counts_by_domain": dataset_manifest["counts_by_domain"],
+        },
         "training": metrics,
         "supervised_label_audit": labels,
         "device": device,
