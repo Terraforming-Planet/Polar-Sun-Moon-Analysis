@@ -126,7 +126,11 @@ def run_preflight(repo_root: Path, workers: int = 6) -> dict[str, object]:
         for future in as_completed(futures):
             result = future.result()
             results.append(result)
-            print(json.dumps({"event": "adapter_probe", **result}, separators=(",", ":")), flush=True)
+            message = json.dumps(
+                {"event": "adapter_probe", **result},
+                separators=(",", ":"),
+            )
+            print(message, flush=True)
 
     results.sort(key=lambda item: str(item["id"]))
     summary = {
@@ -141,12 +145,19 @@ def run_preflight(repo_root: Path, workers: int = 6) -> dict[str, object]:
             "ISRO / NRSC Bhoonidhi",
             "EUMETSAT product download API",
         ],
-        "rule": "A failed endpoint is a transport observation, not evidence that environmental data are absent.",
+        "rule": (
+            "A failed endpoint is a transport observation, not evidence that environmental "
+            "data are absent."
+        ),
     }
     output = repo_root / "research_runs" / "adapter_preflight_latest.json"
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-    print(json.dumps({"event": "adapter_preflight_complete", "path": str(output), **summary}, default=str), flush=True)
+    completed = json.dumps(
+        {"event": "adapter_preflight_complete", "path": str(output), **summary},
+        default=str,
+    )
+    print(completed, flush=True)
     return summary
 
 
