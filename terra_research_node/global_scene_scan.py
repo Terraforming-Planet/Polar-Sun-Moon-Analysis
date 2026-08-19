@@ -193,7 +193,9 @@ def scan_usgs_landsat(
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Screen 100k+ unique official USGS Landsat scene records without full downloads."
+        description=(
+            "Screen 100k+ unique official USGS Landsat scene records without full downloads."
+        )
     )
     parser.add_argument("--target-scenes", type=int, default=200_000)
     parser.add_argument("--start-year", type=int, default=1990)
