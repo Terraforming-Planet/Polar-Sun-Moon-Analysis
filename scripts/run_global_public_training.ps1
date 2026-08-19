@@ -17,6 +17,13 @@ if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
     throw 'python was not found in the active environment.'
 }
 
+Write-Host '=== STAGE 0 / HISTORICAL LANDSAT SEED / 1990-1999 ===' -ForegroundColor Cyan
+Write-Host 'USGS STAC is best-effort: an external outage is logged and the run continues.' -ForegroundColor DarkCyan
+python -m terra_research_node.historical_public_seed --start-year 1990 --end-year 1999 --max-images 2500
+if ($LASTEXITCODE -ne 0) {
+    Write-Warning 'Historical seed returned a non-zero code. Continuing with other official public sources.'
+}
+
 Write-Host '=== STAGE 1 / GLOBAL PUBLIC SATELLITE DATASET / CPU + NETWORK ===' -ForegroundColor Cyan
 Write-Host "Target unique downloaded images/windows: $TargetImages" -ForegroundColor Cyan
 Write-Host 'Official/public sources: NASA GIBS, USGS Landsat, ESA/Copernicus CDSE' -ForegroundColor Cyan
