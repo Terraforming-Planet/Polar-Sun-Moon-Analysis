@@ -1,6 +1,10 @@
 from pathlib import Path
 
-from terra_research_node.site_corpus import _is_research_image, build_site_corpus, extract_gallery_spec
+from terra_research_node.site_corpus import (
+    _is_research_image,
+    build_site_corpus,
+    extract_gallery_spec,
+)
 
 
 def test_extract_gallery_spec_for_dynamic_test_page() -> None:
