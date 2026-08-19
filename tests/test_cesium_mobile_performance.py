@@ -31,10 +31,8 @@ def test_full_live_uses_one_global_viirs_cloud_bearing_layer() -> None:
     ) in source
     for mode in ("full-live-earth", "global-clouds", "regional-clouds", "nasa-day"):
         assert f"layer === '{mode}'" in source
-    assert (
-        "animatedMode = layer === 'regional-clouds' || layer === 'ocean-waves'"
-        in source
-    )
+    for mode in ("regional-clouds", "ocean-waves", "goes-east", "goes-west"):
+        assert f"layer === '{mode}'" in source
 
     composition_start = source.index("const usesGlobalTrueColor =")
     regional_start = source.index(
@@ -62,6 +60,24 @@ def test_every_globe_layer_uses_same_utc_day_night_terminator() -> None:
     assert "real-time Sun lighting" in source
     assert "disabled={cloudCoverageMode}" not in source
     assert "solarLighting && !cloudCoverageMode" not in source
+
+
+def test_public_live_adapters_are_available_in_the_globe_selector() -> None:
+    source = SOURCE.read_text(encoding="utf-8")
+
+    expected = (
+        "NASA Terra MODIS",
+        "NOAA GOES-East",
+        "NOAA GOES-West",
+        "Copernicus Sentinel — true colour",
+        "Copernicus Sentinel — NDVI",
+        "EUMETSAT EUMETView",
+    )
+    for label in expected:
+        assert label in source
+    assert "VITE_EUMETVIEW_LAYER" in source
+    assert "VITE_CDSE_TRUE_COLOR_LAYER" in source
+    assert "VITE_CDSE_NDVI_LAYER" in source
 
 
 def test_mobile_full_live_reduces_expensive_overlays() -> None:
