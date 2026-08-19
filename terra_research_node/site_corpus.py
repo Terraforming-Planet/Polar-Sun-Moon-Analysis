@@ -138,7 +138,6 @@ def _get_bytes(url: str, *, retries: int = 4, timeout: float = 60.0) -> bytes:
 
 def _download_remote_galleries(repo_root: Path) -> tuple[list[SiteImageRecord], list[str]]:
     pages_root = repo_root / "web" / "public"
-    cache_root = repo_root / "research_cache" / "site_corpus"
     records: list[SiteImageRecord] = []
     errors: list[str] = []
     if not pages_root.exists():
@@ -162,7 +161,12 @@ def _download_remote_galleries(repo_root: Path) -> tuple[list[SiteImageRecord], 
             if not isinstance(gallery_path, str) or not gallery_path.startswith("published/"):
                 continue
             remote_url = f"{RAW_ROOT}/{branch}/{gallery_path}"
-            relative_cache = Path("research_cache") / "site_corpus" / experiment / Path(gallery_path).name
+            relative_cache = (
+                Path("research_cache")
+                / "site_corpus"
+                / experiment
+                / Path(gallery_path).name
+            )
             season = raw.get("season")
             year = raw.get("year")
             if isinstance(season, str) and isinstance(year, int):
@@ -196,7 +200,11 @@ def _download_remote_galleries(repo_root: Path) -> tuple[list[SiteImageRecord], 
     return records, errors
 
 
-def build_site_corpus(repo_root: Path, *, download_remote: bool = True) -> tuple[list[SiteImageRecord], dict[str, Any]]:
+def build_site_corpus(
+    repo_root: Path,
+    *,
+    download_remote: bool = True,
+) -> tuple[list[SiteImageRecord], dict[str, Any]]:
     """Inventory all unique research imagery exposed by the site and TEST galleries."""
     records = _local_records(repo_root)
     remote_errors: list[str] = []
