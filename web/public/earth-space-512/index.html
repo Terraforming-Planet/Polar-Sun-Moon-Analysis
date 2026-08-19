@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#030812" />
+  <title>Earth–Space 512 Research Station</title>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#02060d;color:#e9f8ff;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}body{overflow-x:hidden}a{color:#8de6ff}.top{position:sticky;top:0;z-index:20;display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 12px;background:#06101bee;border-bottom:1px solid #21445c;backdrop-filter:blur(12px)}.top strong{margin-right:auto;color:#9ce9ff}.top a{text-decoration:none;padding:8px 10px;border:1px solid #2a5875;border-radius:8px;background:#0a2135;color:#effaff}main{width:min(1280px,calc(100% - 20px));margin:auto;padding:18px 0 60px}.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;align-items:stretch}.panel{border:1px solid #1f4863;border-radius:16px;background:linear-gradient(145deg,#081d2ddd,#040b14ee);box-shadow:0 20px 60px #0008}.copy{padding:24px}.kicker{color:#8ee7ff;font-size:.78rem;letter-spacing:.16em;font-weight:900}.copy h1{font-size:clamp(2rem,5vw,4rem);line-height:1;margin:.45rem 0 1rem}.copy p{color:#b9d3e1;max-width:760px}.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.badge{padding:6px 8px;border:1px solid #2f6685;border-radius:999px;background:#0a263a;font-size:.75rem;font-weight:800}.viewport{position:relative;min-height:560px;overflow:hidden}.viewport canvas{position:absolute;inset:0;width:100%;height:100%;display:block}.hud{position:absolute;z-index:5;left:12px;right:12px;top:12px;display:flex;gap:8px;flex-wrap:wrap;pointer-events:none}.hud button,.hud label,.hud .status{pointer-events:auto;border:1px solid #357394;border-radius:9px;background:#071c2ddd;color:#effaff;padding:8px 10px;font-weight:700}.hud label{display:flex;align-items:center;gap:7px}.hud input{width:auto}.status{margin-left:auto}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}.metric{padding:14px}.metric b{display:block;font-size:1.5rem}.metric span{font-size:.78rem;color:#9dbccc}.note{margin-top:14px;padding:14px;border-left:4px solid #67ddff;background:#092135;color:#cdeeff;border-radius:8px}.inspector{margin-top:14px;padding:18px}.inspector h2{margin-top:0}.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.fact{padding:12px;border:1px solid #173a50;border-radius:10px;background:#061522}.fact span{display:block;font-size:.74rem;color:#8fb0c3}.fact b{font-size:1rem}.footer{margin-top:18px;color:#779daf;text-align:center;font-size:.78rem}@media(max-width:900px){.hero{grid-template-columns:1fr}.viewport{min-height:620px}.grid{grid-template-columns:1fr 1fr}.facts{grid-template-columns:1fr 1fr}}@media(max-width:560px){main{width:min(100% - 12px,1280px)}.copy{padding:18px}.viewport{min-height:680px}.hud{display:grid;grid-template-columns:1fr 1fr}.status{margin-left:0;grid-column:1/-1}.grid{grid-template-columns:1fr 1fr}.facts{grid-template-columns:1fr}.top strong{width:100%}}
+  </style>
+</head>
+<body>
+<nav class="top"><strong>Terraforming Planet · Earth–Space 512</strong><a href="../">← Main system</a><a href="../research/">Methods & Sources</a></nav>
+<main>
+  <div class="hero">
+    <section class="panel copy">
+      <div class="kicker">RESEARCH STATION · 8 × 8 × 8</div>
+      <h1>Earth–Space 512</h1>
+      <p>A scientific 512-cell spatial address model for Earth–Moon–Sun geometry, near-Earth context and observer-direction experiments. The base grid contains exactly 512 top-level cells; it is a reasoning and indexing model, not a claim of 512 physical sensors.</p>
+      <div class="badges"><span class="badge">512 stable cells</span><span class="badge">WebGL instancing</span><span class="badge">UTC-driven lighting</span><span class="badge">Evidence-first</span></div>
+      <div class="note"><strong>Real-time rule:</strong> the Earth sphere is illuminated from a UTC-derived solar direction. Local day/night therefore differs across longitudes at the same instant. Scientific trajectories and attached observations must keep their original source time and provenance.</div>
+    </section>
+    <section class="panel viewport" id="viewport" aria-label="Interactive Earth Space 512 WebGL model">
+      <div class="hud">
+        <button id="reset">Reset view</button>
+        <button id="rotate">Auto rotate: ON</button>
+        <label>Layer <select id="layer"><option value="all">All 8 layers</option><option value="0">Layer 1</option><option value="1">Layer 2</option><option value="2">Layer 3</option><option value="3">Layer 4</option><option value="4">Layer 5</option><option value="5">Layer 6</option><option value="6">Layer 7</option><option value="7">Layer 8</option></select></label>
+        <div class="status" id="utc">UTC</div>
+      </div>
+    </section>
+  </div>
+
+  <div class="grid">
+    <section class="panel metric"><b>512</b><span>top-level addressable cells</span></section>
+    <section class="panel metric"><b>8</b><span>selectable spatial layers</span></section>
+    <section class="panel metric"><b>UTC</b><span>single time reference for illumination</span></section>
+    <section class="panel metric"><b>WGS84 context</b><span>Earth-oriented research interpretation</span></section>
+  </div>
+
+  <section class="panel inspector">
+    <h2>Cell inspector</h2>
+    <div class="facts"><div class="fact"><span>Selected cell</span><b id="cell-id">Click a cell</b></div><div class="fact"><span>Grid coordinate</span><b id="cell-xyz">—</b></div><div class="fact"><span>Numeric index</span><b id="cell-index">—</b></div></div>
+    <p class="note">Future satellite, orbit, eclipse or observer data attached to a cell must include source, timestamp, evidence class and uncertainty. Synthetic geometry must remain explicitly identified as model output.</p>
+  </section>
+  <div class="footer">Terraforming Planet · Earth–Space 512 Research Station · public scientific visualization</div>
+</main>
+<script type="module">
+  import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js';
+  import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js';
+
+  const host=document.getElementById('viewport');
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(45,1,.1,200);
+  camera.position.set(12,9,14);
+  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.outputColorSpace=THREE.SRGBColorSpace; host.appendChild(renderer.domElement);
+  const controls=new OrbitControls(camera,renderer.domElement); controls.enableDamping=true; controls.minDistance=7; controls.maxDistance=34;
+  scene.add(new THREE.AmbientLight(0x447799,.55));
+  const sun=new THREE.DirectionalLight(0xffffff,3.0); scene.add(sun);
+  const earth=new THREE.Mesh(new THREE.SphereGeometry(2.15,64,64),new THREE.MeshStandardMaterial({color:0x17688f,roughness:.82,metalness:.03})); scene.add(earth);
+  const atmosphere=new THREE.Mesh(new THREE.SphereGeometry(2.24,64,64),new THREE.MeshBasicMaterial({color:0x5bd7ff,transparent:true,opacity:.08,side:THREE.BackSide})); scene.add(atmosphere);
+
+  const count=512, box=new THREE.BoxGeometry(.72,.72,.72), material=new THREE.MeshBasicMaterial({color:0x63ddff,transparent:true,opacity:.10,wireframe:true});
+  const cells=new THREE.InstancedMesh(box,material,count); const dummy=new THREE.Object3D(); const gap=.88; let n=0;
+  for(let z=0;z<8;z++)for(let y=0;y<8;y++)for(let x=0;x<8;x++){dummy.position.set((x-3.5)*gap,(y-3.5)*gap,(z-3.5)*gap);dummy.updateMatrix();cells.setMatrixAt(n++,dummy.matrix)} scene.add(cells);
+  const selected=new THREE.Mesh(box,new THREE.MeshBasicMaterial({color:0xffdf75,transparent:true,opacity:.42,wireframe:true})); selected.visible=false; scene.add(selected);
+  const raycaster=new THREE.Raycaster(), pointer=new THREE.Vector2();
+  function pick(event){const rect=renderer.domElement.getBoundingClientRect();pointer.x=((event.clientX-rect.left)/rect.width)*2-1;pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;raycaster.setFromCamera(pointer,camera);const hit=raycaster.intersectObject(cells)[0];if(!hit||hit.instanceId==null)return;const i=hit.instanceId;const x=i%8,y=Math.floor(i/8)%8,z=Math.floor(i/64);selected.position.set((x-3.5)*gap,(y-3.5)*gap,(z-3.5)*gap);selected.visible=true;document.getElementById('cell-id').textContent=`ES512-${String(i).padStart(3,'0')}`;document.getElementById('cell-xyz').textContent=`x=${x}, y=${y}, z=${z}`;document.getElementById('cell-index').textContent=String(i)}
+  renderer.domElement.addEventListener('pointerdown',pick);
+  let auto=true; document.getElementById('rotate').onclick=()=>{auto=!auto;document.getElementById('rotate').textContent=`Auto rotate: ${auto?'ON':'OFF'}`};
+  document.getElementById('reset').onclick=()=>{camera.position.set(12,9,14);controls.target.set(0,0,0);controls.update()};
+  document.getElementById('layer').onchange=e=>{const value=e.target.value;for(let i=0;i<count;i++){const matrix=new THREE.Matrix4();cells.getMatrixAt(i,matrix);const p=new THREE.Vector3().setFromMatrixPosition(matrix);const z=Math.floor(i/64);dummy.position.copy(p);dummy.scale.setScalar(value==='all'||Number(value)===z?1:0.001);dummy.updateMatrix();cells.setMatrixAt(i,dummy.matrix)}cells.instanceMatrix.needsUpdate=true};
+  function solarDirection(date){const day=(date-Date.UTC(date.getUTCFullYear(),0,0))/86400000;const g=2*Math.PI/365.25*(day-1+(date.getUTCHours()-12)/24);const dec=.006918-.399912*Math.cos(g)+.070257*Math.sin(g)-.006758*Math.cos(2*g)+.000907*Math.sin(2*g)-.002697*Math.cos(3*g)+.00148*Math.sin(3*g);const subsolarLon=(12-(date.getUTCHours()+date.getUTCMinutes()/60+date.getUTCSeconds()/3600))*15*Math.PI/180;return new THREE.Vector3(Math.cos(dec)*Math.cos(subsolarLon),Math.sin(dec),Math.cos(dec)*Math.sin(subsolarLon)).normalize()}
+  function resize(){const w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/Math.max(1,h);camera.updateProjectionMatrix()}; new ResizeObserver(resize).observe(host); resize();
+  function frame(){requestAnimationFrame(frame);const now=new Date();const dir=solarDirection(now);sun.position.copy(dir.multiplyScalar(20));earth.rotation.y=0;document.getElementById('utc').textContent=now.toISOString().replace('T',' ').slice(0,19)+' UTC';if(auto)cells.rotation.y+=.0008;controls.update();renderer.render(scene,camera)}frame();
+</script>
+</body>
+</html>
