@@ -1,5 +1,5 @@
 {
-  "generatedUtc": "2026-08-19T05:07:32.214695Z",
+  "generatedUtc": "2026-08-19T06:04:05.507365Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
@@ -284,13 +284,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 70.0,
+        "magnitudeValue": 100.0,
         "magnitudeUnit": "kts",
-        "date": "2026-08-18T12:00:00Z",
+        "date": "2026-08-19T00:00:00Z",
         "type": "Point",
         "coordinates": [
-          -166.6,
-          20.4
+          -168.5,
+          20.5
         ]
       },
       "sources": [
@@ -1218,33 +1218,6 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22429",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_22385",
-      "title": "Tropical Storm Peilou",
-      "categories": [
-        "Severe Storms"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 30.0,
-        "magnitudeUnit": "kts",
-        "date": "2026-08-13T18:00:00Z",
-        "type": "Point",
-        "coordinates": [
-          170.2,
-          33.8
-        ]
-      },
-      "sources": [
-        {
-          "id": "JTWC",
-          "url": "https://www.metoc.navy.mil/jtwc/products/wp1326.tcw"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22385",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
@@ -5405,6 +5378,33 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21390",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_21380",
+      "title": "Wildfire P-L Gulch, Rio Blanco, Colorado",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 1500.0,
+        "magnitudeUnit": "acres",
+        "date": "2026-07-13T15:02:00Z",
+        "type": "Point",
+        "coordinates": [
+          -108.22355,
+          39.87355
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-COWRD-000853"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21380",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -5708,8 +5708,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -166.6,
-          20.4
+          -168.5,
+          20.5
         ]
       },
       "properties": {
@@ -5719,8 +5719,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-08-18T12:00:00Z",
-        "observation_time": "2026-08-18T12:00:00Z",
+        "observationUtc": "2026-08-19T00:00:00Z",
+        "observation_time": "2026-08-19T00:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22563",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22563",
         "sources": [
@@ -6713,35 +6713,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-NMSNF-000444"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_22385",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          170.2,
-          33.8
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Tropical Storm Peilou",
-        "categories": [
-          "Severe Storms"
-        ],
-        "observationUtc": "2026-08-13T18:00:00Z",
-        "observation_time": "2026-08-13T18:00:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22385",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22385",
-        "sources": [
-          {
-            "id": "JTWC",
-            "url": "https://www.metoc.navy.mil/jtwc/products/wp1326.tcw"
           }
         ]
       }
@@ -11208,6 +11179,35 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2025-MNMNS-RX259294"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_21380",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -108.22355,
+          39.87355
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Wildfire P-L Gulch, Rio Blanco, Colorado",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-07-13T15:02:00Z",
+        "observation_time": "2026-07-13T15:02:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21380",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21380",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-COWRD-000853"
           }
         ]
       }
