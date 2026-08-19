@@ -16,7 +16,9 @@ describe('RealisticEarthGlobe scene lifecycle', () => {
     expect(globeSource).not.toContain('Legacy sphere · fallback')
     expect(globeSource).not.toContain('StableEarthGlobe')
     expect(globeSource).not.toContain('readEarthModel')
-    expect(globeSource).toContain('Nie pokazujemy zastępczej, umownej kuli ani sztucznej tekstury')
+    expect(globeSource).toContain(
+      'We do not replace the scientific viewer with an artificial fallback sphere or fabricated texture',
+    )
   })
 
   it('stabilizes unchanged hazard markers so periodic JSON refreshes do not recreate Cesium', () => {
@@ -42,10 +44,13 @@ describe('RealisticEarthGlobe scene lifecycle', () => {
     expect(cesiumSource).toContain('markers.slice(0, markerLimit)')
   })
 
-  it('keeps cloud coverage visible across the full globe without terminator clipping', () => {
-    expect(cesiumSource).toContain("const cloudCoverageMode = layer === 'full-live-earth' || layer === 'global-clouds' || layer === 'regional-clouds'")
-    expect(cesiumSource).toContain('viewer.scene.globe.enableLighting = solarLighting && !cloudCoverageMode')
-    expect(cesiumSource).toContain('disabled={cloudCoverageMode}')
+  it('uses the same UTC instant for physical day/night lighting on every globe layer', () => {
+    expect(cesiumSource).toContain(
+      'viewer.clock.currentTime = Cesium.JulianDate.fromIso8601(date.toISOString())',
+    )
+    expect(cesiumSource).toContain('viewer.scene.globe.enableLighting = solarLighting')
+    expect(cesiumSource).toContain('real-time Sun lighting')
+    expect(cesiumSource).not.toContain('disabled={cloudCoverageMode}')
   })
 
   it('uses tiled Cesium imagery and request-render mode in the scientific viewer', () => {
