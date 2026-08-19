@@ -1,0 +1,46 @@
+{
+  "run_id": "20260819T202428Z",
+  "title": "NVIDIA L4 Earth Observation Self-Supervised Pretraining",
+  "date": "2026-08-19",
+  "status": "completed",
+  "evidence_class": "DERIVED_VALUE",
+  "training_mode": "self_supervised_denoising_pretrain",
+  "device": {
+    "name": "NVIDIA L4",
+    "backend": "cuda",
+    "cuda_version": "13.2",
+    "mixed_precision": true
+  },
+  "metrics": {
+    "elapsed_seconds": 3600.094,
+    "steps": 29343,
+    "samples_seen": 704232,
+    "source_images": 66,
+    "batch_size_final": 24,
+    "loss_first": 0.2913292944431305,
+    "loss_last": 0.046197813004255295,
+    "loss_best": 0.028216883540153503,
+    "loss_reduction_first_to_last_percent": 84.14,
+    "loss_reduction_first_to_best_percent": 90.31
+  },
+  "interpretation": {
+    "supported": [
+      "The 60-minute CUDA run completed successfully.",
+      "Training loss decreased substantially during the run.",
+      "704232 samples are training samples/patches, not unique satellite scenes.",
+      "The run used 66 source images and repeatedly sampled them during self-supervised training."
+    ],
+    "not_supported": [
+      "The run does not by itself prove scientific environmental discoveries.",
+      "The run does not establish supervised detection accuracy because ground-truth labels were not claimed.",
+      "Generalization must be tested on held-out, provenance-complete satellite scene pairs."
+    ]
+  },
+  "ground_truth_claim": false,
+  "archive": {
+    "filename": "20260819T202428Z_FULL_LOGS.zip",
+    "size_bytes": 48191955,
+    "sha256": "71B44F6151BBB8992795A144CC222C7A5D7E7D244A6183DED1758D1F230571212",
+    "availability": "local archive; not committed to this repository"
+  }
+}
