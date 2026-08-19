@@ -135,7 +135,9 @@ def run_gpu_audit(
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Collect every research image exposed by the project site and analyze it on CUDA."
+        description=(
+            "Collect every research image exposed by the project site and analyze it on CUDA."
+        )
     )
     parser.add_argument("--duration-minutes", type=float, default=60.0)
     parser.add_argument("--resolution", type=int, default=512)
