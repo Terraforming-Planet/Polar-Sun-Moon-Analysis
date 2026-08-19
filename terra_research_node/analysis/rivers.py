@@ -22,10 +22,10 @@ def _component_count(mask: np.ndarray) -> int:
                 y, x = queue.popleft()
                 for dy, dx in ((-1, 0), (1, 0), (0, -1), (0, 1)):
                     ny, nx = y + dy, x + dx
-                    if 0 <= ny < rows and 0 <= nx < cols:
-                        if water[ny, nx] and not visited[ny, nx]:
-                            visited[ny, nx] = True
-                            queue.append((ny, nx))
+                    in_bounds = 0 <= ny < rows and 0 <= nx < cols
+                    if in_bounds and water[ny, nx] and not visited[ny, nx]:
+                        visited[ny, nx] = True
+                        queue.append((ny, nx))
     return count
 
 
