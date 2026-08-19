@@ -11,7 +11,8 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp", ".tif", ".tiff"}
-LOCAL_ROOTS = ("web/public", "published", "data", "research_cache")
+LOCAL_ROOTS = ("web/public", "docs", "published", "data", "research_cache")
+HTML_ROOTS = ("web/public", "docs")
 RESEARCH_HINTS = (
     "experiment-",
     "experiment_",
@@ -37,6 +38,12 @@ RESEARCH_HINTS = (
 )
 DECORATIVE_TOKENS = ("logo", "favicon", "avatar", "sprite", "button-icon", "ui-icon")
 RAW_ROOT = "https://raw.githubusercontent.com/Terraforming-Planet/Polar-Sun-Moon-Analysis"
+RAW_IMAGE_RE = re.compile(
+    r"https://raw\.githubusercontent\.com/"
+    r"Terraforming-Planet/Polar-Sun-Moon-Analysis/"
+    r"([^/\s\"'`<>]+)/([^\s\"'`<>]+\.(?:png|jpe?g|webp|tiff?))",
+    re.IGNORECASE,
+)
 
 
 @dataclass(slots=True, frozen=True)
@@ -77,7 +84,7 @@ def _is_research_image(relative: str) -> bool:
     text = relative.lower()
     if any(token in Path(text).name for token in DECORATIVE_TOKENS):
         return False
-    if text.startswith("web/public/experiment-"):
+    if text.startswith(("web/public/experiment-", "docs/experiment-")):
         return True
     if any(token in text for token in ("sahara-station", "arctic-90n", "ocean-station")):
         return True
@@ -123,6 +130,10 @@ def extract_gallery_spec(page_text: str) -> tuple[str, str] | None:
     return branch.group(1), experiment.group(1)
 
 
+def extract_embedded_raw_images(page_text: str) -> list[tuple[str, str]]:
+    return sorted(set(RAW_IMAGE_RE.findall(page_text)))
+
+
 def _get_bytes(url: str, *, retries: int = 4, timeout: float = 60.0) -> bytes:
     request = Request(url, headers={"User-Agent": "Terraforming-Planet-Site-Corpus/1.0"})
     for attempt in range(retries):
@@ -134,6 +145,60 @@ def _get_bytes(url: str, *, retries: int = 4, timeout: float = 60.0) -> bytes:
                 raise RuntimeError(f"download failed: {url}: {exc}") from exc
             time.sleep(min(10.0, 2.0**attempt))
     raise RuntimeError("unreachable")
+
+
+def _download_embedded_raw_images(
+    repo_root: Path,
+) -> tuple[list[SiteImageRecord], list[str]]:
+    records: list[SiteImageRecord] = []
+    errors: list[str] = []
+    seen_urls: set[str] = set()
+
+    for relative_root in HTML_ROOTS:
+        root = repo_root / relative_root
+        if not root.exists():
+            continue
+        for page in sorted(root.rglob("*.html")):
+            page_text = page.read_text(encoding="utf-8", errors="ignore")
+            page_relative = page.relative_to(repo_root).as_posix()
+            page_experiment = _infer_experiment(page_relative)
+            for branch, image_path in extract_embedded_raw_images(page_text):
+                remote_url = f"{RAW_ROOT}/{branch}/{image_path}"
+                if remote_url in seen_urls:
+                    continue
+                seen_urls.add(remote_url)
+                digest_name = hashlib.sha256(remote_url.encode("utf-8")).hexdigest()[:16]
+                suffix = Path(image_path).suffix.lower() or ".img"
+                relative_cache = (
+                    Path("research_cache")
+                    / "site_corpus"
+                    / "embedded"
+                    / (page_experiment or "other")
+                    / f"{digest_name}{suffix}"
+                )
+                target = repo_root / relative_cache
+                try:
+                    if not target.exists():
+                        target.parent.mkdir(parents=True, exist_ok=True)
+                        target.write_bytes(_get_bytes(remote_url))
+                    digest = _sha256(target)
+                except RuntimeError as exc:
+                    errors.append(str(exc))
+                    continue
+                records.append(
+                    SiteImageRecord(
+                        path=relative_cache.as_posix(),
+                        sha256=digest,
+                        origin="embedded_site_raw_image",
+                        experiment=page_experiment or _infer_experiment(image_path),
+                        year=_infer_year(image_path),
+                        platform=None,
+                        item_id=None,
+                        source_url=remote_url,
+                        source_scene_sha256=None,
+                    )
+                )
+    return records, errors
 
 
 def _download_remote_galleries(repo_root: Path) -> tuple[list[SiteImageRecord], list[str]]:
@@ -209,8 +274,12 @@ def build_site_corpus(
     records = _local_records(repo_root)
     remote_errors: list[str] = []
     if download_remote:
-        remote_records, remote_errors = _download_remote_galleries(repo_root)
-        records.extend(remote_records)
+        embedded_records, embedded_errors = _download_embedded_raw_images(repo_root)
+        gallery_records, gallery_errors = _download_remote_galleries(repo_root)
+        records.extend(embedded_records)
+        records.extend(gallery_records)
+        remote_errors.extend(embedded_errors)
+        remote_errors.extend(gallery_errors)
 
     by_hash: dict[str, SiteImageRecord] = {}
     for record in records:
@@ -225,15 +294,15 @@ def build_site_corpus(
         counts_by_experiment[key] = counts_by_experiment.get(key, 0) + 1
 
     manifest: dict[str, Any] = {
-        "schema": "terra-site-image-corpus-v1",
+        "schema": "terra-site-image-corpus-v2",
         "unique_image_count": len(unique),
         "counts_by_origin": dict(sorted(counts_by_origin.items())),
         "counts_by_experiment": dict(sorted(counts_by_experiment.items())),
         "remote_download_errors": remote_errors,
         "records": [asdict(record) for record in unique],
         "note": (
-            "Includes unique research imagery from source site assets and dynamically referenced "
-            "TEST galleries. Generated docs copies are not scanned separately, and obvious UI "
+            "Includes unique research imagery stored locally, raw GitHub images embedded in the "
+            "published docs/site pages, and dynamically referenced TEST galleries. Obvious UI "
             "decorations are excluded. Remote gallery previews remain previews, not native bands."
         ),
     }
