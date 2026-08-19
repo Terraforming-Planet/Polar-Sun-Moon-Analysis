@@ -11,12 +11,13 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 Set-Location $repoRoot
+$probeWorkers = [Math]::Min($Workers, 6)
 
 Write-Host '=== TP-26 MULTI-ADAPTER DATASET / CPU + NETWORK ===' -ForegroundColor Cyan
 Write-Host 'This stage does not require the paid NVIDIA L4.' -ForegroundColor Green
 Write-Host "Target unique imagery windows: $TargetImages" -ForegroundColor Cyan
 
-python -m terra_research_node.adapter_preflight --workers ([Math]::Min($Workers, 6))
+python -m terra_research_node.adapter_preflight --workers $probeWorkers
 if ($LASTEXITCODE -ne 0) {
     Write-Warning 'Adapter preflight returned an error; the harvest will still try resilient sources.'
 }
