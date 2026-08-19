@@ -14,8 +14,8 @@ def test_cesium_uses_adaptive_mobile_rendering_limits() -> None:
 
     assert "typeof window === 'undefined'" in source
     assert "window.matchMedia?.('(pointer: coarse)').matches" in source
-    assert "viewer.resolutionScale = constrainedDevice ? .72 : 1" in source
-    assert "maximumScreenSpaceError = constrainedDevice ? 1.5 : .5" in source
+    assert "viewer.resolutionScale = constrainedDevice ? 0.72 : 1" in source
+    assert "maximumScreenSpaceError = constrainedDevice ? 1.5 : 0.5" in source
     assert "tileCacheSize = constrainedDevice ? 250 : 900" in source
     assert "minimumZoomDistance = constrainedDevice ? 25 : 5" in source
     assert "const markerLimit = constrainedDevice ? 250 : 500" in source
@@ -29,11 +29,8 @@ def test_full_live_uses_one_global_viirs_cloud_bearing_layer() -> None:
         "const NASA_GLOBAL_TRUE_COLOR = "
         "'VIIRS_SNPP_CorrectedReflectance_TrueColor'"
     ) in source
-    global_modes = (
-        "layer === 'full-live-earth' || layer === 'global-clouds' || "
-        "layer === 'regional-clouds' || layer === 'nasa-day'"
-    )
-    assert global_modes in source
+    for mode in ("full-live-earth", "global-clouds", "regional-clouds", "nasa-day"):
+        assert f"layer === '{mode}'" in source
     assert (
         "animatedMode = layer === 'regional-clouds' || layer === 'ocean-waves'"
         in source
@@ -54,20 +51,17 @@ def test_full_live_uses_one_global_viirs_cloud_bearing_layer() -> None:
     assert "Himawari_AHI_Band13_Clean_Infrared" in source
 
 
-def test_cloud_modes_do_not_hide_clouds_behind_cesium_terminator() -> None:
+def test_every_globe_layer_uses_same_utc_day_night_terminator() -> None:
     source = SOURCE.read_text(encoding="utf-8")
 
-    cloud_modes = (
-        "layer === 'full-live-earth' || layer === 'global-clouds' || "
-        "layer === 'regional-clouds'"
-    )
-    assert f"const cloudCoverageMode = {cloud_modes}" in source
     assert (
-        "viewer.scene.globe.enableLighting = solarLighting && !cloudCoverageMode"
+        "viewer.clock.currentTime = Cesium.JulianDate.fromIso8601(date.toISOString())"
         in source
     )
-    assert "disabled={cloudCoverageMode}" in source
-    assert "bez odcięcia chmur" in source
+    assert "viewer.scene.globe.enableLighting = solarLighting" in source
+    assert "real-time Sun lighting" in source
+    assert "disabled={cloudCoverageMode}" not in source
+    assert "solarLighting && !cloudCoverageMode" not in source
 
 
 def test_mobile_full_live_reduces_expensive_overlays() -> None:
