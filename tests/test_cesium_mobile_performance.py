@@ -35,14 +35,13 @@ def test_full_live_uses_one_global_viirs_cloud_bearing_layer() -> None:
         assert f"layer === '{mode}'" in source
 
     composition_start = source.index("const usesGlobalTrueColor =")
-    regional_start = source.index(
-        "if (layer === 'regional-clouds') {", composition_start
-    )
+    modis_start = source.index("if (layer === 'nasa-modis') {", composition_start)
+    regional_start = source.index("if (layer === 'regional-clouds') {", modis_start)
     waves_start = source.index("if (layer === 'ocean-waves'", regional_start)
-    global_composition = source[composition_start:regional_start]
+    global_viirs_block = source[composition_start:modis_start]
     regional_block = source[regional_start:waves_start]
 
-    assert "GOES-East_ABI_GeoColor" not in global_composition
+    assert "GOES-East_ABI_GeoColor" not in global_viirs_block
     assert "REGIONAL_CLOUD_PRODUCTS" in regional_block
     assert "GOES-East_ABI_GeoColor" in source
     assert "GOES-West_ABI_GeoColor" in source
