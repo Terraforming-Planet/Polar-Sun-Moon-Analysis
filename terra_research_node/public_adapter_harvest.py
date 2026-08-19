@@ -197,7 +197,9 @@ def _nearest(items: list[dict[str, Any]], target: datetime) -> dict[str, Any] | 
         except ValueError:
             continue
         candidates.append((abs((date - target).total_seconds()), _cloud_cover(item), item))
-    return min(candidates, default=None, key=lambda row: (row[0], row[1]))[2] if candidates else None
+    if not candidates:
+        return None
+    return min(candidates, key=lambda row: (row[0], row[1]))[2]
 
 
 def _search(
@@ -254,7 +256,8 @@ def harvest(repo_root: Path, max_per_adapter: int = 2000) -> dict[str, Any]:
     region_by_id = {region.id: region for region in regions}
     cache_root = repo_root / "research_cache" / "global_public_dataset"
     manifest = cache_root / "records.jsonl"
-    run_root = repo_root / "research_runs" / f"adapter_harvest_{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}"
+    stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
+    run_root = repo_root / "research_runs" / f"adapter_harvest_{stamp}"
     failures = run_root / "failures.jsonl"
     run_root.mkdir(parents=True, exist_ok=True)
     hashes = _load_hashes(manifest)
@@ -327,7 +330,13 @@ def harvest(repo_root: Path, max_per_adapter: int = 2000) -> dict[str, Any]:
                                 flush=True,
                             )
                             break
-                        except (HTTPError, URLError, TimeoutError, RuntimeError, json.JSONDecodeError) as exc:
+                        except (
+                            HTTPError,
+                            URLError,
+                            TimeoutError,
+                            RuntimeError,
+                            json.JSONDecodeError,
+                        ) as exc:
                             _append_jsonl(
                                 failures,
                                 {
@@ -350,7 +359,8 @@ def harvest(repo_root: Path, max_per_adapter: int = 2000) -> dict[str, Any]:
         "failure_log": failures.as_posix(),
         "evidence_class": "OBSERVATION",
     }
-    (run_root / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    summary_path = run_root / "summary.json"
+    summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(json.dumps({"event": "public_adapter_harvest_complete", **summary}), flush=True)
     return summary
 
