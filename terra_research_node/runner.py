@@ -79,7 +79,8 @@ def main() -> int:
             "counts_by_source": dataset_manifest["counts_by_source"],
             "counts_by_domain": dataset_manifest["counts_by_domain"],
             "source_rule": (
-                "local cached/published Earth-observation imagery; deterministic train/validation/test split"
+                "local cached/published Earth-observation imagery; deterministic "
+                "train/validation/test split"
             ),
         },
     )
