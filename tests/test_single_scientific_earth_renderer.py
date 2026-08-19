@@ -13,11 +13,14 @@ def test_public_earth_viewer_uses_only_scientific_cesium_renderer() -> None:
     assert "writeEarthModel" not in source
     assert "Legacy sphere" not in source
     assert "Lekki WGS84" not in source
-    assert "jedyny publiczny renderer Ziemi" in source
+    assert "public scientific Earth renderer" in source
 
 
 def test_failed_cesium_does_not_show_synthetic_globe() -> None:
     source = SOURCE.read_text(encoding="utf-8")
 
-    assert "Nie pokazujemy zastępczej, umownej kuli ani sztucznej tekstury" in source
+    assert (
+        "We do not replace the scientific viewer with an artificial fallback sphere "
+        "or fabricated texture"
+    ) in source
     assert "ScientificViewerFailure" in source
