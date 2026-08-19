@@ -11,12 +11,7 @@ from typing import Any
 import numpy as np
 from PIL import Image, ImageOps
 
-IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".tif", ".tiff", ".webp"}
-HINTS = {
-    "landsat", "sentinel", "satellite", "copernicus", "gibs", "sar",
-    "water", "flood", "river", "lake", "published", "experiment", "paleoriver",
-}
-EXCLUDED = {".git", ".venv", "node_modules", "research_runs", "dist", "__pycache__"}
+from .dataset import EarthObservationRecord, build_earth_observation_dataset
 
 
 @dataclass(slots=True)
@@ -31,7 +26,8 @@ class TrainingConfig:
 
 def assess_training_labels(root: Path = Path("data/training")) -> dict[str, Any]:
     masks = [
-        path for path in root.rglob("*")
+        path
+        for path in root.rglob("*")
         if path.is_file()
         and path.suffix.lower() in {".tif", ".tiff", ".png"}
         and any(token in path.name.lower() for token in ("mask", "label"))
@@ -57,32 +53,36 @@ def assess_training_labels(root: Path = Path("data/training")) -> dict[str, Any]
     }
 
 
-def discover_training_images(repo_root: Path, max_images: int = 768) -> list[Path]:
-    roots = [
-        repo_root / "research_cache",
-        repo_root / "cache",
-        repo_root / "data",
-        repo_root / "docs" / "published",
-        repo_root / "web" / "public",
-    ]
-    found: list[Path] = []
-    for root in roots:
-        if not root.exists():
-            continue
-        for path in root.rglob("*"):
-            if not path.is_file() or path.suffix.lower() not in IMAGE_SUFFIXES:
-                continue
-            if any(part in EXCLUDED for part in path.parts):
-                continue
-            lowered = path.as_posix().lower()
-            if any(hint in lowered for hint in HINTS):
-                found.append(path)
-    unique = sorted(set(found), key=lambda item: item.as_posix())
-    if len(unique) <= max_images:
-        return unique
-    rng = random.Random(20260819)
-    rng.shuffle(unique)
-    return unique[:max_images]
+def discover_training_dataset(
+    repo_root: Path,
+    *,
+    start_year: int = 1990,
+    end_year: int = 2026,
+    max_images: int = 768,
+) -> tuple[list[EarthObservationRecord], dict[str, Any]]:
+    return build_earth_observation_dataset(
+        repo_root,
+        start_year=start_year,
+        end_year=end_year,
+        max_images=max_images,
+    )
+
+
+def discover_training_images(
+    repo_root: Path,
+    max_images: int = 768,
+    *,
+    start_year: int = 1990,
+    end_year: int = 2026,
+) -> list[Path]:
+    records, _ = discover_training_dataset(
+        repo_root,
+        start_year=start_year,
+        end_year=end_year,
+        max_images=max_images,
+    )
+    train_records = [record for record in records if record.split == "train"]
+    return [repo_root / record.path for record in train_records]
 
 
 def _load_images(paths: list[Path], resolution: int) -> tuple[np.ndarray, list[str]]:
@@ -110,14 +110,22 @@ def _load_images(paths: list[Path], resolution: int) -> tuple[np.ndarray, list[s
 def _build_model(torch: Any) -> Any:
     nn = torch.nn
     return nn.Sequential(
-        nn.Conv2d(3, 64, 5, stride=2, padding=2), nn.SiLU(),
-        nn.Conv2d(64, 128, 3, stride=2, padding=1), nn.SiLU(),
-        nn.Conv2d(128, 256, 3, stride=2, padding=1), nn.SiLU(),
-        nn.Conv2d(256, 512, 3, stride=2, padding=1), nn.SiLU(),
-        nn.ConvTranspose2d(512, 256, 4, stride=2, padding=1), nn.SiLU(),
-        nn.ConvTranspose2d(256, 128, 4, stride=2, padding=1), nn.SiLU(),
-        nn.ConvTranspose2d(128, 64, 4, stride=2, padding=1), nn.SiLU(),
-        nn.ConvTranspose2d(64, 3, 4, stride=2, padding=1), nn.Sigmoid(),
+        nn.Conv2d(3, 64, 5, stride=2, padding=2),
+        nn.SiLU(),
+        nn.Conv2d(64, 128, 3, stride=2, padding=1),
+        nn.SiLU(),
+        nn.Conv2d(128, 256, 3, stride=2, padding=1),
+        nn.SiLU(),
+        nn.Conv2d(256, 512, 3, stride=2, padding=1),
+        nn.SiLU(),
+        nn.ConvTranspose2d(512, 256, 4, stride=2, padding=1),
+        nn.SiLU(),
+        nn.ConvTranspose2d(256, 128, 4, stride=2, padding=1),
+        nn.SiLU(),
+        nn.ConvTranspose2d(128, 64, 4, stride=2, padding=1),
+        nn.SiLU(),
+        nn.ConvTranspose2d(64, 3, 4, stride=2, padding=1),
+        nn.Sigmoid(),
     )
 
 
@@ -148,7 +156,7 @@ def run_self_supervised_training(
 
     images, accepted = _load_images(image_paths, config.resolution)
     if len(images) < 4:
-        raise RuntimeError("Need at least four readable Earth-observation images.")
+        raise RuntimeError("Need at least four readable Earth-observation training images.")
 
     output_dir.mkdir(parents=True, exist_ok=True)
     manifest = {
@@ -158,6 +166,7 @@ def run_self_supervised_training(
         "config": asdict(config),
         "evidence_class": "DERIVED_VALUE",
         "ground_truth_claim": False,
+        "split_rule": "train split only; validation/test records are excluded from optimization",
     }
     (output_dir / "training_manifest.json").write_text(
         json.dumps(manifest, indent=2), encoding="utf-8"
@@ -205,26 +214,34 @@ def run_self_supervised_training(
         samples_seen += batch_size
         now = time.monotonic()
         if now - last_report >= 10:
-            print(json.dumps({
-                "event": "training_step",
-                "step": steps,
-                "loss": round(loss_value, 6),
-                "batch_size": batch_size,
-                "samples_seen": samples_seen,
-            }), flush=True)
+            print(
+                json.dumps(
+                    {
+                        "event": "training_step",
+                        "step": steps,
+                        "loss": round(loss_value, 6),
+                        "batch_size": batch_size,
+                        "samples_seen": samples_seen,
+                    }
+                ),
+                flush=True,
+            )
             last_report = now
 
     torch.cuda.synchronize()
     elapsed = time.monotonic() - started
     checkpoint = output_dir / "earth_observation_pretrain.pt"
-    torch.save({
-        "model_state_dict": model.state_dict(),
-        "optimizer_state_dict": optimizer.state_dict(),
-        "config": asdict(config),
-        "steps": steps,
-        "image_count": len(accepted),
-        "training_mode": "self_supervised_denoising_pretrain",
-    }, checkpoint)
+    torch.save(
+        {
+            "model_state_dict": model.state_dict(),
+            "optimizer_state_dict": optimizer.state_dict(),
+            "config": asdict(config),
+            "steps": steps,
+            "image_count": len(accepted),
+            "training_mode": "self_supervised_denoising_pretrain",
+        },
+        checkpoint,
+    )
     metrics: dict[str, Any] = {
         "training_mode": "self_supervised_denoising_pretrain",
         "completed": True,
