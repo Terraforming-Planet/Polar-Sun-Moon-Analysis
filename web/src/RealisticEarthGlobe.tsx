@@ -20,10 +20,10 @@ function ScientificViewerFailure() {
   return (
     <section className="stable-earth-shell earth-viewer-failure" role="alert">
       <div className="stable-earth-head">
-        <strong>Model Ziemi 3D nie został uruchomiony</strong>
-        <span>Cesium / WebGL albo źródło kafelków jest chwilowo niedostępne.</span>
+        <strong>The scientific 3D Earth model could not start</strong>
+        <span>Cesium / WebGL or the selected imagery source is temporarily unavailable.</span>
         <small>
-          Nie pokazujemy zastępczej, umownej kuli ani sztucznej tekstury. Odśwież stronę lub spróbuj ponownie po zmianie połączenia.
+          We do not replace the scientific viewer with an artificial fallback sphere or fabricated texture. Refresh the page or try again after the connection changes.
         </small>
       </div>
     </section>
@@ -39,8 +39,8 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   return (
     <div className="earth-viewer-stack">
       <p className="earth-model-explainer">
-        <strong>Model naukowy:</strong>{' '}
-        Cesium na elipsoidzie WGS84 z kafelkami źródeł oficjalnych. To jedyny publiczny renderer Ziemi; nie przełączamy użytkownika na umowną kulę zastępczą.
+        <strong>Scientific model:</strong>{' '}
+        Cesium on the WGS84 ellipsoid with tiled imagery from official sources. This is the public scientific Earth renderer; it is not replaced by an artificial texture sphere.
       </p>
 
       <EarthViewerErrorBoundary fallback={<ScientificViewerFailure />}>
