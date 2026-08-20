@@ -17,6 +17,9 @@
     "samples_seen": 704232,
     "source_images": 66,
     "batch_size_final": 24,
+    "steps_per_second": 8.1506,
+    "samples_per_second": 195.6149,
+    "mean_training_samples_per_source_image": 10670.18,
     "loss_first": 0.2913292944431305,
     "loss_last": 0.046197813004255295,
     "loss_best": 0.028216883540153503,
@@ -26,17 +29,34 @@
   "interpretation": {
     "supported": [
       "The 60-minute CUDA run completed successfully.",
-      "Training loss decreased substantially during the run.",
+      "Training loss decreased substantially during the run: 84.14% from first to last and 90.31% from first to best observed loss.",
+      "The optimizer sustained about 8.15 steps per second and processed about 195.61 sampled patches per second.",
       "704232 samples are training samples/patches, not unique satellite scenes.",
-      "The run used 66 source images and repeatedly sampled them during self-supervised training."
+      "The run used 66 source images and repeatedly sampled them during self-supervised training.",
+      "The run is a valid optimization/pipeline baseline and produced a checkpoint suitable for downstream validation."
+    ],
+    "methodological_findings": [
+      "The first run is a narrow-corpus baseline rather than a broad Earth survey.",
+      "The mean sampling density was about 10670 training samples per source image, so repeated patch exposure dominates the samples_seen count.",
+      "Generalization remains unmeasured because no held-out scene-level validation result is published for this run.",
+      "The public Run #1 artifact does not include a per-image manifest linking all 66 source images to location, date, sensor, scene ID and quality flags, so site-level environmental conclusions are not reproducible from this publication alone."
     ],
     "not_supported": [
       "The run does not by itself prove scientific environmental discoveries.",
       "The run does not establish supervised detection accuracy because ground-truth labels were not claimed.",
+      "The run does not establish water-area change, shoreline movement, river constriction, glacier change, vegetation change or environmental causation for any named location.",
       "Generalization must be tested on held-out, provenance-complete satellite scene pairs."
     ]
   },
+  "comparison_to_run_2": {
+    "run_2_unique_images": 290,
+    "run_2_vs_run_1_corpus_ratio": 4.3939,
+    "run_2_vs_run_1_corpus_increase_percent": 339.39,
+    "note": "Run #2 improved public corpus/provenance coverage. Loss values across the two runs are not directly comparable because their corpora differ."
+  },
   "ground_truth_claim": false,
+  "causal_environmental_claim": false,
+  "analysis_file": "analysis.json",
   "archive": {
     "filename": "20260819T202428Z_FULL_LOGS.zip",
     "size_bytes": 48191955,
