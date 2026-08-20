@@ -60,25 +60,40 @@ export type ResearchFindingRecord = {
   privacy_note: 'raw-chat-not-included'
 }
 
+export type ResearchAssistantAnswerRecord = {
+  schema: 'terra-assistant-answer/v1'
+  id: string
+  saved_at_utc: string
+  place: {
+    label: string
+    latitude: number
+    longitude: number
+  } | null
+  model: string
+  answer: string
+  privacy_note: 'user-prompt-not-stored'
+}
+
 export const LOCAL_RESEARCH_ARCHIVE_KEY = 'terra-ai-research-archive-v1'
 export const LOCAL_RESEARCH_FINDINGS_KEY = 'terra-ai-research-findings-v1'
+export const LOCAL_ASSISTANT_ANSWERS_KEY = 'terra-ai-assistant-answers-v1'
 
 function finiteNumber(value: number, label: string) {
-  if (!Number.isFinite(value)) throw new Error(`${label} musi być liczbą.`)
+  if (!Number.isFinite(value)) throw new Error(`${label} must be a number.`)
   return value
 }
 
 export function buildResearchManifest(input: ResearchAreaInput, now = new Date()): ResearchManifest {
-  const latitude = finiteNumber(input.latitude, 'Szerokość geograficzna')
-  const longitude = finiteNumber(input.longitude, 'Długość geograficzna')
-  const radiusKm = finiteNumber(input.radiusKm, 'Promień')
-  if (latitude < -90 || latitude > 90) throw new Error('Szerokość geograficzna musi mieścić się w zakresie -90…90°.')
-  if (longitude < -180 || longitude > 180) throw new Error('Długość geograficzna musi mieścić się w zakresie -180…180°.')
-  if (radiusKm <= 0 || radiusKm > 2500) throw new Error('Promień badania musi być większy od 0 i nie większy niż 2500 km.')
-  if (!input.title.trim()) throw new Error('Podaj nazwę badania.')
-  if (!input.startDate || !input.endDate) throw new Error('Podaj początek i koniec zakresu dat.')
-  if (input.startDate > input.endDate) throw new Error('Data początkowa nie może być późniejsza niż końcowa.')
-  if (!input.analyses.length) throw new Error('Wybierz przynajmniej jeden rodzaj analizy.')
+  const latitude = finiteNumber(input.latitude, 'Latitude')
+  const longitude = finiteNumber(input.longitude, 'Longitude')
+  const radiusKm = finiteNumber(input.radiusKm, 'Radius')
+  if (latitude < -90 || latitude > 90) throw new Error('Latitude must be within -90…90°.')
+  if (longitude < -180 || longitude > 180) throw new Error('Longitude must be within -180…180°.')
+  if (radiusKm <= 0 || radiusKm > 2500) throw new Error('Research radius must be greater than 0 and no more than 2500 km.')
+  if (!input.title.trim()) throw new Error('Enter a research title.')
+  if (!input.startDate || !input.endDate) throw new Error('Enter the start and end dates.')
+  if (input.startDate > input.endDate) throw new Error('The start date cannot be later than the end date.')
+  if (!input.analyses.length) throw new Error('Select at least one analysis type.')
 
   const shape = input.shape ?? 'circle'
   const temporalPreset = input.temporalPreset ?? 'custom'
@@ -118,7 +133,7 @@ export function buildResearchFindingRecord(analysis: AreaAnalysisResponse, now =
     schema: 'terra-research-finding/v1',
     id: `finding-${stamp.replace(/[-:.TZ]/g, '').slice(0, 14)}-${coordinateSuffix}`,
     saved_at_utc: stamp,
-    title: analysis.area.place_name || `Badanie ${analysis.area.latitude.toFixed(4)}, ${analysis.area.longitude.toFixed(4)}`,
+    title: analysis.area.place_name || `Research ${analysis.area.latitude.toFixed(4)}, ${analysis.area.longitude.toFixed(4)}`,
     area: { ...analysis.area },
     period: { ...analysis.period },
     depth: analysis.depth,
@@ -136,6 +151,29 @@ export function buildResearchFindingRecord(analysis: AreaAnalysisResponse, now =
     },
     evidence_policy: analysis.evidence_policy,
     privacy_note: 'raw-chat-not-included',
+  }
+}
+
+export function buildAssistantAnswerRecord(input: {
+  answer: string
+  model: string
+  place: { label: string; latitude: number; longitude: number } | null
+}, now = new Date()): ResearchAssistantAnswerRecord {
+  const answer = input.answer.trim()
+  if (!answer) throw new Error('There is no assistant answer to save.')
+  const stamp = now.toISOString()
+  return {
+    schema: 'terra-assistant-answer/v1',
+    id: `assistant-answer-${stamp.replace(/[-:.TZ]/g, '').slice(0, 14)}`,
+    saved_at_utc: stamp,
+    place: input.place ? {
+      label: input.place.label,
+      latitude: input.place.latitude,
+      longitude: input.place.longitude,
+    } : null,
+    model: input.model,
+    answer,
+    privacy_note: 'user-prompt-not-stored',
   }
 }
 
@@ -178,6 +216,28 @@ export function parseLocalResearchFindings(raw: string | null): ResearchFindingR
   }
 }
 
+export function parseLocalAssistantAnswers(raw: string | null): ResearchAssistantAnswerRecord[] {
+  if (!raw) return []
+  try {
+    const parsed = JSON.parse(raw) as unknown
+    if (!Array.isArray(parsed)) return []
+    return parsed.filter((item): item is ResearchAssistantAnswerRecord => {
+      if (!item || typeof item !== 'object') return false
+      const candidate = item as Partial<ResearchAssistantAnswerRecord>
+      return candidate.schema === 'terra-assistant-answer/v1'
+        && candidate.privacy_note === 'user-prompt-not-stored'
+        && typeof candidate.id === 'string'
+        && typeof candidate.answer === 'string'
+        && typeof candidate.model === 'string'
+        && !('prompt' in candidate)
+        && !('question' in candidate)
+        && !('messages' in candidate)
+    })
+  } catch {
+    return []
+  }
+}
+
 export function loadLocalResearchArchive(): ResearchManifest[] {
   if (typeof window === 'undefined') return []
   return parseLocalResearchArchive(window.localStorage.getItem(LOCAL_RESEARCH_ARCHIVE_KEY))
@@ -186,6 +246,11 @@ export function loadLocalResearchArchive(): ResearchManifest[] {
 export function loadLocalResearchFindings(): ResearchFindingRecord[] {
   if (typeof window === 'undefined') return []
   return parseLocalResearchFindings(window.localStorage.getItem(LOCAL_RESEARCH_FINDINGS_KEY))
+}
+
+export function loadLocalAssistantAnswers(): ResearchAssistantAnswerRecord[] {
+  if (typeof window === 'undefined') return []
+  return parseLocalAssistantAnswers(window.localStorage.getItem(LOCAL_ASSISTANT_ANSWERS_KEY))
 }
 
 export function saveResearchManifestLocally(manifest: ResearchManifest) {
@@ -200,6 +265,12 @@ export function saveResearchFindingLocally(finding: ResearchFindingRecord) {
   window.localStorage.setItem(LOCAL_RESEARCH_FINDINGS_KEY, JSON.stringify([finding, ...current].slice(0, 30)))
 }
 
+export function saveAssistantAnswerLocally(answer: ResearchAssistantAnswerRecord) {
+  if (typeof window === 'undefined') return
+  const current = loadLocalAssistantAnswers().filter(item => item.id !== answer.id)
+  window.localStorage.setItem(LOCAL_ASSISTANT_ANSWERS_KEY, JSON.stringify([answer, ...current].slice(0, 50)))
+}
+
 export function deleteResearchManifestLocally(id: string) {
   if (typeof window === 'undefined') return
   const next = loadLocalResearchArchive().filter(item => item.id !== id)
@@ -210,6 +281,12 @@ export function deleteResearchFindingLocally(id: string) {
   if (typeof window === 'undefined') return
   const next = loadLocalResearchFindings().filter(item => item.id !== id)
   window.localStorage.setItem(LOCAL_RESEARCH_FINDINGS_KEY, JSON.stringify(next))
+}
+
+export function deleteAssistantAnswerLocally(id: string) {
+  if (typeof window === 'undefined') return
+  const next = loadLocalAssistantAnswers().filter(item => item.id !== id)
+  window.localStorage.setItem(LOCAL_ASSISTANT_ANSWERS_KEY, JSON.stringify(next))
 }
 
 function downloadJson(filename: string, value: unknown) {
@@ -231,4 +308,8 @@ export function downloadResearchManifest(manifest: ResearchManifest) {
 
 export function downloadResearchFinding(finding: ResearchFindingRecord) {
   downloadJson(`${finding.id}.json`, finding)
+}
+
+export function downloadAssistantAnswer(answer: ResearchAssistantAnswerRecord) {
+  downloadJson(`${answer.id}.json`, answer)
 }
