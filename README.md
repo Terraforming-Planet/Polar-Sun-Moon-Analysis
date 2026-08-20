@@ -1,23 +1,170 @@
 # Terra Observation System
 
-A working, evidence-first platform for polar astronomy, 3D Solar System visualization and
-environmental hazard monitoring. The project uses official NASA JPL Horizons ephemerides and
-public Earth-observation catalogues without substituting invented measurements.
+**BUILD FOR GOOD — open, evidence-first Earth and space observation for environmental research, education and community resilience.**
 
-## Live application
+Terra Observation System combines official public satellite/scientific data, reproducible analysis, an interactive 3D Earth, environmental hazard monitoring and research stations. OpenAI is used only as an evidence-explanation layer over already computed results — never as a replacement for observations or measurements.
 
-After this branch is merged and GitHub Pages finishes deployment:
+## Live demo and public repository
 
-<https://terraforming-planet.github.io/Polar-Sun-Moon-Analysis/>
+- **Live application:** <https://terraforming-planet.github.io/Polar-Sun-Moon-Analysis/>
+- **Public GitHub repository:** <https://github.com/Terraforming-Planet/Polar-Sun-Moon-Analysis>
 
-The responsive React/Three.js interface contains:
+## BUILD FOR GOOD submission summary
 
-- a professional 3D Solar System positioned from heliocentric NASA JPL vectors;
-- polar Sun and Moon charts for the exact North and South Poles;
-- current NASA EONET event geometry on an interactive 3D Earth;
-- a source registry describing resolution, latency, access and limitations;
-- explicit water-in-mountains and seafloor measurement boundaries;
-- public privacy safeguards and no person tracking.
+Terra Observation System helps people inspect environmental change and scientific observations using official, legal and publicly available sources. The project brings Earth-observation data, hazards, polar astronomy, water/climate research and reproducible evidence into one public interface. Codex has been used throughout repository-level development, while the OpenAI Responses API provides a small, guarded **Evidence / Research Explainer** that translates validated findings into clear public-language explanations without inventing data.
+
+## What we built
+
+A working research and monitoring platform that includes:
+
+- an interactive 3D Earth and Solar System visualization;
+- NASA JPL Horizons-based Sun/Moon and polar geometry;
+- current environmental-event geometry from official public catalogues such as NASA EONET;
+- NASA FIRMS integration for active-fire detections when an authorized MAP_KEY is available;
+- water, river, terrain and environmental-change research workflows;
+- Research Stations for Arctic 90°N, Sahara, Oceans and Earth–Space 512;
+- reproducible data manifests, hashes, timestamps and evidence classes;
+- local/GPU research tooling with automatic device detection;
+- an OpenAI-powered Evidence / Research Explainer for already computed findings;
+- privacy safeguards and no person tracking.
+
+The scientific source of truth remains official/public observation data and deterministic processing. AI output is advisory explanation, not observation data.
+
+## Who it helps
+
+The project is designed for:
+
+- **communities** that want understandable information about environmental change and hazards;
+- **educators and students** learning Earth observation, astronomy, climate, hydrology and scientific uncertainty;
+- **researchers and citizen scientists** who need reproducible source provenance and transparent derived values;
+- **NGOs and environmental organizations** reviewing water, land, fire, flood and climate-related evidence;
+- **environmental and emergency-response professionals** who need rapid context from official public data sources;
+- **open-source developers** building transparent tools for the common good.
+
+The application is research and educational software. It does not replace instructions from emergency services or authoritative operational alert systems.
+
+## How it will be used — and how it is already used
+
+Users can open the public GitHub Pages application to inspect the 3D Earth, current hazard/event layers, research stations, experiment results and source metadata. Reproducible workflows can compare selected areas across time, including water-surface change, shoreline change, river morphology, exposed beds, terrain/hydrology candidates and other documented Earth-observation analyses.
+
+A typical evidence workflow is:
+
+1. select or load an area of interest;
+2. retrieve or use cached observations from official/public sources;
+3. compute deterministic metrics and preserve acquisition/source metadata;
+4. label the result as `OBSERVATION`, `DERIVED_VALUE`, `MODEL_ESTIMATE`, `HYPOTHESIS` or `UNKNOWN`;
+5. review uncertainty and scientific limitations;
+6. optionally pass that already computed evidence JSON to the OpenAI Evidence Explainer for a plain-language summary;
+7. keep the original measurements, sources and limitations visible so the explanation can be checked.
+
+The system deliberately does **not** convert a visually suspected river constriction into a confirmed causal claim. Satellite morphology can nominate a `flow_connectivity_candidate` or `possible_constriction`; proving cause requires independent hydrological evidence.
+
+## How Codex helped
+
+Codex has been used as a repository-level engineering tool throughout development for:
+
+- codebase inspection and architecture work;
+- refactoring and modularization;
+- test generation and regression protection;
+- CI and GitHub Actions work;
+- 3D globe/rendering fixes and implementation briefs;
+- scientific guardrails and provenance checks;
+- BUILD FOR GOOD audit and submission preparation.
+
+The repository contains concrete Codex development artifacts rather than only a claim of usage:
+
+- [`CODEX_BUILD_FOR_GOOD_UI_L4.md`](CODEX_BUILD_FOR_GOOD_UI_L4.md) — the main BUILD FOR GOOD implementation brief;
+- [`scripts/start_build_for_good.ps1`](scripts/start_build_for_good.ps1) — a launcher that checks for Codex CLI and runs `codex exec` against the repository brief before validation;
+- [`CODEX_BUILD_FOR_GOOD_SUBMISSION_READY.md`](CODEX_BUILD_FOR_GOOD_SUBMISSION_READY.md) — the final submission-ready Codex brief;
+- merged BUILD FOR GOOD development history, including the English UI / AI Area Lab / Earth–Space 512 implementation work.
+
+Every Codex-assisted change is still expected to pass the same repository quality gates as manually written code.
+
+## How the OpenAI API adds value
+
+The project includes a deliberately small OpenAI integration in [`terra_research_node/openai_summary.py`](terra_research_node/openai_summary.py).
+
+The **Evidence / Research Explainer** uses the OpenAI Responses API only after the scientific pipeline has already produced a JSON finding. It is designed to return four human-readable fields:
+
+- `summary`
+- `why_it_matters`
+- `uncertainty`
+- `next_checks`
+
+Guardrails:
+
+- OpenAI does **not** generate satellite measurements;
+- OpenAI does **not** invent dates, source URLs, acquisition IDs or missing observations;
+- OpenAI does **not** promote a hypothesis/candidate into a confirmed cause;
+- the original evidence class is preserved;
+- deterministic results remain available if OpenAI is disabled;
+- if `OPENAI_API_KEY` is missing, the explainer fails clearly instead of producing a fake AI result.
+
+The default model is `gpt-5.6-luna` for a small, cost-conscious explanation task and can be changed with `OPENAI_MODEL`.
+
+Example local/server-side use:
+
+```bash
+export OPENAI_API_KEY="your-key-from-your-secure-environment"
+python -m terra_research_node.openai_summary path/to/finding.json --output explanation.json
+```
+
+**Never put `OPENAI_API_KEY` in the public GitHub Pages frontend.**
+
+## Security and privacy
+
+- `.env` is ignored by Git;
+- OpenAI and other private API credentials are read from the environment or authorized secret stores only;
+- no API key belongs in browser JavaScript, public JSON, screenshots or committed logs;
+- the platform does not perform person tracking or private-data enrichment;
+- public Earth-observation work uses legal, official and publicly available sources;
+- test code uses fake test credentials only.
+
+## How to run the project
+
+### Python research environment
+
+Python 3.12:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+```
+
+Generate polar Sun/Moon observations:
+
+```bash
+python -m polar_equinox_analysis polar --start-year 2006 --end-year 2024 --include-future
+```
+
+Generate a current JPL Solar System snapshot:
+
+```bash
+python -m polar_equinox_analysis solar-system --output web/public/data/solar-system.json
+```
+
+Refresh the public NASA event catalogue and source registry:
+
+```bash
+python -m terra_hazards sources --output web/public/data/sources.json
+python -m terra_hazards update --output web/public/data/hazards.json
+```
+
+Run the optional OpenAI Evidence Explainer:
+
+```bash
+export OPENAI_API_KEY="your-key-from-your-secure-environment"
+python -m terra_research_node.openai_summary path/to/finding.json
+```
+
+### Web application
+
+```bash
+cd web
+npm install
+npm run dev
+```
 
 ## Corrected Horizons methodology
 
@@ -103,38 +250,6 @@ Each observation contains its UTC time, source, response SHA-256, Horizons API v
 observer latitude and a quality flag. The equinox zero crossing is derived from a 30-minute
 Horizons declination series and interpolated between the two adjacent samples that bracket zero.
 
-## Install and run
-
-Python 3.12:
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements.txt
-python -m polar_equinox_analysis polar --start-year 2006 --end-year 2024 --include-future
-```
-
-Generate a current JPL Solar System snapshot:
-
-```bash
-python -m polar_equinox_analysis solar-system --output web/public/data/solar-system.json
-```
-
-Refresh the public NASA event catalogue and source registry:
-
-```bash
-python -m terra_hazards sources --output web/public/data/sources.json
-python -m terra_hazards update --output web/public/data/hazards.json
-```
-
-Run the web application:
-
-```bash
-cd web
-npm install
-npm run dev
-```
-
 ## NASA FIRMS active-fire detections
 
 The FIRMS adapter uses real VIIRS/MODIS detections and never supplies demo hotspots. The official
@@ -177,7 +292,7 @@ See [data sources](docs/data-sources.md), [scientific limits](docs/science-and-l
 
 ```bash
 python -m ruff check .
-python -m mypy polar_equinox_analysis terra_hazards tests
+python -m mypy polar_equinox_analysis terra_hazards terra_research_node tests
 python -m pytest -q
 cd web && npm test && npm run build
 ```
