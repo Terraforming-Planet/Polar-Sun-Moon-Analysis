@@ -5,12 +5,13 @@ import {
   type AreaAnalysisResponse,
   type ResearchAttachmentPayload,
   type ResearchChatMessage,
+  type ResearchChatResponse,
   type ResearchModel,
 } from './lib/evidenceApi'
 import type { ResearchLabPlace } from './ResearchTerrainLab'
 import './research-chat-notebook.css'
 
-const CHAT_STORAGE_KEY = 'terra-research-chat/v1'
+const LEGACY_CHAT_STORAGE_KEY = 'terra-research-chat/v1'
 const TERRAIN_STORAGE_KEY = 'terra-research-terrain-lab/v1'
 const MAX_IMAGE_COUNT = 5
 const MAX_FILE_COUNT = 5
@@ -18,7 +19,7 @@ const MAX_TOTAL_BYTES = 25 * 1024 * 1024
 
 const MODELS: Array<{ id: ResearchModel; name: string; note: string }> = [
   { id: 'gpt-5.6-luna', name: 'GPT-5.6 Luna', note: 'szybkie pytania i iteracje' },
-  { id: 'gpt-5.6-terra', name: 'GPT-5.6 Terra', note: 'balans jakości i kosztu' },
+  { id: 'gpt-5.6-terra', name: 'GPT-5.6 Terra', note: 'domyślny balans jakości i kosztu' },
   { id: 'gpt-5.6-sol', name: 'GPT-5.6 Sol', note: 'najtrudniejsze analizy i raporty' },
 ]
 
@@ -52,20 +53,11 @@ function downloadText(filename: string, text: string) {
   window.setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
 
-function restoreMessages() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(CHAT_STORAGE_KEY) ?? '[]') as ResearchChatMessage[]
-    if (!Array.isArray(parsed)) return []
-    return parsed.filter(item => (item?.role === 'user' || item?.role === 'assistant') && typeof item?.text === 'string').slice(-16)
-  } catch {
-    return []
-  }
-}
-
-export function ResearchChatNotebook({ apiUrl, place, analysis }: {
+export function ResearchChatNotebook({ apiUrl, place, analysis, advancedControls = false }: {
   apiUrl: string
   place: ResearchLabPlace | null
   analysis: AreaAnalysisResponse | null
+  advancedControls?: boolean
 }) {
   const [model, setModel] = useState<ResearchModel>('gpt-5.6-terra')
   const [messages, setMessages] = useState<ResearchChatMessage[]>([])
@@ -73,34 +65,54 @@ export function ResearchChatNotebook({ apiUrl, place, analysis }: {
   const [attachments, setAttachments] = useState<LocalAttachment[]>([])
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [editNotice, setEditNotice] = useState('')
+  const [serverReceipt, setServerReceipt] = useState<ResearchChatResponse | null>(null)
   const abortRef = useRef<AbortController | null>(null)
+  const chatGptAuthUrl = String(import.meta.env.VITE_CHATGPT_SIGNIN_URL ?? '').trim()
 
-  useEffect(() => setMessages(restoreMessages()), [])
-  useEffect(() => localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages.slice(-16))), [messages])
+  useEffect(() => {
+    // PR #195 temporarily persisted raw chat text in localStorage. Purge that legacy key
+    // and keep all new conversation text only in React memory for the current tab/session.
+    localStorage.removeItem(LEGACY_CHAT_STORAGE_KEY)
+  }, [])
 
   const imageCount = attachments.filter(item => item.kind === 'image').length
-  const fileCount = attachments.length - imageCount
+  const fileCount = attachments.filter(item => item.kind === 'file').length
   const totalBytes = attachments.reduce((sum, item) => sum + item.file.size, 0)
   const selectedModel = useMemo(() => MODELS.find(item => item.id === model) ?? MODELS[1], [model])
 
-  const addFiles = (kind: 'image' | 'file', event: ChangeEvent<HTMLInputElement>) => {
+  const addFiles = (requestedKind: 'image' | 'file', event: ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(event.target.files ?? [])
     event.target.value = ''
     if (!selected.length) return
-    const normalized = kind === 'image' ? selected.filter(file => file.type.startsWith('image/')) : selected
-    const candidate = [
-      ...attachments,
-      ...normalized.map(file => ({ id: crypto.randomUUID(), kind, file } as LocalAttachment)),
-    ]
+
+    const additions = selected.map(file => ({
+      id: crypto.randomUUID(),
+      kind: file.type.startsWith('image/') ? 'image' as const : requestedKind,
+      file,
+    }))
+    const seen = new Set(attachments.map(item => `${item.file.name}:${item.file.size}:${item.file.lastModified}`))
+    const deduplicated = additions.filter(item => {
+      const signature = `${item.file.name}:${item.file.size}:${item.file.lastModified}`
+      if (seen.has(signature)) return false
+      seen.add(signature)
+      return true
+    })
+    const candidate = [...attachments, ...deduplicated]
     const nextImages = candidate.filter(item => item.kind === 'image').length
-    const nextFiles = candidate.length - nextImages
+    const nextFiles = candidate.filter(item => item.kind === 'file').length
     const nextBytes = candidate.reduce((sum, item) => sum + item.file.size, 0)
+
     if (nextImages > MAX_IMAGE_COUNT) {
       setError(`Maksymalnie ${MAX_IMAGE_COUNT} obrazów.`)
       return
     }
     if (nextFiles > MAX_FILE_COUNT) {
-      setError(`Maksymalnie ${MAX_FILE_COUNT} plików.`)
+      setError(`Maksymalnie ${MAX_FILE_COUNT} plików innych niż obrazy.`)
+      return
+    }
+    if (candidate.length > MAX_IMAGE_COUNT + MAX_FILE_COUNT) {
+      setError('Maksymalnie 10 załączników łącznie.')
       return
     }
     if (nextBytes > MAX_TOTAL_BYTES) {
@@ -108,6 +120,7 @@ export function ResearchChatNotebook({ apiUrl, place, analysis }: {
       return
     }
     setAttachments(candidate)
+    setServerReceipt(null)
     setError('')
   }
 
@@ -135,6 +148,7 @@ export function ResearchChatNotebook({ apiUrl, place, analysis }: {
         'Elevation flags are Copernicus DEM raster samples when an elevation object is present.',
         'Satellite visual evidence is limited to the listed official/public image dates and sources.',
         'If no place has been selected yet, answer as a planning assistant and do not pretend that a terrain analysis has already run.',
+        'Raw chat text is session-only in this application and must not be treated as an archived research record.',
       ],
     }
   }
@@ -146,22 +160,13 @@ export function ResearchChatNotebook({ apiUrl, place, analysis }: {
     data_url: await fileToDataUrl(item.file),
   })))
 
-  const ask = async (text: string, reportMode = false) => {
-    if (!text.trim() && !reportMode && attachments.length === 0) return
+  const requestAssistant = async (outgoing: ResearchChatMessage[], reportMode = false) => {
     abortRef.current?.abort()
     const controller = new AbortController()
     abortRef.current = controller
-    const userMessage: ResearchChatMessage = {
-      role: 'user',
-      text: reportMode
-        ? 'Przygotuj pełny raport badawczy z obecnej sesji, zaznaczeń, pomiarów, obrazów i rozmowy. Jeśli miejsce nie zostało jeszcze wybrane, zaznacz to jako ograniczenie i nie wymyślaj pomiarów.'
-        : (text.trim() || 'Przeanalizuj dołączone załączniki w kontekście bieżącego badania.'),
-    }
-    const outgoing = [...messages, userMessage].slice(-16)
-    setMessages(outgoing)
-    setDraft('')
     setBusy(true)
     setError('')
+    setServerReceipt(null)
     try {
       const payload = await makeAttachmentPayload()
       const response = await sendResearchChat(apiUrl, {
@@ -174,12 +179,45 @@ export function ResearchChatNotebook({ apiUrl, place, analysis }: {
       const assistantMessage: ResearchChatMessage = { role: 'assistant', text: response.answer }
       setMessages(current => [...current, assistantMessage].slice(-16))
       setAttachments([])
+      setServerReceipt(response)
     } catch (reason) {
       if (reason instanceof DOMException && reason.name === 'AbortError') return
       setError(reason instanceof Error ? reason.message : String(reason))
     } finally {
       setBusy(false)
     }
+  }
+
+  const ask = async (text: string, reportMode = false) => {
+    if (!text.trim() && !reportMode && attachments.length === 0) return
+    const userMessage: ResearchChatMessage = {
+      role: 'user',
+      text: reportMode
+        ? 'Przygotuj pełny raport badawczy z obecnej sesji, zaznaczeń, pomiarów i obrazów. Nie archiwizuj treści prywatnej rozmowy jako evidence; użyj jej wyłącznie jako kontekstu do raportu. Jeśli miejsce nie zostało jeszcze wybrane, zaznacz to jako ograniczenie i nie wymyślaj pomiarów.'
+        : (text.trim() || 'Przeanalizuj dołączone załączniki w kontekście bieżącego badania.'),
+    }
+    const outgoing = [...messages, userMessage].slice(-16)
+    setMessages(outgoing)
+    setDraft('')
+    setEditNotice('')
+    await requestAssistant(outgoing, reportMode)
+  }
+
+  const retryLastResponse = () => {
+    const last = messages.at(-1)
+    if (!last || last.role !== 'user' || busy) return
+    void requestAssistant(messages, false)
+  }
+
+  const editUserMessage = (index: number) => {
+    const message = messages[index]
+    if (!message || message.role !== 'user' || busy) return
+    setDraft(message.text)
+    setMessages(current => current.slice(0, index))
+    setAttachments([])
+    setServerReceipt(null)
+    setError('')
+    setEditNotice('Edytujesz wcześniejsze pytanie. Odpowiedzi po nim zostały usunięte z bieżącej sesji; popraw tekst i wyślij ponownie.')
   }
 
   const submit = (event: FormEvent) => {
@@ -189,7 +227,7 @@ export function ResearchChatNotebook({ apiUrl, place, analysis }: {
 
   const exportConversation = () => {
     const body = [
-      '# Terra Observation — notatnik rozmowy badawczej',
+      '# Terra Observation — prywatny eksport rozmowy badawczej',
       '',
       `Miejsce: ${place?.label ?? 'nie wybrano'}`,
       `WGS84: ${place ? `${place.latitude.toFixed(6)}, ${place.longitude.toFixed(6)}` : '—'}`,
@@ -197,40 +235,65 @@ export function ResearchChatNotebook({ apiUrl, place, analysis }: {
       '',
       ...messages.flatMap(message => [`## ${message.role === 'user' ? 'Badacz' : 'Asystent'}`, '', message.text, '']),
       '',
-      '> Uwaga: eksport rozmowy nie zamienia hipotez w wyniki naukowe. Weryfikuj liczby z widocznym źródłem/proweniencją.',
+      '> Ten plik powstaje wyłącznie po ręcznym eksporcie. Aplikacja nie zapisuje automatycznie surowej rozmowy do archiwum badań ani localStorage.',
     ].join('\n')
-    downloadText(`terra-research-${new Date().toISOString().slice(0, 10)}.md`, body)
+    downloadText(`terra-private-chat-${new Date().toISOString().slice(0, 10)}.md`, body)
   }
 
   return <section className="research-chat panel" aria-label="Asystent badań terenu">
     <div className="research-chat-head">
-      <div><small>OPENAI RESPONSES · MULTIMODAL RESEARCH NOTEBOOK</small><h2>Asystent badawczy</h2><p>{place ? `Aktywne miejsce: ${place.label}. Możesz kontynuować rozmowę o flagach, profilach DEM, obrazach i wynikach satelitarnych.` : 'Czat jest dostępny od razu. Możesz zaplanować badanie, wkleić pytanie lub załączniki, a po wybraniu miejsca asystent automatycznie otrzyma kontekst mapy, flag, DEM i satelitów.'}</p></div>
-      <label>Model<select value={model} onChange={event => setModel(event.target.value as ResearchModel)}>{MODELS.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select><small>{selectedModel.note}</small></label>
+      <div>
+        <small>OPENAI RESPONSES · SESSION-ONLY CHAT</small>
+        <h2>Asystent badawczy</h2>
+        <p>{place ? `Aktywne miejsce: ${place.label}. Pytaj o mapę, obrazy, flagi, DEM i wnioski.` : 'Czat działa od razu. Możesz najpierw zaplanować badanie, a po wybraniu miejsca asystent dostanie kontekst mapy i danych.'}</p>
+      </div>
+      {advancedControls && <label>Model<select value={model} onChange={event => setModel(event.target.value as ResearchModel)}>{MODELS.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select><small>{selectedModel.note}</small></label>}
     </div>
 
+    <div className="research-chat-privacy">
+      <b>Prywatność aplikacji:</b> treść rozmowy jest tylko w pamięci tej karty. Nie zapisujemy jej do localStorage ani do „Archiwum”. Po odświeżeniu strony znika. Załączniki są wysyłane tylko z bieżącym zapytaniem do skonfigurowanego backendu AI.
+    </div>
+
+    {advancedControls && <div className="research-chat-auth">
+      <div><b>Konto badacza · Sign in with ChatGPT</b><small>Oficjalne „Sign in with ChatGPT” wymaga, aby ta aplikacja była zarejestrowana jako wspierana aplikacja/partner i miała poprawny adres logowania. Nie używamy nieoficjalnego OAuth ani nie prosimy o hasło ChatGPT.</small></div>
+      {chatGptAuthUrl
+        ? <a className="button-link compact" href={chatGptAuthUrl}>Kontynuuj z ChatGPT</a>
+        : <button type="button" className="secondary" disabled title="Brak VITE_CHATGPT_SIGNIN_URL dla zatwierdzonej aplikacji">Kontynuuj z ChatGPT — konfiguracja oczekuje</button>}
+    </div>}
+
     <div className="research-chat-log" aria-live="polite">
-      {messages.length === 0 && <div className="research-chat-empty"><b>Przykładowe pytania</b><button type="button" onClick={() => setDraft(place ? 'Porównaj wysokości moich flag i wskaż, gdzie teren ma największy spadek.' : 'Pomóż mi zaplanować analizę źródeł Nilu: jakie miejsca powinienem zaznaczyć i jakie oficjalne dane porównać?')}>{place ? 'Porównaj wysokości flag' : 'Zaplanuj badanie terenu'}</button><button type="button" onClick={() => setDraft('Czy narysowana przeze mnie linia może odpowiadać granicy zlewni? Oddziel obserwację od hipotezy.')}>Sprawdź hipotezę o zlewni</button><button type="button" onClick={() => setDraft('Połącz analizę satelitarną z profilem wysokości i wypisz, jakie dodatkowe dane są potrzebne.')}>Połącz satelity + DEM</button></div>}
-      {messages.map((message, index) => <article key={`${message.role}-${index}`} className={message.role}><small>{message.role === 'user' ? 'TY / BADACZ' : 'ASYSTENT'}</small><p>{message.text}</p></article>)}
+      {messages.length === 0 && <div className="research-chat-empty"><b>Wskazówki</b><button type="button" onClick={() => setDraft(place ? 'Przeanalizuj ten teren i wypisz najważniejsze rzeczy, które warto sprawdzić dokładniej.' : 'Pomóż mi wybrać teren do badania i powiedz, jakie oficjalne dane warto zebrać.')}>{place ? 'Co tu warto sprawdzić?' : 'Zaplanuj badanie'}</button><button type="button" onClick={() => setDraft('Oddziel obserwacje od hipotez i wskaż, czego nie da się jeszcze udowodnić.')}>Sprawdź pewność wniosków</button><button type="button" onClick={() => setDraft('Porównaj dostępne zdjęcia satelitarne i wskaż, które daje najlepszy materiał do dalszej analizy.')}>Wybierz najlepsze zdjęcia</button></div>}
+      {messages.map((message, index) => <article key={`${message.role}-${index}`} className={message.role}>
+        <div className="research-chat-message-head"><small>{message.role === 'user' ? 'TY / BADACZ' : 'ASYSTENT'}</small>{message.role === 'user' && <button type="button" onClick={() => editUserMessage(index)} disabled={busy}>Edytuj</button>}</div>
+        <p>{message.text}</p>
+      </article>)}
       {busy && <div className="research-chat-thinking">Analizuję kontekst i załączniki…</div>}
     </div>
 
     <form className="research-chat-compose" onSubmit={submit}>
-      <textarea rows={4} value={draft} onChange={event => setDraft(event.target.value)} placeholder={place ? 'Zapytaj o zaznaczone miejsca, wysokości, zdjęcia, rzeki, góry, zmiany w czasie…' : 'Zapytaj asystenta albo najpierw wybierz miejsce na mapie…'} />
-      <div className="research-attachment-actions">
-        <label className="button-link compact">+ Obrazy ({imageCount}/5)<input type="file" accept="image/*" multiple hidden onChange={event => addFiles('image', event)} /></label>
-        <label className="button-link compact">+ Pliki ({fileCount}/5)<input type="file" multiple hidden onChange={event => addFiles('file', event)} /></label>
-        <span>{attachments.length}/10 · {bytesLabel(totalBytes)} / 25 MB łącznie</span>
-      </div>
-      {attachments.length > 0 && <div className="research-attachment-list">{attachments.map(item => <span key={item.id}><b>{item.kind === 'image' ? 'IMG' : 'FILE'}</b>{item.file.name}<small>{bytesLabel(item.file.size)}</small><button type="button" aria-label={`Usuń ${item.file.name}`} onClick={() => setAttachments(current => current.filter(candidate => candidate.id !== item.id))}>×</button></span>)}</div>}
-      {error && <p className="research-error" role="alert">{error}</p>}
+      <textarea rows={4} value={draft} onChange={event => setDraft(event.target.value)} placeholder={place ? 'Zapytaj o teren, obrazy, rzeki, góry, wodę i zmiany w czasie…' : 'Zapytaj asystenta albo najpierw wyszukaj miejsce…'} />
+      {editNotice && <p className="research-chat-edit-notice">{editNotice}</p>}
+
+      {advancedControls && <>
+        <div className="research-attachment-actions">
+          <label className="button-link compact">+ Obrazy ({imageCount}/5)<input type="file" accept="image/*" multiple hidden onChange={event => addFiles('image', event)} /></label>
+          <label className="button-link compact">+ Pliki ({fileCount}/5)<input type="file" multiple hidden onChange={event => addFiles('file', event)} /></label>
+          <span><b>{attachments.length}/10</b> · obrazy {imageCount}/5 · pliki {fileCount}/5 · {bytesLabel(totalBytes)} / 25 MB</span>
+        </div>
+        {attachments.length > 0 && <div className="research-attachment-list">{attachments.map(item => <span key={item.id}><b>{item.kind === 'image' ? 'IMG' : 'FILE'}</b>{item.file.name}<small>{bytesLabel(item.file.size)}</small><button type="button" aria-label={`Usuń ${item.file.name}`} onClick={() => setAttachments(current => current.filter(candidate => candidate.id !== item.id))}>×</button></span>)}</div>}
+      </>}
+
+      {serverReceipt && <p className="research-chat-receipt" role="status">Backend potwierdził odbiór: <b>{serverReceipt.attachment_count}</b> załączników ({serverReceipt.attachment_images} obrazów + {serverReceipt.attachment_files} plików), {bytesLabel(serverReceipt.attachment_bytes)}. Odpowiedź: {serverReceipt.model}.</p>}
+      {error && <div className="research-chat-error" role="alert"><span>{error}</span><button type="button" onClick={retryLastResponse} disabled={busy || messages.at(-1)?.role !== 'user'}>Spróbuj odpowiedzieć ponownie</button></div>}
+
       <div className="research-chat-actions">
-        <button type="submit" className="primary" disabled={busy || (!draft.trim() && attachments.length === 0)}>{busy ? 'Analizuję…' : 'Wyślij do asystenta'}</button>
-        <button type="button" className="secondary" disabled={busy || messages.length === 0} onClick={() => void ask('', true)}>Generuj raport</button>
-        <button type="button" className="secondary" disabled={messages.length === 0} onClick={exportConversation}>Eksportuj rozmowę .md</button>
-        <button type="button" className="secondary" onClick={() => { setMessages([]); setAttachments([]); setError('') }}>Nowa rozmowa</button>
+        <button type="submit" className="primary" disabled={busy || (!draft.trim() && attachments.length === 0)}>{busy ? 'Analizuję…' : 'Wyślij'}</button>
+        {advancedControls && <button type="button" className="secondary" disabled={busy || messages.length === 0} onClick={() => void ask('', true)}>Generuj raport</button>}
+        {advancedControls && <button type="button" className="secondary" disabled={messages.length === 0} onClick={exportConversation}>Prywatny eksport .md</button>}
+        <button type="button" className="secondary" onClick={() => { setMessages([]); setAttachments([]); setError(''); setServerReceipt(null); setEditNotice('') }}>Nowa rozmowa</button>
       </div>
     </form>
 
-    <div className="research-chat-limits"><b>Limity tej wersji:</b> maks. 5 obrazów + 5 plików, maks. 10 elementów i 25 MB łącznie na jedną wiadomość. To ograniczenie chroni Worker i koszt analizy. Dane DEM/satelitarne są przekazywane z widoczną proweniencją; adnotacje użytkownika pozostają adnotacjami.</div>
+    {advancedControls && <div className="research-chat-limits"><b>Zaawansowane:</b> maks. 5 obrazów + 5 innych plików, maks. 10 elementów i 25 MB danych wejściowych łącznie na wiadomość. Serwer zwraca potwierdzenie liczby odebranych plików. Surowe rozmowy nie trafiają automatycznie do archiwum; do evidence powinny trafiać wyłącznie jawnie wybrane obrazy i zatwierdzone wnioski/raporty.</div>}
   </section>
 }
