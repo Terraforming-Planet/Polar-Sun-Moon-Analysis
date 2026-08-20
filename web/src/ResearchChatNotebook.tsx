@@ -8,19 +8,28 @@ import {
   type ResearchChatResponse,
   type ResearchModel,
 } from './lib/evidenceApi'
+import {
+  buildAssistantAnswerRecord,
+  saveAssistantAnswerLocally,
+} from './researchArchive'
 import type { ResearchLabPlace } from './ResearchTerrainLab'
 import './research-chat-notebook.css'
 
-const LEGACY_CHAT_STORAGE_KEY = 'terra-research-chat/v1'
+const LEGACY_CHAT_STORAGE_KEYS = [
+  'terra-research-chat/v1',
+  'terra-research-chat',
+  'terra-ai-research-chat-v1',
+  'terra-ai-chat-v1',
+]
 const TERRAIN_STORAGE_KEY = 'terra-research-terrain-lab/v1'
 const MAX_IMAGE_COUNT = 5
 const MAX_FILE_COUNT = 5
 const MAX_TOTAL_BYTES = 25 * 1024 * 1024
 
 const MODELS: Array<{ id: ResearchModel; name: string; note: string }> = [
-  { id: 'gpt-5.6-luna', name: 'GPT-5.6 Luna', note: 'szybkie pytania i iteracje' },
-  { id: 'gpt-5.6-terra', name: 'GPT-5.6 Terra', note: 'domyślny balans jakości i kosztu' },
-  { id: 'gpt-5.6-sol', name: 'GPT-5.6 Sol', note: 'najtrudniejsze analizy i raporty' },
+  { id: 'gpt-5.6-luna', name: 'GPT-5.6 Luna', note: 'fast questions and iterations' },
+  { id: 'gpt-5.6-terra', name: 'GPT-5.6 Terra', note: 'default quality / cost balance' },
+  { id: 'gpt-5.6-sol', name: 'GPT-5.6 Sol', note: 'hardest analyses and reports' },
 ]
 
 type LocalAttachment = {
@@ -37,8 +46,8 @@ function bytesLabel(bytes: number) {
 function fileToDataUrl(file: File) {
   return new Promise<string>((resolve, reject) => {
     const reader = new FileReader()
-    reader.onload = () => typeof reader.result === 'string' ? resolve(reader.result) : reject(new Error(`Nie udało się odczytać ${file.name}.`))
-    reader.onerror = () => reject(new Error(`Nie udało się odczytać ${file.name}.`))
+    reader.onload = () => typeof reader.result === 'string' ? resolve(reader.result) : reject(new Error(`Could not read ${file.name}.`))
+    reader.onerror = () => reject(new Error(`Could not read ${file.name}.`))
     reader.readAsDataURL(file)
   })
 }
@@ -66,20 +75,32 @@ export function ResearchChatNotebook({ apiUrl, place, analysis, advancedControls
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [editNotice, setEditNotice] = useState('')
+  const [archiveNotice, setArchiveNotice] = useState('')
   const [serverReceipt, setServerReceipt] = useState<ResearchChatResponse | null>(null)
   const abortRef = useRef<AbortController | null>(null)
   const chatGptAuthUrl = String(import.meta.env.VITE_CHATGPT_SIGNIN_URL ?? '').trim()
 
   useEffect(() => {
-    // PR #195 temporarily persisted raw chat text in localStorage. Purge that legacy key
-    // and keep all new conversation text only in React memory for the current tab/session.
-    localStorage.removeItem(LEGACY_CHAT_STORAGE_KEY)
+    // Remove every known legacy key that ever contained raw user chat text.
+    // New chat text stays only in React memory for the current tab.
+    for (const key of LEGACY_CHAT_STORAGE_KEYS) localStorage.removeItem(key)
   }, [])
 
   const imageCount = attachments.filter(item => item.kind === 'image').length
   const fileCount = attachments.filter(item => item.kind === 'file').length
   const totalBytes = attachments.reduce((sum, item) => sum + item.file.size, 0)
   const selectedModel = useMemo(() => MODELS.find(item => item.id === model) ?? MODELS[1], [model])
+  const lastUserIndex = useMemo(() => {
+    for (let index = messages.length - 1; index >= 0; index -= 1) {
+      if (messages[index]?.role === 'user') return index
+    }
+    return -1
+  }, [messages])
+  const assistantMessages = useMemo(
+    () => messages.map((message, index) => ({ message, index })).filter(item => item.message.role === 'assistant'),
+    [messages],
+  )
+  const lastAssistant = assistantMessages.at(-1)?.message ?? null
 
   const addFiles = (requestedKind: 'image' | 'file', event: ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(event.target.files ?? [])
@@ -104,19 +125,19 @@ export function ResearchChatNotebook({ apiUrl, place, analysis, advancedControls
     const nextBytes = candidate.reduce((sum, item) => sum + item.file.size, 0)
 
     if (nextImages > MAX_IMAGE_COUNT) {
-      setError(`Maksymalnie ${MAX_IMAGE_COUNT} obrazów.`)
+      setError(`Maximum ${MAX_IMAGE_COUNT} images.`)
       return
     }
     if (nextFiles > MAX_FILE_COUNT) {
-      setError(`Maksymalnie ${MAX_FILE_COUNT} plików innych niż obrazy.`)
+      setError(`Maximum ${MAX_FILE_COUNT} non-image files.`)
       return
     }
     if (candidate.length > MAX_IMAGE_COUNT + MAX_FILE_COUNT) {
-      setError('Maksymalnie 10 załączników łącznie.')
+      setError('Maximum 10 attachments in total.')
       return
     }
     if (nextBytes > MAX_TOTAL_BYTES) {
-      setError('Łączny rozmiar załączników w jednej wiadomości nie może przekroczyć 25 MB.')
+      setError('Attachments in one message cannot exceed 25 MB in total.')
       return
     }
     setAttachments(candidate)
@@ -148,7 +169,8 @@ export function ResearchChatNotebook({ apiUrl, place, analysis, advancedControls
         'Elevation flags are Copernicus DEM raster samples when an elevation object is present.',
         'Satellite visual evidence is limited to the listed official/public image dates and sources.',
         'If no place has been selected yet, answer as a planning assistant and do not pretend that a terrain analysis has already run.',
-        'Raw chat text is session-only in this application and must not be treated as an archived research record.',
+        'Raw user prompts are session-only and must never be written into an archive record or public research page.',
+        'Only a user-explicitly saved assistant answer may be archived, and the matching user prompt must be omitted.',
       ],
     }
   }
@@ -166,6 +188,7 @@ export function ResearchChatNotebook({ apiUrl, place, analysis, advancedControls
     abortRef.current = controller
     setBusy(true)
     setError('')
+    setArchiveNotice('')
     setServerReceipt(null)
     try {
       const payload = await makeAttachmentPayload()
@@ -193,13 +216,14 @@ export function ResearchChatNotebook({ apiUrl, place, analysis, advancedControls
     const userMessage: ResearchChatMessage = {
       role: 'user',
       text: reportMode
-        ? 'Przygotuj pełny raport badawczy z obecnej sesji, zaznaczeń, pomiarów i obrazów. Nie archiwizuj treści prywatnej rozmowy jako evidence; użyj jej wyłącznie jako kontekstu do raportu. Jeśli miejsce nie zostało jeszcze wybrane, zaznacz to jako ograniczenie i nie wymyślaj pomiarów.'
-        : (text.trim() || 'Przeanalizuj dołączone załączniki w kontekście bieżącego badania.'),
+        ? 'Prepare a complete research report from the current session, annotations, measurements and images. Do not archive private user prompt text as evidence; use it only as transient report context. If no place has been selected, state that limitation and do not invent measurements.'
+        : (text.trim() || 'Analyze the attached files in the context of the current research area.'),
     }
     const outgoing = [...messages, userMessage].slice(-16)
     setMessages(outgoing)
     setDraft('')
     setEditNotice('')
+    setArchiveNotice('')
     await requestAssistant(outgoing, reportMode)
   }
 
@@ -216,8 +240,9 @@ export function ResearchChatNotebook({ apiUrl, place, analysis, advancedControls
     setMessages(current => current.slice(0, index))
     setAttachments([])
     setServerReceipt(null)
+    setArchiveNotice('')
     setError('')
-    setEditNotice('Edytujesz wcześniejsze pytanie. Odpowiedzi po nim zostały usunięte z bieżącej sesji; popraw tekst i wyślij ponownie.')
+    setEditNotice('Editing your last private question. Its later answer was removed from this session; update the text and send it again.')
   }
 
   const submit = (event: FormEvent) => {
@@ -225,75 +250,92 @@ export function ResearchChatNotebook({ apiUrl, place, analysis, advancedControls
     void ask(draft)
   }
 
-  const exportConversation = () => {
-    const body = [
-      '# Terra Observation — prywatny eksport rozmowy badawczej',
-      '',
-      `Miejsce: ${place?.label ?? 'nie wybrano'}`,
-      `WGS84: ${place ? `${place.latitude.toFixed(6)}, ${place.longitude.toFixed(6)}` : '—'}`,
-      `Model ostatnio wybrany: ${model}`,
-      '',
-      ...messages.flatMap(message => [`## ${message.role === 'user' ? 'Badacz' : 'Asystent'}`, '', message.text, '']),
-      '',
-      '> Ten plik powstaje wyłącznie po ręcznym eksporcie. Aplikacja nie zapisuje automatycznie surowej rozmowy do archiwum badań ani localStorage.',
-    ].join('\n')
-    downloadText(`terra-private-chat-${new Date().toISOString().slice(0, 10)}.md`, body)
+  const saveLastAssistantAnswer = () => {
+    if (!lastAssistant || lastAssistant.role !== 'assistant') return
+    const record = buildAssistantAnswerRecord({
+      answer: lastAssistant.text,
+      model,
+      place: place ? { label: place.label, latitude: place.latitude, longitude: place.longitude } : null,
+    })
+    saveAssistantAnswerLocally(record)
+    setArchiveNotice('Assistant answer saved locally. The user question was not stored.')
   }
 
-  return <section className="research-chat panel" aria-label="Asystent badań terenu">
+  const exportAssistantAnswers = () => {
+    const answers = assistantMessages.map(item => item.message.text)
+    if (!answers.length) return
+    const body = [
+      '# Terra Observation — assistant answers only',
+      '',
+      `Place: ${place?.label ?? 'not selected'}`,
+      `WGS84: ${place ? `${place.latitude.toFixed(6)}, ${place.longitude.toFixed(6)}` : '—'}`,
+      `Selected model: ${model}`,
+      '',
+      ...answers.flatMap((answer, index) => [`## Assistant answer ${index + 1}`, '', answer, '']),
+      '',
+      '> Privacy: user prompt text is intentionally excluded from this export.',
+    ].join('\n')
+    downloadText(`terra-assistant-answers-${new Date().toISOString().slice(0, 10)}.md`, body)
+  }
+
+  return <section className="research-chat panel" aria-label="Terrain research assistant">
     <div className="research-chat-head">
       <div>
-        <small>OPENAI RESPONSES · SESSION-ONLY CHAT</small>
-        <h2>Asystent badawczy</h2>
-        <p>{place ? `Aktywne miejsce: ${place.label}. Pytaj o mapę, obrazy, flagi, DEM i wnioski.` : 'Czat działa od razu. Możesz najpierw zaplanować badanie, a po wybraniu miejsca asystent dostanie kontekst mapy i danych.'}</p>
+        <small>OPENAI RESPONSES · PRIVATE PROMPTS · SESSION ONLY</small>
+        <h2>Research assistant</h2>
+        <p>{place ? `Active place: ${place.label}. Ask about the map, imagery, flags, DEM and findings.` : 'The assistant is available immediately. You can plan a study first; after selecting a place it receives the map and research-data context.'}</p>
       </div>
       {advancedControls && <label>Model<select value={model} onChange={event => setModel(event.target.value as ResearchModel)}>{MODELS.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select><small>{selectedModel.note}</small></label>}
     </div>
 
     <div className="research-chat-privacy">
-      <b>Prywatność aplikacji:</b> treść rozmowy jest tylko w pamięci tej karty. Nie zapisujemy jej do localStorage ani do „Archiwum”. Po odświeżeniu strony znika. Załączniki są wysyłane tylko z bieżącym zapytaniem do skonfigurowanego backendu AI.
+      <b>Privacy:</b> your question text is not shown in the transcript after sending and is never written to the research archive. It exists only in memory for the current tab so the assistant can keep conversational context. Refreshing or closing the tab removes it. If you explicitly save an archive item, only the assistant answer may be stored.
     </div>
 
     {advancedControls && <div className="research-chat-auth">
-      <div><b>Konto badacza · Sign in with ChatGPT</b><small>Oficjalne „Sign in with ChatGPT” wymaga, aby ta aplikacja była zarejestrowana jako wspierana aplikacja/partner i miała poprawny adres logowania. Nie używamy nieoficjalnego OAuth ani nie prosimy o hasło ChatGPT.</small></div>
+      <div><b>Research account · Sign in with ChatGPT</b><small>This control is enabled only when an approved application sign-in URL is configured. The page never asks for a ChatGPT password and does not implement unofficial OAuth.</small></div>
       {chatGptAuthUrl
-        ? <a className="button-link compact" href={chatGptAuthUrl}>Kontynuuj z ChatGPT</a>
-        : <button type="button" className="secondary" disabled title="Brak VITE_CHATGPT_SIGNIN_URL dla zatwierdzonej aplikacji">Kontynuuj z ChatGPT — konfiguracja oczekuje</button>}
+        ? <a className="button-link compact" href={chatGptAuthUrl}>Continue with ChatGPT</a>
+        : <button type="button" className="secondary" disabled title="No approved VITE_CHATGPT_SIGNIN_URL is configured">Continue with ChatGPT — not configured</button>}
     </div>}
 
     <div className="research-chat-log" aria-live="polite">
-      {messages.length === 0 && <div className="research-chat-empty"><b>Wskazówki</b><button type="button" onClick={() => setDraft(place ? 'Przeanalizuj ten teren i wypisz najważniejsze rzeczy, które warto sprawdzić dokładniej.' : 'Pomóż mi wybrać teren do badania i powiedz, jakie oficjalne dane warto zebrać.')}>{place ? 'Co tu warto sprawdzić?' : 'Zaplanuj badanie'}</button><button type="button" onClick={() => setDraft('Oddziel obserwacje od hipotez i wskaż, czego nie da się jeszcze udowodnić.')}>Sprawdź pewność wniosków</button><button type="button" onClick={() => setDraft('Porównaj dostępne zdjęcia satelitarne i wskaż, które daje najlepszy materiał do dalszej analizy.')}>Wybierz najlepsze zdjęcia</button></div>}
-      {messages.map((message, index) => <article key={`${message.role}-${index}`} className={message.role}>
-        <div className="research-chat-message-head"><small>{message.role === 'user' ? 'TY / BADACZ' : 'ASYSTENT'}</small>{message.role === 'user' && <button type="button" onClick={() => editUserMessage(index)} disabled={busy}>Edytuj</button>}</div>
+      {assistantMessages.length === 0 && <div className="research-chat-empty"><b>Suggestions</b><button type="button" onClick={() => setDraft(place ? 'Analyze this area and list the most important things worth checking in more detail.' : 'Help me choose an area to study and tell me which official datasets would be useful.')}>{place ? 'What should I check here?' : 'Plan a study'}</button><button type="button" onClick={() => setDraft('Separate observations from hypotheses and identify what cannot yet be demonstrated.')}>Check confidence</button><button type="button" onClick={() => setDraft('Compare the available satellite imagery and identify which source gives the strongest material for further analysis.')}>Choose the best imagery</button></div>}
+      {lastUserIndex >= 0 && <div className="research-chat-private-question"><b>Private question sent</b><span>The question text is hidden from the transcript and excluded from archives.</span></div>}
+      {assistantMessages.map(({ message, index }) => <article key={`assistant-${index}`} className="assistant">
+        <div className="research-chat-message-head"><small>ASSISTANT</small></div>
         <p>{message.text}</p>
       </article>)}
-      {busy && <div className="research-chat-thinking">Analizuję kontekst i załączniki…</div>}
+      {busy && <div className="research-chat-thinking">Analyzing context and attachments…</div>}
     </div>
 
     <form className="research-chat-compose" onSubmit={submit}>
-      <textarea rows={4} value={draft} onChange={event => setDraft(event.target.value)} placeholder={place ? 'Zapytaj o teren, obrazy, rzeki, góry, wodę i zmiany w czasie…' : 'Zapytaj asystenta albo najpierw wyszukaj miejsce…'} />
+      <textarea rows={4} value={draft} onChange={event => setDraft(event.target.value)} placeholder={place ? 'Ask about terrain, imagery, rivers, mountains, water and change over time…' : 'Ask the assistant or search for a place first…'} />
       {editNotice && <p className="research-chat-edit-notice">{editNotice}</p>}
+      {archiveNotice && <p className="research-chat-receipt" role="status">{archiveNotice}</p>}
 
       {advancedControls && <>
         <div className="research-attachment-actions">
-          <label className="button-link compact">+ Obrazy ({imageCount}/5)<input type="file" accept="image/*" multiple hidden onChange={event => addFiles('image', event)} /></label>
-          <label className="button-link compact">+ Pliki ({fileCount}/5)<input type="file" multiple hidden onChange={event => addFiles('file', event)} /></label>
-          <span><b>{attachments.length}/10</b> · obrazy {imageCount}/5 · pliki {fileCount}/5 · {bytesLabel(totalBytes)} / 25 MB</span>
+          <label className="button-link compact">+ Images ({imageCount}/5)<input type="file" accept="image/*" multiple hidden onChange={event => addFiles('image', event)} /></label>
+          <label className="button-link compact">+ Files ({fileCount}/5)<input type="file" multiple hidden onChange={event => addFiles('file', event)} /></label>
+          <span><b>{attachments.length}/10</b> · images {imageCount}/5 · files {fileCount}/5 · {bytesLabel(totalBytes)} / 25 MB</span>
         </div>
-        {attachments.length > 0 && <div className="research-attachment-list">{attachments.map(item => <span key={item.id}><b>{item.kind === 'image' ? 'IMG' : 'FILE'}</b>{item.file.name}<small>{bytesLabel(item.file.size)}</small><button type="button" aria-label={`Usuń ${item.file.name}`} onClick={() => setAttachments(current => current.filter(candidate => candidate.id !== item.id))}>×</button></span>)}</div>}
+        {attachments.length > 0 && <div className="research-attachment-list">{attachments.map(item => <span key={item.id}><b>{item.kind === 'image' ? 'IMG' : 'FILE'}</b>{item.file.name}<small>{bytesLabel(item.file.size)}</small><button type="button" aria-label={`Remove ${item.file.name}`} onClick={() => setAttachments(current => current.filter(candidate => candidate.id !== item.id))}>×</button></span>)}</div>}
       </>}
 
-      {serverReceipt && <p className="research-chat-receipt" role="status">Backend potwierdził odbiór: <b>{serverReceipt.attachment_count}</b> załączników ({serverReceipt.attachment_images} obrazów + {serverReceipt.attachment_files} plików), {bytesLabel(serverReceipt.attachment_bytes)}. Odpowiedź: {serverReceipt.model}.</p>}
-      {error && <div className="research-chat-error" role="alert"><span>{error}</span><button type="button" onClick={retryLastResponse} disabled={busy || messages.at(-1)?.role !== 'user'}>Spróbuj odpowiedzieć ponownie</button></div>}
+      {serverReceipt && <p className="research-chat-receipt" role="status">Backend receipt: <b>{serverReceipt.attachment_count}</b> attachments ({serverReceipt.attachment_images} images + {serverReceipt.attachment_files} files), {bytesLabel(serverReceipt.attachment_bytes)}. Response model: {serverReceipt.model}.</p>}
+      {error && <div className="research-chat-error" role="alert"><span>{error}</span><button type="button" onClick={retryLastResponse} disabled={busy || messages.at(-1)?.role !== 'user'}>Retry assistant response</button></div>}
 
       <div className="research-chat-actions">
-        <button type="submit" className="primary" disabled={busy || (!draft.trim() && attachments.length === 0)}>{busy ? 'Analizuję…' : 'Wyślij'}</button>
-        {advancedControls && <button type="button" className="secondary" disabled={busy || messages.length === 0} onClick={() => void ask('', true)}>Generuj raport</button>}
-        {advancedControls && <button type="button" className="secondary" disabled={messages.length === 0} onClick={exportConversation}>Prywatny eksport .md</button>}
-        <button type="button" className="secondary" onClick={() => { setMessages([]); setAttachments([]); setError(''); setServerReceipt(null); setEditNotice('') }}>Nowa rozmowa</button>
+        <button type="submit" className="primary" disabled={busy || (!draft.trim() && attachments.length === 0)}>{busy ? 'Analyzing…' : 'Send privately'}</button>
+        {lastUserIndex >= 0 && <button type="button" className="secondary" disabled={busy} onClick={() => editUserMessage(lastUserIndex)}>Edit last private question</button>}
+        {lastAssistant && <button type="button" className="secondary" onClick={saveLastAssistantAnswer}>Save assistant answer only</button>}
+        {advancedControls && <button type="button" className="secondary" disabled={busy || messages.length === 0} onClick={() => void ask('', true)}>Generate report</button>}
+        {advancedControls && <button type="button" className="secondary" disabled={assistantMessages.length === 0} onClick={exportAssistantAnswers}>Export answers only .md</button>}
+        <button type="button" className="secondary" onClick={() => { setMessages([]); setAttachments([]); setError(''); setServerReceipt(null); setEditNotice(''); setArchiveNotice('') }}>New conversation</button>
       </div>
     </form>
 
-    {advancedControls && <div className="research-chat-limits"><b>Zaawansowane:</b> maks. 5 obrazów + 5 innych plików, maks. 10 elementów i 25 MB danych wejściowych łącznie na wiadomość. Serwer zwraca potwierdzenie liczby odebranych plików. Surowe rozmowy nie trafiają automatycznie do archiwum; do evidence powinny trafiać wyłącznie jawnie wybrane obrazy i zatwierdzone wnioski/raporty.</div>}
+    {advancedControls && <div className="research-chat-limits"><b>Advanced limits:</b> up to 5 images + 5 other files, maximum 10 items and 25 MB total input per message. The server returns an exact receipt. User prompt text is never written to the archive; only explicitly saved assistant answers and approved evidence records may be retained.</div>}
   </section>
 }
