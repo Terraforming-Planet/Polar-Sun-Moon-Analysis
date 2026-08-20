@@ -64,15 +64,15 @@ jobs:
           normalized: list[tuple[str, str]] = []
           for source_name, output_name in credentials:
               raw = os.environ.get(source_name, '')
-              clean = raw.strip(' \t\r\n')
+              # API credentials are single-line tokens. CR/LF characters can be
+              # introduced by copy/paste or wrapped secret editors and are never
+              # meaningful token content, so remove them without exposing values.
+              without_linebreaks = raw.replace('\r', '').replace('\n', '')
+              clean = without_linebreaks.strip(' \t')
               if not clean:
-                  raise SystemExit(f'{source_name} is empty after whitespace normalization.')
-              if '\r' in clean or '\n' in clean:
-                  raise SystemExit(
-                      f'{source_name} contains an embedded line break. Replace that repository secret with a single-line value.'
-                  )
+                  raise SystemExit(f'{source_name} is empty after credential normalization.')
               if raw != clean:
-                  print(f'{source_name}: removed surrounding whitespace without printing the value.')
+                  print(f'{source_name}: normalized invalid whitespace without printing the value.')
               print(f'::add-mask::{clean}')
               normalized.append((output_name, clean))
 
