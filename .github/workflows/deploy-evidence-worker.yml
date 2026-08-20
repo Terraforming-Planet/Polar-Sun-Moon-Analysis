@@ -1,0 +1,109 @@
+name: Deploy OpenAI Evidence Worker
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cloudflare/evidence-worker/**'
+      - '.github/workflows/deploy-evidence-worker.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: terra-openai-evidence-worker-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify required deployment secrets exist
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo 'Missing CLOUDFLARE_API_TOKEN repository secret.'; exit 1; }
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo 'Missing CLOUDFLARE_ACCOUNT_ID repository secret.'; exit 1; }
+          test -n "$OPENAI_API_KEY" || { echo 'Missing OPENAI_API_KEY repository secret.'; exit 1; }
+          echo 'Required secret names are configured. Secret values are not printed.'
+
+      - name: Test Worker guardrails
+        run: node --test cloudflare/evidence-worker/test/*.test.mjs
+
+      - name: Deploy Worker and bind OpenAI secret
+        id: deploy
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: cloudflare/evidence-worker
+          wranglerVersion: '4'
+          secrets: |
+            OPENAI_API_KEY
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Verify deployed Worker health
+        id: health
+        shell: bash
+        env:
+          WORKER_URL: ${{ steps.deploy.outputs.deployment-url }}
+        run: |
+          set -euo pipefail
+          test -n "$WORKER_URL" || { echo 'Cloudflare action did not return a deployment URL.'; exit 1; }
+          echo "Worker URL: $WORKER_URL"
+          curl --fail --silent --show-error --retry 5 --retry-delay 3 "$WORKER_URL/health" > /tmp/health.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          payload = json.loads(Path('/tmp/health.json').read_text(encoding='utf-8'))
+          assert payload.get('service') == 'terra-observation-evidence-explainer'
+          assert payload.get('openai_configured') is True
+          assert 'vistula-test-014' in payload.get('supported_case_ids', [])
+          print('Worker health check passed; OpenAI secret is configured.')
+          PY
+
+      - name: Publish Worker URL as a non-secret repository variable
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          WORKER_URL: ${{ steps.deploy.outputs.deployment-url }}
+        run: |
+          set -euo pipefail
+          gh variable set VITE_EVIDENCE_API_URL --body "$WORKER_URL" --repo "$GITHUB_REPOSITORY"
+          echo 'Updated repository variable VITE_EVIDENCE_API_URL.'
+
+      - name: Rebuild GitHub Pages with the public Worker URL
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run force-pages-deploy.yml --repo "$GITHUB_REPOSITORY" --ref main
+          echo 'Dispatched force-pages-deploy.yml.'
+
+      - name: Deployment summary
+        shell: bash
+        env:
+          WORKER_URL: ${{ steps.deploy.outputs.deployment-url }}
+        run: |
+          {
+            echo '## Terra OpenAI Evidence Worker'
+            echo
+            echo "- Worker: $WORKER_URL"
+            echo '- Health: passed'
+            echo '- OPENAI_API_KEY: stored as Worker secret; value not exposed'
+            echo '- VITE_EVIDENCE_API_URL: updated as public repository variable'
+            echo '- GitHub Pages rebuild: dispatched'
+          } >> "$GITHUB_STEP_SUMMARY"
