@@ -142,7 +142,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Explain one existing Terra Observation finding with the OpenAI API."
     )
-    parser.add_argument("finding", type=Path, help="Path to a JSON finding produced by the pipeline.")
+    parser.add_argument(
+        "finding",
+        type=Path,
+        help="Path to a JSON finding produced by the pipeline.",
+    )
     parser.add_argument("--output", type=Path, help="Optional output JSON path.")
     parser.add_argument("--model", default=None, help="Override OPENAI_MODEL for this request.")
     return parser
