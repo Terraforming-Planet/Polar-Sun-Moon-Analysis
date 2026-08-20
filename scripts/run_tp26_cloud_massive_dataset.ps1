@@ -13,6 +13,28 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 Set-Location $repoRoot
 
+# Make this launcher work from a fresh PowerShell window without requiring
+# manual virtual-environment activation. Prefer the project's CUDA-capable
+# .venv-l4 interpreter when it exists, and expose its Scripts directory to
+# nested PowerShell launchers that still call `python` by name.
+$venvPython = Join-Path $repoRoot '.venv-l4\Scripts\python.exe'
+if (Test-Path $venvPython) {
+    $pythonCommand = $venvPython
+    $pythonDir = Split-Path $venvPython -Parent
+    $env:PATH = "$pythonDir;$env:PATH"
+} else {
+    $pythonInfo = Get-Command python -ErrorAction SilentlyContinue
+    if (-not $pythonInfo) {
+        throw "Python was not found. Expected $venvPython or a usable python.exe on PATH."
+    }
+    $pythonCommand = $pythonInfo.Source
+}
+
+& $pythonCommand -c "import sys; print('Python:', sys.executable); print('Version:', sys.version.split()[0])"
+if ($LASTEXITCODE -ne 0) {
+    throw 'Python bootstrap failed before the dataset run started.'
+}
+
 $stamp = (Get-Date).ToUniversalTime().ToString('yyyyMMddTHHmmssZ')
 $runRoot = Join-Path $repoRoot "research_runs\cloud_massive_$stamp"
 New-Item -ItemType Directory -Force -Path $runRoot | Out-Null
@@ -38,6 +60,7 @@ $runManifest = [ordered]@{
     resolution = $Resolution
     extra_per_adapter = $ExtraPerAdapter
     max_download_gb = $effectiveMaxDownloadGB
+    python_executable = $pythonCommand
     note = 'Catalog scene counts are metadata screening. Downloaded imagery counts are SHA-256 deduplicated pixel files/windows. They must never be conflated.'
 }
 $runManifest | ConvertTo-Json -Depth 5 | Set-Content -Encoding UTF8 $manifestPath
@@ -45,6 +68,7 @@ $runManifest | ConvertTo-Json -Depth 5 | Set-Content -Encoding UTF8 $manifestPat
 Start-Transcript -Path $transcriptPath -Force | Out-Null
 try {
     Write-Host '=== TP-26 CLOUD MASSIVE DATASET / CPU + NETWORK ===' -ForegroundColor Cyan
+    Write-Host "Python: $pythonCommand" -ForegroundColor Green
     Write-Host "Catalog screening target: $CatalogScenes unique Landsat scene IDs" -ForegroundColor Cyan
     Write-Host "Downloaded pixel target: $TargetImages unique SHA-256 imagery files/windows" -ForegroundColor Cyan
     Write-Host "Grid: ${Grid}x${Grid}; workers: $Workers; resolution: ${Resolution}px" -ForegroundColor Cyan
@@ -53,12 +77,12 @@ try {
     Write-Host "Full console transcript: $transcriptPath" -ForegroundColor Green
 
     $probeWorkers = [Math]::Min([Math]::Max($Workers, 1), 6)
-    python -m terra_research_node.adapter_preflight --workers $probeWorkers
+    & $pythonCommand -m terra_research_node.adapter_preflight --workers $probeWorkers
     if ($LASTEXITCODE -ne 0) {
         Write-Warning 'Adapter preflight reported a transport problem; continuing with resilient sources.'
     }
 
-    python -m terra_research_node.global_scene_scan `
+    & $pythonCommand -m terra_research_node.global_scene_scan `
         --target-scenes $CatalogScenes `
         --start-year 1990 `
         --end-year 2026 `
@@ -68,7 +92,7 @@ try {
         Write-Warning 'Large Landsat metadata screening failed or was interrupted; image harvesting will continue.'
     }
 
-    python -m terra_research_node.public_adapter_harvest --max-per-adapter $ExtraPerAdapter
+    & $pythonCommand -m terra_research_node.public_adapter_harvest --max-per-adapter $ExtraPerAdapter
     if ($LASTEXITCODE -ne 0) {
         Write-Warning 'One or more additional public adapters failed; continuing with the global core harvest.'
     }
