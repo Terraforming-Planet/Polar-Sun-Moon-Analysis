@@ -8,6 +8,7 @@ const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
 const MAX_LIMIT = 25
 const MAX_LONGITUDE_SPAN = 60
 const MAX_LATITUDE_SPAN = 60
+const ALLOWED_QUERY_KEYS = new Set(['bbox', 'start', 'end', 'limit'])
 
 function corsHeaders(origin, env = {}) {
   const headers = {
@@ -50,6 +51,10 @@ function parseBbox(value) {
 }
 
 export function parseLandsatProxyQuery(url) {
+  for (const key of url.searchParams.keys()) {
+    if (!ALLOWED_QUERY_KEYS.has(key)) throw new Error(`Unexpected query field: ${key}.`)
+  }
+
   const bbox = parseBbox(url.searchParams.get('bbox'))
   const start = parseDate(url.searchParams.get('start'), 'start')
   const end = parseDate(url.searchParams.get('end'), 'end')
