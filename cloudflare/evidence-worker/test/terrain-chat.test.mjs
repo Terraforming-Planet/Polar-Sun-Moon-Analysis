@@ -37,16 +37,20 @@ test('elevation proxy returns Copernicus GLO-90 provenance and preserves request
   }
 })
 
-test('research chat allows only the named GPT-5.6 family and forwards bounded multimodal inputs', async () => {
+test('research chat allows only the named GPT-5.6 family and returns an exact attachment receipt', async () => {
   const originalFetch = globalThis.fetch
   globalThis.fetch = async (url, options = {}) => {
     assert.equal(String(url), 'https://api.openai.com/v1/responses')
     const body = JSON.parse(options.body)
     assert.equal(body.model, 'gpt-5.6-sol')
     assert.match(body.instructions, /Never invent elevation values/)
+    assert.match(body.instructions, /Raw conversation text is transient/)
     const latest = body.input.at(-1)
-    assert.ok(latest.content.some(item => item.type === 'input_image'))
-    assert.ok(latest.content.some(item => item.type === 'input_file'))
+    const image = latest.content.find(item => item.type === 'input_image')
+    const file = latest.content.find(item => item.type === 'input_file')
+    assert.ok(image)
+    assert.equal(image.detail, 'high')
+    assert.ok(file)
     assert.ok(latest.content.some(item => item.type === 'input_text' && item.text.includes('RESEARCH_CONTEXT')))
     return new Response(JSON.stringify({ output_text: 'Raport testowy bez wymyślonych pomiarów.' }), { status: 200, headers: { 'Content-Type': 'application/json' } })
   }
@@ -71,7 +75,12 @@ test('research chat allows only the named GPT-5.6 family and forwards bounded mu
     assert.equal(response.status, 200)
     assert.equal(payload.model, 'gpt-5.6-sol')
     assert.equal(payload.attachment_count, 2)
+    assert.equal(payload.attachment_images, 1)
+    assert.equal(payload.attachment_files, 1)
+    assert.deepEqual(payload.attachment_names, ['map.png', 'notes.txt'])
+    assert.ok(payload.attachment_bytes > 0)
     assert.match(payload.answer, /Raport testowy/)
+    assert.match(payload.evidence_policy, /Raw chat|raw chat/i)
     assert.equal(JSON.stringify(payload).includes('test-secret-not-real'), false)
   } finally {
     globalThis.fetch = originalFetch
