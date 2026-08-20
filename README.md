@@ -1,8 +1,17 @@
 # Terra Observation System
 
-**BUILD FOR GOOD — open, evidence-first Earth and space observation for environmental research, education and community resilience.**
+**BUILD FOR GOOD — open Earth observation for finding, measuring and explaining environmental change with real public satellite data.**
 
-Terra Observation System combines official public satellite/scientific data, reproducible analysis, an interactive 3D Earth, environmental hazard monitoring and research stations. OpenAI is used only as an evidence-explanation layer over already computed results — never as a replacement for observations or measurements.
+Terra Observation System is being built to help people investigate questions such as:
+
+- Where are lakes, ponds or wetlands losing visible surface water?
+- Where has a river channel narrowed, shifted or become fragmented by exposed sediment?
+- Which locations deserve closer hydrological or field investigation?
+- What do decades of satellite observations actually show — and what do they **not** prove?
+
+The project combines official/public Earth-observation data, deterministic measurements, NVIDIA L4 training and evaluation, an interactive 3D Earth, reproducible evidence records and a guarded OpenAI **Evidence / Research Explainer**.
+
+The central rule is simple: **satellites and deterministic analysis produce the evidence; AI helps people understand it.** OpenAI never replaces measurements, source metadata or scientific verification.
 
 ## Live demo and public repository
 
@@ -11,114 +20,234 @@ Terra Observation System combines official public satellite/scientific data, rep
 
 ## BUILD FOR GOOD submission summary
 
-Terra Observation System helps people inspect environmental change and scientific observations using official, legal and publicly available sources. The project brings Earth-observation data, hazards, polar astronomy, water/climate research and reproducible evidence into one public interface. Codex has been used throughout repository-level development, while the OpenAI Responses API provides a small, guarded **Evidence / Research Explainer** that translates validated findings into clear public-language explanations without inventing data.
+Terra Observation System helps communities, researchers, educators, NGOs and environmental responders investigate environmental change using legal, official and publicly available Earth-observation data. A primary use case is the long-term study of **drying lakes, disappearing ponds, river morphology and water connectivity**.
+
+Instead of asking an AI model to guess what happened, the system first collects and processes satellite/public-source evidence, preserves dates and provenance, and computes reproducible metrics. NVIDIA L4 training helps develop and evaluate the image-processing pipeline. The OpenAI Responses API is then used as a final explanation layer over structured findings, training/evaluation artifacts and real-data test results.
 
 ## What we built
 
-A working research and monitoring platform that includes:
+The project currently combines:
 
-- an interactive 3D Earth and Solar System visualization;
-- NASA JPL Horizons-based Sun/Moon and polar geometry;
-- current environmental-event geometry from official public catalogues such as NASA EONET;
-- NASA FIRMS integration for active-fire detections when an authorized MAP_KEY is available;
-- water, river, terrain and environmental-change research workflows;
-- Research Stations for Arctic 90°N, Sahara, Oceans and Earth–Space 512;
-- reproducible data manifests, hashes, timestamps and evidence classes;
-- local/GPU research tooling with automatic device detection;
-- an OpenAI-powered Evidence / Research Explainer for already computed findings;
+- an interactive 3D Earth for environmental and satellite context;
+- water, lake, river, wetland, terrain and environmental-change research workflows;
+- multi-year and multi-region Earth-observation experiments;
+- official/public data integrations including NASA, NASA GIBS, NASA EONET/FIRMS, ESA/Copernicus/CDSE, USGS and other documented sources;
+- reproducible manifests, timestamps, hashes, source references and evidence classes;
+- NVIDIA L4 GPU training and streaming research pipelines;
+- published L4 training reports with explicit limitations and reproducibility information;
+- an OpenAI-powered Evidence / Research Explainer grounded in already-produced scientific artifacts;
+- environmental hazard monitoring;
+- Arctic, Sahara, Ocean and Earth–Space research stations;
+- NASA JPL Horizons astronomy/polar research as an additional scientific module;
 - privacy safeguards and no person tracking.
 
-The scientific source of truth remains official/public observation data and deterministic processing. AI output is advisory explanation, not observation data.
+For BUILD FOR GOOD, the main story is **Earth, water and environmental protection**. The astronomy and Earth–Space modules remain part of the wider research platform, but they are not the primary example of community impact.
+
+## The problem we want to help solve
+
+Satellite archives contain decades of evidence, but turning those observations into something useful for a local community, student, NGO or researcher is difficult. A person may notice that a pond has disappeared or that a river contains more exposed sediment than decades ago, but visual inspection alone does not establish the magnitude or cause of that change.
+
+Terra Observation System is designed to make that process more rigorous:
+
+1. locate the area of interest;
+2. collect comparable public satellite observations;
+3. preserve acquisition date, source, sensor and provenance;
+4. derive water masks, shoreline/channel measurements or other documented metrics;
+5. compare matched periods where possible;
+6. label the result by evidence class;
+7. use GPU/AI tooling to improve analysis and evaluate the pipeline;
+8. explain the verified result in language that non-specialists can understand;
+9. state clearly what additional evidence would be required before claiming a physical cause.
+
+A visually suspected obstruction or constriction is therefore recorded as a `flow_connectivity_candidate` or `possible_constriction`, **not** as proof that an outlet is blocked. Confirming cause can require discharge records, DEM/bathymetry, hydraulic structures, groundwater information or field inspection.
+
+## Real NVIDIA L4 training and public satellite data
+
+The project does not present a tiny demo dataset as if it were a finished global model. We have been progressively increasing the scale of real GPU experiments and publishing what each run actually establishes.
+
+### L4 Training #1 — baseline
+
+The first NVIDIA L4 run established a smaller baseline corpus of **66 images** and the basic CUDA training path. It was intentionally limited and served as a starting point rather than a global environmental model.
+
+Published report:
+
+<https://terraforming-planet.github.io/Polar-Sun-Moon-Analysis/published/l4-training-2026-08-19/>
+
+### L4 Training #2 — project research corpus
+
+Training #2 expanded the corpus to **290 unique research images** and ran for **60 minutes** on NVIDIA L4. The published corpus included geographically identifiable research material, including **72 images from the Vistula experiment**, 71 from Grays Harbor, 72 from Experiment 011 and 65 from Himalaya–Tibet.
+
+The run completed **29,013 optimization steps** and processed all **290 / 290** unique readable inputs through the CUDA audit. Its loss reduction shows that the denoising objective optimized successfully, but the report explicitly states that this **does not by itself prove water, river, glacier or drought detection accuracy**.
+
+Published report:
+
+<https://terraforming-planet.github.io/Polar-Sun-Moon-Analysis/published/training-runs/site_20260819T223835Z/>
+
+### L4 Training #3 — streaming NASA GIBS
+
+Training #3 moved beyond the static site corpus and streamed real public **NASA GIBS MODIS/VIIRS** imagery into the NVIDIA L4 pipeline.
+
+Measured run facts:
+
+- **200,016** geospatial/time windows were decoded and used for optimization;
+- **156,863** distinct payload SHA-256 contents were recorded;
+- the candidate program covered **75 research regions**;
+- temporal coverage in the saved run spans **2000–2026** with four seasonal checkpoints per year;
+- the configured 200,000-window target was reached in **54.90 minutes**;
+- the run recorded a very small request failure rate and preserved structured cross-checks.
+
+The 75-region program includes water and climate cases such as the **Aral Sea, Lake Chad, Lake Mead, Great Salt Lake, Lake Kuchnia / forest pond, Vistula Grudziądz–Gniew, Nogat / Vistula Delta, Okavango Delta, wetlands, glaciers, deserts and control areas**.
+
+Crucially, the report also states what the run did **not** establish: 200,016 training windows are not 200,016 independent satellite scenes, and training alone is not a before/after environmental measurement. Real environmental findings require a separate reproducible analysis stage.
+
+Published report and structured evidence:
+
+- <https://terraforming-planet.github.io/Polar-Sun-Moon-Analysis/published/training-runs/stream_gibs_20260820T013036Z/>
+- [`docs/published/training-runs/stream_gibs_20260820T013036Z/analysis.json`](docs/published/training-runs/stream_gibs_20260820T013036Z/analysis.json)
+
+That distinction is intentional. For BUILD FOR GOOD, **scientific honesty is part of the product**.
 
 ## Who it helps
 
-The project is designed for:
+Terra Observation System is designed for:
 
-- **communities** that want understandable information about environmental change and hazards;
-- **educators and students** learning Earth observation, astronomy, climate, hydrology and scientific uncertainty;
-- **researchers and citizen scientists** who need reproducible source provenance and transparent derived values;
-- **NGOs and environmental organizations** reviewing water, land, fire, flood and climate-related evidence;
-- **environmental and emergency-response professionals** who need rapid context from official public data sources;
-- **open-source developers** building transparent tools for the common good.
+- **local communities** trying to understand visible changes in nearby lakes, ponds, rivers or wetlands;
+- **educators and students** learning Earth observation, hydrology, climate science and uncertainty;
+- **researchers and citizen scientists** who need transparent provenance and reproducible comparisons;
+- **NGOs and environmental organizations** reviewing water loss, drought, river change, floods, fires and ecosystem stress;
+- **environmental and emergency-response professionals** who need rapid context from official public sources;
+- **open-source developers** building transparent tools for environmental protection and the common good.
 
-The application is research and educational software. It does not replace instructions from emergency services or authoritative operational alert systems.
+The application is research and educational software. It does not replace official emergency warnings or professional field/hydrological assessment.
 
 ## How it will be used — and how it is already used
 
-Users can open the public GitHub Pages application to inspect the 3D Earth, current hazard/event layers, research stations, experiment results and source metadata. Reproducible workflows can compare selected areas across time, including water-surface change, shoreline change, river morphology, exposed beds, terrain/hydrology candidates and other documented Earth-observation analyses.
+A practical water-loss workflow can look like this:
 
-A typical evidence workflow is:
+1. choose a lake, pond, river reach, wetland or AOI;
+2. retrieve historical and recent observations from official/public sources;
+3. use matched seasons and quality filters where possible;
+4. compute water-area, shoreline, channel, exposed-bed or morphology metrics;
+5. save the source dates, sensor information, hashes and analysis configuration;
+6. compare the result with previous tests and relevant L4 training/evaluation artifacts;
+7. classify the evidence as `OBSERVATION`, `DERIVED_VALUE`, `MODEL_ESTIMATE`, `HYPOTHESIS` or `UNKNOWN`;
+8. optionally send that **structured evidence bundle** to the OpenAI Evidence Explainer;
+9. show users a clear explanation of what changed, why it may matter, what remains uncertain and what should be checked next.
 
-1. select or load an area of interest;
-2. retrieve or use cached observations from official/public sources;
-3. compute deterministic metrics and preserve acquisition/source metadata;
-4. label the result as `OBSERVATION`, `DERIVED_VALUE`, `MODEL_ESTIMATE`, `HYPOTHESIS` or `UNKNOWN`;
-5. review uncertainty and scientific limitations;
-6. optionally pass that already computed evidence JSON to the OpenAI Evidence Explainer for a plain-language summary;
-7. keep the original measurements, sources and limitations visible so the explanation can be checked.
-
-The system deliberately does **not** convert a visually suspected river constriction into a confirmed causal claim. Satellite morphology can nominate a `flow_connectivity_candidate` or `possible_constriction`; proving cause requires independent hydrological evidence.
-
-## How Codex helped
-
-Codex has been used as a repository-level engineering tool throughout development for:
-
-- codebase inspection and architecture work;
-- refactoring and modularization;
-- test generation and regression protection;
-- CI and GitHub Actions work;
-- 3D globe/rendering fixes and implementation briefs;
-- scientific guardrails and provenance checks;
-- BUILD FOR GOOD audit and submission preparation.
-
-The repository contains concrete Codex development artifacts rather than only a claim of usage:
-
-- [`CODEX_BUILD_FOR_GOOD_UI_L4.md`](CODEX_BUILD_FOR_GOOD_UI_L4.md) — the main BUILD FOR GOOD implementation brief;
-- [`scripts/start_build_for_good.ps1`](scripts/start_build_for_good.ps1) — a launcher that checks for Codex CLI and runs `codex exec` against the repository brief before validation;
-- [`CODEX_BUILD_FOR_GOOD_SUBMISSION_READY.md`](CODEX_BUILD_FOR_GOOD_SUBMISSION_READY.md) — the final submission-ready Codex brief;
-- merged BUILD FOR GOOD development history, including the English UI / AI Area Lab / Earth–Space 512 implementation work.
-
-Every Codex-assisted change is still expected to pass the same repository quality gates as manually written code.
+This creates a path from **satellite data → reproducible measurement → GPU research → understandable evidence**, instead of satellite image → unsupported AI claim.
 
 ## How the OpenAI API adds value
 
-The project includes a deliberately small OpenAI integration in [`terra_research_node/openai_summary.py`](terra_research_node/openai_summary.py).
+The OpenAI integration lives in [`terra_research_node/openai_summary.py`](terra_research_node/openai_summary.py).
 
-The **Evidence / Research Explainer** uses the OpenAI Responses API only after the scientific pipeline has already produced a JSON finding. It is designed to return four human-readable fields:
+The **Evidence / Research Explainer** uses the OpenAI Responses API after the scientific and training pipelines have produced structured artifacts. It can now receive three evidence layers in one request:
+
+1. **Primary finding** — for example, a measured surface-water or river-channel change;
+2. **L4 training/evaluation context** — structured metrics from GPU runs such as Training #2 or Training #3;
+3. **Real-data test context** — structured results from tests performed on real public satellite observations.
+
+The API returns four human-readable fields:
 
 - `summary`
 - `why_it_matters`
 - `uncertainty`
 - `next_checks`
 
-Guardrails:
+### Why this is useful
 
-- OpenAI does **not** generate satellite measurements;
-- OpenAI does **not** invent dates, source URLs, acquisition IDs or missing observations;
-- OpenAI does **not** promote a hypothesis/candidate into a confirmed cause;
-- the original evidence class is preserved;
-- deterministic results remain available if OpenAI is disabled;
-- if `OPENAI_API_KEY` is missing, the explainer fails clearly instead of producing a fake AI result.
+A community user should not need to understand WMS windows, SHA-256 provenance, CUDA training logs, segmentation metrics and hydrological caveats just to understand a result. OpenAI can translate that evidence into a clear explanation **without changing the underlying measurements**.
 
-The default model is `gpt-5.6-luna` for a small, cost-conscious explanation task and can be changed with `OPENAI_MODEL`.
+For example, if a real-data test shows reduced mapped surface water in a lake, while L4 evaluation shows that the pipeline processed relevant water/river imagery successfully, OpenAI may explain the combined evidence and recommend verification steps. It may **not** turn successful training into a claim that the lake dried because of a blocked river.
 
-Example local/server-side use:
+### Guardrails
+
+- OpenAI does **not** create satellite measurements;
+- OpenAI does **not** invent dates, source URLs, acquisition IDs, environmental events or missing observations;
+- L4 loss/throughput metrics are never treated as environmental ground truth;
+- OpenAI does **not** promote a candidate into a confirmed cause;
+- original evidence classes and explicit `false` / `UNKNOWN` claim flags remain part of the input;
+- deterministic results remain usable when OpenAI is disabled;
+- if `OPENAI_API_KEY` is missing, the explainer fails clearly instead of producing a fake result.
+
+The default API model is `gpt-5.6-luna`, selected for a cost-conscious explanation task, and can be overridden with `OPENAI_MODEL`.
+
+Example using a primary finding plus the real published L4 Training #3 analysis:
 
 ```bash
 export OPENAI_API_KEY="your-key-from-your-secure-environment"
-python -m terra_research_node.openai_summary path/to/finding.json --output explanation.json
+python -m terra_research_node.openai_summary \
+  path/to/water-or-river-finding.json \
+  --training-context docs/published/training-runs/stream_gibs_20260820T013036Z/analysis.json \
+  --test-context path/to/real-satellite-test.json \
+  --output explanation.json
 ```
 
-**Never put `OPENAI_API_KEY` in the public GitHub Pages frontend.**
+The OpenAI key is never placed in GitHub Pages or committed source files.
+
+## How Codex helped
+
+Codex has been used throughout development as a repository-level engineering tool for:
+
+- architecture and codebase inspection;
+- refactoring and modularization;
+- test generation and regression protection;
+- GPU/training workflow implementation and review;
+- Earth-observation pipeline work;
+- CI and GitHub Actions;
+- 3D globe and interface fixes;
+- provenance and scientific guardrails;
+- BUILD FOR GOOD audit and submission preparation.
+
+The repository contains concrete Codex artifacts:
+
+- [`CODEX_BUILD_FOR_GOOD_UI_L4.md`](CODEX_BUILD_FOR_GOOD_UI_L4.md);
+- [`scripts/start_build_for_good.ps1`](scripts/start_build_for_good.ps1), which checks for Codex CLI and runs `codex exec` against the implementation brief;
+- [`CODEX_BUILD_FOR_GOOD_SUBMISSION_READY.md`](CODEX_BUILD_FOR_GOOD_SUBMISSION_READY.md);
+- [`scripts/start_build_for_good_submission_ready.ps1`](scripts/start_build_for_good_submission_ready.ps1);
+- merged BUILD FOR GOOD development history and testable code changes.
+
+Codex is used to build and verify the system; it is not treated as a substitute for scientific validation.
+
+## Evidence classes
+
+Every environmental result should be explicit about what kind of knowledge it represents:
+
+- `OBSERVATION` — direct sensor or authoritative catalogue record;
+- `DERIVED_VALUE` — transparent calculation from observations;
+- `MODEL_ESTIMATE` — model result with assumptions and uncertainty;
+- `HYPOTHESIS` — possible explanation requiring additional evidence;
+- `UNKNOWN` — not measurable or established from the available inputs.
+
+Example: if mapped lake surface area changes from 10 km² to 1 km², the mapped area difference is −9 km² or −90%. The **volume** change remains unknown without bathymetry or a defensible area–elevation–volume relationship. The **cause** of the change is also a separate question.
+
+## Official/public data principle
+
+The platform is designed around legal, official and publicly available sources. Depending on the module, these include NASA/JPL, NASA GIBS, NASA EONET, NASA FIRMS, ESA/Copernicus/CDSE, USGS, NOAA and other documented scientific/civil-protection sources.
+
+We do not download entire satellite archives when a targeted catalogue/tile/scene workflow is sufficient. Source IDs, dates, resolution/limitations and provenance are preserved wherever available.
+
+## Additional Earth and space research
+
+Terra Observation System grew from the Polar Sun/Moon research project and still includes:
+
+- NASA JPL Horizons-based Sun/Moon and polar geometry;
+- a 3D Solar System view based on published ephemeris vectors;
+- Arctic 90°N research;
+- Sahara terrain/paleochannel research;
+- Ocean research;
+- Earth–Space 512 research.
+
+These modules broaden the scientific platform, but the BUILD FOR GOOD environmental use case is centered on **Earth observation, water, hazards and environmental change**.
 
 ## Security and privacy
 
 - `.env` is ignored by Git;
-- OpenAI and other private API credentials are read from the environment or authorized secret stores only;
+- `OPENAI_API_KEY` and other private credentials are read only from the environment or authorized secret stores;
 - no API key belongs in browser JavaScript, public JSON, screenshots or committed logs;
+- the OpenAI endpoint is not an unrestricted public proxy;
 - the platform does not perform person tracking or private-data enrichment;
 - public Earth-observation work uses legal, official and publicly available sources;
-- test code uses fake test credentials only.
+- tests use obviously fake credentials only.
 
 ## How to run the project
 
@@ -132,19 +261,7 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-Generate polar Sun/Moon observations:
-
-```bash
-python -m polar_equinox_analysis polar --start-year 2006 --end-year 2024 --include-future
-```
-
-Generate a current JPL Solar System snapshot:
-
-```bash
-python -m polar_equinox_analysis solar-system --output web/public/data/solar-system.json
-```
-
-Refresh the public NASA event catalogue and source registry:
+Refresh the public hazard/source data:
 
 ```bash
 python -m terra_hazards sources --output web/public/data/sources.json
@@ -158,6 +275,15 @@ export OPENAI_API_KEY="your-key-from-your-secure-environment"
 python -m terra_research_node.openai_summary path/to/finding.json
 ```
 
+Add L4 and real-data test evidence when available:
+
+```bash
+python -m terra_research_node.openai_summary \
+  path/to/finding.json \
+  --training-context docs/published/training-runs/stream_gibs_20260820T013036Z/analysis.json \
+  --test-context path/to/test-result.json
+```
+
 ### Web application
 
 ```bash
@@ -166,127 +292,36 @@ npm install
 npm run dev
 ```
 
-## Corrected Horizons methodology
+### Existing polar/JPL workflow
 
-The previous implementation could not retrieve live observations. It sent unquoted date-time
-parameters and requested `QUANTITIES='4'` while trying to read declination. In Horizons observer
-tables:
-
-- quantity `1` is astrometric right ascension and declination;
-- quantity `2` is apparent right ascension and declination;
-- quantity `4` is apparent azimuth and elevation;
-- quantity `7` is local apparent sidereal time;
-- quantities `8` and `9` provide airmass/extinction and visual magnitude/surface brightness;
-- quantity `13` is angular diameter;
-- quantities `20` and `21` provide observer range/range-rate and one-way light-time;
-- quantities `23` and `24` provide elongation and phase angle;
-- quantity `29` is constellation;
-- quantity `42` is local apparent hour angle;
-- quantity `45` is inertial apparent RA/DEC;
-- quantity `47` is sky motion;
-- quantity `49` is DUT1.
-
-The equinox finder still uses `QUANTITIES='2'` for the geocentric Sun zero crossing. Polar
-observations use the expanded set
-`1,2,4,7,8,9,13,20,21,23,24,29,42,45,47,49`, decimal-degree angles, calendar and Julian dates,
-extra precision and airless topocentric coordinates. Optional values returned by Horizons as
-`n.a.` are stored as null; required altitude and declination values are never fabricated.
-
-All string and time parameters are quoted as required by the Horizons batch interface. CSV
-parsing uses Python's `csv` module and tests contain a small response excerpt captured from the
-real API.
-
-Official documentation:
-
-- <https://ssd-api.jpl.nasa.gov/doc/horizons.html>
-- <https://ssd.jpl.nasa.gov/horizons/manual.html>
-- manual verification interface: <https://ssd.jpl.nasa.gov/horizons/app.html#/>
-
-Exact geodetic latitudes `+90°` and `-90°` were verified against the live API and are accepted.
-The pipeline uses airless apparent coordinates, so it does not invent local polar weather for an
-atmospheric-refraction correction.
-
-## Automatic and manual verification
-
-Automatic collection uses the official GET API. A response downloaded manually from the Horizons
-web application can be parsed with `HorizonsClient.parse_observer_response(text)`. Both paths use
-the same response validation and field mapping, making individual observations easy to verify
-without maintaining two scientific pipelines.
-
-## Reproducible archive
-
-Every run keeps both the untouched NASA response and normalized observations:
-
-```text
-outputs/archive/
-├── raw/
-│   ├── north-pole/
-│   │   ├── sun.txt
-│   │   ├── sun.metadata.json
-│   │   ├── moon.txt
-│   │   └── moon.metadata.json
-│   └── south-pole/
-└── processed/
-    └── 2006/
-        ├── spring/
-        │   ├── north-pole/sun.json
-        │   ├── north-pole/moon.json
-        │   ├── south-pole/sun.json
-        │   └── south-pole/moon.json
-        └── autumn/
+```bash
+python -m polar_equinox_analysis polar --start-year 2006 --end-year 2024 --include-future
+python -m polar_equinox_analysis solar-system --output web/public/data/solar-system.json
 ```
-
-Raw metadata contains the exact request parameters, retrieval time, cache key, response SHA-256,
-API version, execution time and source URL. Processed records retain those provenance fields plus
-observer coordinates, reference-frame notes and quality flags.
-
-## Verified archive
-
-The committed web dataset contains 152 genuine records for 2006–2024:
-
-`19 years × 2 equinoxes × 2 poles × 2 bodies = 152 observations`
-
-Each observation contains its UTC time, source, response SHA-256, Horizons API version, actual
-observer latitude and a quality flag. The equinox zero crossing is derived from a 30-minute
-Horizons declination series and interpolated between the two adjacent samples that bracket zero.
 
 ## NASA FIRMS active-fire detections
 
-The FIRMS adapter uses real VIIRS/MODIS detections and never supplies demo hotspots. The official
-area API requires a personal MAP_KEY:
+The FIRMS adapter uses real VIIRS/MODIS detections and never supplies demo hotspots. The official area API requires a personal MAP_KEY:
 
 ```bash
 export NASA_FIRMS_MAP_KEY="your-official-key"
 ```
 
-Without that secret, the public application continues to work with NASA EONET and clearly reports
-that pixel-level FIRMS access requires credentials.
-
-## Evidence classes
-
-Environmental results must be labelled as one of:
-
-- `OBSERVATION` — a sensor or official catalogue record;
-- `DERIVED_VALUE` — a transparent calculation from observations;
-- `MODEL_ESTIMATE` — a model result with assumptions and uncertainty;
-- `HYPOTHESIS` — a possible explanation requiring evidence;
-- `UNKNOWN` — not measurable from the available inputs.
-
-For example, a lake shrinking from 10 km² to 1 km² is a measured area change of −9 km² or −90%.
-Its volume change remains `UNKNOWN` without bathymetry or an area–elevation–volume relationship.
+Without that secret, the public application continues to work with NASA EONET and clearly reports that pixel-level FIRMS access requires credentials.
 
 ## Scientific and operational limits
 
-- Thermal infrared does not see the surface through opaque cloud; additional camera power does
-  not change that. Sentinel-1 SAR is the principal all-weather surface-imaging source.
-- GRACE/GRACE-FO estimates regional mass change, not fracture-scale water inside rock.
-- Satellites infer broad seafloor structure from sea-surface height and gravity. Detailed direct
-  mapping requires multibeam sonar, AUV/ROV systems or related field instruments.
+- Optical imagery can be blocked by cloud; a cloud-covered scene is not evidence that surface conditions did not change.
+- Sentinel-1 SAR can provide important all-weather surface information but requires sensor-appropriate interpretation.
+- Seasonal mismatch can create false change signals; matched-season comparisons are preferred.
+- Satellite morphology can identify candidates, not automatically establish hydrological causation.
+- Training success is not the same as environmental detection accuracy.
+- GRACE/GRACE-FO estimates regional mass change, not fine-scale water in individual fractures or channels.
+- Satellite-derived broad bathymetric structure is not equivalent to detailed multibeam sonar mapping.
 - NASA EONET is an event catalogue, not an official emergency alert system.
 - This research application must not replace instructions from emergency services.
 
-See [data sources](docs/data-sources.md), [scientific limits](docs/science-and-limitations.md) and
-[privacy](docs/privacy.md).
+See [data sources](docs/data-sources.md), [scientific limits](docs/science-and-limitations.md) and [privacy](docs/privacy.md).
 
 ## Validation
 
