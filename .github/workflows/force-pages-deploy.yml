@@ -6,6 +6,7 @@ on:
     paths:
       - 'web/**'
       - 'published/**'
+      - 'config/evidence-worker-url.txt'
       - '.github/workflows/force-pages-deploy.yml'
   workflow_dispatch:
     inputs:
@@ -58,16 +59,28 @@ jobs:
           REPOSITORY_URL: ${{ vars.VITE_EVIDENCE_API_URL }}
         run: |
           set -euo pipefail
-          worker_url="${DISPATCH_URL:-$REPOSITORY_URL}"
-          if [ -n "$worker_url" ] && [[ "$worker_url" != https://* ]]; then
+          persisted_url=''
+          if [ -s config/evidence-worker-url.txt ]; then
+            persisted_url=$(tr -d '\r\n' < config/evidence-worker-url.txt)
+          fi
+          worker_url="${DISPATCH_URL:-${persisted_url:-$REPOSITORY_URL}}"
+          worker_url="${worker_url%/}"
+          test -n "$worker_url" || {
+            echo 'No public Evidence Worker URL is configured. Refusing to publish a BUILD FOR GOOD production bundle in DISCONNECTED state.'
+            echo 'Deploy the Evidence Worker first or dispatch this workflow with evidence_api_url.'
+            exit 1
+          }
+          [[ "$worker_url" == https://* ]] || {
             echo 'VITE_EVIDENCE_API_URL must use HTTPS for a production Pages build.'
             exit 1
-          fi
+          }
           echo "url=$worker_url" >> "$GITHUB_OUTPUT"
-          if [ -n "$worker_url" ]; then
-            echo 'Evidence Worker URL resolved for this Pages build.'
+          if [ -n "$DISPATCH_URL" ]; then
+            echo 'Evidence Worker URL resolved from controlled workflow dispatch.'
+          elif [ -n "$persisted_url" ]; then
+            echo 'Evidence Worker URL resolved from persisted public deployment config.'
           else
-            echo 'No Evidence Worker URL configured; frontend will use its explicit DISCONNECTED state.'
+            echo 'Evidence Worker URL resolved from repository Actions variable.'
           fi
 
       - name: Build Vite application
@@ -76,13 +89,18 @@ jobs:
           VITE_EVIDENCE_API_URL: ${{ steps.evidence-url.outputs.url }}
         run: npm run build
 
-      - name: Verify build output
+      - name: Verify build output and Evidence Worker injection
         shell: bash
+        env:
+          EVIDENCE_URL: ${{ steps.evidence-url.outputs.url }}
         run: |
           set -euo pipefail
           test -s web/dist/index.html
           test -d web/dist/assets
           grep -q '/Polar-Sun-Moon-Analysis/' web/dist/index.html
+          grep -R -Fq "$EVIDENCE_URL" web/dist/assets
+          grep -R -Fq 'Explain Vistula evidence with OpenAI' web/dist/assets
+          echo 'Production bundle contains the public Evidence Worker URL and explainer UI.'
 
       - name: Publish build into docs
         shell: bash
