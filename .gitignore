@@ -3,6 +3,8 @@ __pycache__/
 .venv/
 venv/
 .env
+.dev.vars
+**/.dev.vars
 .cache/
 outputs/
 *.egg-info/
@@ -16,6 +18,7 @@ logs/
 config/cdse.yaml
 research_cache/
 research_runs/
+cloudflare/**/.wrangler/
 
 # Large generated Sentinel-1 raster outputs
 docs/data/copernicus/flood_detection/*.tif
