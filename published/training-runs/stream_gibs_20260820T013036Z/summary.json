@@ -1,0 +1,77 @@
+{
+  "run_id": "stream_gibs_20260820T013036Z",
+  "metrics": {
+    "schema": "tp26-streaming-gibs-training-v1",
+    "run_id": "stream_gibs_20260820T013036Z",
+    "training_mode": "self_supervised_denoising_streaming_gibs",
+    "completed": true,
+    "elapsed_seconds": 3293.7969999999987,
+    "candidate_window_pool": 518400,
+    "target_remote_windows": 200000,
+    "remote_unique_windows_trained": 200016,
+    "remote_unique_content_sha256": 156863,
+    "local_unique_images": 161,
+    "local_corpus_unique_count": 161,
+    "samples_seen": 200345,
+    "local_replay_samples": 329,
+    "steps": 8348,
+    "batch_size_final": 24,
+    "workers": 32,
+    "resolution": 512,
+    "remote_download_bytes": 1822759168,
+    "failures": 2,
+    "loss_first": 0.2588890492916107,
+    "loss_last": 0.06958069652318954,
+    "loss_best": 0.011324094608426094,
+    "checkpoint": "C:/Users/xodobrox/Polar-Sun-Moon-Analysis/research_runs/stream_gibs_20260820T013036Z/earth_observation_streaming_gibs.pt",
+    "source": "NASA GIBS public MODIS/VIIRS true-color WMS",
+    "evidence_class": "DERIVED_VALUE",
+    "ground_truth_claim": false,
+    "scientific_finding_claim": false,
+    "causal_environmental_claim": false,
+    "counting_note": "remote_unique_windows_trained counts distinct requested geospatial/time WMS windows that were actually decoded and used for optimization. It is not a count of unique satellite source scenes. samples_seen includes local replay and must not be called an image count."
+  },
+  "archive": {
+    "filename": "stream_gibs_20260820T013036Z_FULL_LOGS.zip",
+    "size_bytes": 19406435,
+    "sha256": "40128DD94E8AEF7282835387625DEF270CF0F34F261775683C603EBFFD7F9F08",
+    "availability": "local full-log archive; checkpoint excluded"
+  },
+  "findings": [
+    {
+      "id": "FINDING-01",
+      "class": "DERIVED_VALUE",
+      "title": "Streaming target reached",
+      "value": "200,016 distinct geospatial/time windows used for optimization",
+      "detail": "Target completion 100.008% from a candidate pool of 518,400 windows."
+    },
+    {
+      "id": "FINDING-02",
+      "class": "DERIVED_VALUE",
+      "title": "Content diversity",
+      "value": "156,863 distinct payload SHA-256 values",
+      "detail": "78.43% content-unique; 43,153 trained windows had payload content matching another trained window."
+    },
+    {
+      "id": "FINDING-03",
+      "class": "DERIVED_VALUE",
+      "title": "Throughput and reliability",
+      "value": "60.73 windows/s",
+      "detail": "1.823 GB streamed; 2 recorded failures (0.0010%)."
+    },
+    {
+      "id": "FINDING-04",
+      "class": "DERIVED_VALUE",
+      "title": "Optimization behavior",
+      "value": "8,348 steps \u00b7 200,345 samples",
+      "detail": "Loss first\u2192last reduction 73.12%; best reduction 95.63%."
+    },
+    {
+      "id": "FINDING-05",
+      "class": "UNKNOWN",
+      "title": "Environmental conclusions",
+      "value": "Not established by this training run alone",
+      "detail": "The run decoded and optimized on imagery but did not persist water/snow/vegetation/shoreline pixel metrics. Environmental findings require a separate reproducible scene-analysis pass."
+    }
+  ]
+}
