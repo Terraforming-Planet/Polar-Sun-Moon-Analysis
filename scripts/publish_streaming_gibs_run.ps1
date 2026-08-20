@@ -26,6 +26,16 @@ if (-not $RunDir) {
 
 $resolvedRun = (Resolve-Path $RunDir).Path
 $runName = Split-Path $resolvedRun -Leaf
+
+if ($PrepareGitBranch) {
+    $trackedChanges = git status --porcelain --untracked-files=no
+    if ($trackedChanges) {
+        throw 'Tracked working-tree changes already exist. Commit/stash them before -PrepareGitBranch.'
+    }
+    $branch = "publish-$runName"
+    git switch -c $branch
+}
+
 & $python '.\scripts\publish_streaming_gibs_run.py' '--run-dir' $resolvedRun
 if ($LASTEXITCODE -ne 0) {
     throw "Streaming report publisher failed with exit code $LASTEXITCODE"
@@ -38,12 +48,6 @@ Write-Host "Publication: $publication" -ForegroundColor Cyan
 Write-Host "Full logs ZIP: research_runs/${runName}_FULL_LOGS.zip" -ForegroundColor Cyan
 
 if ($PrepareGitBranch) {
-    $trackedChanges = git status --porcelain --untracked-files=no
-    if ($trackedChanges) {
-        throw 'Tracked working-tree changes already exist. Commit/stash them before -PrepareGitBranch.'
-    }
-    $branch = "publish-$runName"
-    git switch -c $branch
     git add -- $publication web/index.html
     git commit -m "Publish L4 streaming training #3"
     git push -u origin $branch
