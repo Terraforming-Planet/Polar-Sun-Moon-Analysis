@@ -1,65 +1,61 @@
-<html><head><meta charset='utf-8'><title>TP-26 Second L4 Training</title></head><body style='background:#04101d;color:#dff7ff;font-family:system-ui;padding:30px'><h1>TP-26 Second L4 Site Corpus Trdit ag</h1><h2>site_20260819T223835Z</h2><p>Full structured GPU audit anap'> logs.</p><pre style='white-space:pre-wrap'>{
-  "run_id": "site_20260819T223835Z",
-  "device": {
-    "backend": "cuda",
-    "name": "NVIDIA L4",
-    "cuda_available": true,
-    "mixed_precision": true,
-    "torch_available": true,
-    "torch_version": "2.13.0+cu132",
-    "cuda_version": "13.2",
-    "nvidia_smi": {
-      "name": "NVIDIA L4",
-      "driver_version": "582.16",
-      "memory_total_mib": "23034",
-      "power_limit_w": "72.00"
-    },
-    "device_index": 0,
-    "vram_bytes": 24152440832
-  },
-  "corpus": {
-    "unique_image_count": 290,
-    "counts_by_origin": {
-      "local_project_asset": 82,
-      "remote_project_gallery": 208
-    },
-    "counts_by_experiment": {
-      "experiment-011": 72,
-      "experiment-013": 71,
-      "experiment-014": 72,
-      "experiment-015": 65,
-      "other-research-pages": 10
-    },
-    "remote_download_error_count": 0
-  },
-  "gpu_audit": {
-    "images_in_corpus": 290,
-    "images_processed_gpu": 290,
-    "unreadable_count": 0,
-    "unreadable": [],
-    "resolution": 512,
-    "evidence_class": "DERIVED_VALUE",
-    "scientific_finding_claim": false,
-    "note": "Every readable unique site-corpus image is transferred to CUDA once. The stored RGB statistics are an image audit, not proof of hydrological or climatic causation."
-  },
-  "training": {
-    "training_mode": "self_supervised_denoising_pretrain",
-    "completed": true,
-    "elapsed_seconds": 3600.063000000002,
-    "steps": 29013,
-    "samples_seen": 696312,
-    "image_count": 290,
-    "batch_size_final": 24,
-    "loss_first": 0.337372750043869,
-    "loss_last": 0.07243536412715912,
-    "loss_best": 0.037301916629076004,
-    "checkpoint": "C:/Users/xodobrox/Polar-Sun-Moon-Analysis/research_runs/site_20260819T223835Z/earth_observation_pretrain.pt",
-    "ground_truth_claim": false
-  },
-  "claims": {
-    "all_readable_unique_site_images_gpu_audited": true,
-    "self_supervised_training": true,
-    "ground_truth_claim": false,
-    "causal_environmental_claim": false
-  }
-}</pre><p><a style='color:#76e8ff' href='site_corpus_manifest.json'>Site corpus manifest</a></p><p><a style='color:#76e8ff' href='><p><a se_audit.jsonl'>Full GPU image audit</a></p><p><a stTraining manifest</a></p='training_manifest.json'>Training manifest</a></p></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TP-26 L4 Training #2 — Site Research Corpus</title>
+  <style>
+    :root{color-scheme:dark;--bg:#020711;--panel:#071421;--line:#24506d;--cyan:#72e9ff;--text:#e9f8ff;--muted:#94b9ca;--good:#70efad}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#0a2940 0,#020711 40%);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}main{width:min(1080px,calc(100% - 28px));margin:0 auto;padding:28px 0 48px}a{color:var(--cyan)}.eyebrow{color:var(--cyan);font-weight:800;letter-spacing:.1em;text-transform:uppercase;font-size:.75rem}h1{font-size:clamp(2rem,6vw,3.4rem);line-height:1.02;margin:.35rem 0 .6rem}.lead{color:var(--muted);max-width:800px}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:24px 0}.card,.section{border:1px solid var(--line);border-radius:14px;background:rgba(7,20,33,.92);padding:16px}.card b{display:block;font-size:1.65rem;color:#fff}.card span{font-size:.78rem;color:var(--muted)}.section{margin-top:12px}.section h2{margin-top:0}.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.fact{padding:10px;border:1px solid #173b55;border-radius:9px;background:#04101b}.fact span{display:block;color:var(--muted);font-size:.75rem}.links{display:flex;flex-wrap:wrap;gap:8px}.links a{padding:9px 11px;border:1px solid #2b6384;border-radius:8px;background:#09263a;text-decoration:none}.badge{display:inline-block;padding:5px 8px;border-radius:999px;border:1px solid #2f805c;color:var(--good);font-size:.72rem;font-weight:800}.warning{border-color:#665623;color:#f5df92}.back{display:inline-block;margin-bottom:18px;text-decoration:none}@media(max-width:720px){.grid{grid-template-columns:1fr 1fr}.facts{grid-template-columns:1fr}}@media(max-width:420px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<main>
+  <a class="back" href="../../../">← Terraforming Planet</a>
+  <div class="eyebrow">TP-26 · NVIDIA L4 · completed research run</div>
+  <h1>L4 Training #2 — Site Research Corpus</h1>
+  <p class="lead">Run <strong>site_20260819T223835Z</strong>. This page publishes the structured logs from the second completed L4 run. Large model checkpoints remain outside GitHub Pages.</p>
+  <div class="grid">
+    <div class="card"><b>290</b><span>unique research images</span></div>
+    <div class="card"><b>290 / 290</b><span>images GPU-audited</span></div>
+    <div class="card"><b>29,013</b><span>optimization steps</span></div>
+    <div class="card"><b>696,312</b><span>samples seen — repeated optimization samples, not unique images</span></div>
+  </div>
+  <section class="section">
+    <h2>Run summary</h2>
+    <div class="facts">
+      <div class="fact"><span>GPU</span><strong>NVIDIA L4 · 23,034 MiB</strong></div>
+      <div class="fact"><span>Runtime</span><strong>3,600.063 s</strong></div>
+      <div class="fact"><span>Resolution / batch</span><strong>512 px · batch 24</strong></div>
+      <div class="fact"><span>Training mode</span><strong>self-supervised denoising pretrain</strong></div>
+      <div class="fact"><span>Loss first → last</span><strong>0.337373 → 0.072435</strong></div>
+      <div class="fact"><span>Best loss</span><strong>0.037302</strong></div>
+      <div class="fact"><span>Corpus origin</span><strong>82 local + 208 project gallery</strong></div>
+      <div class="fact"><span>Unreadable images</span><strong>0</strong></div>
+    </div>
+  </section>
+  <section class="section">
+    <h2>Corpus coverage</h2>
+    <p>Experiment 011: 72 · Experiment 013 / Grays Harbor: 71 · Experiment 014 / Vistula: 72 · Experiment 015 / Himalaya–Tibet: 65 · other research pages: 10.</p>
+    <span class="badge">DERIVED_VALUE · training completed</span>
+    <span class="badge warning">No ground-truth or causal environmental claim</span>
+  </section>
+  <section class="section">
+    <h2>Published structured logs</h2>
+    <div class="links">
+      <a href="metrics.json">metrics.json</a>
+      <a href="device.json">device.json</a>
+      <a href="gpu_audit_summary.json">gpu_audit_summary.json</a>
+      <a href="gpu_image_audit.jsonl">full GPU image audit</a>
+      <a href="site_corpus_manifest.json">site corpus manifest</a>
+      <a href="training_manifest.json">training manifest</a>
+      <a href="training_metrics.json">training metrics</a>
+    </div>
+  </section>
+  <section class="section">
+    <h2>Scientific interpretation</h2>
+    <p>The falling reconstruction loss is evidence that the optimization procedure learned the self-supervised reconstruction task on this corpus. It is <strong>not</strong> by itself evidence of a hydrological, climatic, geological or causal environmental discovery.</p>
+  </section>
+</main>
+</body>
+</html>
