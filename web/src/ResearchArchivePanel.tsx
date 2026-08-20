@@ -2,12 +2,16 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { ResearchDataPreview } from './ResearchDataPreview'
 import {
+  deleteAssistantAnswerLocally,
   deleteResearchFindingLocally,
   deleteResearchManifestLocally,
+  downloadAssistantAnswer,
   downloadResearchFinding,
   downloadResearchManifest,
+  loadLocalAssistantAnswers,
   loadLocalResearchArchive,
   loadLocalResearchFindings,
+  type ResearchAssistantAnswerRecord,
   type ResearchFindingRecord,
   type ResearchManifest,
 } from './researchArchive'
@@ -32,20 +36,22 @@ export function ResearchArchivePanel({
   const [category, setCategory] = useState('wszystkie')
   const [localArchive, setLocalArchive] = useState<ResearchManifest[]>([])
   const [findings, setFindings] = useState<ResearchFindingRecord[]>([])
+  const [assistantAnswers, setAssistantAnswers] = useState<ResearchAssistantAnswerRecord[]>([])
   const [expandedLocalId, setExpandedLocalId] = useState<string | null>(null)
   const [expandedFindingId, setExpandedFindingId] = useState<string | null>(null)
 
   const refreshLocalArchive = () => {
     setLocalArchive(loadLocalResearchArchive())
     setFindings(loadLocalResearchFindings())
+    setAssistantAnswers(loadLocalAssistantAnswers())
   }
   useEffect(refreshLocalArchive, [])
 
   const filtered = useMemo(() => {
-    const needle = query.trim().toLocaleLowerCase('pl')
+    const needle = query.trim().toLocaleLowerCase('en')
     return PUBLIC_RESEARCH_TESTS.filter(item => {
       const categoryMatch = category === 'wszystkie' || item.category === category
-      const searchMatch = !needle || `${item.label} ${item.title} ${item.category} ${item.temporalScope}`.toLocaleLowerCase('pl').includes(needle)
+      const searchMatch = !needle || `${item.label} ${item.title} ${item.category} ${item.temporalScope}`.toLocaleLowerCase('en').includes(needle)
       return categoryMatch && searchMatch
     })
   }, [category, query])
@@ -62,22 +68,27 @@ export function ResearchArchivePanel({
     refreshLocalArchive()
   }
 
-  return <section className="research-archive" aria-label="Archiwum badań Terra Observation">
+  const removeAssistantAnswer = (id: string) => {
+    deleteAssistantAnswerLocally(id)
+    refreshLocalArchive()
+  }
+
+  return <section className="research-archive" aria-label="Terra Observation research archive">
     <div className="research-section-head archive-title">
-      <div><small>PUBLIC RESEARCH ARCHIVE</small><h2>Archiwum TEST 001–016</h2></div>
+      <div><small>PUBLIC RESEARCH ARCHIVE</small><h2>TEST 001–016 archive</h2></div>
       <span className="evidence-badge observation">16 PUBLISHED TESTS</span>
     </div>
-    <p className="muted">Każdy opublikowany test ma stały numer i publiczny raport. Rejestr OpenAI jest celowo węższy: tylko testy z zatwierdzonym pakietem evidence mogą zostać wysłane do Explainera.</p>
+    <p className="muted">Each published test has a stable number and public report. The OpenAI registry is intentionally narrower: only tests with an approved evidence package can be sent to the Explainer.</p>
 
     <div className="research-archive-toolbar">
-      <label className="research-field">Szukaj<input value={query} onChange={event => setQuery(event.target.value)} placeholder="np. Wisła, jezioro, Himalaje…" /></label>
-      <label className="research-field">Kategoria<select value={category} onChange={event => setCategory(event.target.value)}>{PUBLIC_RESEARCH_CATEGORIES.map(item => <option key={item} value={item}>{item}</option>)}</select></label>
-      <div className="archive-count"><b>{filtered.length}</b><span>widocznych testów</span></div>
+      <label className="research-field">Search<input value={query} onChange={event => setQuery(event.target.value)} placeholder="e.g. Vistula, lake, Himalayas…" /></label>
+      <label className="research-field">Category<select value={category} onChange={event => setCategory(event.target.value)}>{PUBLIC_RESEARCH_CATEGORIES.map(item => <option key={item} value={item}>{item === 'wszystkie' ? 'all' : item}</option>)}</select></label>
+      <div className="archive-count"><b>{filtered.length}</b><span>visible tests</span></div>
     </div>
 
-    <div className="research-archive-table" role="table" aria-label="Publiczne testy badawcze">
+    <div className="research-archive-table" role="table" aria-label="Published research tests">
       <div className="research-archive-row header" role="row">
-        <span>Test</span><span>Badanie</span><span>Zakres</span><span>AI</span><span>Raport</span>
+        <span>Test</span><span>Research</span><span>Range</span><span>AI</span><span>Report</span>
       </div>
       {filtered.map(item => {
         const aiReady = Boolean(item.aiCaseId && aiCaseIds.has(item.aiCaseId))
@@ -90,17 +101,40 @@ export function ResearchArchivePanel({
             if (!item.aiCaseId) return
             onSelectAiCase(item.aiCaseId)
             onOpenExplainer()
-          }}>{selected ? 'Wybrany w AI' : 'Analizuj w AI'}</button> : <em className="archive-ai-pending">evidence pending</em>}</span>
-          <span><a className="button-link compact" href={`${base}${item.publicPath}`}>Otwórz</a></span>
+          }}>{selected ? 'Selected in AI' : 'Analyze with AI'}</button> : <em className="archive-ai-pending">evidence pending</em>}</span>
+          <span><a className="button-link compact" href={`${base}${item.publicPath}`}>Open</a></span>
         </div>
       })}
     </div>
 
     <div className="research-section-head local-archive-title">
-      <div><small>SAVED RESEARCH FINDINGS · NO RAW CHAT</small><h2>Zapisane obrazy i wnioski</h2></div>
+      <div><small>ASSISTANT ANSWERS · USER PROMPTS EXCLUDED</small><h2>Saved assistant answers</h2></div>
+      <span className="evidence-badge observation">PROMPTS NOT STORED</span>
+    </div>
+    <p className="muted">This device-local archive can show where a research session was focused and what the assistant answered. It deliberately does not contain the user's question, prompt text or raw conversation history. Nothing in this section is a cross-user activity log.</p>
+
+    {assistantAnswers.length ? <div className="local-research-list research-findings-list">
+      {assistantAnswers.map(item => <article key={item.id} className="local-research-item finding-item">
+        <div><span className="evidence-badge observation">ASSISTANT ANSWER</span><h3>{item.place?.label ?? 'Research session'}</h3></div>
+        <div className="local-research-meta">
+          <span><b>Saved</b>{new Date(item.saved_at_utc).toLocaleString('en-GB', { timeZone: 'UTC' })} UTC</span>
+          <span><b>Model</b>{item.model}</span>
+          <span><b>Location</b>{item.place ? `${item.place.latitude.toFixed(5)}°, ${item.place.longitude.toFixed(5)}°` : 'not recorded'}</span>
+        </div>
+        <div className="research-finding-details"><article className="research-answer-only"><small>ASSISTANT RESPONSE</small><p>{item.answer}</p></article></div>
+        <p className="muted"><b>Privacy:</b> user prompt not stored.</p>
+        <div className="hero-actions local-research-actions">
+          <button type="button" className="secondary" onClick={() => downloadAssistantAnswer(item)}>Export JSON</button>
+          <button type="button" className="research-delete" onClick={() => removeAssistantAnswer(item.id)}>Delete saved answer</button>
+        </div>
+      </article>)}
+    </div> : <div className="empty research-empty"><span>NO SAVED ASSISTANT ANSWERS</span><p>Use “Save assistant answer only” after a response. The matching user question is never written into this archive.</p></div>}
+
+    <div className="research-section-head local-archive-title">
+      <div><small>SAVED RESEARCH FINDINGS · NO RAW CHAT</small><h2>Saved imagery and findings</h2></div>
       <span className="evidence-badge observation">CHAT EXCLUDED</span>
     </div>
-    <p className="muted">Tutaj zapisujemy tylko jawnie wybrane wyniki: linki do obrazów źródłowych, daty/sensory, metadane Landsat i wnioski AI. Treść prywatnej rozmowy nie jest częścią tego rekordu.</p>
+    <p className="muted">These records contain explicitly saved evidence only: source-image links, dates/sensors, Landsat metadata and AI findings. Private user prompts are not part of the record.</p>
 
     {findings.length ? <div className="local-research-list research-findings-list">
       {findings.map(item => {
@@ -108,35 +142,35 @@ export function ResearchArchivePanel({
         return <article key={item.id} className={`local-research-item finding-item ${expanded ? 'expanded' : ''}`}>
           <div><span className="evidence-badge observation">FINDING</span><h3>{item.title}</h3></div>
           <div className="local-research-meta">
-            <span><b>Obszar</b>{item.area.latitude.toFixed(5)}°, {item.area.longitude.toFixed(5)}° · {item.area.radius_km} km</span>
-            <span><b>Zakres</b>{item.period.start_date} → {item.period.end_date}</span>
-            <span><b>Źródła</b>{item.source_images.length} obrazów · {item.landsat_catalog.matched} scen Landsat w katalogu</span>
+            <span><b>Area</b>{item.area.latitude.toFixed(5)}°, {item.area.longitude.toFixed(5)}° · {item.area.radius_km} km</span>
+            <span><b>Range</b>{item.period.start_date} → {item.period.end_date}</span>
+            <span><b>Sources</b>{item.source_images.length} images · {item.landsat_catalog.matched} Landsat scenes matched</span>
           </div>
           <p><b>{item.conclusion.headline}</b></p>
           <div className="hero-actions local-research-actions">
-            <button type="button" className="primary" onClick={() => setExpandedFindingId(expanded ? null : item.id)}>{expanded ? 'Ukryj szczegóły' : 'Obrazy i wnioski'}</button>
-            <button type="button" className="secondary" onClick={() => downloadResearchFinding(item)}>Eksport JSON</button>
-            <button type="button" className="research-delete" onClick={() => removeFinding(item.id)}>Usuń zapis</button>
+            <button type="button" className="primary" onClick={() => setExpandedFindingId(expanded ? null : item.id)}>{expanded ? 'Hide details' : 'Imagery and findings'}</button>
+            <button type="button" className="secondary" onClick={() => downloadResearchFinding(item)}>Export JSON</button>
+            <button type="button" className="research-delete" onClick={() => removeFinding(item.id)}>Delete saved finding</button>
           </div>
           {expanded && <div className="research-finding-details">
             <div className="research-finding-summary">
-              <article><small>CO WIDAĆ</small><p>{item.conclusion.what_is_visible}</p></article>
-              <article><small>ZMIANY</small><p>{item.conclusion.change_over_time}</p></article>
-              <article><small>WODA / TEREN</small><p>{item.conclusion.water_assessment}</p></article>
-              <article><small>PEWNOŚĆ</small><p>{item.conclusion.confidence.level} · {item.conclusion.confidence.reason}</p></article>
+              <article><small>WHAT IS VISIBLE</small><p>{item.conclusion.what_is_visible}</p></article>
+              <article><small>CHANGE</small><p>{item.conclusion.change_over_time}</p></article>
+              <article><small>WATER / TERRAIN</small><p>{item.conclusion.water_assessment}</p></article>
+              <article><small>CONFIDENCE</small><p>{item.conclusion.confidence.level} · {item.conclusion.confidence.reason}</p></article>
             </div>
             {item.source_images.length > 0 && <div className="research-finding-images">{item.source_images.map(image => <figure key={`${image.date}-${image.source}`}><a href={image.url} target="_blank" rel="noreferrer"><img src={image.url} alt={`${image.source} ${image.date}`} loading="lazy" /></a><figcaption><b>{image.date}</b><span>{image.source}</span></figcaption></figure>)}</div>}
-            <p className="muted"><b>Prywatność:</b> {item.privacy_note === 'raw-chat-not-included' ? 'surowa rozmowa nie została zapisana.' : item.privacy_note}</p>
+            <p className="muted"><b>Privacy:</b> {item.privacy_note === 'raw-chat-not-included' ? 'raw chat and user prompts were not stored.' : item.privacy_note}</p>
           </div>}
         </article>
       })}
-    </div> : <div className="empty research-empty"><span>BRAK ZAPISANYCH WYNIKÓW</span><p>Po wykonaniu analizy użyj przycisku „Zapisz obrazy + wnioski”. Zapis nastąpi jawnie — nie zapisujemy automatycznie czatu.</p></div>}
+    </div> : <div className="empty research-empty"><span>NO SAVED FINDINGS</span><p>After an analysis, use “Save imagery + findings”. Saving is explicit and excludes raw chat and user prompt text.</p></div>}
 
     <div className="research-section-head local-archive-title">
-      <div><small>LOCAL DRAFT ARCHIVE</small><h2>Szkice obszarów</h2></div>
+      <div><small>LOCAL DRAFT ARCHIVE</small><h2>Area drafts</h2></div>
       <span className="evidence-badge derived">DEVICE LOCAL</span>
     </div>
-    <p className="muted">Szkice obszaru są zapisane lokalnie w tej przeglądarce. Nie zawierają historii czatu.</p>
+    <p className="muted">Area drafts are stored locally in this browser. They contain research geometry/settings, not chat history.</p>
 
     {localArchive.length ? <div className="local-research-list">
       {localArchive.map(item => {
@@ -146,15 +180,15 @@ export function ResearchArchivePanel({
         return <article key={item.id} className={`local-research-item ${expanded ? 'expanded' : ''}`}>
           <div><span className="evidence-badge derived">DRAFT</span><h3>{item.title}</h3></div>
           <div className="local-research-meta">
-            <span><b>Obszar</b>{item.area.latitude.toFixed(5)}°, {item.area.longitude.toFixed(5)}° · {researchShapeLabel(shape)} · {item.area.radius_km} km</span>
-            <span><b>Zakres</b>{item.temporal_scope.start_date} → {item.temporal_scope.end_date} · {temporalPresetLabel(mode)}</span>
-            <span><b>Analizy</b>{item.analyses.join(', ')}</span>
+            <span><b>Area</b>{item.area.latitude.toFixed(5)}°, {item.area.longitude.toFixed(5)}° · {researchShapeLabel(shape)} · {item.area.radius_km} km</span>
+            <span><b>Range</b>{item.temporal_scope.start_date} → {item.temporal_scope.end_date} · {temporalPresetLabel(mode)}</span>
+            <span><b>Analyses</b>{item.analyses.join(', ')}</span>
           </div>
           {item.notes && <p>{item.notes}</p>}
           <div className="hero-actions local-research-actions">
-            <button type="button" className="primary" onClick={() => setExpandedLocalId(expanded ? null : item.id)}>{expanded ? 'Ukryj dane' : 'Dane i obrazy'}</button>
-            <button type="button" className="secondary" onClick={() => downloadResearchManifest(item)}>Eksport JSON</button>
-            <button type="button" className="research-delete" onClick={() => removeLocal(item.id)}>Usuń lokalny szkic</button>
+            <button type="button" className="primary" onClick={() => setExpandedLocalId(expanded ? null : item.id)}>{expanded ? 'Hide data' : 'Data and imagery'}</button>
+            <button type="button" className="secondary" onClick={() => downloadResearchManifest(item)}>Export JSON</button>
+            <button type="button" className="research-delete" onClick={() => removeLocal(item.id)}>Delete local draft</button>
           </div>
           {expanded && <ResearchDataPreview
             latitude={item.area.latitude}
@@ -166,6 +200,6 @@ export function ResearchArchivePanel({
           />}
         </article>
       })}
-    </div> : <div className="empty research-empty"><span>BRAK LOKALNYCH SZKICÓW</span><p>Utwórz nowe badanie w kreatorze obszaru. Po zapisaniu pojawi się tutaj i będzie można pobrać dla niego dane oraz obrazy.</p></div>}
+    </div> : <div className="empty research-empty"><span>NO LOCAL DRAFTS</span><p>Create a new area research draft in the advanced builder. It will appear here with access to its data and imagery.</p></div>}
   </section>
 }
