@@ -64,7 +64,7 @@ function restoreMessages() {
 
 export function ResearchChatNotebook({ apiUrl, place, analysis }: {
   apiUrl: string
-  place: ResearchLabPlace
+  place: ResearchLabPlace | null
   analysis: AreaAnalysisResponse | null
 }) {
   const [model, setModel] = useState<ResearchModel>('gpt-5.6-terra')
@@ -134,6 +134,7 @@ export function ResearchChatNotebook({ apiUrl, place, analysis }: {
         'User-drawn colored lines are annotations, not scientific observations.',
         'Elevation flags are Copernicus DEM raster samples when an elevation object is present.',
         'Satellite visual evidence is limited to the listed official/public image dates and sources.',
+        'If no place has been selected yet, answer as a planning assistant and do not pretend that a terrain analysis has already run.',
       ],
     }
   }
@@ -153,7 +154,7 @@ export function ResearchChatNotebook({ apiUrl, place, analysis }: {
     const userMessage: ResearchChatMessage = {
       role: 'user',
       text: reportMode
-        ? 'Przygotuj pełny raport badawczy z obecnej sesji, zaznaczeń, pomiarów, obrazów i rozmowy.'
+        ? 'Przygotuj pełny raport badawczy z obecnej sesji, zaznaczeń, pomiarów, obrazów i rozmowy. Jeśli miejsce nie zostało jeszcze wybrane, zaznacz to jako ograniczenie i nie wymyślaj pomiarów.'
         : (text.trim() || 'Przeanalizuj dołączone załączniki w kontekście bieżącego badania.'),
     }
     const outgoing = [...messages, userMessage].slice(-16)
@@ -190,8 +191,8 @@ export function ResearchChatNotebook({ apiUrl, place, analysis }: {
     const body = [
       '# Terra Observation — notatnik rozmowy badawczej',
       '',
-      `Miejsce: ${place.label}`,
-      `WGS84: ${place.latitude.toFixed(6)}, ${place.longitude.toFixed(6)}`,
+      `Miejsce: ${place?.label ?? 'nie wybrano'}`,
+      `WGS84: ${place ? `${place.latitude.toFixed(6)}, ${place.longitude.toFixed(6)}` : '—'}`,
       `Model ostatnio wybrany: ${model}`,
       '',
       ...messages.flatMap(message => [`## ${message.role === 'user' ? 'Badacz' : 'Asystent'}`, '', message.text, '']),
@@ -203,18 +204,18 @@ export function ResearchChatNotebook({ apiUrl, place, analysis }: {
 
   return <section className="research-chat panel" aria-label="Asystent badań terenu">
     <div className="research-chat-head">
-      <div><small>OPENAI RESPONSES · MULTIMODAL RESEARCH NOTEBOOK</small><h2>Asystent badawczy</h2><p>Możesz kontynuować rozmowę o zaznaczonych flagach, profilach DEM i obrazach satelitarnych. Kontekst sesji jest dołączany do kolejnych pytań.</p></div>
+      <div><small>OPENAI RESPONSES · MULTIMODAL RESEARCH NOTEBOOK</small><h2>Asystent badawczy</h2><p>{place ? `Aktywne miejsce: ${place.label}. Możesz kontynuować rozmowę o flagach, profilach DEM, obrazach i wynikach satelitarnych.` : 'Czat jest dostępny od razu. Możesz zaplanować badanie, wkleić pytanie lub załączniki, a po wybraniu miejsca asystent automatycznie otrzyma kontekst mapy, flag, DEM i satelitów.'}</p></div>
       <label>Model<select value={model} onChange={event => setModel(event.target.value as ResearchModel)}>{MODELS.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select><small>{selectedModel.note}</small></label>
     </div>
 
     <div className="research-chat-log" aria-live="polite">
-      {messages.length === 0 && <div className="research-chat-empty"><b>Przykładowe pytania</b><button type="button" onClick={() => setDraft('Porównaj wysokości moich flag i wskaż, gdzie teren ma największy spadek.')}>Porównaj wysokości flag</button><button type="button" onClick={() => setDraft('Czy narysowana przeze mnie linia może odpowiadać granicy zlewni? Oddziel obserwację od hipotezy.')}>Sprawdź hipotezę o zlewni</button><button type="button" onClick={() => setDraft('Połącz analizę satelitarną z profilem wysokości i wypisz, jakie dodatkowe dane są potrzebne.')}>Połącz satelity + DEM</button></div>}
+      {messages.length === 0 && <div className="research-chat-empty"><b>Przykładowe pytania</b><button type="button" onClick={() => setDraft(place ? 'Porównaj wysokości moich flag i wskaż, gdzie teren ma największy spadek.' : 'Pomóż mi zaplanować analizę źródeł Nilu: jakie miejsca powinienem zaznaczyć i jakie oficjalne dane porównać?')}>{place ? 'Porównaj wysokości flag' : 'Zaplanuj badanie terenu'}</button><button type="button" onClick={() => setDraft('Czy narysowana przeze mnie linia może odpowiadać granicy zlewni? Oddziel obserwację od hipotezy.')}>Sprawdź hipotezę o zlewni</button><button type="button" onClick={() => setDraft('Połącz analizę satelitarną z profilem wysokości i wypisz, jakie dodatkowe dane są potrzebne.')}>Połącz satelity + DEM</button></div>}
       {messages.map((message, index) => <article key={`${message.role}-${index}`} className={message.role}><small>{message.role === 'user' ? 'TY / BADACZ' : 'ASYSTENT'}</small><p>{message.text}</p></article>)}
       {busy && <div className="research-chat-thinking">Analizuję kontekst i załączniki…</div>}
     </div>
 
     <form className="research-chat-compose" onSubmit={submit}>
-      <textarea rows={4} value={draft} onChange={event => setDraft(event.target.value)} placeholder="Zapytaj o zaznaczone miejsca, wysokości, zdjęcia, rzeki, góry, zmiany w czasie…" />
+      <textarea rows={4} value={draft} onChange={event => setDraft(event.target.value)} placeholder={place ? 'Zapytaj o zaznaczone miejsca, wysokości, zdjęcia, rzeki, góry, zmiany w czasie…' : 'Zapytaj asystenta albo najpierw wybierz miejsce na mapie…'} />
       <div className="research-attachment-actions">
         <label className="button-link compact">+ Obrazy ({imageCount}/5)<input type="file" accept="image/*" multiple hidden onChange={event => addFiles('image', event)} /></label>
         <label className="button-link compact">+ Pliki ({fileCount}/5)<input type="file" multiple hidden onChange={event => addFiles('file', event)} /></label>
