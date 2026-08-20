@@ -156,8 +156,11 @@ describe('researchArchive', () => {
       record,
       { ...record, id: 'bad', prompt: 'private text' },
       { ...record, id: 'bad2', privacy_note: 'user-prompt-stored' },
+      { ...record, id: 'bad3', user_text: 'private text hidden under another key' },
+      { ...record, id: 'bad4', place: { ...record.place, private_note: 'do not retain this' } },
     ]))
     expect(parsed).toHaveLength(1)
     expect(parsed[0].id).toBe(record.id)
+    expect(Object.keys(parsed[0]).sort()).toEqual(['answer', 'id', 'model', 'place', 'privacy_note', 'saved_at_utc', 'schema'].sort())
   })
 })
