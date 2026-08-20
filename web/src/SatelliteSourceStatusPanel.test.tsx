@@ -23,9 +23,10 @@ describe('SatelliteSourceStatusPanel', () => {
 
     expect(html).toContain('Sentinel-2 L2A')
     expect(html).toContain('6.0 h')
-    expect(html).toContain('około 10 m/piksel')
+    expect(html).toContain('about 10 m/pixel')
     expect(html).toContain('18%')
-    expect(html).toContain('pokrycie potwierdzone')
-    expect(html).toContain('tekstury bazowej 2K')
+    expect(html).toContain('coverage confirmed')
+    expect(html).toContain('2K base texture')
+    expect(html).toContain('Active satellite source status')
   })
 })
