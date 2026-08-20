@@ -1,0 +1,65 @@
+{
+  "run_id": "site_20260819T223835Z",
+  "device": {
+    "backend": "cuda",
+    "name": "NVIDIA L4",
+    "cuda_available": true,
+    "mixed_precision": true,
+    "torch_available": true,
+    "torch_version": "2.13.0+cu132",
+    "cuda_version": "13.2",
+    "nvidia_smi": {
+      "name": "NVIDIA L4",
+      "driver_version": "582.16",
+      "memory_total_mib": "23034",
+      "power_limit_w": "72.00"
+    },
+    "device_index": 0,
+    "vram_bytes": 24152440832
+  },
+  "corpus": {
+    "unique_image_count": 290,
+    "counts_by_origin": {
+      "local_project_asset": 82,
+      "remote_project_gallery": 208
+    },
+    "counts_by_experiment": {
+      "experiment-011": 72,
+      "experiment-013": 71,
+      "experiment-014": 72,
+      "experiment-015": 65,
+      "other-research-pages": 10
+    },
+    "remote_download_error_count": 0
+  },
+  "gpu_audit": {
+    "images_in_corpus": 290,
+    "images_processed_gpu": 290,
+    "unreadable_count": 0,
+    "unreadable": [],
+    "resolution": 512,
+    "evidence_class": "DERIVED_VALUE",
+    "scientific_finding_claim": false,
+    "note": "Every readable unique site-corpus image is transferred to CUDA once. The stored RGB statistics are an image audit, not proof of hydrological or climatic causation."
+  },
+  "training": {
+    "training_mode": "self_supervised_denoising_pretrain",
+    "completed": true,
+    "elapsed_seconds": 3600.063000000002,
+    "steps": 29013,
+    "samples_seen": 696312,
+    "image_count": 290,
+    "batch_size_final": 24,
+    "loss_first": 0.337372750043869,
+    "loss_last": 0.07243536412715912,
+    "loss_best": 0.037301916629076004,
+    "checkpoint": "C:/Users/xodobrox/Polar-Sun-Moon-Analysis/research_runs/site_20260819T223835Z/earth_observation_pretrain.pt",
+    "ground_truth_claim": false
+  },
+  "claims": {
+    "all_readable_unique_site_images_gpu_audited": true,
+    "self_supervised_training": true,
+    "ground_truth_claim": false,
+    "causal_environmental_claim": false
+  }
+}
