@@ -16,7 +16,7 @@ describe('HydrologyPanel navigation and evidence', () => {
     expect(html).toContain('Copernicus Drought Observatories')
   })
 
-  it('renders the 3D hydrology context and dated drought overview', () => {
+  it('renders the 3D hydrology context, dated drought overview and AI evidence explainer', () => {
     const html = renderToStaticMarkup(<HydrologyPanel baseUrl="/Polar-Sun-Moon-Analysis/" />)
 
     expect(html).toContain('Hydrologiczny kontekst 3D')
@@ -28,6 +28,9 @@ describe('HydrologyPanel navigation and evidence', () => {
     expect(html).toContain('Olszówka / Gardeja — lokalny poligon krytyczny')
     expect(html).toContain('Sentinel-1 i Sentinel-2')
     expect(html).toContain('NASA VIIRS DNB')
+    expect(html).toContain('AI Evidence / Research Explainer')
+    expect(html).toContain('Explain Vistula evidence with OpenAI')
+    expect(html).toContain('DISCONNECTED')
   })
 })
 
