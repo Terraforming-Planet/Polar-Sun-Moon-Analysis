@@ -136,7 +136,10 @@ export type ResearchChatResponse = {
   model: ResearchModel
   answer: string
   attachment_count: number
+  attachment_images: number
+  attachment_files: number
   attachment_bytes: number
+  attachment_names: string[]
   evidence_policy: string
 }
 

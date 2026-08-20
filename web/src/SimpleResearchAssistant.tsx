@@ -7,6 +7,7 @@ import {
   type AreaAnalysisResponse,
   type GeocodeResult,
 } from './lib/evidenceApi'
+import { buildResearchFindingRecord, saveResearchFindingLocally } from './researchArchive'
 import { parseResearchLocation } from './researchLocation'
 import { RealisticEarthGlobe } from './RealisticEarthGlobe'
 import { ResearchChatNotebook } from './ResearchChatNotebook'
@@ -19,6 +20,7 @@ type Place = {
 }
 
 type PeriodPreset = 'long' | 'five-years' | 'one-year'
+type ConsoleMode = 'simple' | 'advanced'
 
 function today() {
   return new Date().toISOString().slice(0, 10)
@@ -71,6 +73,7 @@ export function SimpleResearchAssistant({
   apiUrl: string
   advanced: ReactNode
 }) {
+  const [consoleMode, setConsoleMode] = useState<ConsoleMode>('simple')
   const [query, setQuery] = useState('')
   const [place, setPlace] = useState<Place | null>(null)
   const [alternatives, setAlternatives] = useState<GeocodeResult[]>([])
@@ -78,6 +81,7 @@ export function SimpleResearchAssistant({
   const [status, setStatus] = useState<'idle' | 'searching' | 'analyzing' | 'ready' | 'error'>('idle')
   const [analysis, setAnalysis] = useState<AreaAnalysisResponse | null>(null)
   const [error, setError] = useState('')
+  const [archiveNotice, setArchiveNotice] = useState('')
   const analysisController = useRef<AbortController | null>(null)
   const period = useMemo(() => periodForPreset(periodPreset), [periodPreset])
   const previewUtc = useMemo(() => new Date().toISOString(), [])
@@ -88,6 +92,7 @@ export function SimpleResearchAssistant({
     analysisController.current = controller
     setStatus('analyzing')
     setError('')
+    setArchiveNotice('')
     try {
       const result = await analyzeResearchArea(apiUrl, {
         latitude: target.latitude,
@@ -110,6 +115,7 @@ export function SimpleResearchAssistant({
   const choosePlace = (target: Place, depth: 'quick' | 'deep' = 'quick') => {
     setPlace(target)
     setAnalysis(null)
+    setArchiveNotice('')
     void runAnalysis(target, depth)
   }
 
@@ -155,6 +161,7 @@ export function SimpleResearchAssistant({
     analysisController.current = controller
     setStatus('analyzing')
     setError('')
+    setArchiveNotice('')
     analyzeResearchArea(apiUrl, {
       latitude: place.latitude,
       longitude: place.longitude,
@@ -173,6 +180,13 @@ export function SimpleResearchAssistant({
     })
   }
 
+  const saveCurrentFinding = () => {
+    if (!analysis) return
+    const finding = buildResearchFindingRecord(analysis)
+    saveResearchFindingLocally(finding)
+    setArchiveNotice(`Zapisano „${finding.title}”: ${finding.source_images.length} linków do obrazów źródłowych + wnioski AI. Surowa rozmowa nie została zapisana.`)
+  }
+
   const globeMarkers = place ? [{
     longitude: place.longitude,
     latitude: place.latitude,
@@ -180,12 +194,23 @@ export function SimpleResearchAssistant({
     radius: 1.35,
   }] : []
 
-  return <section className="simple-research" aria-label="Proste badanie terenu z AI">
+  return <section className="simple-research" aria-label="Badanie terenu z AI">
+    <div className="simple-console-mode panel" role="group" aria-label="Poziom obsługi">
+      <button type="button" className={consoleMode === 'simple' ? 'active' : ''} onClick={() => setConsoleMode('simple')}>
+        <b>Tryb prosty</b><span>wyszukaj miejsce → zobacz Ziemię → zapytaj asystenta</span>
+      </button>
+      <button type="button" className={consoleMode === 'advanced' ? 'active' : ''} onClick={() => setConsoleMode('advanced')}>
+        <b>Zaawansowane</b><span>obrazy HQ · pliki · modele · flagi · DEM · profile · raporty</span>
+      </button>
+    </div>
+
     <div className="simple-research-hero panel">
       <div className="simple-research-copy">
-        <small>MAPA · SATELITY · OPENAI</small>
-        <h2>Wpisz miejsce. Resztę zrobi AI.</h2>
-        <p>Wyszukaj jezioro, rzekę, miejscowość albo region. Podgląd Ziemi 3D i czat są widoczne od razu. Po wybraniu miejsca system ustawi obszar, pobierze oficjalne dane, pokaże satelity, flagi wysokościowe, profile DEM i analizę AI.</p>
+        <small>{consoleMode === 'simple' ? 'PROSTA KONSOLA · MAPA · SATELITY · ASYSTENT' : 'LABORATORIUM · SATELITY · DEM · OPENAI'}</small>
+        <h2>{consoleMode === 'simple' ? 'Znajdź teren i od razu go zbadaj' : 'Zaawansowane badanie terenu'}</h2>
+        <p>{consoleMode === 'simple'
+          ? 'Wpisz jezioro, rzekę, miejscowość lub region. System zaznaczy miejsce na globusie, pobierze najnowsze dostępne dane i pokaże prosty wynik. Asystent jest obok mapy i prowadzi Cię dalej.'
+          : 'Tu masz pełne narzędzia: wybór modeli GPT, załączniki, wysokiej jakości obrazy Copernicus/NASA, numerowane flagi, wysokości DEM, kolorowe linie, profile i raporty.'}</p>
       </div>
       <form className="simple-search" onSubmit={submitSearch}>
         <input
@@ -212,86 +237,108 @@ export function SimpleResearchAssistant({
       {error && <p className="research-error" role="alert">{error}</p>}
     </div>
 
-    <div className="simple-map panel simple-earth-preview">
-      <div className="simple-map-head">
-        <div><small>GLOBALNY PODGLĄD · WGS84 · OFICJALNE WARSTWY</small><h3>{place ? place.label : 'Ziemia 3D — wybierz dowolne miejsce do badania'}</h3></div>
-        <span>{place ? `${place.latitude.toFixed(5)}, ${place.longitude.toFixed(5)}` : 'obracaj · oddalaj · wybierz lokalizację'}</span>
+    <div className="simple-console-grid">
+      <div className="simple-map panel simple-earth-preview">
+        <div className="simple-map-head">
+          <div><small>ZIEMIA 3D · NAJNOWSZA DOSTĘPNA OBSERWACJA</small><h3>{place ? place.label : 'Obróć globus lub wyszukaj miejsce'}</h3></div>
+          <span>{place ? `${place.latitude.toFixed(5)}, ${place.longitude.toFixed(5)}` : 'Cesium · WGS84 · NASA / Copernicus'}</span>
+        </div>
+        <RealisticEarthGlobe selectedTime={previewUtc} markers={globeMarkers} />
+        <p className="simple-map-source">To nie jest sztuczna tekstura. Globus korzysta z kafelkowanych warstw projektu. „Aktualne” oznacza najnowszą dostępną obserwację danego sensora; nie udajemy transmisji na żywo z satelity.</p>
       </div>
-      <RealisticEarthGlobe selectedTime={previewUtc} markers={globeMarkers} />
-      <p className="simple-map-source">Podgląd korzysta z istniejącego naukowego globusa Cesium/WGS84 i oficjalnych warstw źródłowych projektu. Po wyszukaniu miejsca znacznik pojawia się na globusie, a niżej uruchamia się lokalna mapa i laboratorium pomiarowe.</p>
+
+      <ResearchChatNotebook apiUrl={apiUrl} place={place} analysis={analysis} advancedControls={consoleMode === 'advanced'} />
     </div>
 
-    <ResearchChatNotebook apiUrl={apiUrl} place={place} analysis={analysis} />
-
-    {place && <div className="simple-map panel">
-      <div className="simple-map-head">
-        <div><small>WYBRANY OBSZAR · PODGLĄD MAPY</small><h3>{place.label}</h3></div>
-        <a href={`https://www.openstreetmap.org/?mlat=${place.latitude}&mlon=${place.longitude}#map=10/${place.latitude}/${place.longitude}`} target="_blank" rel="noreferrer">Otwórz większą mapę</a>
-      </div>
-      <iframe title={`Mapa ${place.label}`} src={osmEmbedUrl(place)} loading="lazy" />
-      <p className="simple-map-source">Mapa kontekstowa: OpenStreetMap contributors · domyślny obszar badania 25 km. Niżej znajduje się oddzielna oficjalna warstwa NASA GIBS do oznaczeń badawczych.</p>
+    {!place && <div className="simple-guidance panel">
+      <b>Jak zacząć:</b><span>1. Wpisz nazwę terenu.</span><span>2. Marker pojawi się na globusie.</span><span>3. Dostaniesz analizę i możesz dopytywać asystenta.</span>{consoleMode === 'simple' && <button type="button" className="secondary" onClick={() => setConsoleMode('advanced')}>Potrzebuję pomiarów i plików → Zaawansowane</button>}
     </div>}
-
-    {!place && <div className="simple-ai-loading panel" role="status">
-      <div><b>Wybierz miejsce, aby uruchomić laboratorium terenu</b><p>Po wyszukaniu obszaru pojawią się numerowane flagi, wysokości DEM, kolorowe linie, profile 20 punktów, trzy referencyjne punkty Nilu i analiza oficjalnych zdjęć satelitarnych.</p></div>
-    </div>}
-
-    {place && <ResearchTerrainLab
-      apiUrl={apiUrl}
-      place={place}
-      satelliteDate={analysis?.preview_images.at(-1)?.date}
-    />}
 
     {(status === 'analyzing' || status === 'searching') && <div className="simple-ai-loading panel" role="status">
       <span className="simple-ai-spinner" />
-      <div><b>AI analizuje teren</b><p>Pobieram oficjalny katalog Landsat i reprezentatywne obrazy NASA GIBS. To może chwilę potrwać.</p></div>
+      <div><b>Analizuję teren</b><p>Pobieram oficjalny katalog Landsat i reprezentatywne obrazy NASA/Copernicus. Wynik pojawi się poniżej; czat nadal jest dostępny.</p></div>
     </div>}
 
-    {analysis && <section className="simple-ai-result panel" aria-label="Wynik analizy AI">
+    {analysis && <section className="simple-basic-result panel" aria-label="Szybki wynik analizy">
       <div className="simple-result-head">
-        <div><small>OPENAI · OFFICIAL/PUBLIC SATELLITE EVIDENCE</small><h2>{analysis.analysis.headline}</h2></div>
+        <div><small>SZYBKI WYNIK · OFFICIAL/PUBLIC EVIDENCE</small><h2>{analysis.analysis.headline}</h2></div>
         <span className={`simple-confidence ${analysis.analysis.confidence.level}`}>pewność: {confidenceLabel(analysis.analysis.confidence.level)}</span>
       </div>
-      <div className="simple-result-grid">
-        <article><small>CO WIDAĆ</small><p>{analysis.analysis.what_is_visible}</p></article>
-        <article><small>ZMIANY W CZASIE</small><p>{analysis.analysis.change_over_time}</p></article>
-        <article className="water"><small>WODA</small><p>{analysis.analysis.water_assessment}</p></article>
-        <article><small>PEWNOŚĆ WNIOSKU</small><p>{analysis.analysis.confidence.reason}</p></article>
+      <div className="simple-basic-result-grid">
+        <article><b>Co widać</b><p>{analysis.analysis.what_is_visible}</p></article>
+        <article><b>Woda / teren</b><p>{analysis.analysis.water_assessment}</p></article>
       </div>
-
-      {analysis.analysis.notable_features.length > 0 && <div className="simple-notable">
-        <b>Co zwróciło uwagę AI</b>
-        <ul>{analysis.analysis.notable_features.map(item => <li key={item}>{item}</li>)}</ul>
-      </div>}
-
-      <div className="simple-evidence-summary">
-        <span><b>{analysis.preview_images.length}</b> zdjęć pokazanych na stronie</span>
-        <span><b>{analysis.ai_visual_image_count}</b> obrazów użytych wizualnie przez AI</span>
-        <span><b>{analysis.landsat_catalog.matched}</b> scen w katalogu USGS dla obszaru/okresu</span>
-      </div>
-
-      {analysis.preview_images.length > 0 && <div className="simple-image-grid">
-        {analysis.preview_images.slice(0, 10).map(image => <figure key={image.date}>
-          <img src={image.url} alt={`NASA GIBS ${image.date}`} loading="lazy" />
-          <figcaption><b>{image.date}</b><span>{image.source}</span></figcaption>
-        </figure>)}
-      </div>}
-
       <div className="simple-result-actions">
-        {analysis.landsat_catalog.full_catalog_url && <a className="button-link" href={analysis.landsat_catalog.full_catalog_url} target="_blank" rel="noreferrer">Pełny katalog satelitarny USGS</a>}
-        {analysis.depth === 'quick' && place && <button type="button" className="secondary" onClick={() => void runAnalysis(place, 'deep')} disabled={status === 'analyzing'}>Zbadaj dokładniej całą serię lat</button>}
+        <button type="button" className="secondary" onClick={saveCurrentFinding}>Zapisz obrazy + wnioski</button>
+        {consoleMode === 'simple' && <button type="button" className="secondary" onClick={() => setConsoleMode('advanced')}>Pokaż zdjęcia, pomiary i szczegóły</button>}
       </div>
-      <p className="simple-full-catalog-note">Strona nie ładuje setek zdjęć. Pokazuje maksymalnie 10 podglądów; pełny katalog pozostaje w oficjalnym źródle satelitarnym.</p>
-      <div className="simple-limitations">
-        <b>Ograniczenia</b>
-        <ul>{analysis.analysis.limitations.map(item => <li key={item}>{item}</li>)}</ul>
-        <p><b>Następny krok:</b> {analysis.analysis.recommended_next_step}</p>
-      </div>
+      {archiveNotice && <p className="simple-archive-notice" role="status">{archiveNotice}</p>}
     </section>}
 
-    <details className="simple-advanced panel">
-      <summary><span><b>Zaawansowane</b><small>współrzędne, kształt AOI, promień, pory roku, dekady, manifest</small></span><strong>Rozwiń</strong></summary>
-      <div className="simple-advanced-body">{advanced}</div>
-    </details>
+    {consoleMode === 'advanced' && <>
+      {place && <div className="simple-map panel">
+        <div className="simple-map-head">
+          <div><small>MAPA KONTEKSTOWA</small><h3>{place.label}</h3></div>
+          <a href={`https://www.openstreetmap.org/?mlat=${place.latitude}&mlon=${place.longitude}#map=10/${place.latitude}/${place.longitude}`} target="_blank" rel="noreferrer">Otwórz większą mapę</a>
+        </div>
+        <iframe title={`Mapa ${place.label}`} src={osmEmbedUrl(place)} loading="lazy" />
+        <p className="simple-map-source">OpenStreetMap służy tu do orientacji. Pomiary i zdjęcia obserwacyjne są niżej i mają własną proweniencję.</p>
+      </div>}
+
+      {place && <ResearchTerrainLab
+        apiUrl={apiUrl}
+        place={place}
+        satelliteDate={analysis?.preview_images.at(-1)?.date}
+      />}
+
+      {analysis && <section className="simple-ai-result panel" aria-label="Szczegółowy wynik analizy AI">
+        <div className="simple-result-head">
+          <div><small>OPENAI · OFFICIAL/PUBLIC SATELLITE EVIDENCE</small><h2>Szczegóły analizy</h2></div>
+          <span className={`simple-confidence ${analysis.analysis.confidence.level}`}>pewność: {confidenceLabel(analysis.analysis.confidence.level)}</span>
+        </div>
+        <div className="simple-result-grid">
+          <article><small>CO WIDAĆ</small><p>{analysis.analysis.what_is_visible}</p></article>
+          <article><small>ZMIANY W CZASIE</small><p>{analysis.analysis.change_over_time}</p></article>
+          <article className="water"><small>WODA</small><p>{analysis.analysis.water_assessment}</p></article>
+          <article><small>PEWNOŚĆ WNIOSKU</small><p>{analysis.analysis.confidence.reason}</p></article>
+        </div>
+
+        {analysis.analysis.notable_features.length > 0 && <div className="simple-notable">
+          <b>Co zwróciło uwagę AI</b>
+          <ul>{analysis.analysis.notable_features.map(item => <li key={item}>{item}</li>)}</ul>
+        </div>}
+
+        <div className="simple-evidence-summary">
+          <span><b>{analysis.preview_images.length}</b> zdjęć pokazanych na stronie</span>
+          <span><b>{analysis.ai_visual_image_count}</b> obrazów użytych przez AI</span>
+          <span><b>{analysis.landsat_catalog.matched}</b> scen w katalogu USGS</span>
+        </div>
+
+        {analysis.preview_images.length > 0 && <div className="simple-image-grid">
+          {analysis.preview_images.slice(0, 10).map(image => <figure key={`${image.date}-${image.source}`}>
+            <a href={image.url} target="_blank" rel="noreferrer"><img src={image.url} alt={`Satelita ${image.date}`} loading="lazy" /></a>
+            <figcaption><b>{image.date}</b><span>{image.source}</span><small>Dotknij zdjęcia, aby otworzyć je osobno.</small></figcaption>
+          </figure>)}
+        </div>}
+
+        <div className="simple-result-actions">
+          <button type="button" className="secondary" onClick={saveCurrentFinding}>Zapisz tylko obrazy + wnioski</button>
+          {analysis.landsat_catalog.full_catalog_url && <a className="button-link" href={analysis.landsat_catalog.full_catalog_url} target="_blank" rel="noreferrer">Pełny katalog satelitarny USGS</a>}
+          {analysis.depth === 'quick' && place && <button type="button" className="secondary" onClick={() => void runAnalysis(place, 'deep')} disabled={status === 'analyzing'}>Zbadaj dokładniej całą serię lat</button>}
+        </div>
+        {archiveNotice && <p className="simple-archive-notice" role="status">{archiveNotice}</p>}
+        <p className="simple-full-catalog-note">Podgląd nie zastępuje oryginalnych produktów. Dla prac badawczych otwieraj obraz w pełnym rozmiarze i zapisuj datę/sensor. Archiwum wyniku nie zawiera surowej rozmowy.</p>
+        <div className="simple-limitations">
+          <b>Ograniczenia</b>
+          <ul>{analysis.analysis.limitations.map(item => <li key={item}>{item}</li>)}</ul>
+          <p><b>Następny krok:</b> {analysis.analysis.recommended_next_step}</p>
+        </div>
+      </section>}
+
+      <details className="simple-advanced panel" open>
+        <summary><span><b>Ustawienia techniczne badania</b><small>współrzędne, kształt AOI, promień, pory roku, dekady, manifest</small></span><strong>Zaawansowane</strong></summary>
+        <div className="simple-advanced-body">{advanced}</div>
+      </details>
+    </>}
   </section>
 }

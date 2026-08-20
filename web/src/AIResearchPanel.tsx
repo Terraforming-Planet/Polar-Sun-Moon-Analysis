@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import './ai-research.css'
+import './research-findings.css'
 import { EvidenceExplainer } from './EvidenceExplainer'
 import { ResearchArchivePanel } from './ResearchArchivePanel'
 import { ResearchAreaBuilder } from './ResearchAreaBuilder'
@@ -45,19 +46,19 @@ export function AIResearchPanel() {
   return <section className="workspace ai-research-workspace">
     <div className="workspace-head ai-research-head">
       <div>
-        <small>OPENAI · NASA · USGS · OPENSTREETMAP · NVIDIA L4</small>
+        <small>OPENAI · NASA · USGS · COPERNICUS · OPENSTREETMAP · NVIDIA L4</small>
         <h1>Zbadaj dowolne miejsce na Ziemi</h1>
-        <p>Wpisz nazwę miejsca. System znajdzie je na mapie, pobierze oficjalne dane satelitarne i pokaże prostą odpowiedź AI. Ustawienia techniczne są schowane w „Zaawansowane”.</p>
+        <p>Tryb prosty jest dla każdego: wyszukaj teren, zobacz go na globusie i zapytaj asystenta. Tryb zaawansowany otwiera obrazy HQ, pliki, modele, flagi, DEM, profile i raporty. Surowe prywatne rozmowy nie trafiają automatycznie do archiwum.</p>
       </div>
       <span className="evidence-badge observation">AI RESEARCH</span>
     </div>
 
     <div className="research-mode-tabs" role="tablist" aria-label="Tryb AI Research">
       <button type="button" className={activeView === 'new' ? 'active' : ''} onClick={() => setActiveView('new')}>
-        <b>01</b><span>Zbadaj teren<small>mapa → satelity → AI</small></span>
+        <b>01</b><span>Zbadaj teren<small>prosta konsola + zaawansowane laboratorium</small></span>
       </button>
       <button type="button" className={activeView === 'archive' ? 'active' : ''} onClick={() => setActiveView('archive')}>
-        <b>02</b><span>Archiwum<small>TEST 001–016 + moje badania</small></span>
+        <b>02</b><span>Archiwum badań<small>TEST 001–016 + jawnie zapisane evidence, bez surowych czatów</small></span>
       </button>
       <button type="button" className={activeView === 'explain' ? 'active' : ''} onClick={() => setActiveView('explain')}>
         <b>03</b><span>Zatwierdzone testy AI<small>opublikowane evidence</small></span>

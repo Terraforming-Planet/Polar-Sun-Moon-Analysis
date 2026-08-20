@@ -23,6 +23,8 @@ type Flag = {
 type DrawPoint = { latitude: number; longitude: number }
 type DrawPath = { id: string; color: string; points: DrawPoint[] }
 type Tool = 'flag' | 'line'
+type ImagerySource = 'sentinel2' | 'viirs' | 'modis'
+type ImageQuality = 1024 | 2048
 
 type Profile = {
   pathId: string
@@ -33,6 +35,9 @@ type Profile = {
 
 const STORAGE_KEY = 'terra-research-terrain-lab/v1'
 const DRAW_COLORS = ['#ff2c2c', '#ffd91a', '#1dea50', '#245dff', '#ff20df', '#ffffff', '#121820']
+const CDSE_INSTANCE = import.meta.env.VITE_CDSE_INSTANCE_ID || 'd708f736-b553-4328-9b5e-39bdb444790c'
+const CDSE_WMS = `https://sh.dataspace.copernicus.eu/ogc/wms/${CDSE_INSTANCE}`
+const CDSE_TRUE_COLOR_LAYER = import.meta.env.VITE_CDSE_TRUE_COLOR_LAYER || import.meta.env.VITE_CDSE_LAYER || 'NATURAL-COLOR'
 
 const NILE_REFERENCE_FLAGS: Array<Omit<Flag, 'id' | 'number' | 'elevation'>> = [
   { latitude: 12.0, longitude: 37.25, label: 'Jezioro Tana — punkt referencyjny źródłowego obszaru Nilu Błękitnego', color: '#2ca8ff' },
@@ -52,23 +57,70 @@ function boundsForMap(place: ResearchLabPlace, radiusKm = 25) {
   }
 }
 
-function gibsUrl(place: ResearchLabPlace, date: string, radiusKm = 25) {
+function dateDaysBefore(date: string, days: number) {
+  const parsed = new Date(`${date}T12:00:00Z`)
+  if (!Number.isFinite(parsed.getTime())) return date
+  parsed.setUTCDate(parsed.getUTCDate() - days)
+  return parsed.toISOString().slice(0, 10)
+}
+
+function gibsUrl(place: ResearchLabPlace, date: string, layer: string, size: number, radiusKm = 25) {
   const bounds = boundsForMap(place, radiusKm)
   const params = new URLSearchParams({
     SERVICE: 'WMS',
     REQUEST: 'GetMap',
     VERSION: '1.1.1',
-    LAYERS: 'VIIRS_SNPP_CorrectedReflectance_TrueColor_v2_STD',
+    LAYERS: layer,
     STYLES: '',
     FORMAT: 'image/jpeg',
     TRANSPARENT: 'FALSE',
     SRS: 'EPSG:4326',
     BBOX: `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`,
-    WIDTH: '1280',
-    HEIGHT: '800',
+    WIDTH: String(size),
+    HEIGHT: String(size),
     TIME: date,
   })
   return `https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?${params.toString()}`
+}
+
+function copernicusUrl(place: ResearchLabPlace, date: string, size: number, radiusKm = 25) {
+  const bounds = boundsForMap(place, radiusKm)
+  const start = dateDaysBefore(date, 14)
+  const params = new URLSearchParams({
+    SERVICE: 'WMS',
+    REQUEST: 'GetMap',
+    VERSION: '1.1.1',
+    LAYERS: CDSE_TRUE_COLOR_LAYER,
+    STYLES: '',
+    FORMAT: 'image/jpeg',
+    TRANSPARENT: 'FALSE',
+    SRS: 'EPSG:4326',
+    BBOX: `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`,
+    WIDTH: String(size),
+    HEIGHT: String(size),
+    TIME: `${start}/${date}`,
+    MAXCC: '35',
+    SHOWLOGO: 'false',
+  })
+  return `${CDSE_WMS}?${params.toString()}`
+}
+
+function imageryUrl(source: ImagerySource, place: ResearchLabPlace, date: string, size: number) {
+  if (source === 'sentinel2') return copernicusUrl(place, date, size)
+  if (source === 'modis') return gibsUrl(place, date, 'MODIS_Terra_CorrectedReflectance_TrueColor', size)
+  return gibsUrl(place, date, 'VIIRS_SNPP_CorrectedReflectance_TrueColor', size)
+}
+
+function sourceLabel(source: ImagerySource) {
+  if (source === 'sentinel2') return 'Copernicus Sentinel-2 L2A · true colour · 10 m bands where available'
+  if (source === 'modis') return 'NASA GIBS · Terra MODIS Corrected Reflectance · historical continuity'
+  return 'NASA GIBS · Suomi NPP VIIRS Corrected Reflectance · recent daily global imagery'
+}
+
+function sourceLimit(source: ImagerySource, date: string) {
+  if (source === 'sentinel2') return `WMS searches the ${dateDaysBefore(date, 14)} → ${date} window with cloud limit 35%; optical coverage depends on revisit and clouds.`
+  if (source === 'modis') return 'MODIS is lower spatial resolution than Sentinel-2 but provides a long daily record useful for historical comparison.'
+  return 'VIIRS is a daily global visualization; it is much coarser than Sentinel-2 and should not be treated as 10 m imagery.'
 }
 
 function yesterdayUtc() {
@@ -156,8 +208,12 @@ export function ResearchTerrainLab({ apiUrl, place, satelliteDate }: {
   const [activePath, setActivePath] = useState<DrawPoint[]>([])
   const [profile, setProfile] = useState<Profile | null>(null)
   const [status, setStatus] = useState('')
+  const [imagerySource, setImagerySource] = useState<ImagerySource>('sentinel2')
+  const [quality, setQuality] = useState<ImageQuality>(() => typeof window !== 'undefined' && window.innerWidth <= 700 ? 1024 : 2048)
   const date = satelliteDate ?? yesterdayUtc()
   const bounds = useMemo(() => boundsForMap(place, 25), [place])
+  const mapUrl = useMemo(() => imageryUrl(imagerySource, place, date, quality), [imagerySource, place, date, quality])
+  const fullUrl = useMemo(() => imageryUrl(imagerySource, place, date, 4096), [imagerySource, place, date])
 
   useEffect(() => {
     try {
@@ -214,7 +270,7 @@ export function ResearchTerrainLab({ apiUrl, place, satelliteDate }: {
   const buildProfile = async (path: DrawPath) => {
     const samples = samplePath(path.points, 20)
     if (!samples.length) return
-    setStatus('Pobieram 20 rzeczywistych próbek DEM wzdłuż linii…')
+    setStatus('Pobieram 20 próbek DEM wzdłuż linii…')
     try {
       const response = await fetchResearchElevations(apiUrl, samples.map((point, index) => ({ ...point, label: `Profil ${index + 1}` })))
       setProfile({ pathId: path.id, color: path.color, points: response.points, dataset: response.dataset })
@@ -240,7 +296,7 @@ export function ResearchTerrainLab({ apiUrl, place, satelliteDate }: {
         elevation: response.points[index],
       }))
       setFlags(current => [...current, ...additions])
-      setStatus('Dodano trzy punkty Nilu. Wysokości pochodzą z Copernicus DEM, a położenia są jawnie opisane jako punkty referencyjne.')
+      setStatus('Dodano trzy punkty Nilu. Wysokości pochodzą z DEM; położenia są jawnie opisane jako punkty referencyjne.')
     } catch (reason) {
       setStatus(reason instanceof Error ? reason.message : String(reason))
     }
@@ -252,10 +308,21 @@ export function ResearchTerrainLab({ apiUrl, place, satelliteDate }: {
 
   return <section className="terrain-lab panel" aria-label="Laboratorium wysokości i oznaczeń terenu">
     <div className="terrain-lab-head">
-      <div><small>DEM · NUMEROWANE FLAGI · PROFILE · NASA GIBS</small><h2>Oznacz teren i mierz wysokość</h2></div>
+      <div><small>ADVANCED · DEM · FLAGI · PROFILE · HIGH-QUALITY IMAGERY</small><h2>Laboratorium terenu</h2></div>
       <span className="evidence-badge observation">PROVENANCE VISIBLE</span>
     </div>
-    <p className="muted">Kliknij mapę, aby dodać ponumerowaną flagę albo narysować linię. Wysokości nie są zgadywane: backend pobiera próbki Copernicus DEM GLO-90. To raster około 90 m, więc wartość oznacza najbliższą dostępną komórkę DEM, nie pomiar geodezyjny dokładnie pod pinezką.</p>
+    <p className="muted">Tutaj są narzędzia techniczne. Mapa używa kwadratowego obrazu bez rozciągania proporcji. Domyślnie próbuje Copernicus Sentinel-2; możesz przełączyć na stabilne globalne warstwy NASA VIIRS/MODIS. Wysokości DEM nie są zgadywane.</p>
+
+    <div className="terrain-imagery-controls">
+      <div className="terrain-source-buttons" role="group" aria-label="Źródło obrazu satelitarnego">
+        <button type="button" className={imagerySource === 'sentinel2' ? 'active' : ''} onClick={() => setImagerySource('sentinel2')}>Copernicus Sentinel-2 · najwyższa szczegółowość</button>
+        <button type="button" className={imagerySource === 'viirs' ? 'active' : ''} onClick={() => setImagerySource('viirs')}>NASA VIIRS · najnowszy globalny</button>
+        <button type="button" className={imagerySource === 'modis' ? 'active' : ''} onClick={() => setImagerySource('modis')}>NASA MODIS · historia</button>
+      </div>
+      <label>Rozmiar obrazu<select value={quality} onChange={event => setQuality(Number(event.target.value) as ImageQuality)}><option value={1024}>1024 × 1024 · szybciej</option><option value={2048}>2048 × 2048 · dokładniej</option></select></label>
+      <a className="button-link compact" href={fullUrl} target="_blank" rel="noreferrer">Otwórz 4096 × 4096</a>
+    </div>
+    <div className="terrain-source-note"><b>{sourceLabel(imagerySource)}</b><span>{sourceLimit(imagerySource, date)}</span></div>
 
     <div className="terrain-lab-toolbar">
       <button type="button" className={tool === 'flag' ? 'active' : ''} onClick={() => setTool('flag')}>⚑ Flaga + wysokość</button>
@@ -268,26 +335,41 @@ export function ResearchTerrainLab({ apiUrl, place, satelliteDate }: {
 
     <div className="terrain-map-wrap">
       <div className="terrain-map" role="application" aria-label="Mapa satelitarna do dodawania flag" onClick={handleMapClick}>
-        <img src={gibsUrl(place, date)} alt={`NASA GIBS VIIRS ${place.label}, ${date}`} draggable={false} />
-        <svg className="terrain-path-overlay" viewBox="0 0 1000 625" preserveAspectRatio="none" aria-hidden="true">
+        <img
+          key={mapUrl}
+          src={mapUrl}
+          alt={`${sourceLabel(imagerySource)} · ${place.label} · ${date}`}
+          draggable={false}
+          loading="eager"
+          decoding="async"
+          onError={() => {
+            if (imagerySource === 'sentinel2') {
+              setImagerySource('viirs')
+              setStatus('Copernicus WMS nie zwrócił obrazu dla tego zapytania. Automatycznie przełączono na NASA VIIRS.')
+            } else {
+              setStatus('Wybrane źródło obrazu chwilowo nie zwróciło poprawnej warstwy. Spróbuj innego źródła lub daty.')
+            }
+          }}
+        />
+        <svg className="terrain-path-overlay" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">
           {visiblePaths.map(path => <polyline key={path.id} points={path.points.map(point => {
             const x = ((point.longitude - bounds.west) / (bounds.east - bounds.west)) * 1000
-            const y = ((bounds.north - point.latitude) / (bounds.north - bounds.south)) * 625
+            const y = ((bounds.north - point.latitude) / (bounds.north - bounds.south)) * 1000
             return `${x},${y}`
           }).join(' ')} fill="none" stroke={path.color} strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />)}
           {activePath.length > 0 && <polyline points={activePath.map(point => {
             const x = ((point.longitude - bounds.west) / (bounds.east - bounds.west)) * 1000
-            const y = ((bounds.north - point.latitude) / (bounds.north - bounds.south)) * 625
+            const y = ((bounds.north - point.latitude) / (bounds.north - bounds.south)) * 1000
             return `${x},${y}`
           }).join(' ')} fill="none" stroke={color} strokeWidth="7" strokeDasharray="12 8" strokeLinecap="round" />}
         </svg>
         {localFlags.map(flag => <button key={flag.id} type="button" className="terrain-flag" style={{ ...flagPosition(flag, bounds), '--flag-color': flag.color } as React.CSSProperties} title={`${flag.label}${flag.elevation ? ` · ${Math.round(flag.elevation.elevation_m)} m n.p.m.` : ''}`} onClick={event => event.stopPropagation()}><span>{flag.number}</span></button>)}
       </div>
-      <div className="terrain-map-meta"><b>NASA GIBS · VIIRS True Color · {date}</b><span>AOI podglądu: 25 km · WGS84 · obraz jest warstwą obserwacyjną, a kolorowe linie są adnotacją użytkownika.</span></div>
+      <div className="terrain-map-meta"><b>{sourceLabel(imagerySource)} · request end {date} · {quality} px</b><span>AOI podglądu: 25 km · WGS84 · linie/flag są adnotacją użytkownika. Obraz optyczny nie jest „live video”; pokazujemy najnowszą dostępną warstwę dla wybranego okresu.</span></div>
     </div>
 
     <details className="terrain-globe-preview">
-      <summary><b>🌍 Otwórz kulę Ziemi 3D</b><span>oddalaj, obracaj i sprawdzaj położenie flag globalnie</span></summary>
+      <summary><b>🌍 Otwórz techniczny globus 3D</b><span>obracaj, oddalaj i przełączaj oficjalne warstwy NASA / Copernicus</span></summary>
       <RealisticEarthGlobe selectedTime={`${date}T12:00:00Z`} markers={globeMarkers.length ? globeMarkers : [{ longitude: place.longitude, latitude: place.latitude, color: 0x35cfff, radius: 1.3 }]} />
     </details>
 
