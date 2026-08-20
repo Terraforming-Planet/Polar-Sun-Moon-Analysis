@@ -1,0 +1,85 @@
+{
+  "schema": "tp26-site-corpus-analysis-v2",
+  "run_id": "site_20260819T223835Z",
+  "execution": {
+    "operating_environment": "Windows",
+    "gpu": "NVIDIA L4",
+    "gpu_memory_mib": 23034,
+    "cuda_version": "13.2",
+    "torch_version": "2.13.0+cu132",
+    "driver_version": "582.16",
+    "mixed_precision": true,
+    "resolution_px": 512,
+    "batch_size_final": 24,
+    "elapsed_seconds": 3600.063
+  },
+  "corpus": {
+    "unique_images": 290,
+    "local_project_assets": 82,
+    "remote_project_gallery": 208,
+    "remote_download_errors": 0,
+    "gpu_audited_images": 290,
+    "unreadable_images": 0,
+    "counts_by_experiment": {
+      "experiment-011": 72,
+      "experiment-013-grays-harbor": 71,
+      "experiment-014-vistula": 72,
+      "experiment-015-himalaya-tibet": 65,
+      "other-research-pages": 10
+    }
+  },
+  "optimization": {
+    "mode": "self_supervised_denoising_pretrain",
+    "steps": 29013,
+    "samples_seen": 696312,
+    "samples_are_unique_images": false,
+    "mean_samples_per_unique_image": 2401.08,
+    "steps_per_second": 8.059,
+    "samples_per_second": 193.417,
+    "loss_first": 0.337372750043869,
+    "loss_last": 0.07243536412715912,
+    "loss_best": 0.037301916629076004,
+    "loss_reduction_first_to_last_percent": 78.5296,
+    "loss_reduction_first_to_best_percent": 88.9434
+  },
+  "comparison_note": "The run did not perform an all-vs-all scientific pairwise comparison of 290 images. It GPU-audited 290 unique images and repeatedly sampled from them for self-supervised optimization.",
+  "findings": [
+    {
+      "id": "FINDING-01",
+      "class": "DERIVED_VALUE",
+      "title": "Complete CUDA image audit",
+      "detail": "All 290 unique research images were processed by the GPU audit; unreadable_count was 0."
+    },
+    {
+      "id": "FINDING-02",
+      "class": "DERIVED_VALUE",
+      "title": "Stable one-hour optimization",
+      "detail": "The run completed 29,013 steps over 3,600.063 seconds and reduced loss from 0.337373 to 0.072435; best observed loss was 0.037302."
+    },
+    {
+      "id": "FINDING-03",
+      "class": "DERIVED_VALUE",
+      "title": "Broader project corpus than Training #1",
+      "detail": "Training #2 used 290 unique images versus 66 source images in Training #1, a 4.39x larger source corpus."
+    },
+    {
+      "id": "FINDING-04",
+      "class": "MODEL_ESTIMATE",
+      "title": "Generalization still required independent validation",
+      "detail": "696,312 optimization samples were generated from 290 unique images, so repeated sampling remained substantial and held-out scene validation was still required."
+    },
+    {
+      "id": "FINDING-05",
+      "class": "UNKNOWN",
+      "title": "Environmental change magnitude not established",
+      "detail": "The run did not persist deterministic scene-pair water, shoreline, glacier, snow or vegetation change measurements, so site-level environmental change values cannot be claimed from this run alone."
+    }
+  ],
+  "claims": {
+    "training_completed": true,
+    "all_unique_images_gpu_audited": true,
+    "ground_truth_claim": false,
+    "causal_environmental_claim": false,
+    "pairwise_environmental_comparison_claim": false
+  }
+}
