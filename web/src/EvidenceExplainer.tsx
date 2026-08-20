@@ -28,6 +28,7 @@ export function EvidenceExplainer({
 }: Props) {
   const endpoint = useMemo(() => normalizeEvidenceApiUrl(apiUrl), [apiUrl])
   const [status, setStatus] = useState<Status>(endpoint ? 'checking' : 'disconnected')
+  const [healthReady, setHealthReady] = useState(false)
   const [error, setError] = useState('')
   const [explanation, setExplanation] = useState<EvidenceExplanation | null>(null)
   const [caseTitle, setCaseTitle] = useState('Vistula Test 014')
@@ -35,6 +36,7 @@ export function EvidenceExplainer({
   useEffect(() => {
     setExplanation(null)
     setError('')
+    setHealthReady(false)
     if (!endpoint) {
       setStatus('disconnected')
       return
@@ -46,10 +48,12 @@ export function EvidenceExplainer({
       .then(health => {
         if (!health.openai_configured) throw new Error('OpenAI is not configured in the evidence Worker.')
         if (!health.supported_case_ids.includes(caseId)) throw new Error('This published evidence case is not available in the Worker.')
+        setHealthReady(true)
         setStatus('ready')
       })
       .catch(reason => {
         if (reason instanceof DOMException && reason.name === 'AbortError') return
+        setHealthReady(false)
         setError(reason instanceof Error ? reason.message : String(reason))
         setStatus('error')
       })
@@ -57,7 +61,7 @@ export function EvidenceExplainer({
   }, [caseId, endpoint])
 
   const explain = async () => {
-    if (!endpoint || status === 'explaining') return
+    if (!endpoint || !healthReady || status === 'explaining') return
     setStatus('explaining')
     setError('')
     try {
@@ -70,6 +74,8 @@ export function EvidenceExplainer({
       setStatus('error')
     }
   }
+
+  const canExplain = healthReady && status !== 'checking' && status !== 'explaining'
 
   return <section className="panel" aria-labelledby="ai-evidence-title">
     <div className="workspace-head">
@@ -91,11 +97,11 @@ export function EvidenceExplainer({
 
     {status === 'disconnected' && <p className="notice">Public AI explanation is not connected in this Pages build yet. Configure the public Worker URL as <code>VITE_EVIDENCE_API_URL</code>; never place the OpenAI key in the browser.</p>}
     {status === 'checking' && <p className="notice">Checking the evidence Worker…</p>}
-    {error && <p className="notice" role="alert">Evidence explainer: {error}</p>}
+    {error && <p className="notice" role="alert">Evidence explainer: {error} {healthReady && 'You can retry without reloading the page.'}</p>}
 
     <div className="hero-actions">
-      <button className="primary" type="button" onClick={explain} disabled={status !== 'ready'}>
-        {status === 'explaining' ? 'Explaining evidence…' : 'Explain Vistula evidence with OpenAI'}
+      <button className="primary" type="button" onClick={explain} disabled={!canExplain}>
+        {status === 'explaining' ? 'Explaining evidence…' : status === 'error' && healthReady ? 'Retry OpenAI evidence explanation' : 'Explain Vistula evidence with OpenAI'}
       </button>
     </div>
 
