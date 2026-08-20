@@ -1,23 +1,50 @@
 {
-  "schema_version": "1.0",
-  "checked_utc": "2026-08-17T21:25:00Z",
-  "policy": "Public discovery first. Never place account passwords, client secrets or bearer tokens in GitHub Pages.",
+  "schema_version": "1.1",
+  "checked_utc": "2026-08-19T23:39:00Z",
+  "policy": "Public discovery and visualisation first. Never place account passwords, client secrets or bearer tokens in GitHub Pages. Runtime health is rechecked by terra_research_node.adapter_preflight.",
   "endpoints": [
+    {
+      "id": "nasa-gibs-wmts",
+      "name": "NASA Earthdata GIBS WMTS",
+      "endpoint": "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/wmts.cgi",
+      "status": "live-public",
+      "checked": "public tiled imagery service registered for VIIRS, MODIS and regional weather layers",
+      "auth": "none for public GIBS imagery",
+      "docs": "https://www.earthdata.nasa.gov/data/tools/gibs"
+    },
+    {
+      "id": "noaa-goes-gibs",
+      "name": "NOAA GOES-East / GOES-West via NASA GIBS",
+      "endpoint": "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/wmts.cgi",
+      "status": "live-public",
+      "checked": "GOES ABI GeoColor products registered in the live 3D adapter",
+      "auth": "none for public GIBS imagery",
+      "docs": "https://gibs.earthdata.nasa.gov/layer-metadata/v1.0/"
+    },
     {
       "id": "cdse-stac",
       "name": "Copernicus Data Space STAC",
       "endpoint": "https://stac.dataspace.copernicus.eu/v1/",
       "status": "live-public",
-      "checked": "HTTP/JSON landing catalog returned",
+      "checked": "public STAC discovery adapter installed",
       "auth": "public discovery; some downloads/services require account/token",
       "docs": "https://documentation.dataspace.copernicus.eu/APIs/STAC.html"
+    },
+    {
+      "id": "cdse-sentinel-hub-wms",
+      "name": "Copernicus Sentinel Hub OGC WMS",
+      "endpoint": "https://sh.dataspace.copernicus.eu/ogc/wms/",
+      "status": "public-data",
+      "checked": "viewer adapter installed for configured true-colour and NDVI layers",
+      "auth": "instance/layer configuration required; no bearer token stored in the static frontend",
+      "docs": "https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/OGC/WMS.html"
     },
     {
       "id": "usgs-landsat-stac",
       "name": "USGS LandsatLook STAC",
       "endpoint": "https://landsatlook.usgs.gov/stac-server",
       "status": "live-public",
-      "checked": "HTTP/JSON STAC catalog returned",
+      "checked": "historical Landsat analysis adapter installed with retry/failure logging",
       "auth": "public discovery",
       "docs": "https://landsatlook.usgs.gov/stac-server/api.html"
     },
@@ -26,17 +53,53 @@
       "name": "NASA Earthdata CMR-STAC",
       "endpoint": "https://cmr.earthdata.nasa.gov/stac/",
       "status": "live-public",
-      "checked": "HTTP/JSON root catalog returned with provider children",
+      "checked": "public multi-mission discovery registered in adapter preflight",
       "auth": "public discovery; many asset downloads require Earthdata Login",
       "docs": "https://cmr.earthdata.nasa.gov/stac/docs/index.html"
+    },
+    {
+      "id": "eumetview-wms",
+      "name": "EUMETSAT EUMETView WMS",
+      "endpoint": "https://view.eumetsat.int/geoserver/wms",
+      "status": "public-data",
+      "checked": "public WMS adapter installed; a verified layer name is configured before live display",
+      "auth": "public visualisation; product downloads may require token",
+      "docs": "https://user.eumetsat.int/resources/user-guides/eumet-view-user-guide"
+    },
+    {
+      "id": "eumetsat-data-store",
+      "name": "EUMETSAT Data Store browse API",
+      "endpoint": "https://api.eumetsat.int/data/browse/collections",
+      "status": "public-data",
+      "checked": "public catalogue preflight registered",
+      "auth": "catalogue browse/search public; product download uses a time-limited token",
+      "docs": "https://user.eumetsat.int/resources/user-guides/data-store-detailed-guide"
+    },
+    {
+      "id": "dea-stac",
+      "name": "Digital Earth Australia STAC",
+      "endpoint": "https://explorer.dea.ga.gov.au/stac",
+      "status": "public-data",
+      "checked": "public Australian Landsat/Sentinel analysis adapter installed",
+      "auth": "public API and public cloud data",
+      "docs": "https://docs.dea.ga.gov.au/notebooks/How_to_guides/Downloading_data_with_STAC/"
+    },
+    {
+      "id": "inpe-bdc-stac",
+      "name": "INPE Brazil Data Cube STAC",
+      "endpoint": "https://data.inpe.br/bdc/stac/v1/",
+      "status": "public-data",
+      "checked": "public Amazonia-1/CBERS analysis adapter installed",
+      "auth": "public catalogue; source-specific product rules apply",
+      "docs": "https://data.inpe.br/bdc/stac/v1/docs"
     },
     {
       "id": "bmkg-earthquakes",
       "name": "BMKG Indonesia Earthquakes",
       "endpoint": "https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json",
       "status": "live-public",
-      "checked": "HTTP/JSON current M5+ list returned",
-      "auth": "none; limit 60 requests/minute/IP; BMKG attribution required",
+      "checked": "public current M5+ event feed registered",
+      "auth": "none; BMKG attribution and service limits apply",
       "docs": "https://data.bmkg.go.id/gempabumi/"
     },
     {
@@ -44,25 +107,25 @@
       "name": "GEBCO_2026 bathymetric grid",
       "endpoint": "https://download.gebco.net/",
       "status": "public-data",
-      "checked": "official 2026 subset download and OPeNDAP documented",
+      "checked": "official public grid registered",
       "auth": "no account required for public grid; conditions/disclaimer apply",
       "docs": "https://www.gebco.net/data-products/gridded-bathymetry-data"
     },
     {
-      "id": "eumetsat",
-      "name": "EUMETSAT Data Store / APIs",
-      "endpoint": "https://api.eumetsat.int/",
+      "id": "canada-eodms",
+      "name": "Natural Resources Canada / CSA EODMS",
+      "endpoint": "https://api.eodms-sgdot.nrcan-rncan.gc.ca/",
       "status": "account-required",
-      "checked": "registered provider; do not expose credentials in frontend",
-      "auth": "account/token",
-      "docs": "https://user.eumetsat.int/resources/user-guides/eumetsat-data-store-detailed-guide"
+      "checked": "planned server-side SAR adapter; disabled in public browser",
+      "auth": "account/licence dependent",
+      "docs": "https://www.eodms-sgdot.nrcan-rncan.gc.ca/"
     },
     {
       "id": "jaxa",
       "name": "JAXA G-Portal",
       "endpoint": null,
       "status": "account-or-provider-workflow",
-      "checked": "official portal registered; no unrestricted global endpoint promoted by TP-26",
+      "checked": "planned authenticated adapter; no unrestricted global browser endpoint assumed",
       "auth": "registration/provider rules depend on product",
       "docs": "https://gportal.jaxa.jp/gpr/?lang=en"
     },
@@ -71,7 +134,7 @@
       "name": "ISRO / NRSC Bhoonidhi",
       "endpoint": "https://bhoonidhi.nrsc.gov.in/bhoonidhi-api/",
       "status": "account-token-product-dependent",
-      "checked": "official API registered; access varies by product",
+      "checked": "planned authenticated adapter; access varies by product",
       "auth": "registration/token/licence dependent",
       "docs": "https://bhoonidhi.nrsc.gov.in/bhoonidhi/home.html"
     }

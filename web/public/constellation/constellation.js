@@ -6,12 +6,12 @@ const accessNode = $('#access')
 const countNode = $('#providerCount')
 
 const statusLabels = {
-  'active-adapter': 'Aktywny adapter',
-  'ready-for-adapter': 'Gotowe do adaptera',
-  'planned-adapter': 'Planowany adapter',
-  'registered-source': 'Zarejestrowane źródło',
-  'discovery-backbone': 'Federacja katalogów',
-  'licence-gated': 'Dostęp licencjonowany',
+  'active-adapter': 'Active adapter',
+  'ready-for-adapter': 'Ready for adapter',
+  'planned-adapter': 'Planned adapter',
+  'registered-source': 'Registered source',
+  'discovery-backbone': 'Catalogue federation',
+  'licence-gated': 'Licence-gated access',
 }
 
 function accessGroup(value = '') {
@@ -23,14 +23,16 @@ function accessGroup(value = '') {
 function renderProviders(items) {
   providersNode.replaceChildren()
   if (!items.length) {
-    providersNode.innerHTML = '<p class="empty">Brak źródeł pasujących do filtrów.</p>'
+    providersNode.innerHTML = '<p class="empty">No sources match the selected filters.</p>'
     return
   }
   for (const source of items) {
     const article = document.createElement('article')
     article.className = `provider ${source.status}`
-    const api = source.api ? `<a href="${source.api}" target="_blank" rel="noreferrer">API / endpoint</a>` : '<span class="no-api">Brak potwierdzonego publicznego API</span>'
-    article.innerHTML = `<div class="provider-head"><span>${source.country}</span><b>${statusLabels[source.status] ?? source.status}</b></div><h2>${source.agency}</h2><p class="missions">${source.missions.join(' · ')}</p><p>${source.notes}</p><dl><dt>Dostęp</dt><dd>${source.access}</dd></dl><div class="links"><a href="${source.portal}" target="_blank" rel="noreferrer">Oficjalny katalog</a>${api}</div>`
+    const api = source.api
+      ? `<a href="${source.api}" target="_blank" rel="noreferrer">API / endpoint</a>`
+      : '<span class="no-api">No verified public API</span>'
+    article.innerHTML = `<div class="provider-head"><span>${source.country}</span><b>${statusLabels[source.status] ?? source.status}</b></div><h2>${source.agency}</h2><p class="missions">${source.missions.join(' · ')}</p><p>${source.notes}</p><dl><dt>Access</dt><dd>${source.access}</dd></dl><div class="links"><a href="${source.portal}" target="_blank" rel="noreferrer">Official catalogue</a>${api}</div>`
     providersNode.append(article)
   }
 }
@@ -52,7 +54,9 @@ fetch('../data/tp26-global-sources.json')
     accessNode.addEventListener('change', update)
     update()
   })
-  .catch(error => { providersNode.innerHTML = `<p class="empty">Nie udało się wczytać rejestru: ${String(error)}</p>` })
+  .catch(error => {
+    providersNode.innerHTML = `<p class="empty">Failed to load the provider registry: ${String(error)}</p>`
+  })
 
 const safety = {
   events: [],
@@ -64,13 +68,31 @@ const safety = {
   visible: $('#visibleEvents'),
 }
 
-const typeLabels = {fire:'Pożar',earthquake:'Trzęsienie ziemi',flood:'Powódź',storm:'Burza / cyklon',volcano:'Wulkan',space_weather:'Pogoda kosmiczna',landslide:'Osuwisko',drought:'Susza',ice:'Lód'}
-const severityLabels = {critical:'Krytyczny',high:'Wysoki',moderate:'Umiarkowany',low:'Niski',unknown:'Nieznany'}
-const fmt = value => Number(value || 0).toLocaleString('pl-PL')
+const typeLabels = {
+  fire: 'Fire',
+  earthquake: 'Earthquake',
+  flood: 'Flood',
+  storm: 'Storm / cyclone',
+  volcano: 'Volcano',
+  space_weather: 'Space weather',
+  landslide: 'Landslide',
+  drought: 'Drought',
+  ice: 'Ice',
+}
+const severityLabels = {
+  critical: 'Critical',
+  high: 'High',
+  moderate: 'Moderate',
+  low: 'Low',
+  unknown: 'Unknown',
+}
+const fmt = value => Number(value || 0).toLocaleString('en-GB')
 
 function formatTime(value) {
   const date = new Date(value)
-  return Number.isNaN(date.getTime()) ? (value || 'Brak czasu') : `${date.toLocaleString('pl-PL', {timeZone:'UTC'})} UTC`
+  return Number.isNaN(date.getTime())
+    ? (value || 'No timestamp')
+    : `${date.toLocaleString('en-GB', {timeZone:'UTC'})} UTC`
 }
 
 function filteredEvents() {
@@ -96,25 +118,27 @@ function renderMap(events) {
 
 function renderEvents() {
   const events = filteredEvents()
-  safety.visible.textContent = `${fmt(events.length)} zdarzeń`
+  safety.visible.textContent = `${fmt(events.length)} events`
   safety.list.replaceChildren()
   if (!events.length) {
-    safety.list.innerHTML = '<p class="empty">Brak zdarzeń pasujących do filtrów.</p>'
+    safety.list.innerHTML = '<p class="empty">No events match the selected filters.</p>'
     renderMap([])
     return
   }
   for (const event of events.slice(0, 120)) {
     const card = document.createElement('article')
     card.className = `event-card severity-${event.severity || 'unknown'}`
-    const coords = Number.isFinite(Number(event.latitude)) ? `${Number(event.latitude).toFixed(3)}, ${Number(event.longitude).toFixed(3)}` : 'Brak współrzędnych'
-    card.innerHTML = `<div class="event-meta"><span>${typeLabels[event.type] || event.type || 'Zdarzenie'}</span><b>${severityLabels[event.severity] || event.severity || 'Nieznany'}</b></div><h4>${event.title || 'Zdarzenie bez nazwy'}</h4><p>${event.description || ''}</p><dl><dt>Źródło</dt><dd>${event.source || 'Nieznane'}</dd><dt>Czas</dt><dd>${formatTime(event.observed_at || event.updated_at)}</dd><dt>Pozycja</dt><dd>${coords}</dd></dl>${event.source_url ? `<a href="${event.source_url}" target="_blank" rel="noreferrer">Otwórz źródło</a>` : ''}`
+    const coords = Number.isFinite(Number(event.latitude))
+      ? `${Number(event.latitude).toFixed(3)}, ${Number(event.longitude).toFixed(3)}`
+      : 'No coordinates'
+    card.innerHTML = `<div class="event-meta"><span>${typeLabels[event.type] || event.type || 'Event'}</span><b>${severityLabels[event.severity] || event.severity || 'Unknown'}</b></div><h4>${event.title || 'Unnamed event'}</h4><p>${event.description || ''}</p><dl><dt>Source</dt><dd>${event.source || 'Unknown'}</dd><dt>Time</dt><dd>${formatTime(event.observed_at || event.updated_at)}</dd><dt>Position</dt><dd>${coords}</dd></dl>${event.source_url ? `<a href="${event.source_url}" target="_blank" rel="noreferrer">Open source</a>` : ''}`
     safety.list.append(card)
   }
   renderMap(events)
 }
 
 async function loadEvents() {
-  $('#monitorStatus').textContent = 'Pobieranie danych…'
+  $('#monitorStatus').textContent = 'Fetching data…'
   try {
     const response = await fetch(`../data/events/latest.json?t=${Date.now()}`, {cache:'no-store'})
     if (!response.ok) throw new Error(`HTTP ${response.status}`)
@@ -128,15 +152,15 @@ async function loadEvents() {
     $('#countFlood').textContent = fmt(summary.flood)
     $('#countStorm').textContent = fmt(summary.storm)
     $('#countVolcano').textContent = fmt(summary.volcano)
-    $('#monitorStatus').textContent = 'Monitor aktywny'
+    $('#monitorStatus').textContent = 'Monitor active'
     $('#updatedAt').textContent = formatTime(data.generated_at)
     $('#liveDot').className = 'active'
     renderEvents()
   } catch (error) {
-    $('#monitorStatus').textContent = 'Dane chwilowo niedostępne'
+    $('#monitorStatus').textContent = 'Data temporarily unavailable'
     $('#updatedAt').textContent = String(error)
     $('#liveDot').className = 'error'
-    safety.list.innerHTML = `<p class="empty">Błąd pobierania: ${String(error)}</p>`
+    safety.list.innerHTML = `<p class="empty">Fetch error: ${String(error)}</p>`
   }
 }
 
@@ -166,16 +190,19 @@ async function loadApiRegistry() {
     for (const item of data.endpoints || []) {
       const card = document.createElement('article')
       card.className = `provider ${item.status === 'live-public' ? 'active-adapter' : item.status === 'public-data' ? 'ready-for-adapter' : 'registered-source'}`
-      const endpoint = item.endpoint ? `<a href="${item.endpoint}" target="_blank" rel="noreferrer">Endpoint</a>` : '<span class="no-api">Brak otwartego endpointu</span>'
-      card.innerHTML = `<div class="provider-head"><span>${endpointStateLabel(item.status)}</span><b>${item.checked || ''}</b></div><h2>${item.name}</h2><p>${item.auth || ''}</p><div class="links"><a href="${item.docs}" target="_blank" rel="noreferrer">Oficjalne info</a>${endpoint}</div>`
+      const endpoint = item.endpoint
+        ? `<a href="${item.endpoint}" target="_blank" rel="noreferrer">Endpoint</a>`
+        : '<span class="no-api">No open endpoint</span>'
+      card.innerHTML = `<div class="provider-head"><span>${endpointStateLabel(item.status)}</span><b>${item.checked || ''}</b></div><h2>${item.name}</h2><p>${item.auth || ''}</p><div class="links"><a href="${item.docs}" target="_blank" rel="noreferrer">Official information</a>${endpoint}</div>`
       target.append(card)
     }
-    $('#apiStatus').textContent = `${(data.endpoints || []).filter(x => x.status === 'live-public').length} publiczne endpointy zweryfikowane odpowiedzią`
+    const liveCount = (data.endpoints || []).filter(x => x.status === 'live-public').length
+    $('#apiStatus').textContent = `${liveCount} public endpoints verified by response`
     $('#apiCheckedAt').textContent = formatTime(data.checked_utc)
     $('#apiDot').className = 'active'
   } catch (error) {
-    target.innerHTML = `<p class="empty">Nie udało się wczytać rejestru API: ${String(error)}</p>`
-    $('#apiStatus').textContent = 'Rejestr API niedostępny'
+    target.innerHTML = `<p class="empty">Failed to load the API registry: ${String(error)}</p>`
+    $('#apiStatus').textContent = 'API registry unavailable'
     $('#apiCheckedAt').textContent = String(error)
     $('#apiDot').className = 'error'
   }

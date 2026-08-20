@@ -1,8 +1,8 @@
 param(
-    [int]$TargetImages = 100000,
-    [int]$Grid = 4,
-    [int]$Workers = 8,
-    [double]$MaxDownloadGB = 30,
+    [int]$TargetImages = 500000,
+    [int]$Grid = 8,
+    [int]$Workers = 16,
+    [double]$MaxDownloadGB = 120,
     [int]$Resolution = 512
 )
 
@@ -15,7 +15,7 @@ Write-Host '=== GLOBAL PUBLIC SATELLITE DATASET / CPU + NETWORK ONLY ===' -Foreg
 Write-Host "Target unique downloaded images/windows: $TargetImages" -ForegroundColor Cyan
 Write-Host 'The paid NVIDIA L4 is NOT required for this stage.' -ForegroundColor Green
 
-python -m terra_research_node.historical_public_seed --start-year 1990 --end-year 1999 --max-images 2500
+python -m terra_research_node.historical_public_seed --start-year 1990 --end-year 1999 --max-images 5000
 if ($LASTEXITCODE -ne 0) {
     Write-Warning 'Historical USGS seed failed; continuing with other official public sources.'
 }

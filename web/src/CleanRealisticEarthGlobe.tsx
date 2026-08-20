@@ -12,8 +12,14 @@ type Layer =
   | 'ocean-waves'
   | 'high-resolution'
   | 'nasa-day'
+  | 'nasa-modis'
   | 'nasa-night'
+  | 'goes-east'
+  | 'goes-west'
   | 'copernicus-safe'
+  | 'copernicus-true-color'
+  | 'copernicus-ndvi'
+  | 'eumetsat-live'
 type Sensor = 'sentinel-1-grd' | 'sentinel-2-l2a' | 'sentinel-3-olci-l1b'
 type StacItem = {
   id: string
@@ -47,11 +53,17 @@ const HIGH_RESOLUTION_WORLD =
   'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
 const NASA_WMTS = 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/wmts.cgi'
 const NASA_GLOBAL_TRUE_COLOR = 'VIIRS_SNPP_CorrectedReflectance_TrueColor'
+const NASA_MODIS_TRUE_COLOR = 'MODIS_Terra_CorrectedReflectance_TrueColor'
 const WAVEWATCH_WMS = 'https://erddap.aoml.noaa.gov/hdb/erddap/wms/WaveWatch_2026/request'
+const EUMETVIEW_WMS = 'https://view.eumetsat.int/geoserver/wms'
+const EUMETVIEW_LAYER = import.meta.env.VITE_EUMETVIEW_LAYER || ''
 const STAC_SEARCH = 'https://stac.dataspace.copernicus.eu/v1/search'
 const CDSE_INSTANCE =
   import.meta.env.VITE_CDSE_INSTANCE_ID || 'd708f736-b553-4328-9b5e-39bdb444790c'
 const CDSE_WMS = `https://sh.dataspace.copernicus.eu/ogc/wms/${CDSE_INSTANCE}`
+const CDSE_TRUE_COLOR_LAYER =
+  import.meta.env.VITE_CDSE_TRUE_COLOR_LAYER || import.meta.env.VITE_CDSE_LAYER || 'NATURAL-COLOR'
+const CDSE_NDVI_LAYER = import.meta.env.VITE_CDSE_NDVI_LAYER || 'NDVI'
 const TEN_MINUTES = 10 * 60 * 1000
 const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000
 const LAST_FRAME = 1008
@@ -224,7 +236,11 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
     () => new Date(animationStart.getTime() + frameIndex * TEN_MINUTES),
     [animationStart, frameIndex],
   )
-  const animatedMode = layer === 'regional-clouds' || layer === 'ocean-waves'
+  const animatedMode =
+    layer === 'regional-clouds' ||
+    layer === 'ocean-waves' ||
+    layer === 'goes-east' ||
+    layer === 'goes-west'
   const date = useMemo(
     () => (animatedMode ? animatedDate : live ? new Date(nowTick) : new Date(selectedTime)),
     [animatedMode, animatedDate, live, nowTick, selectedTime],
@@ -237,11 +253,19 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   const coverageNote =
     layer === 'regional-clouds'
       ? 'Regional geostationary imagery is blended over the global VIIRS layer. Sensor boundaries are a source characteristic.'
-      : layer === 'full-live-earth' || layer === 'global-clouds'
-        ? 'Global imagery remains time-specific and the WGS84 globe uses the same UTC instant for real-time solar illumination.'
-        : constrainedDevice
-          ? 'Mobile mode uses adaptive tile quality, a smaller cache and a safe close-zoom limit.'
-          : 'Detail depends on the spatial resolution of the selected official imagery source.'
+      : layer === 'goes-east' || layer === 'goes-west'
+        ? 'NOAA ABI GeoColor is distributed through NASA GIBS at sub-daily cadence; no-data outside the satellite footprint remains visible.'
+        : layer === 'copernicus-true-color' || layer === 'copernicus-safe'
+          ? 'Copernicus Sentinel Hub supplies high-detail optical imagery for the selected UTC date; revisit and cloud cover depend on the source scene.'
+          : layer === 'copernicus-ndvi'
+            ? 'Copernicus NDVI is a derived vegetation index from official Sentinel imagery; it is not a natural-colour photograph.'
+            : layer === 'eumetsat-live'
+              ? 'EUMETView is a public near-real-time OGC service. The exact Meteosat layer is configured outside the static browser bundle.'
+              : layer === 'full-live-earth' || layer === 'global-clouds'
+                ? 'Global imagery remains time-specific and the WGS84 globe uses the same UTC instant for real-time solar illumination.'
+                : constrainedDevice
+                  ? 'Mobile mode uses adaptive tile quality, a smaller cache and a safe close-zoom limit.'
+                  : 'Detail depends on the spatial resolution of the selected official imagery source.'
 
   useEffect(() => {
     const timer = window.setInterval(() => setNowTick(Date.now()), 60_000)
@@ -340,6 +364,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
     const viewer = viewerRef.current
     const Cesium = cesiumRef.current
     if (!ready || !viewer || !Cesium || view !== 'globe') return
+    setError('')
     viewer.imageryLayers.removeAll()
     viewer.clock.currentTime = Cesium.JulianDate.fromIso8601(date.toISOString())
 
@@ -373,6 +398,39 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
         }),
       )
       trueColor.alpha = layer === 'regional-clouds' ? 0.9 : 1
+    }
+
+    if (layer === 'nasa-modis') {
+      const modis = viewer.imageryLayers.addImageryProvider(
+        new Cesium.WebMapTileServiceImageryProvider({
+          url: NASA_WMTS,
+          layer: NASA_MODIS_TRUE_COLOR,
+          style: 'default',
+          format: 'image/jpeg',
+          tileMatrixSetID: 'GoogleMapsCompatible_Level9',
+          maximumLevel: 9,
+          dimensions: { Time: day },
+          credit: 'NASA GIBS · Terra MODIS Corrected Reflectance True Color',
+        }),
+      )
+      modis.alpha = 1
+    }
+
+    if (layer === 'goes-east' || layer === 'goes-west') {
+      const product = layer === 'goes-east' ? 'GOES-East_ABI_GeoColor' : 'GOES-West_ABI_GeoColor'
+      const goes = viewer.imageryLayers.addImageryProvider(
+        new Cesium.WebMapTileServiceImageryProvider({
+          url: NASA_WMTS,
+          layer: product,
+          style: 'default',
+          format: 'image/png',
+          tileMatrixSetID: 'GoogleMapsCompatible_Level7',
+          maximumLevel: 7,
+          dimensions: { Time: subdailyTime },
+          credit: `NOAA ${layer === 'goes-east' ? 'GOES-East' : 'GOES-West'} ABI · NASA GIBS distribution`,
+        }),
+      )
+      goes.alpha = 1
     }
 
     if (layer === 'regional-clouds') {
@@ -432,23 +490,50 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
       night.alpha = 0.78
     }
 
-    if (layer === 'copernicus-safe') {
+    if (
+      layer === 'copernicus-safe' ||
+      layer === 'copernicus-true-color' ||
+      layer === 'copernicus-ndvi'
+    ) {
+      const selectedLayer = layer === 'copernicus-ndvi' ? CDSE_NDVI_LAYER : CDSE_TRUE_COLOR_LAYER
       const copernicus = viewer.imageryLayers.addImageryProvider(
         new Cesium.WebMapServiceImageryProvider({
           url: CDSE_WMS,
-          layers: import.meta.env.VITE_CDSE_LAYER || 'NATURAL-COLOR',
+          layers: selectedLayer,
           rectangle: Cesium.Rectangle.fromDegrees(-180, -78, 180, 78),
           parameters: {
             transparent: true,
             format: 'image/png',
             time: `${day}/${day}`,
-            maxcc: 100,
+            maxcc: 35,
             showlogo: false,
           },
-          credit: 'Copernicus Data Space',
+          credit: `Copernicus Data Space · ${selectedLayer}`,
         }),
       )
-      copernicus.alpha = 0.9
+      copernicus.alpha = layer === 'copernicus-ndvi' ? 0.82 : 0.95
+    }
+
+    if (layer === 'eumetsat-live') {
+      if (!EUMETVIEW_LAYER) {
+        setError(
+          'EUMETView adapter is installed but no public WMS layer is configured. Set VITE_EUMETVIEW_LAYER during the Pages build.',
+        )
+      } else {
+        const eumetsat = viewer.imageryLayers.addImageryProvider(
+          new Cesium.WebMapServiceImageryProvider({
+            url: EUMETVIEW_WMS,
+            layers: EUMETVIEW_LAYER,
+            parameters: {
+              transparent: true,
+              format: 'image/png',
+              time: date.toISOString(),
+            },
+            credit: 'EUMETSAT EUMETView · near-real-time Meteosat/Metop imagery',
+          }),
+        )
+        eumetsat.alpha = 0.96
+      }
     }
 
     // Every imagery mode uses the same UTC instant for the Sun/terminator.
@@ -528,11 +613,17 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
                 <option value="full-live-earth">FULL EARTH — daytime imagery + clouds + waves</option>
                 <option value="global-clouds">Global clouds — NASA VIIRS daily mosaic</option>
                 <option value="regional-clouds">Regional clouds — GOES/Himawari, ~10 min</option>
+                <option value="goes-east">NOAA GOES-East — GeoColor, sub-daily</option>
+                <option value="goes-west">NOAA GOES-West — GeoColor, sub-daily</option>
                 <option value="ocean-waves">Ocean waves — significant wave height</option>
                 <option value="high-resolution">High-resolution satellite basemap</option>
                 <option value="nasa-day">NASA VIIRS — true colour</option>
+                <option value="nasa-modis">NASA Terra MODIS — true colour</option>
                 <option value="nasa-night">NASA VIIRS — night lights</option>
                 <option value="copernicus-safe">Copernicus — current observation</option>
+                <option value="copernicus-true-color">Copernicus Sentinel — true colour</option>
+                <option value="copernicus-ndvi">Copernicus Sentinel — NDVI</option>
+                <option value="eumetsat-live">EUMETSAT EUMETView — configured live layer</option>
               </select>
             </label>
             <label>
@@ -563,9 +654,19 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
               ? fullLiveTitle
               : layer === 'global-clouds'
                 ? 'GLOBAL CLOUDS · NASA VIIRS'
-                : animatedMode
-                  ? 'SOURCE ANIMATION · 10-MINUTE STEP'
-                  : 'FULL EARTH · MAXIMUM SOURCE DETAIL'}
+                : layer === 'goes-east'
+                  ? 'NOAA GOES-EAST · ABI GEOCOLOR'
+                  : layer === 'goes-west'
+                    ? 'NOAA GOES-WEST · ABI GEOCOLOR'
+                    : layer === 'copernicus-true-color'
+                      ? 'COPERNICUS SENTINEL · TRUE COLOUR'
+                      : layer === 'copernicus-ndvi'
+                        ? 'COPERNICUS SENTINEL · NDVI'
+                        : layer === 'eumetsat-live'
+                          ? 'EUMETSAT EUMETVIEW · NEAR REAL TIME'
+                          : animatedMode
+                            ? 'SOURCE ANIMATION · 10-MINUTE STEP'
+                            : 'FULL EARTH · MAXIMUM SOURCE DETAIL'}
           </strong>
           <span>{date.toLocaleString('en-GB', { timeZone: 'UTC' })} UTC</span>
           <span>{coverageNote}</span>
