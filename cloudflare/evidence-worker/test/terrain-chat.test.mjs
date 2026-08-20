@@ -46,6 +46,7 @@ test('research chat allows only the named GPT-5.6 family and returns an exact at
     assert.match(body.instructions, /Never invent elevation values/)
     assert.match(body.instructions, /Raw user prompts and conversation text are transient/i)
     assert.match(body.instructions, /archive outputs must omit the user's prompt text/i)
+    assert.match(body.instructions, /do not quote or restate the user's private prompt wording verbatim/i)
     const latest = body.input.at(-1)
     const image = latest.content.find(item => item.type === 'input_image')
     const file = latest.content.find(item => item.type === 'input_file')
