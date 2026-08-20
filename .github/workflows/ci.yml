@@ -27,6 +27,9 @@ jobs:
             requirements.txt
             requirements-cdse.txt
 
+      - name: Scan tracked files for leaked tokens
+        run: python scripts/ci/scan_tracked_secrets.py
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
