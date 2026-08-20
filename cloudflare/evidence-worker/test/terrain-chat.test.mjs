@@ -44,7 +44,8 @@ test('research chat allows only the named GPT-5.6 family and returns an exact at
     const body = JSON.parse(options.body)
     assert.equal(body.model, 'gpt-5.6-sol')
     assert.match(body.instructions, /Never invent elevation values/)
-    assert.match(body.instructions, /Raw conversation text is transient/)
+    assert.match(body.instructions, /Raw user prompts and conversation text are transient/i)
+    assert.match(body.instructions, /archive outputs must omit the user's prompt text/i)
     const latest = body.input.at(-1)
     const image = latest.content.find(item => item.type === 'input_image')
     const file = latest.content.find(item => item.type === 'input_file')
@@ -80,7 +81,7 @@ test('research chat allows only the named GPT-5.6 family and returns an exact at
     assert.deepEqual(payload.attachment_names, ['map.png', 'notes.txt'])
     assert.ok(payload.attachment_bytes > 0)
     assert.match(payload.answer, /Raport testowy/)
-    assert.match(payload.evidence_policy, /Raw chat|raw chat/i)
+    assert.match(payload.evidence_policy, /raw user prompts/i)
     assert.equal(JSON.stringify(payload).includes('test-secret-not-real'), false)
   } finally {
     globalThis.fetch = originalFetch
