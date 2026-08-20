@@ -25,9 +25,20 @@ export type EvidenceCaseSummary = {
   temporal_scope?: string
 }
 
+export type TrainingContextSummary = {
+  training_id: string
+  short_label: string
+  title: string
+  public_page: string
+  evidence_class: string
+  gpu: string
+  summary: string
+}
+
 export type EvidenceCasesResponse = {
   service: string
   cases: EvidenceCaseSummary[]
+  training_context: TrainingContextSummary[]
 }
 
 export type EvidenceResponse = {

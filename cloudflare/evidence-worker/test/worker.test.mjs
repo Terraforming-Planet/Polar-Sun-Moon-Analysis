@@ -9,17 +9,21 @@ import {
   handleRequest,
   isAllowedOrigin,
   listPublicCases,
+  listTrainingContext,
   loadPublishedCase,
   validateExplainPayload,
   validateExplanation,
 } from '../src/index.js'
 
 const expectedCases = [
+  'test-001-forest-pond-kuchnia',
   'test-011-ilawa-zalewo',
   'test-013-grays-harbor',
   'vistula-test-014',
   'test-015-himalaya-tibet',
 ]
+
+const expectedTrainings = ['training_1', 'training_2', 'training_3']
 
 test('public endpoint exposes only registered published case IDs', () => {
   assert.deepEqual(Object.keys(PUBLIC_CASES), expectedCases)
@@ -42,28 +46,30 @@ test('CORS allows Terraforming Planet and local development only by default', ()
 })
 
 test('OpenAI request uses server-side model, larger completion budget and strict structured output', () => {
-  const request = buildOpenAIRequest({ case_id: 'vistula-test-014', evidence: {} }, { OPENAI_MODEL: 'gpt-5.6-luna' })
+  const request = buildOpenAIRequest({ case_id: 'test-001-forest-pond-kuchnia', evidence: {} }, { OPENAI_MODEL: 'gpt-5.6-luna' })
   assert.equal(request.model, 'gpt-5.6-luna')
   assert.ok(request.max_output_tokens >= 1800)
   assert.equal(request.text.format.type, 'json_schema')
   assert.equal(request.text.format.strict, true)
   assert.deepEqual(request.text.format.schema.required, ['summary', 'why_it_matters', 'uncertainty', 'next_checks'])
   assert.match(request.instructions, /not environmental ground truth/i)
+  assert.match(request.instructions, /AUTHOR_FIELD_OBSERVATION/)
+  assert.match(request.instructions, /Reported repairs, damaged wells, ditches or channels/)
 })
 
 test('OpenAI output parsing accepts Responses API nested output text', () => {
   const text = JSON.stringify({
-    summary: 'Published satellite records and training artifacts are available.',
+    summary: 'Published satellite records, field context and training artifacts are available.',
     why_it_matters: 'They support reproducible follow-up research.',
-    uncertainty: 'No environmental magnitude or physical cause is established by these artifacts alone.',
-    next_checks: 'Run matched-season measurements and compare independent environmental data.',
+    uncertainty: 'No unverified infrastructure report establishes hydrological causation.',
+    next_checks: 'Obtain official records and compare matched-season environmental measurements.',
   })
   const parsedText = extractOutputText({ output: [{ content: [{ type: 'output_text', text }] }] })
   assert.equal(parsedText, text)
-  assert.equal(validateExplanation(JSON.parse(parsedText)).uncertainty.includes('No environmental'), true)
+  assert.equal(validateExplanation(JSON.parse(parsedText)).uncertainty.includes('No unverified'), true)
 })
 
-test('health route never returns the OpenAI secret and lists all cases', async () => {
+test('health route never returns the OpenAI secret and lists all cases and trainings', async () => {
   const response = await handleRequest(new Request('https://worker.example/health'), {
     OPENAI_API_KEY: 'test-secret-not-real',
   })
@@ -72,21 +78,27 @@ test('health route never returns the OpenAI secret and lists all cases', async (
   assert.equal(payload.openai_configured, true)
   assert.equal(payload.evidence_mode, 'bundled-fixed-published-snapshot')
   assert.deepEqual(payload.supported_case_ids, expectedCases)
+  assert.deepEqual(payload.training_context_ids, expectedTrainings)
   assert.equal(JSON.stringify(payload).includes('test-secret-not-real'), false)
 })
 
-test('cases route publishes safe metadata for the global AI workspace', async () => {
+test('cases route publishes TEST 001 plus all three L4 training summaries', async () => {
   const response = await handleRequest(new Request('https://worker.example/cases', {
     headers: { Origin: 'https://terraforming-planet.github.io' },
   }), { OPENAI_API_KEY: 'test-secret-not-real' })
   const payload = await response.json()
   assert.equal(response.status, 200)
-  assert.equal(payload.cases.length, 4)
+  assert.equal(payload.cases.length, 5)
   assert.deepEqual(payload.cases.map(item => item.case_id), expectedCases)
+  assert.equal(payload.cases.find(item => item.case_id === 'test-001-forest-pond-kuchnia').record_count, 73)
   assert.equal(payload.cases.find(item => item.case_id === 'test-013-grays-harbor').accepted_count, 71)
   assert.equal(payload.cases.find(item => item.case_id === 'test-015-himalaya-tibet').accepted_count, 65)
+  assert.equal(payload.training_context.length, 3)
+  assert.deepEqual(payload.training_context.map(item => item.training_id), expectedTrainings)
+  assert.match(payload.training_context[0].summary, /704,232 sampled patches/)
   assert.equal(JSON.stringify(payload).includes('test-secret-not-real'), false)
-  assert.equal(listPublicCases().length, 4)
+  assert.equal(listPublicCases().length, 5)
+  assert.equal(listTrainingContext().length, 3)
 })
 
 test('root route is a human-readable backend status page', async () => {
@@ -102,7 +114,21 @@ test('root route is a human-readable backend status page', async () => {
   assert.equal(body.includes('test-secret-not-real'), false)
 })
 
-test('published cases are bundled and keep scientific claim flags false', async () => {
+test('TEST 001 preserves supported satellite state change but keeps field causation unverified', async () => {
+  const bundle = await loadPublishedCase('test-001-forest-pond-kuchnia')
+  assert.equal(bundle.evidence_snapshot, 'bundled-at-deploy-time')
+  assert.equal(bundle.evidence.satellite_result.state_change_supported, true)
+  assert.equal(bundle.evidence.satellite_result.historical_persistent_footprint_m2, 17722.2)
+  assert.equal(bundle.evidence.water_loss_claim, false)
+  assert.equal(bundle.evidence.causal_claim, false)
+  assert.equal(bundle.evidence.author_field_report.evidence_class, 'AUTHOR_FIELD_OBSERVATION')
+  assert.equal(bundle.evidence.author_field_report.independently_verified, false)
+  assert.equal(bundle.evidence.author_field_report.official_documentary_record_attached, false)
+  assert.equal(bundle.evidence.author_field_report.repair_effect_claim, false)
+  assert.match(bundle.evidence.author_field_report.observations.join(' '), /Starostwo Powiatowe in Kwidzyn/)
+})
+
+test('all published cases receive all three L4 contexts without turning training into ground truth', async () => {
   const originalFetch = globalThis.fetch
   globalThis.fetch = async () => {
     throw new Error('network access should not be needed to load bundled evidence')
@@ -111,9 +137,9 @@ test('published cases are bundled and keep scientific claim flags false', async 
     for (const caseId of expectedCases) {
       const bundle = await loadPublishedCase(caseId)
       assert.equal(bundle.evidence_snapshot, 'bundled-at-deploy-time')
-      assert.equal(bundle.evidence.environmental_finding_claim, false)
-      assert.equal(bundle.evidence.water_loss_claim, false)
-      assert.equal(bundle.evidence.causal_claim, false)
+      assert.equal(bundle.l4_research_context.training_1.ground_truth_claim, false)
+      assert.equal(bundle.l4_research_context.training_1.source_images, 66)
+      assert.equal(bundle.l4_research_context.training_1.samples_seen, 704232)
       assert.equal(bundle.l4_research_context.training_2.ground_truth_claim, false)
       assert.equal(bundle.l4_research_context.training_3.ground_truth_claim, false)
       assert.equal(bundle.l4_research_context.training_3.streamed_windows, 200016)
@@ -130,7 +156,7 @@ test('POST rejects unapproved browser origin before any OpenAI call', async () =
       Origin: 'https://example.com',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ case_id: 'vistula-test-014' }),
+    body: JSON.stringify({ case_id: 'test-001-forest-pond-kuchnia' }),
   }), { OPENAI_API_KEY: 'test-secret-not-real' })
   assert.equal(response.status, 403)
 })

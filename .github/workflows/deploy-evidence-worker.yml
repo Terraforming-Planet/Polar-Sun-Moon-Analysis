@@ -97,7 +97,7 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ steps.normalize_credentials.outputs.openai_api_key }}
 
-      - name: Verify deployed Worker health and published-test registry
+      - name: Verify deployed Worker health, TEST 001 and all L4 contexts
         id: health
         shell: bash
         env:
@@ -119,24 +119,33 @@ jobs:
           import json
           from pathlib import Path
 
-          expected = {
+          expected_cases = {
+              'test-001-forest-pond-kuchnia',
               'test-011-ilawa-zalewo',
               'test-013-grays-harbor',
               'vistula-test-014',
               'test-015-himalaya-tibet',
           }
+          expected_trainings = {'training_1', 'training_2', 'training_3'}
+
           health = json.loads(Path('/tmp/health.json').read_text(encoding='utf-8'))
           assert health.get('service') == 'terra-observation-evidence-explainer'
           assert health.get('openai_configured') is True
-          assert expected.issubset(set(health.get('supported_case_ids', [])))
+          assert expected_cases == set(health.get('supported_case_ids', []))
+          assert expected_trainings == set(health.get('training_context_ids', []))
 
-          cases = json.loads(Path('/tmp/cases.json').read_text(encoding='utf-8'))
-          registered = {item.get('case_id') for item in cases.get('cases', []) if isinstance(item, dict)}
-          assert expected == registered
-          print('Worker health and four-case public registry passed; no secret values printed.')
+          payload = json.loads(Path('/tmp/cases.json').read_text(encoding='utf-8'))
+          registered = {item.get('case_id') for item in payload.get('cases', []) if isinstance(item, dict)}
+          trainings = {item.get('training_id') for item in payload.get('training_context', []) if isinstance(item, dict)}
+          assert expected_cases == registered
+          assert expected_trainings == trainings
+          test001 = next(item for item in payload['cases'] if item.get('case_id') == 'test-001-forest-pond-kuchnia')
+          assert test001.get('record_count') == 73
+          assert len(payload.get('training_context', [])) == 3
+          print('Worker health, five-case registry and all three NVIDIA L4 contexts passed; no secret values printed.')
           PY
 
-      - name: Verify real OpenAI evidence explanation
+      - name: Verify real OpenAI TEST 001 explanation
         id: explain
         shell: bash
         env:
@@ -147,20 +156,20 @@ jobs:
             -X POST \
             -H 'Origin: https://terraforming-planet.github.io' \
             -H 'Content-Type: application/json' \
-            --data '{"case_id":"vistula-test-014"}' \
+            --data '{"case_id":"test-001-forest-pond-kuchnia"}' \
             "$WORKER_URL/explain" > /tmp/explain.json
           python - <<'PY'
           import json
           from pathlib import Path
 
           payload = json.loads(Path('/tmp/explain.json').read_text(encoding='utf-8'))
-          assert payload.get('case_id') == 'vistula-test-014'
+          assert payload.get('case_id') == 'test-001-forest-pond-kuchnia'
           assert payload.get('evidence_source') == 'canonical-public-repository-artifacts'
           explanation = payload.get('explanation')
           assert isinstance(explanation, dict)
           for field in ('summary', 'why_it_matters', 'uncertainty', 'next_checks'):
               assert isinstance(explanation.get(field), str) and explanation[field].strip()
-          print('Live OpenAI Responses API explanation passed without printing model output.')
+          print('Live OpenAI TEST 001 explanation passed without printing model output.')
           PY
 
       - name: Persist public Evidence Worker URL for future Pages builds
@@ -234,8 +243,9 @@ jobs:
                 "https://terraforming-planet.github.io${asset_path}?evidence=${nonce}" > /tmp/site-app.js; then
                 if grep -Fq "$worker_url" /tmp/site-app.js \
                   && grep -Fq 'AI Research' /tmp/site-app.js \
+                  && grep -Fq 'Trzy opublikowane treningi AI' /tmp/site-app.js \
                   && grep -Fq 'Explain selected test with OpenAI' /tmp/site-app.js; then
-                  echo "Public Pages contains exact source revision $expected and global AI Research UI."
+                  echo "Public Pages contains exact source revision $expected, TEST registry and three-training AI Research UI."
                   exit 0
                 fi
               fi
@@ -256,8 +266,8 @@ jobs:
             echo '## Terra OpenAI Evidence Worker'
             echo
             echo "- Worker: ${WORKER_URL%/}"
-            echo '- Health + four-case registry: passed'
-            echo '- Live /explain OpenAI call: passed'
+            echo '- Health + five-case registry + L4 Training #1/#2/#3: passed'
+            echo '- Live TEST 001 /explain OpenAI call: passed'
             echo '- OPENAI_API_KEY: stored as Worker secret; value not exposed'
             echo '- Public Worker URL: persisted in config/evidence-worker-url.txt'
             echo "- Exact Pages source revision: $GITHUB_SHA"
