@@ -31,6 +31,8 @@ jobs:
 
       - name: Build application
         working-directory: web
+        env:
+          VITE_EVIDENCE_API_URL: ${{ vars.VITE_EVIDENCE_API_URL }}
         run: npm run build
 
       - name: Verify build output

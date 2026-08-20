@@ -66,6 +66,9 @@ jobs:
           cache: npm
           cache-dependency-path: web/package-lock.json
 
+      - name: Test Cloudflare evidence Worker guardrails
+        run: node --test cloudflare/evidence-worker/test/*.test.mjs
+
       - name: Test and build web application
         working-directory: web
         run: |

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://raw.githubusercontent.com/cloudflare/workers-sdk/main/packages/wrangler/config-schema.json",
+  "name": "terra-observation-evidence-explainer",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-20",
+  "workers_dev": true,
+  "vars": {
+    "OPENAI_MODEL": "gpt-5.6-luna",
+    "ALLOWED_ORIGINS": "https://terraforming-planet.github.io,http://localhost:5173,http://127.0.0.1:5173"
+  }
+}

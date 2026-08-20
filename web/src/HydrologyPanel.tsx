@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { EvidenceExplainer } from './EvidenceExplainer'
 import { RealisticEarthGlobe } from './RealisticEarthGlobe'
 import { newestTemporalEnd, sourceStatusLabel, variableLabel, type GlofasCatalog } from './lib/glofas'
 
@@ -122,6 +123,8 @@ export function HydrologyPanel({ baseUrl }: Props) {
     <p className="notice"><b>Olszówka / Gardeja — lokalny poligon krytyczny:</b> dodaliśmy osobne obserwatorium łączące katalog najnowszych produktów Sentinel-1 i Sentinel-2, nocną radiancję NASA VIIRS DNB oraz historię EC JRC Global Surface Water. Zgłoszenie terenowe o zaniku wody jest traktowane jako priorytet do weryfikacji, nie jako automatycznie potwierdzona klęska.</p>
     {error && <p className="notice">Nie udało się odczytać lokalnego manifestu GloFAS: {error}</p>}
     {hazardError && <p className="notice">Nie udało się odczytać lokalnego katalogu zagrożeń: {hazardError}</p>}
+
+    <EvidenceExplainer />
 
     <div className="hazard-layout">
       <div>
