@@ -33,7 +33,7 @@ export function ResearchArchivePanel({
   onOpenExplainer: () => void
 }) {
   const [query, setQuery] = useState('')
-  const [category, setCategory] = useState('wszystkie')
+  const [category, setCategory] = useState('all')
   const [localArchive, setLocalArchive] = useState<ResearchManifest[]>([])
   const [findings, setFindings] = useState<ResearchFindingRecord[]>([])
   const [assistantAnswers, setAssistantAnswers] = useState<ResearchAssistantAnswerRecord[]>([])
@@ -50,7 +50,7 @@ export function ResearchArchivePanel({
   const filtered = useMemo(() => {
     const needle = query.trim().toLocaleLowerCase('en')
     return PUBLIC_RESEARCH_TESTS.filter(item => {
-      const categoryMatch = category === 'wszystkie' || item.category === category
+      const categoryMatch = category === 'all' || item.category === category
       const searchMatch = !needle || `${item.label} ${item.title} ${item.category} ${item.temporalScope}`.toLocaleLowerCase('en').includes(needle)
       return categoryMatch && searchMatch
     })
@@ -82,7 +82,7 @@ export function ResearchArchivePanel({
 
     <div className="research-archive-toolbar">
       <label className="research-field">Search<input value={query} onChange={event => setQuery(event.target.value)} placeholder="e.g. Vistula, lake, Himalayas…" /></label>
-      <label className="research-field">Category<select value={category} onChange={event => setCategory(event.target.value)}>{PUBLIC_RESEARCH_CATEGORIES.map(item => <option key={item} value={item}>{item === 'wszystkie' ? 'all' : item}</option>)}</select></label>
+      <label className="research-field">Category<select value={category} onChange={event => setCategory(event.target.value)}>{PUBLIC_RESEARCH_CATEGORIES.map(item => <option key={item} value={item}>{item}</option>)}</select></label>
       <div className="archive-count"><b>{filtered.length}</b><span>visible tests</span></div>
     </div>
 
