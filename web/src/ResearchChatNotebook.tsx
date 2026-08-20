@@ -146,13 +146,15 @@ export function ResearchChatNotebook({ apiUrl, place, analysis }: {
   })))
 
   const ask = async (text: string, reportMode = false) => {
-    if (!text.trim() && !reportMode) return
+    if (!text.trim() && !reportMode && attachments.length === 0) return
     abortRef.current?.abort()
     const controller = new AbortController()
     abortRef.current = controller
     const userMessage: ResearchChatMessage = {
       role: 'user',
-      text: reportMode ? 'Przygotuj pełny raport badawczy z obecnej sesji, zaznaczeń, pomiarów, obrazów i rozmowy.' : text.trim(),
+      text: reportMode
+        ? 'Przygotuj pełny raport badawczy z obecnej sesji, zaznaczeń, pomiarów, obrazów i rozmowy.'
+        : (text.trim() || 'Przeanalizuj dołączone załączniki w kontekście bieżącego badania.'),
     }
     const outgoing = [...messages, userMessage].slice(-16)
     setMessages(outgoing)
@@ -168,7 +170,8 @@ export function ResearchChatNotebook({ apiUrl, place, analysis }: {
         attachments: payload,
         reportMode,
       }, controller.signal)
-      setMessages(current => [...current, { role: 'assistant', text: response.answer }].slice(-16))
+      const assistantMessage: ResearchChatMessage = { role: 'assistant', text: response.answer }
+      setMessages(current => [...current, assistantMessage].slice(-16))
       setAttachments([])
     } catch (reason) {
       if (reason instanceof DOMException && reason.name === 'AbortError') return
