@@ -97,7 +97,7 @@ jobs:
           VITE_EVIDENCE_API_URL: ${{ steps.production-inputs.outputs.url }}
         run: npm run build
 
-      - name: Verify simplified AI Research production bundle
+      - name: Verify privacy-first AI Research production bundle
         shell: bash
         env:
           EVIDENCE_URL: ${{ steps.production-inputs.outputs.url }}
@@ -107,17 +107,27 @@ jobs:
           test -d web/dist/assets
           grep -q '/Polar-Sun-Moon-Analysis/' web/dist/index.html
           grep -R -Fq "$EVIDENCE_URL" web/dist/assets
-          grep -R -Fq 'Zbadaj dowolne miejsce na Ziemi' web/dist/assets
-          grep -R -Fq 'Wpisz miejsce. Resztę zrobi AI.' web/dist/assets
-          grep -R -Fq 'Zbadaj teren' web/dist/assets
-          grep -R -Fq 'Archiwum' web/dist/assets
-          grep -R -Fq 'Zatwierdzone testy AI' web/dist/assets
-          grep -R -Fq 'Zaawansowane' web/dist/assets
-          grep -R -Fq 'Pełny katalog satelitarny USGS' web/dist/assets
+          grep -R -Fq 'Research any place on Earth' web/dist/assets
+          grep -R -Fq 'Search any area and investigate it immediately' web/dist/assets
+          grep -R -Fq 'Research area' web/dist/assets
+          grep -R -Fq 'Research archive' web/dist/assets
+          grep -R -Fq 'Approved AI tests' web/dist/assets
+          grep -R -Fq 'Advanced terrain research' web/dist/assets
+          grep -R -Fq 'High-resolution reference basemap' web/dist/assets
+          grep -R -Fq 'Private question sent' web/dist/assets
+          grep -R -Fq 'Assistant answer archived on this device' web/dist/assets
           grep -R -Fq 'terra-research-manifest/v1' web/dist/assets
           grep -R -Fq 'Explain selected test with OpenAI' web/dist/assets
+          if grep -R -Fq 'Research account · Sign in with ChatGPT' web/dist/assets; then
+            echo 'Unsupported ChatGPT sign-in control leaked into the production research chat.'
+            exit 1
+          fi
+          if grep -R -Fq 'Continue with ChatGPT — not configured' web/dist/assets; then
+            echo 'Disabled ChatGPT sign-in placeholder leaked into the production research chat.'
+            exit 1
+          fi
           test -s web/dist/research-archive/index.json
-          echo 'Production bundle contains the Worker URL, simple map-first AI research, archive, advanced manifest tools and guarded OpenAI workspace.'
+          echo 'Production bundle contains the Worker URL, English simple/advanced research UI, privacy-first answer archive, high-resolution Earth view and guarded OpenAI workspace.'
 
       - name: Publish build into docs
         shell: bash
