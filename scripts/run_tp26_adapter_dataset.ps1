@@ -1,9 +1,9 @@
 param(
-    [int]$TargetImages = 200000,
-    [int]$Grid = 6,
-    [int]$Workers = 6,
-    [double]$MaxDownloadGB = 30,
-    [int]$ExtraPerAdapter = 2000,
+    [int]$TargetImages = 500000,
+    [int]$Grid = 8,
+    [int]$Workers = 16,
+    [double]$MaxDownloadGB = 120,
+    [int]$ExtraPerAdapter = 10000,
     [int]$Resolution = 512
 )
 
@@ -39,5 +39,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host 'TP-26 DATASET READY.' -ForegroundColor Green
+Write-Host 'For cloud runs with automatic disk budgeting and full console logging use:' -ForegroundColor Yellow
+Write-Host '.\scripts\run_tp26_cloud_massive_dataset.ps1' -ForegroundColor Yellow
 Write-Host 'When the current L4 test is finished, start the next GPU run with:' -ForegroundColor Yellow
 Write-Host '.\scripts\train_global_public_l4.ps1 -TrainingMinutes 60' -ForegroundColor Yellow
