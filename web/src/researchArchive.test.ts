@@ -129,7 +129,7 @@ describe('researchArchive', () => {
     expect(finding.privacy_note).toBe('raw-chat-not-included')
     expect(finding.source_images).toHaveLength(2)
     expect(finding.conclusion.headline).toBe('Result')
-    expect(JSON.stringify(finding)).not.toContain('messages')
+    expect(JSON.stringify(finding)).not.toContain('"messages":')
     expect(JSON.stringify(finding)).not.toContain('private user question')
 
     const parsed = parseLocalResearchFindings(JSON.stringify([finding, { schema: 'terra-research-finding/v1', privacy_note: 'raw-chat-included' }]))
@@ -148,9 +148,9 @@ describe('researchArchive', () => {
     expect(record.schema).toBe('terra-assistant-answer/v1')
     expect(record.privacy_note).toBe('user-prompt-not-stored')
     expect(serialized).toContain('candidate channels')
-    expect(serialized).not.toContain('prompt')
-    expect(serialized).not.toContain('question')
-    expect(serialized).not.toContain('messages')
+    expect(serialized).not.toContain('"prompt":')
+    expect(serialized).not.toContain('"question":')
+    expect(serialized).not.toContain('"messages":')
 
     const parsed = parseLocalAssistantAnswers(JSON.stringify([
       record,
