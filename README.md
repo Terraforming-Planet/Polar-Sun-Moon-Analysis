@@ -94,7 +94,7 @@ Measured run facts:
 - the candidate program covered **75 research regions**;
 - temporal coverage in the saved run spans **2000–2026** with four seasonal checkpoints per year;
 - the configured 200,000-window target was reached in **54.90 minutes**;
-- the run recorded a very small request failure rate and preserved structured cross-checks.
+- structured logs cross-check the window counts, content hashes and failures.
 
 The 75-region program includes water and climate cases such as the **Aral Sea, Lake Chad, Lake Mead, Great Salt Lake, Lake Kuchnia / forest pond, Vistula Grudziądz–Gniew, Nogat / Vistula Delta, Okavango Delta, wetlands, glaciers, deserts and control areas**.
 
@@ -106,6 +106,22 @@ Published report and structured evidence:
 - [`docs/published/training-runs/stream_gibs_20260820T013036Z/analysis.json`](docs/published/training-runs/stream_gibs_20260820T013036Z/analysis.json)
 
 That distinction is intentional. For BUILD FOR GOOD, **scientific honesty is part of the product**.
+
+## A real-data example: Vistula Test 014
+
+The repository also contains a long-range Vistula test covering the Gniew–Grudziądz reach. Its validated integrity index contains **74 records, of which 72 are accepted**, spanning **1990–2026**, with spring/autumn sampling and per-record provenance such as observation date, satellite platform, product/item identifier, SHA-256 and perceptual hash.
+
+For the OpenAI integration we added a compact structured context derived from that real test metadata:
+
+[`docs/evidence/test-014-vistula-real-data-context.json`](docs/evidence/test-014-vistula-real-data-context.json)
+
+This context deliberately carries:
+
+- `environmental_finding_claim: false`
+- `water_loss_claim: false`
+- `causal_claim: false`
+
+That means OpenAI can understand that the Vistula test has real, provenance-checked satellite observations **without being allowed to invent a water-loss measurement or blockage conclusion before the dedicated analysis stage produces one**.
 
 ## Who it helps
 
@@ -140,11 +156,11 @@ This creates a path from **satellite data → reproducible measurement → GPU r
 
 The OpenAI integration lives in [`terra_research_node/openai_summary.py`](terra_research_node/openai_summary.py).
 
-The **Evidence / Research Explainer** uses the OpenAI Responses API after the scientific and training pipelines have produced structured artifacts. It can now receive three evidence layers in one request:
+The **Evidence / Research Explainer** uses the OpenAI Responses API after the scientific and training pipelines have produced structured artifacts. It can receive three evidence layers in one request:
 
 1. **Primary finding** — for example, a measured surface-water or river-channel change;
 2. **L4 training/evaluation context** — structured metrics from GPU runs such as Training #2 or Training #3;
-3. **Real-data test context** — structured results from tests performed on real public satellite observations.
+3. **Real-data test context** — structured results or integrity/evaluation records from tests performed on real public satellite observations.
 
 The API returns four human-readable fields:
 
@@ -157,7 +173,7 @@ The API returns four human-readable fields:
 
 A community user should not need to understand WMS windows, SHA-256 provenance, CUDA training logs, segmentation metrics and hydrological caveats just to understand a result. OpenAI can translate that evidence into a clear explanation **without changing the underlying measurements**.
 
-For example, if a real-data test shows reduced mapped surface water in a lake, while L4 evaluation shows that the pipeline processed relevant water/river imagery successfully, OpenAI may explain the combined evidence and recommend verification steps. It may **not** turn successful training into a claim that the lake dried because of a blocked river.
+For example, if a dedicated real-data analysis later measures reduced mapped surface water in a lake, while L4 evaluation shows how the pipeline was trained and the Vistula/Landsat integrity records show the provenance of comparable observations, OpenAI can explain the combined evidence and recommend verification steps. It may **not** turn successful training or visual morphology into a claim that a lake dried because of a blocked river.
 
 ### Guardrails
 
@@ -171,16 +187,18 @@ For example, if a real-data test shows reduced mapped surface water in a lake, w
 
 The default API model is `gpt-5.6-luna`, selected for a cost-conscious explanation task, and can be overridden with `OPENAI_MODEL`.
 
-Example using a primary finding plus the real published L4 Training #3 analysis:
+Example using the real published L4 Training #3 analysis and the real Vistula Test 014 context:
 
 ```bash
 export OPENAI_API_KEY="your-key-from-your-secure-environment"
 python -m terra_research_node.openai_summary \
   path/to/water-or-river-finding.json \
   --training-context docs/published/training-runs/stream_gibs_20260820T013036Z/analysis.json \
-  --test-context path/to/real-satellite-test.json \
+  --test-context docs/evidence/test-014-vistula-real-data-context.json \
   --output explanation.json
 ```
+
+The primary finding must still come from a real deterministic analysis. The L4 and Test 014 artifacts provide grounded context; they do not manufacture the missing measurement.
 
 The OpenAI key is never placed in GitHub Pages or committed source files.
 
@@ -268,20 +286,14 @@ python -m terra_hazards sources --output web/public/data/sources.json
 python -m terra_hazards update --output web/public/data/hazards.json
 ```
 
-Run the optional OpenAI Evidence Explainer:
+Run the OpenAI Evidence Explainer with the real L4 and Vistula context:
 
 ```bash
 export OPENAI_API_KEY="your-key-from-your-secure-environment"
-python -m terra_research_node.openai_summary path/to/finding.json
-```
-
-Add L4 and real-data test evidence when available:
-
-```bash
 python -m terra_research_node.openai_summary \
-  path/to/finding.json \
+  path/to/real-finding.json \
   --training-context docs/published/training-runs/stream_gibs_20260820T013036Z/analysis.json \
-  --test-context path/to/test-result.json
+  --test-context docs/evidence/test-014-vistula-real-data-context.json
 ```
 
 ### Web application
