@@ -15,7 +15,7 @@ describe('AIResearchPanel', () => {
     expect(html).toContain('Wybierz obszar i przygotuj badanie')
     expect(html).toContain('Trzy opublikowane treningi AI')
     expect(html).toContain('TRAINING ≠ GROUND TRUTH')
-    expect(html).toContain('official-public-only')
+    expect(html).toContain('OFFICIAL / PUBLIC DATA ONLY')
     expect(html).not.toContain('Woda i susza — 3D')
     expect(html).not.toContain('OPENAI_API_KEY')
   })
