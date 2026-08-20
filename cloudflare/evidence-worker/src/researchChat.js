@@ -27,6 +27,7 @@ For terrain questions, discuss elevation gradients, likely drainage direction ca
 For satellite comparisons, identify which supplied dates/sources were actually inspected and separate visual observations from metadata-only catalogue coverage.
 For reports, organize findings into: study area, inputs and provenance, dated observations, measurements, uncertainty/limitations, interpretation candidates, and recommended next checks. Do not turn hypotheses into facts.
 Do not identify private people or infer private activity from Earth-observation imagery.
+Because assistant answers may be retained while user prompts are not, do not quote or restate the user's private prompt wording verbatim in your response unless a short factual fragment is strictly necessary to answer accurately.
 Raw user prompts and conversation text are transient application context. They must never be described as an archived scientific evidence record, and archive outputs must omit the user's prompt text.`
 
 function corsHeaders(origin, env = {}) {

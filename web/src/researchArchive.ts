@@ -78,6 +78,9 @@ export const LOCAL_RESEARCH_ARCHIVE_KEY = 'terra-ai-research-archive-v1'
 export const LOCAL_RESEARCH_FINDINGS_KEY = 'terra-ai-research-findings-v1'
 export const LOCAL_ASSISTANT_ANSWERS_KEY = 'terra-ai-assistant-answers-v1'
 
+const ASSISTANT_ANSWER_KEYS = new Set(['schema', 'id', 'saved_at_utc', 'place', 'model', 'answer', 'privacy_note'])
+const ASSISTANT_PLACE_KEYS = new Set(['label', 'latitude', 'longitude'])
+
 function finiteNumber(value: number, label: string) {
   if (!Number.isFinite(value)) throw new Error(`${label} must be a number.`)
   return value
@@ -216,22 +219,38 @@ export function parseLocalResearchFindings(raw: string | null): ResearchFindingR
   }
 }
 
+function validAssistantPlace(value: unknown): value is ResearchAssistantAnswerRecord['place'] {
+  if (value === null) return true
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false
+  const candidate = value as Record<string, unknown>
+  if (Object.keys(candidate).some(key => !ASSISTANT_PLACE_KEYS.has(key))) return false
+  return typeof candidate.label === 'string'
+    && typeof candidate.latitude === 'number'
+    && Number.isFinite(candidate.latitude)
+    && candidate.latitude >= -90
+    && candidate.latitude <= 90
+    && typeof candidate.longitude === 'number'
+    && Number.isFinite(candidate.longitude)
+    && candidate.longitude >= -180
+    && candidate.longitude <= 180
+}
+
 export function parseLocalAssistantAnswers(raw: string | null): ResearchAssistantAnswerRecord[] {
   if (!raw) return []
   try {
     const parsed = JSON.parse(raw) as unknown
     if (!Array.isArray(parsed)) return []
     return parsed.filter((item): item is ResearchAssistantAnswerRecord => {
-      if (!item || typeof item !== 'object') return false
-      const candidate = item as Partial<ResearchAssistantAnswerRecord>
+      if (!item || typeof item !== 'object' || Array.isArray(item)) return false
+      const candidate = item as Record<string, unknown>
+      if (Object.keys(candidate).some(key => !ASSISTANT_ANSWER_KEYS.has(key))) return false
       return candidate.schema === 'terra-assistant-answer/v1'
         && candidate.privacy_note === 'user-prompt-not-stored'
         && typeof candidate.id === 'string'
+        && typeof candidate.saved_at_utc === 'string'
         && typeof candidate.answer === 'string'
         && typeof candidate.model === 'string'
-        && !('prompt' in candidate)
-        && !('question' in candidate)
-        && !('messages' in candidate)
+        && validAssistantPlace(candidate.place)
     })
   } catch {
     return []

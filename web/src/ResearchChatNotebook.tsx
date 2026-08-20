@@ -22,6 +22,7 @@ const LEGACY_CHAT_STORAGE_KEYS = [
   'terra-ai-chat-v1',
 ]
 const TERRAIN_STORAGE_KEY = 'terra-research-terrain-lab/v1'
+const CHATGPT_EXPORT_HELP_URL = 'https://help.openai.com/en/articles/7260999-how-do-i-export-my-chatgpt-history-and-data'
 const MAX_IMAGE_COUNT = 5
 const MAX_FILE_COUNT = 5
 const MAX_TOTAL_BYTES = 25 * 1024 * 1024
@@ -78,11 +79,10 @@ export function ResearchChatNotebook({ apiUrl, place, analysis, advancedControls
   const [archiveNotice, setArchiveNotice] = useState('')
   const [serverReceipt, setServerReceipt] = useState<ResearchChatResponse | null>(null)
   const abortRef = useRef<AbortController | null>(null)
-  const chatGptAuthUrl = String(import.meta.env.VITE_CHATGPT_SIGNIN_URL ?? '').trim()
 
   useEffect(() => {
     // Remove every known legacy key that ever contained raw user chat text.
-    // New chat text stays only in React memory for the current tab.
+    // New chat text stays only in React memory for the current tab and vanishes on refresh/close.
     for (const key of LEGACY_CHAT_STORAGE_KEYS) localStorage.removeItem(key)
   }, [])
 
@@ -170,7 +170,7 @@ export function ResearchChatNotebook({ apiUrl, place, analysis, advancedControls
         'Satellite visual evidence is limited to the listed official/public image dates and sources.',
         'If no place has been selected yet, answer as a planning assistant and do not pretend that a terrain analysis has already run.',
         'Raw user prompts are session-only and must never be written into an archive record or public research page.',
-        'Only a user-explicitly saved assistant answer may be archived, and the matching user prompt must be omitted.',
+        'Assistant answers may be kept in the device-local answer archive, but the matching user prompt must be omitted.',
       ],
     }
   }
@@ -203,6 +203,14 @@ export function ResearchChatNotebook({ apiUrl, place, analysis, advancedControls
       setMessages(current => [...current, assistantMessage].slice(-16))
       setAttachments([])
       setServerReceipt(response)
+
+      const archiveRecord = buildAssistantAnswerRecord({
+        answer: response.answer,
+        model: response.model,
+        place: place ? { label: place.label, latitude: place.latitude, longitude: place.longitude } : null,
+      })
+      saveAssistantAnswerLocally(archiveRecord)
+      setArchiveNotice('Assistant answer archived on this device. Your question was not stored. Refreshing the page removes the private conversation but keeps this answer/report archive.')
     } catch (reason) {
       if (reason instanceof DOMException && reason.name === 'AbortError') return
       setError(reason instanceof Error ? reason.message : String(reason))
@@ -242,23 +250,12 @@ export function ResearchChatNotebook({ apiUrl, place, analysis, advancedControls
     setServerReceipt(null)
     setArchiveNotice('')
     setError('')
-    setEditNotice('Editing your last private question. Its later answer was removed from this session; update the text and send it again.')
+    setEditNotice('Editing your last private question. Its later answer was removed from this live session; update the text and send it again. Previously archived answers can be deleted from Research archive if no longer useful.')
   }
 
   const submit = (event: FormEvent) => {
     event.preventDefault()
     void ask(draft)
-  }
-
-  const saveLastAssistantAnswer = () => {
-    if (!lastAssistant || lastAssistant.role !== 'assistant') return
-    const record = buildAssistantAnswerRecord({
-      answer: lastAssistant.text,
-      model,
-      place: place ? { label: place.label, latitude: place.latitude, longitude: place.longitude } : null,
-    })
-    saveAssistantAnswerLocally(record)
-    setArchiveNotice('Assistant answer saved locally. The user question was not stored.')
   }
 
   const exportAssistantAnswers = () => {
@@ -289,19 +286,17 @@ export function ResearchChatNotebook({ apiUrl, place, analysis, advancedControls
     </div>
 
     <div className="research-chat-privacy">
-      <b>Privacy:</b> your question text is not shown in the transcript after sending and is never written to the research archive. It exists only in memory for the current tab so the assistant can keep conversational context. Refreshing or closing the tab removes it. If you explicitly save an archive item, only the assistant answer may be stored.
+      <b>Privacy:</b> your question text is never written to the research archive or localStorage. It exists only in memory for the current browser tab so the assistant can keep conversational context and edit the last private question. Refreshing or closing the tab removes the private conversation. Assistant answers/reports are archived locally without the matching prompt so results can remain available after refresh.
     </div>
 
-    {advancedControls && <div className="research-chat-auth">
-      <div><b>Research account · Sign in with ChatGPT</b><small>This control is enabled only when an approved application sign-in URL is configured. The page never asks for a ChatGPT password and does not implement unofficial OAuth.</small></div>
-      {chatGptAuthUrl
-        ? <a className="button-link compact" href={chatGptAuthUrl}>Continue with ChatGPT</a>
-        : <button type="button" className="secondary" disabled title="No approved VITE_CHATGPT_SIGNIN_URL is configured">Continue with ChatGPT — not configured</button>}
+    {advancedControls && <div className="research-chat-export-policy">
+      <div><b>Full conversation export</b><small>Terra Observation does not store a full transcript. “Sign in with ChatGPT” is intentionally not embedded in this chat. OpenAI currently states that ChatGPT sign-in shares identity information, not ChatGPT conversations, so this site cannot truthfully fetch your account chat history through that sign-in. For your ChatGPT account history, use OpenAI's official Data Controls export.</small></div>
+      <a className="button-link compact" href={CHATGPT_EXPORT_HELP_URL} target="_blank" rel="noreferrer">Official ChatGPT data export ↗</a>
     </div>}
 
     <div className="research-chat-log" aria-live="polite">
       {assistantMessages.length === 0 && <div className="research-chat-empty"><b>Suggestions</b><button type="button" onClick={() => setDraft(place ? 'Analyze this area and list the most important things worth checking in more detail.' : 'Help me choose an area to study and tell me which official datasets would be useful.')}>{place ? 'What should I check here?' : 'Plan a study'}</button><button type="button" onClick={() => setDraft('Separate observations from hypotheses and identify what cannot yet be demonstrated.')}>Check confidence</button><button type="button" onClick={() => setDraft('Compare the available satellite imagery and identify which source gives the strongest material for further analysis.')}>Choose the best imagery</button></div>}
-      {lastUserIndex >= 0 && <div className="research-chat-private-question"><b>Private question sent</b><span>The question text is hidden from the transcript and excluded from archives.</span></div>}
+      {lastUserIndex >= 0 && <div className="research-chat-private-question"><b>Private question sent</b><span>The question text is hidden from the transcript and excluded from archives. It disappears completely when this tab is refreshed or closed.</span></div>}
       {assistantMessages.map(({ message, index }) => <article key={`assistant-${index}`} className="assistant">
         <div className="research-chat-message-head"><small>ASSISTANT</small></div>
         <p>{message.text}</p>
@@ -329,13 +324,12 @@ export function ResearchChatNotebook({ apiUrl, place, analysis, advancedControls
       <div className="research-chat-actions">
         <button type="submit" className="primary" disabled={busy || (!draft.trim() && attachments.length === 0)}>{busy ? 'Analyzing…' : 'Send privately'}</button>
         {lastUserIndex >= 0 && <button type="button" className="secondary" disabled={busy} onClick={() => editUserMessage(lastUserIndex)}>Edit last private question</button>}
-        {lastAssistant && <button type="button" className="secondary" onClick={saveLastAssistantAnswer}>Save assistant answer only</button>}
         {advancedControls && <button type="button" className="secondary" disabled={busy || messages.length === 0} onClick={() => void ask('', true)}>Generate report</button>}
         {advancedControls && <button type="button" className="secondary" disabled={assistantMessages.length === 0} onClick={exportAssistantAnswers}>Export answers only .md</button>}
         <button type="button" className="secondary" onClick={() => { setMessages([]); setAttachments([]); setError(''); setServerReceipt(null); setEditNotice(''); setArchiveNotice('') }}>New conversation</button>
       </div>
     </form>
 
-    {advancedControls && <div className="research-chat-limits"><b>Advanced limits:</b> up to 5 images + 5 other files, maximum 10 items and 25 MB total input per message. The server returns an exact receipt. User prompt text is never written to the archive; only explicitly saved assistant answers and approved evidence records may be retained.</div>}
+    {advancedControls && <div className="research-chat-limits"><b>Advanced limits:</b> up to 5 images + 5 other files, maximum 10 items and 25 MB total input per message. The server returns an exact receipt. User prompt text is never written to the archive; assistant answers/reports are automatically retained only in this device-local archive.</div>}
   </section>
 }
