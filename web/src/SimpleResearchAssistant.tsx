@@ -8,6 +8,9 @@ import {
   type GeocodeResult,
 } from './lib/evidenceApi'
 import { parseResearchLocation } from './researchLocation'
+import { RealisticEarthGlobe } from './RealisticEarthGlobe'
+import { ResearchChatNotebook } from './ResearchChatNotebook'
+import { ResearchTerrainLab } from './ResearchTerrainLab'
 
 type Place = {
   label: string
@@ -77,6 +80,7 @@ export function SimpleResearchAssistant({
   const [error, setError] = useState('')
   const analysisController = useRef<AbortController | null>(null)
   const period = useMemo(() => periodForPreset(periodPreset), [periodPreset])
+  const previewUtc = useMemo(() => new Date().toISOString(), [])
 
   const runAnalysis = async (target: Place, depth: 'quick' | 'deep' = 'quick') => {
     analysisController.current?.abort()
@@ -145,7 +149,6 @@ export function SimpleResearchAssistant({
   const rerunForPeriod = (preset: PeriodPreset) => {
     setPeriodPreset(preset)
     if (!place) return
-    // React updates the preset asynchronously, so compute the selected period explicitly here.
     const selectedPeriod = periodForPreset(preset)
     analysisController.current?.abort()
     const controller = new AbortController()
@@ -170,18 +173,25 @@ export function SimpleResearchAssistant({
     })
   }
 
+  const globeMarkers = place ? [{
+    longitude: place.longitude,
+    latitude: place.latitude,
+    color: 0x35cfff,
+    radius: 1.35,
+  }] : []
+
   return <section className="simple-research" aria-label="Proste badanie terenu z AI">
     <div className="simple-research-hero panel">
       <div className="simple-research-copy">
         <small>MAPA · SATELITY · OPENAI</small>
         <h2>Wpisz miejsce. Resztę zrobi AI.</h2>
-        <p>Wyszukaj jezioro, rzekę, miejscowość albo region. Mapa ustawi obszar, pobierze oficjalne dane i pokaże krótką analizę zmian. Nie musisz znać współrzędnych.</p>
+        <p>Wyszukaj jezioro, rzekę, miejscowość albo region. Podgląd Ziemi 3D i czat są widoczne od razu. Po wybraniu miejsca system ustawi obszar, pobierze oficjalne dane, pokaże satelity, flagi wysokościowe, profile DEM i analizę AI.</p>
       </div>
       <form className="simple-search" onSubmit={submitSearch}>
         <input
           value={query}
           onChange={event => setQuery(event.target.value)}
-          placeholder="np. Jezioro Nasera, Wisła koło Gniewu, Sahara…"
+          placeholder="np. Nil, Jezioro Tana, Wisła koło Gniewu, Sahara…"
           aria-label="Wyszukaj miejsce do zbadania"
         />
         <button type="submit" className="primary" disabled={!apiUrl || status === 'searching' || status === 'analyzing'}>
@@ -202,14 +212,35 @@ export function SimpleResearchAssistant({
       {error && <p className="research-error" role="alert">{error}</p>}
     </div>
 
+    <div className="simple-map panel simple-earth-preview">
+      <div className="simple-map-head">
+        <div><small>GLOBALNY PODGLĄD · WGS84 · OFICJALNE WARSTWY</small><h3>{place ? place.label : 'Ziemia 3D — wybierz dowolne miejsce do badania'}</h3></div>
+        <span>{place ? `${place.latitude.toFixed(5)}, ${place.longitude.toFixed(5)}` : 'obracaj · oddalaj · wybierz lokalizację'}</span>
+      </div>
+      <RealisticEarthGlobe selectedTime={previewUtc} markers={globeMarkers} />
+      <p className="simple-map-source">Podgląd korzysta z istniejącego naukowego globusa Cesium/WGS84 i oficjalnych warstw źródłowych projektu. Po wyszukaniu miejsca znacznik pojawia się na globusie, a niżej uruchamia się lokalna mapa i laboratorium pomiarowe.</p>
+    </div>
+
+    <ResearchChatNotebook apiUrl={apiUrl} place={place} analysis={analysis} />
+
     {place && <div className="simple-map panel">
       <div className="simple-map-head">
-        <div><small>WYBRANY OBSZAR</small><h3>{place.label}</h3></div>
+        <div><small>WYBRANY OBSZAR · PODGLĄD MAPY</small><h3>{place.label}</h3></div>
         <a href={`https://www.openstreetmap.org/?mlat=${place.latitude}&mlon=${place.longitude}#map=10/${place.latitude}/${place.longitude}`} target="_blank" rel="noreferrer">Otwórz większą mapę</a>
       </div>
       <iframe title={`Mapa ${place.label}`} src={osmEmbedUrl(place)} loading="lazy" />
-      <p className="simple-map-source">Mapa: OpenStreetMap contributors · domyślny obszar badania 25 km</p>
+      <p className="simple-map-source">Mapa kontekstowa: OpenStreetMap contributors · domyślny obszar badania 25 km. Niżej znajduje się oddzielna oficjalna warstwa NASA GIBS do oznaczeń badawczych.</p>
     </div>}
+
+    {!place && <div className="simple-ai-loading panel" role="status">
+      <div><b>Wybierz miejsce, aby uruchomić laboratorium terenu</b><p>Po wyszukaniu obszaru pojawią się numerowane flagi, wysokości DEM, kolorowe linie, profile 20 punktów, trzy referencyjne punkty Nilu i analiza oficjalnych zdjęć satelitarnych.</p></div>
+    </div>}
+
+    {place && <ResearchTerrainLab
+      apiUrl={apiUrl}
+      place={place}
+      satelliteDate={analysis?.preview_images.at(-1)?.date}
+    />}
 
     {(status === 'analyzing' || status === 'searching') && <div className="simple-ai-loading panel" role="status">
       <span className="simple-ai-spinner" />

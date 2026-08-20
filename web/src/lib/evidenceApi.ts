@@ -93,6 +93,53 @@ export type AreaAnalysisResponse = {
   evidence_policy: string
 }
 
+export type ElevationDataset = {
+  name: string
+  release: string
+  nominal_horizontal_resolution_m: number
+  elevation_reference: string
+  source_agency: string
+  delivery_service: string
+  delivery_note: string
+  official_dataset_url: string
+}
+
+export type ElevationPoint = {
+  latitude: number
+  longitude: number
+  label: string
+  elevation_m: number
+  sample_method: string
+  exact_surveyed_point: boolean
+  nominal_cell_size_m: number
+  location_uncertainty_note: string
+}
+
+export type ElevationResponse = {
+  service: string
+  generated_at_utc: string
+  dataset: ElevationDataset
+  points: ElevationPoint[]
+}
+
+export type ResearchModel = 'gpt-5.6-luna' | 'gpt-5.6-terra' | 'gpt-5.6-sol'
+export type ResearchChatMessage = { role: 'user' | 'assistant'; text: string }
+export type ResearchAttachmentPayload = {
+  kind: 'image' | 'file'
+  name: string
+  mime_type: string
+  data_url: string
+}
+export type ResearchChatResponse = {
+  service: string
+  generated_at_utc: string
+  model: ResearchModel
+  answer: string
+  attachment_count: number
+  attachment_bytes: number
+  evidence_policy: string
+}
+
 export function normalizeEvidenceApiUrl(value?: string) {
   return (value ?? '').trim().replace(/\/+$/, '')
 }
@@ -168,4 +215,40 @@ export async function analyzeResearchArea(apiUrl: string, input: {
     signal,
   })
   return readJson<AreaAnalysisResponse>(response)
+}
+
+export async function fetchResearchElevations(apiUrl: string, points: Array<{ latitude: number; longitude: number; label?: string }>, signal?: AbortSignal) {
+  const url = normalizeEvidenceApiUrl(apiUrl)
+  if (!url) throw new Error('Evidence API URL is not configured.')
+  const response = await fetch(`${url}/research/elevation`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ points }),
+    signal,
+  })
+  return readJson<ElevationResponse>(response)
+}
+
+export async function sendResearchChat(apiUrl: string, input: {
+  model: ResearchModel
+  messages: ResearchChatMessage[]
+  context: unknown
+  attachments?: ResearchAttachmentPayload[]
+  reportMode?: boolean
+}, signal?: AbortSignal) {
+  const url = normalizeEvidenceApiUrl(apiUrl)
+  if (!url) throw new Error('Evidence API URL is not configured.')
+  const response = await fetch(`${url}/research/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: input.model,
+      messages: input.messages,
+      context: input.context,
+      attachments: input.attachments ?? [],
+      report_mode: input.reportMode ?? false,
+    }),
+    signal,
+  })
+  return readJson<ResearchChatResponse>(response)
 }
