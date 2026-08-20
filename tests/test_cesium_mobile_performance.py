@@ -14,35 +14,31 @@ def test_cesium_uses_adaptive_mobile_rendering_limits() -> None:
 
     assert "typeof window === 'undefined'" in source
     assert "window.matchMedia?.('(pointer: coarse)').matches" in source
-    assert "viewer.resolutionScale = constrainedDevice ? 0.72 : 1" in source
-    assert "maximumScreenSpaceError = constrainedDevice ? 1.5 : 0.5" in source
-    assert "tileCacheSize = constrainedDevice ? 250 : 900" in source
+    assert "viewer.resolutionScale = constrainedDevice ? 1 : 1.2" in source
+    assert "maximumScreenSpaceError = constrainedDevice ? 0.9 : 0.5" in source
+    assert "tileCacheSize = constrainedDevice ? 450 : 900" in source
     assert "minimumZoomDistance = constrainedDevice ? 25 : 5" in source
+    assert "constrainedDevice ? 13_500_000 : 16_500_000" in source
     assert "const markerLimit = constrainedDevice ? 250 : 500" in source
     assert "markers.slice(0, markerLimit)" in source
 
 
-def test_full_live_uses_one_global_viirs_cloud_bearing_layer() -> None:
+def test_full_live_uses_complete_base_and_dated_viirs_overlay() -> None:
     source = SOURCE.read_text(encoding="utf-8")
 
+    assert "const NASA_BLUE_MARBLE = 'BlueMarble_ShadedRelief_Bathymetry'" in source
     assert (
         "const NASA_GLOBAL_TRUE_COLOR = "
         "'VIIRS_SNPP_CorrectedReflectance_TrueColor'"
     ) in source
-    for mode in ("full-live-earth", "global-clouds", "regional-clouds", "nasa-day"):
-        assert f"layer === '{mode}'" in source
-    for mode in ("regional-clouds", "ocean-waves", "goes-east", "goes-west"):
-        assert f"layer === '{mode}'" in source
-
-    composition_start = source.index("const usesGlobalTrueColor =")
-    modis_start = source.index("if (layer === 'nasa-modis') {", composition_start)
-    regional_start = source.index("if (layer === 'regional-clouds') {", modis_start)
-    waves_start = source.index("if (layer === 'ocean-waves'", regional_start)
-    global_viirs_block = source[composition_start:modis_start]
-    regional_block = source[regional_start:waves_start]
-
-    assert "GOES-East_ABI_GeoColor" not in global_viirs_block
-    assert "REGIONAL_CLOUD_PRODUCTS" in regional_block
+    assert "layer: NASA_BLUE_MARBLE" in source
+    assert "tileMatrixSetID: 'GoogleMapsCompatible_Level8'" in source
+    assert "const usesDatedViirs =" in source
+    assert "layer === 'nasa-day'" in source
+    assert "layer === 'global-clouds'" in source
+    assert "(!constrainedDevice && layer === 'full-live-earth')" in source
+    assert "dimensions: { Time: completeDay }" in source
+    assert "REGIONAL_CLOUD_PRODUCTS" in source
     assert "GOES-East_ABI_GeoColor" in source
     assert "GOES-West_ABI_GeoColor" in source
     assert "Himawari_AHI_Band13_Clean_Infrared" in source
@@ -79,7 +75,7 @@ def test_public_live_adapters_are_available_in_the_globe_selector() -> None:
     assert "VITE_CDSE_NDVI_LAYER" in source
 
 
-def test_mobile_full_live_reduces_expensive_overlays() -> None:
+def test_mobile_full_live_prioritizes_complete_base_and_reduces_overlays() -> None:
     source = SOURCE.read_text(encoding="utf-8")
     wave_condition = (
         "layer === 'ocean-waves' || "
@@ -89,7 +85,8 @@ def test_mobile_full_live_reduces_expensive_overlays() -> None:
     assert wave_condition in source
     assert "REGIONAL_CLOUD_PRODUCTS.slice(0, 1)" in source
     assert "viewer.scene.highDynamicRange = !constrainedDevice" in source
-    assert "viewer.scene.postProcessStages.fxaa.enabled = !constrainedDevice" in source
+    assert "viewer.scene.fog.enabled = false" in source
+    assert "(!constrainedDevice && layer === 'full-live-earth')" in source
 
 
 def test_playback_controls_stay_above_cesium_canvas() -> None:

@@ -53,6 +53,25 @@ describe('RealisticEarthGlobe scene lifecycle', () => {
     expect(cesiumSource).not.toContain('disabled={cloudCoverageMode}')
   })
 
+  it('keeps a complete official NASA Earth underneath dated satellite overlays', () => {
+    expect(cesiumSource).toContain("const NASA_BLUE_MARBLE = 'BlueMarble_ShadedRelief_Bathymetry'")
+    expect(cesiumSource).toContain("tileMatrixSetID: 'GoogleMapsCompatible_Level8'")
+    expect(cesiumSource).toContain('NASA GIBS · Blue Marble Shaded Relief and Bathymetry')
+  })
+
+  it('does not present an in-progress UTC day as a complete daily global satellite layer', () => {
+    expect(cesiumSource).toContain('function previousUtcDay(value: Date)')
+    expect(cesiumSource).toContain('const completeDailyDate = useMemo(')
+    expect(cesiumSource).toContain('dimensions: { Time: completeDay }')
+    expect(cesiumSource).toContain('Daily imagery may intentionally use the previous complete UTC day.')
+  })
+
+  it('uses a closer and sharper mobile camera instead of the distant blurred globe', () => {
+    expect(cesiumSource).toContain('viewer.resolutionScale = constrainedDevice ? 1 : 1.2')
+    expect(cesiumSource).toContain('constrainedDevice ? 13_500_000 : 16_500_000')
+    expect(cesiumSource).toContain('viewer.scene.globe.maximumScreenSpaceError = constrainedDevice ? 0.9 : 0.5')
+  })
+
   it('uses tiled Cesium imagery and request-render mode in the scientific viewer', () => {
     expect(cesiumSource).toContain('new Cesium.Viewer')
     expect(cesiumSource).toContain('requestRenderMode: true')
