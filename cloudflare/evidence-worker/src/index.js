@@ -1,6 +1,7 @@
 const OPENAI_RESPONSES_URL = 'https://api.openai.com/v1/responses'
 const DEFAULT_MODEL = 'gpt-5.6-luna'
 const MAX_REQUEST_BYTES = 2048
+const UI_URL = 'https://terraforming-planet.github.io/Polar-Sun-Moon-Analysis/'
 
 const DEFAULT_ALLOWED_ORIGINS = [
   'https://terraforming-planet.github.io',
@@ -11,10 +12,139 @@ const DEFAULT_ALLOWED_ORIGINS = [
 export const PUBLIC_CASES = {
   'vistula-test-014': {
     title: 'Vistula Test 014 — real satellite evidence and L4 research context',
-    evidenceUrls: {
-      real_data_test: 'https://raw.githubusercontent.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/main/docs/evidence/test-014-vistula-real-data-context.json',
-      l4_training_2: 'https://raw.githubusercontent.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/main/docs/published/training-runs/site_20260819T223835Z/analysis.json',
-      l4_training_3: 'https://raw.githubusercontent.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/main/docs/published/training-runs/stream_gibs_20260820T013036Z/analysis.json',
+    provenance: {
+      repository: 'Terraforming-Planet/Polar-Sun-Moon-Analysis',
+      real_data_test: {
+        path: 'docs/evidence/test-014-vistula-real-data-context.json',
+        blob_sha: '5e2a7bd0784b0dcd084c1671ca5797cddcee78d4',
+      },
+      l4_training_2: {
+        path: 'docs/published/training-runs/site_20260819T223835Z/analysis.json',
+        blob_sha: '0876f629c126391c6ccc966629db6a99540d123c',
+      },
+      l4_training_3: {
+        path: 'docs/published/training-runs/stream_gibs_20260820T013036Z/analysis.json',
+        blob_sha: '0bf4e059bf1a4487a39c4030987af7144bf057f8',
+      },
+    },
+    evidence: {
+      real_data_test: {
+        schema: 'terra-real-data-test-context-v1',
+        test_id: 'experiment-014-vistula-gniew-grudziadz',
+        title: 'Vistula Gniew-Grudziadz real satellite data integrity context',
+        test_type: 'data_integrity_and_temporal_coverage',
+        area_of_interest: {
+          name: 'Vistula Gniew-Grudziadz',
+          reported_extent: '45 x 70 km',
+        },
+        temporal_scope: {
+          start_year: 1990,
+          end_year: 2026,
+          seasons: ['spring', 'autumn'],
+        },
+        integrity: {
+          record_count: 74,
+          accepted_count: 72,
+          rejected_or_not_accepted_count: 2,
+          per_record_provenance_fields: [
+            'year',
+            'season',
+            'date',
+            'platform',
+            'item_id',
+            'source_scene_key',
+            'sha256',
+            'average_hash_16',
+          ],
+        },
+        evidence_class: 'OBSERVATION',
+        environmental_finding_claim: false,
+        water_loss_claim: false,
+        causal_claim: false,
+        limitations: [
+          'This artifact establishes the integrity and temporal coverage of the real satellite-image test set, not a measured water-loss result.',
+          'Environmental before/after conclusions require a separate reproducible image-analysis stage.',
+          'A visible sandbar, exposed bed or channel constriction is not by itself proof of hydrological causation.',
+        ],
+      },
+      l4_training_2: {
+        schema: 'tp26-site-corpus-analysis-v2',
+        run_id: 'site_20260819T223835Z',
+        execution: {
+          gpu: 'NVIDIA L4',
+          gpu_memory_mib: 23034,
+          mixed_precision: true,
+          resolution_px: 512,
+          batch_size_final: 24,
+          elapsed_seconds: 3600.063,
+        },
+        corpus: {
+          unique_images: 290,
+          gpu_audited_images: 290,
+          unreadable_images: 0,
+          counts_by_experiment: {
+            'experiment-011': 72,
+            'experiment-013-grays-harbor': 71,
+            'experiment-014-vistula': 72,
+            'experiment-015-himalaya-tibet': 65,
+            'other-research-pages': 10,
+          },
+        },
+        optimization: {
+          mode: 'self_supervised_denoising_pretrain',
+          steps: 29013,
+          samples_seen: 696312,
+          samples_are_unique_images: false,
+          loss_reduction_first_to_last_percent: 78.5296,
+          loss_reduction_first_to_best_percent: 88.9434,
+        },
+        claims: {
+          training_completed: true,
+          all_unique_images_gpu_audited: true,
+          ground_truth_claim: false,
+          causal_environmental_claim: false,
+          pairwise_environmental_comparison_claim: false,
+        },
+      },
+      l4_training_3: {
+        schema: 'tp26-streaming-gibs-analysis-v1',
+        run_id: 'stream_gibs_20260820T013036Z',
+        evidence_class: 'DERIVED_VALUE',
+        scientific_finding_claim: false,
+        ground_truth_claim: false,
+        causal_environmental_claim: false,
+        target_completion_percent: 100.008,
+        content_unique_percent: 78.4252,
+        duplicate_content_windows: 43153,
+        failure_rate_percent: 0.001,
+        log_cross_checks: {
+          streamed_windows_jsonl_lines: 200016,
+          metrics_remote_unique_windows_trained: 200016,
+          line_count_matches_metrics: true,
+          streamed_unique_content_sha256: 156863,
+          metrics_unique_content_sha256: 156863,
+          content_hash_count_matches_metrics: true,
+          failure_log_lines: 2,
+        },
+        coverage: {
+          line_count: 200016,
+          unique_content_sha256: 156863,
+          earliest_observation_date: '2000-03-15',
+          latest_observation_date: '2026-12-15',
+          research_region_count: 75,
+          example_regions: [
+            'Aral Sea',
+            'Lake Chad',
+            'Lake Mead',
+            'Lake Kuchnia / forest pond',
+            'Nogat / Vistula Delta',
+            'Okavango Delta',
+            'Vistula Grudziadz-Gniew',
+            'Tibetan Plateau',
+          ],
+        },
+        environmental_conclusion: 'Not established by this training run alone.',
+      },
     },
   },
 }
@@ -73,6 +203,41 @@ function jsonResponse(payload, status = 200, origin = '', env = {}) {
   })
 }
 
+function htmlResponse(html, status = 200) {
+  return new Response(html, {
+    status,
+    headers: {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'no-store',
+    },
+  })
+}
+
+function rootPage(env = {}) {
+  const ready = Boolean(env.OPENAI_API_KEY)
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Terra Observation Evidence API</title>
+<style>
+body{margin:0;background:#07111d;color:#eaf5ff;font:16px/1.5 system-ui,-apple-system,sans-serif}
+main{max-width:760px;margin:10vh auto;padding:28px}
+.card{background:#0c1d2f;border:1px solid #24425f;border-radius:18px;padding:26px}
+.badge{display:inline-block;padding:5px 10px;border-radius:999px;background:${ready ? '#123d2a' : '#4a3215'};font-weight:700}
+a{color:#55d8ff}.muted{color:#a7bed2}code{background:#06101a;padding:2px 6px;border-radius:6px}
+</style>
+</head>
+<body><main><div class="card">
+<div class="badge">${ready ? 'BACKEND READY' : 'BACKEND DEGRADED'}</div>
+<h1>Terra Observation Evidence API</h1>
+<p>This is the server-side Cloudflare Worker for the BUILD FOR GOOD Evidence / Research Explainer. The user interface lives in the Terra Observation System web application.</p>
+<p><a href="${UI_URL}">Open Terra Observation System</a></p>
+<p class="muted">Public endpoints: <code>GET /health</code> and constrained <code>POST /explain</code>. The browser cannot choose an arbitrary prompt, model or source URL.</p>
+</div></main></body></html>`
+}
+
 export function validateExplainPayload(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
     return { ok: false, error: 'Request body must be one JSON object.' }
@@ -102,26 +267,16 @@ function sanitizeEvidence(value, depth = 0) {
   return String(value)
 }
 
-async function fetchEvidenceJson(url) {
-  const response = await fetch(url, {
-    headers: { Accept: 'application/json' },
-    cf: { cacheTtl: 300, cacheEverything: true },
-  })
-  if (!response.ok) throw new Error(`Evidence source returned HTTP ${response.status}`)
-  return sanitizeEvidence(await response.json())
-}
-
 export async function loadPublishedCase(caseId) {
   const registered = PUBLIC_CASES[caseId]
   if (!registered) throw new Error('Unknown public evidence case.')
-  const entries = await Promise.all(
-    Object.entries(registered.evidenceUrls).map(async ([name, url]) => [name, await fetchEvidenceJson(url)]),
-  )
   return {
     case_id: caseId,
     title: registered.title,
     public_case: true,
-    evidence: Object.fromEntries(entries),
+    evidence_snapshot: 'bundled-at-deploy-time',
+    provenance: sanitizeEvidence(registered.provenance),
+    evidence: sanitizeEvidence(registered.evidence),
   }
 }
 
@@ -174,21 +329,31 @@ export function validateExplanation(value) {
   return result
 }
 
-async function explainWithOpenAI(evidenceBundle, env) {
+async function requestOpenAI(evidenceBundle, env) {
   if (!env.OPENAI_API_KEY) throw new Error('OpenAI is not configured.')
-  const response = await fetch(OPENAI_RESPONSES_URL, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${env.OPENAI_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(buildOpenAIRequest(evidenceBundle, env)),
-  })
-  if (!response.ok) {
-    const requestId = response.headers.get('x-request-id')
-    throw new Error(`OpenAI request failed with HTTP ${response.status}${requestId ? ` (${requestId})` : ''}.`)
+  const request = buildOpenAIRequest(evidenceBundle, env)
+  let response
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
+    response = await fetch(OPENAI_RESPONSES_URL, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${env.OPENAI_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(request),
+    })
+    if (response.ok || ![429, 500, 502, 503, 504].includes(response.status) || attempt === 2) break
+    await new Promise(resolve => setTimeout(resolve, 500))
   }
-  const raw = await response.json()
+  if (!response?.ok) {
+    const requestId = response?.headers.get('x-request-id')
+    throw new Error(`OpenAI request failed with HTTP ${response?.status ?? 502}${requestId ? ` (${requestId})` : ''}.`)
+  }
+  return response.json()
+}
+
+async function explainWithOpenAI(evidenceBundle, env) {
+  const raw = await requestOpenAI(evidenceBundle, env)
   const parsed = JSON.parse(extractOutputText(raw))
   return validateExplanation(parsed)
 }
@@ -205,12 +370,18 @@ export async function handleRequest(request, env = {}) {
   const url = new URL(request.url)
   const origin = request.headers.get('Origin') ?? ''
 
+  if (request.method === 'GET' && url.pathname === '/') {
+    return htmlResponse(rootPage(env))
+  }
+
   if (request.method === 'GET' && url.pathname === '/health') {
     return jsonResponse({
       service: 'terra-observation-evidence-explainer',
       status: env.OPENAI_API_KEY ? 'ready' : 'degraded',
       openai_configured: Boolean(env.OPENAI_API_KEY),
       supported_case_ids: Object.keys(PUBLIC_CASES),
+      ui_url: UI_URL,
+      evidence_mode: 'bundled-fixed-published-snapshot',
     }, 200, origin, env)
   }
 
@@ -238,6 +409,7 @@ export async function handleRequest(request, env = {}) {
       case_id: payload.caseId,
       case_title: PUBLIC_CASES[payload.caseId].title,
       evidence_source: 'canonical-public-repository-artifacts',
+      evidence_snapshot: 'bundled-at-deploy-time',
       generated_at_utc: new Date().toISOString(),
       explanation,
     }, 200, origin, env)
@@ -245,7 +417,7 @@ export async function handleRequest(request, env = {}) {
     const message = error instanceof Error ? error.message : 'Evidence explanation failed.'
     const safeMessage = message.startsWith('OpenAI request failed') || message === 'OpenAI is not configured.'
       ? message
-      : 'Evidence explanation failed safely. Please try again later.'
+      : 'Evidence explanation failed safely. Please try again.'
     return jsonResponse({ error: safeMessage }, 502, origin, env)
   }
 }
