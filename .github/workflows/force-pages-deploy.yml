@@ -14,6 +14,10 @@ on:
         description: 'Public Cloudflare Evidence Worker URL for this Pages build.'
         required: false
         type: string
+      expected_source_sha:
+        description: 'Source revision that this Pages publication must contain.'
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -51,12 +55,13 @@ jobs:
         working-directory: web
         run: npm test
 
-      - name: Resolve public Evidence Worker URL
-        id: evidence-url
+      - name: Resolve production inputs
+        id: production-inputs
         shell: bash
         env:
           DISPATCH_URL: ${{ inputs.evidence_api_url }}
           REPOSITORY_URL: ${{ vars.VITE_EVIDENCE_API_URL }}
+          REQUESTED_SOURCE_SHA: ${{ inputs.expected_source_sha }}
         run: |
           set -euo pipefail
           persisted_url=''
@@ -66,44 +71,50 @@ jobs:
           worker_url="${DISPATCH_URL:-${persisted_url:-$REPOSITORY_URL}}"
           worker_url="${worker_url%/}"
           test -n "$worker_url" || {
-            echo 'No public Evidence Worker URL is configured. Refusing to publish a BUILD FOR GOOD production bundle in DISCONNECTED state.'
-            echo 'Deploy the Evidence Worker first or dispatch this workflow with evidence_api_url.'
+            echo 'No public Evidence Worker URL is configured. Refusing to publish a DISCONNECTED production bundle.'
             exit 1
           }
-          [[ "$worker_url" == https://* ]] || {
-            echo 'VITE_EVIDENCE_API_URL must use HTTPS for a production Pages build.'
+          [[ "$worker_url" == https://* ]] || { echo 'VITE_EVIDENCE_API_URL must use HTTPS.'; exit 1; }
+
+          expected_source_sha="${REQUESTED_SOURCE_SHA:-$GITHUB_SHA}"
+          git cat-file -e "${expected_source_sha}^{commit}" 2>/dev/null || {
+            echo "Expected source revision is not available in checkout: $expected_source_sha"
             exit 1
           }
+          git merge-base --is-ancestor "$expected_source_sha" HEAD || {
+            echo "Checkout does not contain requested source revision: $expected_source_sha"
+            exit 1
+          }
+
           echo "url=$worker_url" >> "$GITHUB_OUTPUT"
-          if [ -n "$DISPATCH_URL" ]; then
-            echo 'Evidence Worker URL resolved from controlled workflow dispatch.'
-          elif [ -n "$persisted_url" ]; then
-            echo 'Evidence Worker URL resolved from persisted public deployment config.'
-          else
-            echo 'Evidence Worker URL resolved from repository Actions variable.'
-          fi
+          echo "expected_source_sha=$expected_source_sha" >> "$GITHUB_OUTPUT"
+          echo "Pages build contains requested source revision: $expected_source_sha"
 
       - name: Build Vite application
         working-directory: web
         env:
-          VITE_EVIDENCE_API_URL: ${{ steps.evidence-url.outputs.url }}
+          VITE_EVIDENCE_API_URL: ${{ steps.production-inputs.outputs.url }}
         run: npm run build
 
-      - name: Verify build output and Evidence Worker injection
+      - name: Verify global AI Research production bundle
         shell: bash
         env:
-          EVIDENCE_URL: ${{ steps.evidence-url.outputs.url }}
+          EVIDENCE_URL: ${{ steps.production-inputs.outputs.url }}
         run: |
           set -euo pipefail
           test -s web/dist/index.html
           test -d web/dist/assets
           grep -q '/Polar-Sun-Moon-Analysis/' web/dist/index.html
           grep -R -Fq "$EVIDENCE_URL" web/dist/assets
-          grep -R -Fq 'Explain Vistula evidence with OpenAI' web/dist/assets
-          echo 'Production bundle contains the public Evidence Worker URL and explainer UI.'
+          grep -R -Fq 'AI Research' web/dist/assets
+          grep -R -Fq 'Explain selected test with OpenAI' web/dist/assets
+          grep -R -Fq 'wszystkie zarejestrowane testy' web/dist/assets
+          echo 'Production bundle contains the Worker URL and global AI Research workspace.'
 
       - name: Publish build into docs
         shell: bash
+        env:
+          EXPECTED_SOURCE_SHA: ${{ steps.production-inputs.outputs.expected_source_sha }}
         run: |
           set -euo pipefail
           mkdir -p docs
@@ -116,15 +127,10 @@ jobs:
           fi
           cp docs/index.html docs/404.html
           touch docs/.nojekyll
-          printf '%s\n' "$GITHUB_SHA" > docs/deployment-probe.txt
+          printf '%s\n' "$EXPECTED_SOURCE_SHA" > docs/deployment-probe.txt
           test -s docs/index.html
           test -d docs/assets
           test -s docs/deployment-probe.txt
-          if [ -f published/experiment-011/integrity.json ]; then
-            test -s docs/published/experiment-011/integrity.json
-          fi
-          echo 'Published docs files:'
-          find docs -maxdepth 4 -type f | sort | head -300
 
       - name: Commit generated Pages files with rebase retry
         shell: bash
@@ -150,7 +156,6 @@ jobs:
             git rebase --abort >/dev/null 2>&1 || true
             sleep $((attempt * 4))
           done
-
           echo 'pages_publish=failed after 4 attempts'
           exit 1
 
@@ -159,19 +164,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
-      - name: Checkout history for revision comparison
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Verify branch-based Pages deployment
+      - name: Verify exact branch-based Pages revision
         shell: bash
+        env:
+          EXPECTED_SOURCE_SHA: ${{ inputs.expected_source_sha || github.sha }}
         run: |
           set -euo pipefail
-          expected="$GITHUB_SHA"
+          expected="$EXPECTED_SOURCE_SHA"
           echo "Expected source revision: $expected"
 
-          for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
+          for attempt in $(seq 1 12); do
             nonce="$(date +%s)-$attempt"
             index_url="${SITE_URL}?deploy=${nonce}"
             probe_url="${SITE_URL}deployment-probe.txt?deploy=${nonce}"
@@ -180,26 +182,16 @@ jobs:
             probe_value=$(tr -d '\r\n' < /tmp/probe.txt 2>/dev/null || true)
             echo "Attempt $attempt: index=$index_status probe=$probe_status value=$probe_value"
 
-            valid_revision=false
-            if [ "$probe_value" = "$expected" ]; then
-              valid_revision=true
-            elif git cat-file -e "${probe_value}^{commit}" 2>/dev/null && git merge-base --is-ancestor "$expected" "$probe_value" 2>/dev/null; then
-              echo "Live Pages already contains a newer source revision that includes $expected."
-              valid_revision=true
-            fi
-
-            if [ "$index_status" = '200' ] && [ "$probe_status" = '200' ] && [ "$valid_revision" = 'true' ]; then
+            if [ "$index_status" = '200' ] && [ "$probe_status" = '200' ] && [ "$probe_value" = "$expected" ]; then
               grep -qi '<!doctype html' /tmp/index.html
               echo '## GitHub Pages E2E' >> "$GITHUB_STEP_SUMMARY"
               echo '' >> "$GITHUB_STEP_SUMMARY"
               echo "✅ Live site: $SITE_URL" >> "$GITHUB_STEP_SUMMARY"
-              echo "✅ Requested source revision: $expected" >> "$GITHUB_STEP_SUMMARY"
-              echo "✅ Published source revision: $probe_value" >> "$GITHUB_STEP_SUMMARY"
+              echo "✅ Published requested source revision: $expected" >> "$GITHUB_STEP_SUMMARY"
               exit 0
             fi
-
             sleep 20
           done
 
-          echo 'Branch-based Pages deployment did not publish this revision or a newer descendant.'
+          echo 'Branch-based Pages deployment did not publish the exact requested revision.'
           exit 1
