@@ -4,87 +4,109 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#06111d" />
-  <title>L4 Earth Observation Training Run · Terra Observation</title>
+  <meta name="description" content="Evidence-first interpretation of Terraforming Planet NVIDIA L4 Earth observation training run 20260819T202428Z." />
+  <title>TP-26 L4 Training #1 — Findings and Evidence</title>
   <style>
-    :root{color-scheme:dark;--bg:#040914;--panel:#0a1725;--panel2:#0d2032;--line:#1d4967;--cyan:#55d7ff;--text:#eaf7ff;--muted:#9ab5c6;--ok:#78f0b1;--warn:#ffd27a}
-    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 0,#0b2940 0,transparent 34rem),var(--bg);color:var(--text);font:16px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-    a{color:var(--cyan)}.wrap{width:min(1180px,calc(100% - 28px));margin:auto}.top{position:sticky;top:0;z-index:10;background:#06111de8;backdrop-filter:blur(15px);border-bottom:1px solid #18364e}.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0}.brand{font-weight:900;letter-spacing:.08em}.back{display:inline-flex;padding:8px 12px;border:1px solid var(--line);border-radius:10px;text-decoration:none;background:#0b2031}
-    .hero{padding:70px 0 28px}.kicker{color:var(--cyan);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;font-weight:800}.hero h1{font-size:clamp(2.1rem,5vw,4.7rem);line-height:1.02;margin:.25em 0}.hero p{max-width:820px;color:var(--muted);font-size:1.08rem}.badge{display:inline-flex;align-items:center;gap:8px;border:1px solid #247250;background:#09281d;color:var(--ok);padding:7px 11px;border-radius:999px;font-weight:800}.dot{width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 14px currentColor}
-    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:24px 0}.card{background:linear-gradient(180deg,#0d2032,#081522);border:1px solid #173d57;border-radius:16px;padding:18px;box-shadow:0 12px 34px #0004}.card b{display:block;font-size:1.8rem;line-height:1.15;margin-top:4px}.label{color:var(--muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.1em}.wide{grid-column:span 3}
-    section{padding:24px 0}h2{font-size:1.5rem;margin:0 0 14px}.metricline{display:grid;grid-template-columns:190px 1fr 100px;gap:12px;align-items:center;margin:12px 0}.bar{height:12px;border-radius:999px;background:#102d41;overflow:hidden}.bar span{display:block;height:100%;background:linear-gradient(90deg,#2fb5e7,#71e2ff)}.good{color:var(--ok)}.warn{color:var(--warn)}
-    .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}.list{margin:0;padding-left:1.2rem}.list li{margin:.55rem 0}.evidence{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9rem;word-break:break-all;color:#ccefff}.note{border-left:3px solid var(--warn);padding:12px 14px;background:#2d210b66;color:#ffe7b0;border-radius:0 12px 12px 0}.footer{padding:30px 0 70px;color:var(--muted);font-size:.9rem}
-    @media(max-width:760px){.grid{grid-template-columns:1fr 1fr}.wide{grid-column:span 2}.cols{grid-template-columns:1fr}.metricline{grid-template-columns:1fr}.metricline strong{text-align:left}.top .brand{font-size:.8rem}}
-    @media(max-width:480px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}.hero{padding-top:42px}}
+    :root{color-scheme:dark;--bg:#030814;--panel:#091827;--panel2:#0c2235;--line:#1e4c69;--cyan:#5bdbff;--text:#edf9ff;--muted:#9bb9ca;--ok:#72efad;--warn:#ffd37b;--violet:#bba3ff;--unknown:#b9c6cf}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 18% 0,#0b2d46 0,transparent 34rem),radial-gradient(circle at 90% 35%,#17214855 0,transparent 30rem),var(--bg);color:var(--text);font:16px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:var(--cyan)}.wrap{width:min(1180px,calc(100% - 28px));margin:auto}.top{position:sticky;top:0;z-index:20;background:#06111dec;backdrop-filter:blur(16px);border-bottom:1px solid #183b53}.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0}.brand{font-weight:900;letter-spacing:.08em}.nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.nav a{display:inline-flex;padding:8px 11px;border:1px solid var(--line);border-radius:10px;text-decoration:none;background:#0a1d2d;color:#dff6ff}
+    .hero{padding:62px 0 24px}.kicker{color:var(--cyan);font-size:.76rem;letter-spacing:.16em;text-transform:uppercase;font-weight:900}.hero h1{font-size:clamp(2.25rem,5.4vw,4.9rem);line-height:1.01;margin:.22em 0}.hero p{max-width:900px;color:var(--muted);font-size:1.06rem}.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.badge{display:inline-flex;align-items:center;gap:7px;border:1px solid #247250;background:#09281d;color:var(--ok);padding:6px 10px;border-radius:999px;font-weight:850;font-size:.78rem}.badge.warn{border-color:#695825;background:#2c220b;color:var(--warn)}.badge.unknown{border-color:#4d5f69;background:#17222a;color:#d3dee5}.dot{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 12px currentColor}
+    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:24px 0}.card,.panel{background:linear-gradient(180deg,#0d2032,#071522);border:1px solid #173d57;border-radius:16px;padding:18px;box-shadow:0 12px 34px #0004}.card b{display:block;font-size:1.72rem;line-height:1.15;margin-top:4px}.card span{color:var(--muted);font-size:.79rem}.label{color:var(--muted);font-size:.76rem;text-transform:uppercase;letter-spacing:.1em}.section{padding:20px 0}.section h2{font-size:clamp(1.45rem,3vw,2rem);margin:0 0 12px}.section-lead{color:var(--muted);max-width:920px;margin-top:-4px}.finding-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.finding{position:relative;overflow:hidden}.finding::after{content:"";position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;background:#36d1ff10}.finding h3{margin:.25rem 0 .55rem;font-size:1.12rem}.finding p{margin:.45rem 0;color:#d6eaf5}.finding .support{font-size:.86rem;color:var(--muted)}.finding-id{font:800 .72rem ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--cyan);letter-spacing:.08em}.class{display:inline-flex;margin-left:6px;padding:3px 7px;border-radius:999px;border:1px solid #2f805c;color:var(--ok);font-size:.67rem;font-weight:900}.class.model{border-color:#6a55a0;color:var(--violet)}.class.unknown{border-color:#54646e;color:var(--unknown)}
+    .metricline{display:grid;grid-template-columns:210px 1fr 105px;gap:12px;align-items:center;margin:12px 0}.bar{height:12px;border-radius:999px;background:#102d41;overflow:hidden}.bar span{display:block;height:100%;background:linear-gradient(90deg,#31bae9,#73e7ff)}.throughput{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}.throughput div{padding:14px;border:1px solid #204761;border-radius:12px;background:#07131f}.throughput b{font-size:1.4rem;display:block}.throughput span{color:var(--muted);font-size:.8rem}.good{color:var(--ok)}.warntext{color:var(--warn)}
+    .ledger{width:100%;border-collapse:collapse;overflow:hidden;border-radius:12px}.ledger th,.ledger td{text-align:left;vertical-align:top;padding:12px;border-bottom:1px solid #17384d}.ledger th{font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:#95bbce;background:#0b1d2c}.ledger td{background:#071521}.ledger tr:last-child td{border-bottom:0}.tag{font:800 .68rem ui-monospace,SFMono-Regular,Menlo,monospace;padding:4px 7px;border:1px solid #2f805c;border-radius:999px;color:var(--ok);white-space:nowrap}.tag.model{border-color:#6a55a0;color:var(--violet)}.tag.unknown{border-color:#54646e;color:var(--unknown)}
+    .compare{display:grid;grid-template-columns:1fr 1fr;gap:14px}.compare .run{border:1px solid #1d4964;border-radius:14px;padding:16px;background:#071622}.compare .run.active{border-color:#4ccff2;background:#092237}.compare h3{margin:.2rem 0 .8rem}.statrow{display:flex;justify-content:space-between;gap:14px;padding:7px 0;border-bottom:1px solid #173346}.statrow:last-child{border-bottom:0}.statrow span{color:var(--muted)}.note{border-left:3px solid var(--warn);padding:12px 14px;background:#2d210b66;color:#ffe7b0;border-radius:0 12px 12px 0}.oknote{border-left-color:#50d798;background:#0c2b2166;color:#bdf6d9}.links{display:flex;flex-wrap:wrap;gap:8px}.links a{padding:9px 11px;border:1px solid #2b6384;border-radius:8px;background:#09263a;text-decoration:none}.evidence{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88rem;word-break:break-all;color:#ccefff}.footer{padding:30px 0 70px;color:var(--muted);font-size:.88rem}
+    @media(max-width:900px){.grid{grid-template-columns:1fr 1fr}.finding-grid,.compare{grid-template-columns:1fr}.throughput{grid-template-columns:1fr 1fr}.ledger{font-size:.88rem}}
+    @media(max-width:620px){.top .wrap{align-items:flex-start;flex-direction:column}.nav{justify-content:flex-start}.hero{padding-top:38px}.grid{grid-template-columns:1fr 1fr}.metricline{grid-template-columns:1fr}.throughput{grid-template-columns:1fr}.ledger,.ledger tbody,.ledger tr,.ledger td{display:block}.ledger thead{display:none}.ledger tr{margin-bottom:10px;border:1px solid #17384d;border-radius:12px;overflow:hidden}.ledger td{border-bottom:1px solid #17384d}.ledger td:last-child{border-bottom:0}}
+    @media(max-width:430px){.grid{grid-template-columns:1fr}.hero h1{font-size:2.25rem}}
   </style>
 </head>
 <body>
-  <header class="top"><div class="wrap"><div class="brand">TERRA · BUILD FOR GOOD</div><a class="back" href="../../">← Earth Live</a></div></header>
+  <header class="top"><div class="wrap"><div class="brand">TERRA · BUILD FOR GOOD</div><nav class="nav"><a href="../../">← Earth Live</a><a href="../training-runs/site_20260819T223835Z/">Training #2</a><a href="analysis.json">Structured findings</a></nav></div></header>
   <main class="wrap">
     <section class="hero">
-      <div class="kicker">Research run · 19 Aug 2026 · Run 20260819T202428Z</div>
-      <h1>NVIDIA L4 Earth Observation Pretraining</h1>
-      <p>A reproducible 60-minute self-supervised denoising run used to prepare the Terra research pipeline for satellite-image feature learning. The page separates measured training behavior from scientific claims.</p>
-      <span class="badge"><span class="dot"></span> RUN COMPLETED</span>
+      <div class="kicker">TP-26 · NVIDIA L4 · 19 Aug 2026 · Run 20260819T202428Z</div>
+      <h1>L4 Training #1 — Findings and Evidence</h1>
+      <p>This was the first 60-minute self-supervised Earth-observation pretraining run. The original page showed only loss and counters; this revision adds the conclusions that can actually be derived from the published evidence, the methodological limits, the provenance gap and the concrete lessons that drove the larger follow-up runs.</p>
+      <div class="badges"><span class="badge"><span class="dot"></span>RUN COMPLETED</span><span class="badge">DERIVED_VALUE · optimization findings</span><span class="badge warn">NO ENVIRONMENTAL GROUND-TRUTH CLAIM</span></div>
     </section>
 
     <div class="grid">
-      <article class="card"><span class="label">Compute</span><b>NVIDIA L4</b><span>CUDA · mixed precision</span></article>
-      <article class="card"><span class="label">Wall-clock training</span><b>60 min</b><span>3600.094 seconds</span></article>
-      <article class="card"><span class="label">Source images</span><b>66</b><span>input images used by the run</span></article>
+      <article class="card"><span class="label">Wall-clock</span><b>60 min</b><span>3,600.094 seconds</span></article>
+      <article class="card"><span class="label">Source corpus</span><b>66</b><span>source images — narrow baseline</span></article>
+      <article class="card"><span class="label">Optimization</span><b>29,343</b><span>steps · batch 24</span></article>
       <article class="card"><span class="label">Training samples</span><b>704,232</b><span>sampled patches, not unique scenes</span></article>
-      <article class="card"><span class="label">Optimization steps</span><b>29,343</b><span>final batch size: 24</span></article>
-      <article class="card"><span class="label">Training mode</span><b style="font-size:1.2rem">Self-supervised</b><span>denoising pretrain</span></article>
     </div>
 
-    <section>
-      <h2>Training behavior</h2>
-      <div class="card wide">
+    <section class="section">
+      <h2>What the run actually taught us</h2>
+      <p class="section-lead">These are the strongest conclusions supported by Run #1 without inventing geography, hydrology or climate results that are absent from the public artifact.</p>
+      <div class="finding-grid">
+        <article class="panel finding"><div><span class="finding-id">FINDING-01</span><span class="class">DERIVED_VALUE</span></div><h3>The optimization pipeline converged on its self-supervised objective</h3><p>Loss fell from <strong>0.291329</strong> to <strong>0.046198</strong> over the completed one-hour run. That is an <strong>84.14% reduction</strong>. The best observed loss was <strong>0.028217</strong>, or <strong>90.31% below</strong> the initial value.</p><p class="support"><strong>Supports:</strong> CUDA execution, mixed precision, data sampling and the denoising objective worked together for the full run. <strong>Does not support:</strong> environmental detection accuracy.</p></article>
+        <article class="panel finding"><div><span class="finding-id">FINDING-02</span><span class="class">DERIVED_VALUE</span></div><h3>Run #1 was a narrow-corpus baseline, not a broad Earth survey</h3><p>The system generated <strong>704,232 sampled training patches from 66 source images</strong> — about <strong>10,670 samples per source image on average</strong>. The very large <code>samples_seen</code> count therefore represents repeated crops/patches, not hundreds of thousands of independent satellite scenes.</p><p class="support"><strong>Supports:</strong> intensive optimization and pipeline stress-testing. <strong>Does not support:</strong> calling 704,232 samples 704,232 satellite photographs.</p></article>
+        <article class="panel finding"><div><span class="finding-id">FINDING-03</span><span class="class model">MODEL_ESTIMATE</span></div><h3>Generalization remained the main scientific risk after Run #1</h3><p>Training loss dropped strongly, but no held-out scene-level validation result was published with this run. With only 66 source images, repeated visual structures can be learned very well without proving performance on unseen Earth-observation scenes.</p><p class="support"><strong>Interpretation:</strong> this is a methodological risk assessment, not a measured overfitting percentage. It is why later runs were designed around more unique images, explicit provenance and streaming new windows.</p></article>
+        <article class="panel finding"><div><span class="finding-id">FINDING-04</span><span class="class unknown">UNKNOWN</span></div><h3>No auditable site-level environmental finding can be reconstructed from the public Run #1 artifact alone</h3><p>The published Run #1 files do not map all 66 inputs to <strong>location + acquisition date + sensor + scene identifier + quality flags</strong>. Without that manifest, a reader cannot reproducibly say which learned behavior belongs to a specific river, lake, desert, mountain range or country.</p><p class="support"><strong>Important:</strong> this does not prove that the local training files lacked geography; it means the public Run #1 evidence is insufficient to audit environmental conclusions.</p></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Optimization and throughput</h2>
+      <div class="panel">
         <div class="metricline"><span>Initial loss</span><div class="bar"><span style="width:100%"></span></div><strong>0.29133</strong></div>
         <div class="metricline"><span>Final loss</span><div class="bar"><span style="width:15.86%"></span></div><strong>0.04620</strong></div>
         <div class="metricline"><span>Best observed loss</span><div class="bar"><span style="width:9.69%"></span></div><strong>0.02822</strong></div>
-        <p class="good"><strong>Measured result:</strong> final loss was 84.14% below the initial loss; the best observed loss was 90.31% below the initial value.</p>
+        <div class="throughput"><div><b>8.15</b><span>optimization steps / second</span></div><div><b>195.61</b><span>training samples / second</span></div><div><b>10,670</b><span>mean sampled patches / source image</span></div></div>
+        <p class="good"><strong>Operational conclusion:</strong> the run was computationally stable enough to complete a full hour and establish a baseline checkpoint for later validation.</p>
       </div>
     </section>
 
-    <section class="cols">
-      <article class="card">
-        <h2>What this supports</h2>
-        <ul class="list">
-          <li>The full 60-minute CUDA run completed successfully.</li>
-          <li>The optimization process materially reduced the self-supervised denoising objective.</li>
-          <li>The pipeline processed 704,232 training samples from 66 source images.</li>
-          <li>The run produced a reusable model checkpoint for later validation and inference.</li>
-        </ul>
-      </article>
-      <article class="card">
-        <h2>What this does not prove</h2>
-        <ul class="list">
-          <li>704,232 samples are <strong>not</strong> 704,232 unique satellite photographs.</li>
-          <li>A lower reconstruction/denoising loss does not by itself prove environmental-change detection accuracy.</li>
-          <li>The run does not establish the cause of water decline, river constriction, drought, flooding or any other environmental event.</li>
-          <li>Ground-truth scientific claims remain disabled for this run.</li>
-        </ul>
-      </article>
-    </section>
-
-    <section>
-      <h2>Next scientific validation</h2>
-      <div class="card">
-        <p>The next stage is held-out validation on provenance-complete, season-matched satellite scene pairs. Water area, shoreline movement, exposed sediment, river width/centerline and other deterministic measurements should be evaluated independently of the self-supervised training objective. Causal labels such as a blocked inlet/outlet require independent hydrological evidence.</p>
-        <p class="note"><strong>Publication gate:</strong> this page reports training metrics only. Environmental findings should be promoted separately after scene-level quality control, reproducible measurements, provenance and uncertainty checks.</p>
+    <section class="section">
+      <h2>Evidence ledger</h2>
+      <div class="panel" style="padding:0;overflow:hidden">
+        <table class="ledger"><thead><tr><th>ID</th><th>Class</th><th>Conclusion</th><th>Public evidence</th></tr></thead><tbody>
+          <tr><td>FINDING-01</td><td><span class="tag">DERIVED_VALUE</span></td><td>Self-supervised optimization converged during the completed run.</td><td>3,600.094 s runtime; loss 0.291329 → 0.046198; best 0.028217.</td></tr>
+          <tr><td>FINDING-02</td><td><span class="tag">DERIVED_VALUE</span></td><td>The sample counter is dominated by repeated patch sampling from a small source corpus.</td><td>704,232 samples from 66 source images; ~10,670 sampled patches per source image.</td></tr>
+          <tr><td>FINDING-03</td><td><span class="tag model">MODEL_ESTIMATE</span></td><td>Unseen-scene generalization remained unverified and required a broader validation design.</td><td>No published held-out scene-level accuracy result for Run #1.</td></tr>
+          <tr><td>FINDING-04</td><td><span class="tag unknown">UNKNOWN</span></td><td>Environmental changes at named sites cannot be audited from Run #1 publication alone.</td><td>No public per-image location/date/sensor/scene-ID manifest for all 66 inputs.</td></tr>
+        </tbody></table>
       </div>
     </section>
 
-    <section>
-      <h2>Run integrity</h2>
-      <div class="card evidence">
-        Archive: 20260819T202428Z_FULL_LOGS.zip<br>
-        Size: 48,191,955 bytes (~46 MB)<br>
-        SHA-256: 71B44F6151BBB8992795A144CC222C7A5D7E7D244A6183DED1758D1F230571212<br>
-        Evidence class: DERIVED_VALUE<br>
-        Ground-truth claim: false
+    <section class="section">
+      <h2>Why this page does not claim a river, lake or glacier discovery</h2>
+      <div class="panel">
+        <p>Run #1 trained a representation/denoising model. It did <strong>not</strong> publish deterministic measurements such as water surface area, shoreline displacement, river width, snow/ice fraction, vegetation index, exposed sediment area or cloud-screened before/after scene pairs. Those measurements are required before an environmental finding can be promoted.</p>
+        <p class="note"><strong>Evidence gate:</strong> lower training loss is evidence of learning the training objective, not evidence that a lake shrank, a river narrowed, a glacier retreated or a hydrological inlet was blocked.</p>
       </div>
-      <p style="color:var(--muted)">The full archive remains local and is not embedded in the public GitHub Pages build. Its hash is published so a later uploaded archive can be verified byte-for-byte.</p>
+    </section>
+
+    <section class="section">
+      <h2>What changed after Run #1</h2>
+      <div class="compare">
+        <article class="run"><div class="kicker">Run #1 · baseline</div><h3>20260819T202428Z</h3><div class="statrow"><span>Unique/source images</span><b>66</b></div><div class="statrow"><span>Optimization steps</span><b>29,343</b></div><div class="statrow"><span>Training samples</span><b>704,232</b></div><div class="statrow"><span>Per-image public provenance</span><b>No complete manifest</b></div></article>
+        <article class="run active"><div class="kicker">Run #2 · expanded corpus</div><h3>site_20260819T223835Z</h3><div class="statrow"><span>Unique research images</span><b>290</b></div><div class="statrow"><span>Corpus scale vs Run #1</span><b>4.39×</b></div><div class="statrow"><span>Increase in unique/source images</span><b>+339.39%</b></div><div class="statrow"><span>GPU image audit</span><b>290 / 290</b></div><p><a href="../training-runs/site_20260819T223835Z/">Open Training #2 report →</a></p></article>
+      </div>
+      <p class="note oknote"><strong>Design lesson:</strong> Run #1 established the compute/training baseline. Run #2 expanded auditable corpus coverage. The next streaming runs must go further by publishing counts of genuinely unique decoded satellite windows and region/year provenance instead of relying on <code>samples_seen</code>.</p>
+      <p class="warntext"><strong>Do not compare Run #1 and #2 loss values as a model-quality ranking.</strong> The input corpora differ, so lower loss on one run can simply mean an easier or narrower reconstruction distribution.</p>
+    </section>
+
+    <section class="section">
+      <h2>Required outputs for environmental conclusions in future runs</h2>
+      <div class="panel"><ul>
+        <li>Per-scene location, acquisition date, sensor, official source ID and quality/cloud flags.</li>
+        <li>Separate counters for unique decoded satellite windows and repeated optimization samples.</li>
+        <li>Held-out, season-matched scene pairs or time series.</li>
+        <li>Deterministic measurements: water area, shoreline displacement, river width/centerline, snow/ice fraction, vegetation index and exposed sediment where applicable.</li>
+        <li>Region-level results with <strong>OBSERVATION / DERIVED_VALUE / MODEL_ESTIMATE / HYPOTHESIS / UNKNOWN</strong> labels, uncertainty and provenance.</li>
+        <li>Causal claims only when independent hydrological, geological or meteorological evidence supports them.</li>
+      </ul></div>
+    </section>
+
+    <section class="section">
+      <h2>Published evidence and run integrity</h2>
+      <div class="panel">
+        <div class="links"><a href="summary.json">summary.json</a><a href="analysis.json">analysis.json · findings</a><a href="../training-runs/site_20260819T223835Z/">Training #2</a></div>
+        <p class="evidence">Archive: 20260819T202428Z_FULL_LOGS.zip<br>Size: 48,191,955 bytes (~46 MB)<br>SHA-256: 71B44F6151BBB8992795A144CC222C7A5D7E7D244A6183DED1758D1F230571212<br>Evidence class: DERIVED_VALUE<br>Ground-truth claim: false<br>Causal environmental claim: false</p>
+        <p style="color:var(--muted)">The full archive remains local and is not embedded in GitHub Pages. The published SHA-256 allows a later uploaded archive to be verified byte-for-byte.</p>
+      </div>
     </section>
   </main>
   <footer class="footer"><div class="wrap">Terraforming Planet · Evidence-first Earth observation · Official/public data only</div></footer>
