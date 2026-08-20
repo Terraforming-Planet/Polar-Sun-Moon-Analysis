@@ -10,8 +10,39 @@ const DEFAULT_ALLOWED_ORIGINS = [
 ]
 
 const COMMON_L4_CONTEXT = {
+  training_1: {
+    run_id: '20260819T202428Z',
+    title: 'NVIDIA L4 Earth Observation Self-Supervised Pretraining',
+    short_label: 'L4 Training #1',
+    public_page: `${UI_URL}published/l4-training-2026-08-19/`,
+    source_path: 'published/l4-training-2026-08-19/summary.json',
+    evidence_class: 'DERIVED_VALUE',
+    gpu: 'NVIDIA L4',
+    backend: 'cuda',
+    mixed_precision: true,
+    training_mode: 'self_supervised_denoising_pretrain',
+    elapsed_seconds: 3600.094,
+    steps: 29343,
+    samples_seen: 704232,
+    source_images: 66,
+    loss_first: 0.2913292944431305,
+    loss_last: 0.046197813004255295,
+    loss_best: 0.028216883540153503,
+    loss_reduction_first_to_last_percent: 84.14,
+    loss_reduction_first_to_best_percent: 90.31,
+    training_completed: true,
+    generalization_measured: false,
+    ground_truth_claim: false,
+    scientific_finding_claim: false,
+    causal_environmental_claim: false,
+  },
   training_2: {
     run_id: 'site_20260819T223835Z',
+    title: 'NVIDIA L4 Site Corpus Training / Audit',
+    short_label: 'L4 Training #2',
+    public_page: `${UI_URL}published/training-runs/site_20260819T223835Z/`,
+    source_path: 'published/training-runs/site_20260819T223835Z/analysis.json',
+    evidence_class: 'DERIVED_VALUE',
     gpu: 'NVIDIA L4',
     unique_images: 290,
     gpu_audited_images: 290,
@@ -24,16 +55,23 @@ const COMMON_L4_CONTEXT = {
     },
     training_completed: true,
     ground_truth_claim: false,
+    scientific_finding_claim: false,
     causal_environmental_claim: false,
     pairwise_environmental_comparison_claim: false,
   },
   training_3: {
     run_id: 'stream_gibs_20260820T013036Z',
+    title: 'NVIDIA L4 Streaming NASA GIBS Training / Data Pipeline',
+    short_label: 'L4 Training #3',
+    public_page: `${UI_URL}published/training-runs/stream_gibs_20260820T013036Z/`,
+    source_path: 'published/training-runs/stream_gibs_20260820T013036Z/',
+    evidence_class: 'DERIVED_VALUE',
     gpu: 'NVIDIA L4',
     streamed_windows: 200016,
     unique_content_sha256: 156863,
     research_region_count: 75,
     failure_rate_percent: 0.001,
+    training_completed: true,
     scientific_finding_claim: false,
     ground_truth_claim: false,
     causal_environmental_claim: false,
@@ -74,7 +112,87 @@ function integrityEvidence({ test, area, extent, acceptedCount, sourceRef, sourc
   }
 }
 
+function test001Evidence() {
+  return {
+    schema: 'terra-test001-mixed-evidence-v1',
+    test: 1,
+    area: 'Forest pond near Lake Kuchnia / Olszowka–Gardeja study area, Poland',
+    temporal_scope: { start_year: 1990, end_year: 2026, seasons: ['spring', 'autumn'] },
+    integrity: {
+      record_count: 73,
+      pipeline_errors: 0,
+      note: 'The public TEST 001 page reports 73 seasonal pipeline records; this field does not imply that all records establish a current open-water area.',
+    },
+    satellite_result: {
+      evidence_class: 'DERIVED_VALUE',
+      state_change_supported: true,
+      historical_persistent_footprint_m2: 17722.2,
+      historical_persistent_footprint_ha: 1.7722,
+      repeat_supported_range_m2: [16269.3, 21642.0],
+      broad_historical_upper_envelope_m2: 23978.3,
+      overlap_1990_with_central_consensus_percent: 92.528,
+      exact_2026_open_water_area_published: false,
+      exact_loss_percent_published: false,
+      cause_established: false,
+      conclusion: 'The multi-year public record supports a near-total state transition of the historically persistent visible pond footprint. The exact residual open-water area in 2026 remains uncertainty-gated.',
+    },
+    author_field_report: {
+      evidence_class: 'AUTHOR_FIELD_OBSERVATION',
+      source_path: 'published/experiment-001/field-observation-report.json',
+      reported_at_utc: '2026-08-20',
+      independently_verified: false,
+      official_documentary_record_attached: false,
+      scientific_finding_claim: false,
+      causal_claim: false,
+      repair_effect_claim: false,
+      observations: [
+        'The project author reports periodic field inspections over multiple years during which the forest pond gradually lost visible water and later became dry.',
+        'The author initially suspected an obstructed local water channel in Olszowka and reports manually clearing or re-cutting part of that channel.',
+        'Later field walks reportedly identified damaged wells, leading the author to suspect that the local water-management issue was broader than one channel.',
+        'The author reports that the matter was submitted to the environmental-protection function of the Starostwo Powiatowe in Kwidzyn.',
+        'The author reports subsequent works in the wider area involving parts of a well network, ploughed-over drainage ditches, field water channels in Olszowka and damaged wells.',
+        'Several years later the author reports observing more water in parts of the wider area, while the nearby forest pond did not recover in the same way.',
+      ],
+      interpretation_constraints: [
+        'Treat these statements as a public field report by the project author, not as independently verified official records.',
+        'Do not infer that a damaged well, ditch, channel or repair caused the pond drying or later water conditions.',
+        'Do not infer that the reported repair works caused the later increase of water in the wider area.',
+        'The continued lack of pond recovery is a separate observation requiring hydrological investigation.',
+      ],
+      recommended_official_follow_up: [
+        'Obtain publicly releasable records from Starostwo Powiatowe in Kwidzyn concerning the reported environmental submission and documented repair works.',
+        'Compare official historical and current drainage, melioration, cadastral and water-management maps to locate wells, ditches, culverts and channels and document removals, damage or restoration.',
+        'Compare the infrastructure chronology with official satellite observations, precipitation, groundwater, soil-moisture and surface-water records using matched seasons.',
+      ],
+      global_research_direction: 'Use lawful official/public infrastructure and Earth-observation records to study where drainage wells, ditches and water channels existed, were removed, damaged or restored, first locally and later in other regions. Do not infer private household infrastructure or personal activity from satellite imagery.',
+    },
+    provenance: {
+      repository: 'Terraforming-Planet/Polar-Sun-Moon-Analysis',
+      public_page: 'docs/experiment-001/index.html',
+      field_report_path: 'published/experiment-001/field-observation-report.json',
+      historical_measurement_source_ref: 'annual-best-53-591400-19-010717',
+    },
+    evidence_class: 'MIXED_SATELLITE_AND_AUTHOR_FIELD_CONTEXT',
+    environmental_finding_claim: true,
+    water_loss_claim: false,
+    causal_claim: false,
+    scientific_finding_claim: true,
+    limitations: [
+      'The satellite result supports a state change of the visible pond footprint, but does not publish an exact 2026 open-water area or loss percentage.',
+      'The author field report supplements the satellite record but is not a substitute for official hydrological or infrastructure documentation.',
+      'Hydrological causation remains unestablished.',
+    ],
+  }
+}
+
 export const PUBLIC_CASES = {
+  'test-001-forest-pond-kuchnia': {
+    shortLabel: 'TEST 001',
+    title: 'Forest pond near Lake Kuchnia — satellite change record + multi-year field observations',
+    category: 'local water-system monitoring and field verification',
+    publicPage: `${UI_URL}experiment-001/`,
+    evidence: test001Evidence(),
+  },
   'test-011-ilawa-zalewo': {
     shortLabel: 'TEST 011',
     title: 'Iława–Zalewo — seasonal satellite evidence 1990–2026',
@@ -153,7 +271,9 @@ const SYSTEM_INSTRUCTIONS = `You are the Terra Observation System Evidence Expla
 Use only the supplied evidence bundle. Treat every value and claim flag as authoritative input constraints.
 Do not invent satellite measurements, dates, acquisition identifiers, source URLs, environmental events, causal mechanisms, confidence scores, missing observations, or model accuracy.
 NVIDIA L4 training metrics describe training/data-pipeline behavior only. They are not environmental ground truth and do not prove water loss, drought, flooding, blockage, earthquake prediction, or any other physical cause.
-If environmental_finding_claim, water_loss_claim, causal_claim, ground_truth_claim, scientific_finding_claim, or causal_environmental_claim is false, preserve that limitation explicitly.
+An AUTHOR_FIELD_OBSERVATION is a public report supplied by the project author. If independently_verified or official_documentary_record_attached is false, describe it as reported field context and do not convert it into an independently verified fact.
+Reported repairs, damaged wells, ditches or channels must not be treated as causal explanations unless separate official/hydrological evidence establishes that link.
+If environmental_finding_claim, water_loss_claim, causal_claim, ground_truth_claim, scientific_finding_claim, causal_environmental_claim, repair_effect_claim, or pairwise_environmental_comparison_claim is false, preserve that limitation explicitly.
 A visible river constriction, exposed sediment, paleochannel, vegetation difference, snow difference or morphology candidate is not proof of hydrological or climatic causation.
 Explain what the evidence actually establishes, why the research may matter, what remains uncertain, and the next scientific checks required.
 Keep each output field concise and clear for the public, educators, NGOs, researchers and community-resilience users.`
@@ -214,10 +334,34 @@ export function listPublicCases() {
     category: item.category,
     public_page: item.publicPage,
     evidence_class: item.evidence.evidence_class,
-    record_count: item.evidence.integrity.record_count,
-    accepted_count: item.evidence.integrity.accepted_count,
-    temporal_scope: `${item.evidence.temporal_scope.start_year}–${item.evidence.temporal_scope.end_year} · ${item.evidence.temporal_scope.seasons.join(' + ')}`,
+    record_count: item.evidence.integrity?.record_count,
+    accepted_count: item.evidence.integrity?.accepted_count,
+    temporal_scope: item.evidence.temporal_scope
+      ? `${item.evidence.temporal_scope.start_year}–${item.evidence.temporal_scope.end_year} · ${item.evidence.temporal_scope.seasons.join(' + ')}`
+      : undefined,
   }))
+}
+
+export function listTrainingContext() {
+  return Object.entries(COMMON_L4_CONTEXT).map(([trainingId, item]) => {
+    let summary = ''
+    if (trainingId === 'training_1') {
+      summary = `${item.samples_seen.toLocaleString('en-US')} sampled patches · ${item.source_images} source images · ${Math.round(item.elapsed_seconds / 60)} min · best loss ${item.loss_best}`
+    } else if (trainingId === 'training_2') {
+      summary = `${item.unique_images} unique images · ${item.gpu_audited_images} GPU-audited · ${item.unreadable_images} unreadable`
+    } else {
+      summary = `${item.streamed_windows.toLocaleString('en-US')} streamed windows · ${item.unique_content_sha256.toLocaleString('en-US')} unique content hashes · ${item.research_region_count} regions`
+    }
+    return {
+      training_id: trainingId,
+      short_label: item.short_label,
+      title: item.title,
+      public_page: item.public_page,
+      evidence_class: item.evidence_class,
+      gpu: item.gpu,
+      summary,
+    }
+  })
 }
 
 export function validateExplainPayload(value) {
@@ -378,6 +522,7 @@ export async function handleRequest(request, env = {}) {
       status: env.OPENAI_API_KEY ? 'ready' : 'degraded',
       openai_configured: Boolean(env.OPENAI_API_KEY),
       supported_case_ids: Object.keys(PUBLIC_CASES),
+      training_context_ids: Object.keys(COMMON_L4_CONTEXT),
       evidence_mode: 'bundled-fixed-published-snapshot',
     }, 200, origin, env)
   }
@@ -386,6 +531,7 @@ export async function handleRequest(request, env = {}) {
     return jsonResponse({
       service: 'terra-observation-evidence-explainer',
       cases: listPublicCases(),
+      training_context: listTrainingContext(),
     }, 200, origin, env)
   }
 
