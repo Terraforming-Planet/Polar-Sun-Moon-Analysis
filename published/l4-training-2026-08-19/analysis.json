@@ -1,0 +1,75 @@
+{
+  "schema": "tp26-training-findings-v1",
+  "run_id": "20260819T202428Z",
+  "evidence_class": "DERIVED_VALUE",
+  "scope": "Post-run interpretation of the published training metrics only. This file does not invent environmental findings that are not supported by scene-level provenance and measurements.",
+  "derived_metrics": {
+    "runtime_seconds": 3600.094,
+    "optimization_steps": 29343,
+    "samples_seen": 704232,
+    "source_images": 66,
+    "steps_per_second": 8.1506,
+    "samples_per_second": 195.6149,
+    "mean_training_samples_per_source_image": 10670.18,
+    "loss_first": 0.2913292944431305,
+    "loss_last": 0.046197813004255295,
+    "loss_best": 0.028216883540153503,
+    "loss_reduction_first_to_last_percent": 84.14,
+    "loss_reduction_first_to_best_percent": 90.31
+  },
+  "findings": [
+    {
+      "id": "FINDING-01",
+      "classification": "DERIVED_VALUE",
+      "title": "The optimization run converged on its self-supervised objective",
+      "statement": "The run completed the full 60-minute CUDA window and reduced reconstruction/denoising loss from 0.291329 to 0.046198, an 84.14% reduction. The best observed loss was 0.028217, 90.31% below the initial value.",
+      "supports": "The training loop, CUDA path, mixed-precision path and optimization objective were functioning together for the full run.",
+      "does_not_support": "It does not establish environmental-change detection accuracy or scientific generalization."
+    },
+    {
+      "id": "FINDING-02",
+      "classification": "DERIVED_VALUE",
+      "title": "The first run was a narrow-corpus baseline rather than a broad Earth survey",
+      "statement": "704,232 training samples were generated from only 66 source images, averaging about 10,670 sampled training patches per source image. Those samples are repeated crops/patches, not unique satellite scenes.",
+      "supports": "The run exercised the model many times and is useful as a pipeline and representation-learning baseline.",
+      "does_not_support": "The repeated sampling cannot be presented as hundreds of thousands of independent Earth observations."
+    },
+    {
+      "id": "FINDING-03",
+      "classification": "MODEL_ESTIMATE",
+      "title": "Generalization risk is high until held-out validation is performed",
+      "statement": "Because the public run contains 66 source images but no published per-image held-out validation result, the strong training-loss reduction may include memorization of recurring visual structures. Generalization must be tested on unseen, provenance-complete scenes.",
+      "supports": "This is a methodological risk assessment based on the corpus size and self-supervised training design.",
+      "does_not_support": "It is not a measured overfitting percentage and should not be treated as one."
+    },
+    {
+      "id": "FINDING-04",
+      "classification": "UNKNOWN",
+      "title": "No auditable site-level environmental conclusion can be recovered from the public Run #1 artifact alone",
+      "statement": "The published Run #1 summary does not contain a per-image manifest linking all 66 source images to location, acquisition date, sensor, scene identifier and quality flags. Therefore a public reader cannot reproducibly assign the training behavior to specific rivers, lakes, deserts, mountains or countries.",
+      "supports": "This identifies the provenance gap that later runs must close.",
+      "does_not_support": "It does not mean the images lacked geography locally; it means the public Run #1 artifact does not contain enough provenance to audit environmental findings."
+    }
+  ],
+  "comparison_to_run_2": {
+    "run_2_path": "../training-runs/site_20260819T223835Z/",
+    "run_2_unique_images": 290,
+    "corpus_scale_ratio_run_2_vs_run_1": 4.3939,
+    "corpus_scale_increase_percent": 339.39,
+    "note": "Run #2 expanded the public corpus and added per-image GPU audit/provenance structure. Loss values between Run #1 and Run #2 must not be ranked as model quality because the corpora differ."
+  },
+  "scientific_status": {
+    "environmental_findings_promoted": false,
+    "ground_truth_claim": false,
+    "causal_environmental_claim": false,
+    "reason": "No scene-level validated change measurements are part of the public Run #1 artifact."
+  },
+  "required_for_future_reports": [
+    "Per-scene location, date, sensor and source identifier",
+    "Cloud/quality screening and uncertainty",
+    "Held-out scene pairs or sequences",
+    "Deterministic measurements such as water area, shoreline displacement, river width, snow/ice fraction or vegetation index",
+    "Region-level findings with OBSERVATION / DERIVED_VALUE / MODEL_ESTIMATE / HYPOTHESIS / UNKNOWN labels",
+    "A separate count of unique decoded satellite windows versus repeated training samples"
+  ]
+}
