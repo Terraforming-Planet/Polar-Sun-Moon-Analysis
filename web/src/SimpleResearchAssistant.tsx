@@ -8,6 +8,8 @@ import {
   type GeocodeResult,
 } from './lib/evidenceApi'
 import { parseResearchLocation } from './researchLocation'
+import { ResearchChatNotebook } from './ResearchChatNotebook'
+import { ResearchTerrainLab } from './ResearchTerrainLab'
 
 type Place = {
   label: string
@@ -145,7 +147,6 @@ export function SimpleResearchAssistant({
   const rerunForPeriod = (preset: PeriodPreset) => {
     setPeriodPreset(preset)
     if (!place) return
-    // React updates the preset asynchronously, so compute the selected period explicitly here.
     const selectedPeriod = periodForPreset(preset)
     analysisController.current?.abort()
     const controller = new AbortController()
@@ -175,13 +176,13 @@ export function SimpleResearchAssistant({
       <div className="simple-research-copy">
         <small>MAPA · SATELITY · OPENAI</small>
         <h2>Wpisz miejsce. Resztę zrobi AI.</h2>
-        <p>Wyszukaj jezioro, rzekę, miejscowość albo region. Mapa ustawi obszar, pobierze oficjalne dane i pokaże krótką analizę zmian. Nie musisz znać współrzędnych.</p>
+        <p>Wyszukaj jezioro, rzekę, miejscowość albo region. Mapa ustawi obszar, pobierze oficjalne dane i pokaże krótką analizę zmian. Po wybraniu miejsca dostaniesz także laboratorium flag wysokościowych, kolorowych linii, profili DEM i rozmowę z asystentem.</p>
       </div>
       <form className="simple-search" onSubmit={submitSearch}>
         <input
           value={query}
           onChange={event => setQuery(event.target.value)}
-          placeholder="np. Jezioro Nasera, Wisła koło Gniewu, Sahara…"
+          placeholder="np. Nil, Jezioro Tana, Wisła koło Gniewu, Sahara…"
           aria-label="Wyszukaj miejsce do zbadania"
         />
         <button type="submit" className="primary" disabled={!apiUrl || status === 'searching' || status === 'analyzing'}>
@@ -204,12 +205,18 @@ export function SimpleResearchAssistant({
 
     {place && <div className="simple-map panel">
       <div className="simple-map-head">
-        <div><small>WYBRANY OBSZAR</small><h3>{place.label}</h3></div>
+        <div><small>WYBRANY OBSZAR · PODGLĄD MAPY</small><h3>{place.label}</h3></div>
         <a href={`https://www.openstreetmap.org/?mlat=${place.latitude}&mlon=${place.longitude}#map=10/${place.latitude}/${place.longitude}`} target="_blank" rel="noreferrer">Otwórz większą mapę</a>
       </div>
       <iframe title={`Mapa ${place.label}`} src={osmEmbedUrl(place)} loading="lazy" />
-      <p className="simple-map-source">Mapa: OpenStreetMap contributors · domyślny obszar badania 25 km</p>
+      <p className="simple-map-source">Mapa kontekstowa: OpenStreetMap contributors · domyślny obszar badania 25 km. Niżej znajduje się oddzielna oficjalna warstwa NASA GIBS do oznaczeń badawczych.</p>
     </div>}
+
+    {place && <ResearchTerrainLab
+      apiUrl={apiUrl}
+      place={place}
+      satelliteDate={analysis?.preview_images.at(-1)?.date}
+    />}
 
     {(status === 'analyzing' || status === 'searching') && <div className="simple-ai-loading panel" role="status">
       <span className="simple-ai-spinner" />
@@ -257,6 +264,8 @@ export function SimpleResearchAssistant({
         <p><b>Następny krok:</b> {analysis.analysis.recommended_next_step}</p>
       </div>
     </section>}
+
+    {place && <ResearchChatNotebook apiUrl={apiUrl} place={place} analysis={analysis} />}
 
     <details className="simple-advanced panel">
       <summary><span><b>Zaawansowane</b><small>współrzędne, kształt AOI, promień, pory roku, dekady, manifest</small></span><strong>Rozwiń</strong></summary>
