@@ -3,59 +3,95 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>TP-26 L4 Training #2 — Site Research Corpus</title>
+  <meta name="theme-color" content="#06111d" />
+  <meta name="description" content="Detailed evidence-first report for TP-26 NVIDIA L4 Training #2 on the full site research corpus." />
+  <title>TP-26 L4 Training #2 — Site Corpus Findings and Evidence</title>
   <style>
-    :root{color-scheme:dark;--bg:#020711;--panel:#071421;--line:#24506d;--cyan:#72e9ff;--text:#e9f8ff;--muted:#94b9ca;--good:#70efad}
-    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#0a2940 0,#020711 40%);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}main{width:min(1080px,calc(100% - 28px));margin:0 auto;padding:28px 0 48px}a{color:var(--cyan)}.eyebrow{color:var(--cyan);font-weight:800;letter-spacing:.1em;text-transform:uppercase;font-size:.75rem}h1{font-size:clamp(2rem,6vw,3.4rem);line-height:1.02;margin:.35rem 0 .6rem}.lead{color:var(--muted);max-width:800px}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:24px 0}.card,.section{border:1px solid var(--line);border-radius:14px;background:rgba(7,20,33,.92);padding:16px}.card b{display:block;font-size:1.65rem;color:#fff}.card span{font-size:.78rem;color:var(--muted)}.section{margin-top:12px}.section h2{margin-top:0}.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.fact{padding:10px;border:1px solid #173b55;border-radius:9px;background:#04101b}.fact span{display:block;color:var(--muted);font-size:.75rem}.links{display:flex;flex-wrap:wrap;gap:8px}.links a{padding:9px 11px;border:1px solid #2b6384;border-radius:8px;background:#09263a;text-decoration:none}.badge{display:inline-block;padding:5px 8px;border-radius:999px;border:1px solid #2f805c;color:var(--good);font-size:.72rem;font-weight:800}.warning{border-color:#665623;color:#f5df92}.back{display:inline-block;margin-bottom:18px;text-decoration:none}@media(max-width:720px){.grid{grid-template-columns:1fr 1fr}.facts{grid-template-columns:1fr}}@media(max-width:420px){.grid{grid-template-columns:1fr}}
+    :root{color-scheme:dark;--bg:#030814;--panel:#091827;--panel2:#0c2235;--line:#1e4c69;--cyan:#5bdbff;--text:#edf9ff;--muted:#9bb9ca;--ok:#72efad;--warn:#ffd37b;--violet:#bba3ff;--unknown:#b9c6cf}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 18% 0,#0b2d46 0,transparent 34rem),radial-gradient(circle at 90% 35%,#17214855 0,transparent 30rem),var(--bg);color:var(--text);font:16px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:var(--cyan)}.wrap{width:min(1180px,calc(100% - 28px));margin:auto}.top{position:sticky;top:0;z-index:20;background:#06111dec;backdrop-filter:blur(16px);border-bottom:1px solid #183b53}.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0}.brand{font-weight:900;letter-spacing:.08em}.nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.nav a{display:inline-flex;padding:8px 11px;border:1px solid var(--line);border-radius:10px;text-decoration:none;background:#0a1d2d;color:#dff6ff}.hero{padding:62px 0 24px}.kicker{color:var(--cyan);font-size:.76rem;letter-spacing:.16em;text-transform:uppercase;font-weight:900}.hero h1{font-size:clamp(2.25rem,5.4vw,4.9rem);line-height:1.01;margin:.22em 0}.hero p{max-width:930px;color:var(--muted);font-size:1.06rem}.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.badge{display:inline-flex;align-items:center;gap:7px;border:1px solid #247250;background:#09281d;color:var(--ok);padding:6px 10px;border-radius:999px;font-weight:850;font-size:.78rem}.badge.warn{border-color:#695825;background:#2c220b;color:var(--warn)}.badge.unknown{border-color:#4d5f69;background:#17222a;color:#d3dee5}.dot{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 12px currentColor}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:24px 0}.card,.panel{background:linear-gradient(180deg,#0d2032,#071522);border:1px solid #173d57;border-radius:16px;padding:18px;box-shadow:0 12px 34px #0004}.card b{display:block;font-size:1.72rem;line-height:1.15;margin-top:4px}.card span{color:var(--muted);font-size:.79rem}.label{color:var(--muted);font-size:.76rem;text-transform:uppercase;letter-spacing:.1em}.section{padding:20px 0}.section h2{font-size:clamp(1.45rem,3vw,2rem);margin:0 0 12px}.section-lead{color:var(--muted);max-width:960px;margin-top:-4px}.finding-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.finding h3{margin:.25rem 0 .55rem;font-size:1.12rem}.finding p{margin:.45rem 0;color:#d6eaf5}.finding .support{font-size:.86rem;color:var(--muted)}.finding-id{font:800 .72rem ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--cyan);letter-spacing:.08em}.class{display:inline-flex;margin-left:6px;padding:3px 7px;border-radius:999px;border:1px solid #2f805c;color:var(--ok);font-size:.67rem;font-weight:900}.class.model{border-color:#6a55a0;color:var(--violet)}.class.unknown{border-color:#54646e;color:var(--unknown)}.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.fact{padding:14px;border:1px solid #204761;border-radius:12px;background:#07131f}.fact b{font-size:1.25rem;display:block}.fact span{color:var(--muted);font-size:.8rem}.metricline{display:grid;grid-template-columns:210px 1fr 105px;gap:12px;align-items:center;margin:12px 0}.bar{height:12px;border-radius:999px;background:#102d41;overflow:hidden}.bar span{display:block;height:100%;background:linear-gradient(90deg,#31bae9,#73e7ff)}.throughput{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}.throughput div{padding:14px;border:1px solid #204761;border-radius:12px;background:#07131f}.throughput b{font-size:1.4rem;display:block}.throughput span{color:var(--muted);font-size:.8rem}.ledger{width:100%;border-collapse:collapse}.ledger th,.ledger td{text-align:left;vertical-align:top;padding:12px;border-bottom:1px solid #17384d}.ledger th{font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:#95bbce;background:#0b1d2c}.ledger td{background:#071521}.ledger tr:last-child td{border-bottom:0}.tag{font:800 .68rem ui-monospace,SFMono-Regular,Menlo,monospace;padding:4px 7px;border:1px solid #2f805c;border-radius:999px;color:var(--ok);white-space:nowrap}.tag.model{border-color:#6a55a0;color:var(--violet)}.tag.unknown{border-color:#54646e;color:var(--unknown)}.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px}.compare .run{border:1px solid #1d4964;border-radius:14px;padding:16px;background:#071622}.compare .run.active{border-color:#4ccff2;background:#092237}.statrow{display:flex;justify-content:space-between;gap:14px;padding:7px 0;border-bottom:1px solid #173346}.statrow:last-child{border-bottom:0}.statrow span{color:var(--muted)}.note{border-left:3px solid var(--warn);padding:12px 14px;background:#2d210b66;color:#ffe7b0;border-radius:0 12px 12px 0}.links{display:flex;flex-wrap:wrap;gap:8px}.links a{padding:9px 11px;border:1px solid #2b6384;border-radius:8px;background:#09263a;text-decoration:none}.footer{padding:30px 0 70px;color:var(--muted);font-size:.88rem}
+    @media(max-width:900px){.grid{grid-template-columns:1fr 1fr}.finding-grid,.compare{grid-template-columns:1fr}.facts{grid-template-columns:1fr 1fr}.throughput{grid-template-columns:1fr 1fr}.ledger{font-size:.88rem}}@media(max-width:620px){.top .wrap{align-items:flex-start;flex-direction:column}.nav{justify-content:flex-start}.hero{padding-top:38px}.grid,.facts{grid-template-columns:1fr 1fr}.metricline{grid-template-columns:1fr}.throughput{grid-template-columns:1fr}.ledger,.ledger tbody,.ledger tr,.ledger td{display:block}.ledger thead{display:none}.ledger tr{margin-bottom:10px;border:1px solid #17384d;border-radius:12px;overflow:hidden}.ledger td{border-bottom:1px solid #17384d}.ledger td:last-child{border-bottom:0}}@media(max-width:430px){.grid,.facts{grid-template-columns:1fr}.hero h1{font-size:2.25rem}}
   </style>
 </head>
 <body>
-<main>
-  <a class="back" href="../../../">← Terraforming Planet</a>
-  <div class="eyebrow">TP-26 · NVIDIA L4 · completed research run</div>
-  <h1>L4 Training #2 — Site Research Corpus</h1>
-  <p class="lead">Run <strong>site_20260819T223835Z</strong>. This page publishes the structured logs from the second completed L4 run. Large model checkpoints remain outside GitHub Pages.</p>
+<header class="top"><div class="wrap"><div class="brand">TERRA · BUILD FOR GOOD</div><nav class="nav"><a href="../../../">← Earth Live</a><a href="../../../published/l4-training-2026-08-19/">Training #1</a><a href="../stream_gibs_20260820T013036Z/">Training #3</a><a href="analysis.json">Structured findings</a></nav></div></header>
+<main class="wrap">
+  <section class="hero">
+    <div class="kicker">TP-26 · WINDOWS · NVIDIA L4 · CUDA · RUN site_20260819T223835Z</div>
+    <h1>L4 Training #2 — Site Corpus Findings and Evidence</h1>
+    <p>The second training run was a deliberate expansion from the narrow 66-image baseline into the research material already published by Terraforming Planet. It combined local project assets with project-gallery satellite imagery, audited every readable unique image on the GPU, and then ran a full 60-minute self-supervised denoising pretrain. This page records the hardware, corpus composition, measured optimization behavior, what was and was not compared, and the lessons that directly motivated the much larger streaming Training #3.</p>
+    <div class="badges"><span class="badge"><span class="dot"></span>RUN COMPLETED</span><span class="badge">290 / 290 GPU-AUDITED</span><span class="badge warn">NO PAIRWISE ENVIRONMENTAL CLAIM</span></div>
+  </section>
+
   <div class="grid">
-    <div class="card"><b>290</b><span>unique research images</span></div>
-    <div class="card"><b>290 / 290</b><span>images GPU-audited</span></div>
-    <div class="card"><b>29,013</b><span>optimization steps</span></div>
-    <div class="card"><b>696,312</b><span>samples seen — repeated optimization samples, not unique images</span></div>
+    <article class="card"><span class="label">Wall-clock</span><b>60 min</b><span>3,600.063 seconds</span></article>
+    <article class="card"><span class="label">Unique corpus</span><b>290</b><span>research images, SHA-deduplicated</span></article>
+    <article class="card"><span class="label">Optimization</span><b>29,013</b><span>steps · final batch 24</span></article>
+    <article class="card"><span class="label">Training samples</span><b>696,312</b><span>repeated optimization samples, not unique scenes</span></article>
   </div>
+
   <section class="section">
-    <h2>Run summary</h2>
+    <h2>Execution environment</h2>
+    <p class="section-lead">The run executed on the project's Windows GPU workstation/VM. The stored checkpoint path uses the Windows <code>C:\Users\xodobrox\...</code> environment, while the device record captures the CUDA software stack and GPU configuration.</p>
     <div class="facts">
-      <div class="fact"><span>GPU</span><strong>NVIDIA L4 · 23,034 MiB</strong></div>
-      <div class="fact"><span>Runtime</span><strong>3,600.063 s</strong></div>
-      <div class="fact"><span>Resolution / batch</span><strong>512 px · batch 24</strong></div>
-      <div class="fact"><span>Training mode</span><strong>self-supervised denoising pretrain</strong></div>
-      <div class="fact"><span>Loss first → last</span><strong>0.337373 → 0.072435</strong></div>
-      <div class="fact"><span>Best loss</span><strong>0.037302</strong></div>
-      <div class="fact"><span>Corpus origin</span><strong>82 local + 208 project gallery</strong></div>
-      <div class="fact"><span>Unreadable images</span><strong>0</strong></div>
+      <div class="fact"><span>Operating environment</span><b>Windows</b><span>project repository under C:\Users\xodobrox\Polar-Sun-Moon-Analysis</span></div>
+      <div class="fact"><span>GPU</span><b>NVIDIA L4</b><span>23,034 MiB VRAM reported by nvidia-smi</span></div>
+      <div class="fact"><span>CUDA</span><b>13.2</b><span>CUDA available; mixed precision enabled</span></div>
+      <div class="fact"><span>PyTorch</span><b>2.13.0+cu132</b><span>CUDA-enabled training environment</span></div>
+      <div class="fact"><span>NVIDIA driver</span><b>582.16</b><span>device index 0 · power limit 72 W</span></div>
+      <div class="fact"><span>Training input</span><b>512 px · batch 24</b><span>self-supervised denoising pretrain</span></div>
     </div>
   </section>
+
   <section class="section">
-    <h2>Corpus coverage</h2>
-    <p>Experiment 011: 72 · Experiment 013 / Grays Harbor: 71 · Experiment 014 / Vistula: 72 · Experiment 015 / Himalaya–Tibet: 65 · other research pages: 10.</p>
-    <span class="badge">DERIVED_VALUE · training completed</span>
-    <span class="badge warning">No ground-truth or causal environmental claim</span>
+    <h2>Exactly what imagery entered Training #2</h2>
+    <p class="section-lead">The corpus contained <strong>290 unique research images</strong>. Of these, <strong>82</strong> were local project assets and <strong>208</strong> came from project research galleries. The collector reported <strong>0 remote download errors</strong>, and the CUDA audit reported <strong>0 unreadable images</strong>.</p>
+    <div class="facts">
+      <div class="fact"><span>Experiment 011</span><b>72 images</b><span>project research imagery</span></div>
+      <div class="fact"><span>Experiment 013 · Grays Harbor, USA</span><b>71 images</b><span>coastal / estuary research series</span></div>
+      <div class="fact"><span>Experiment 014 · Vistula</span><b>72 images</b><span>river / channel research series</span></div>
+      <div class="fact"><span>Experiment 015 · Himalaya–Tibet</span><b>65 images</b><span>mountain / plateau research series</span></div>
+      <div class="fact"><span>Other research pages</span><b>10 images</b><span>additional site material</span></div>
+      <div class="fact"><span>GPU image audit</span><b>290 / 290</b><span>every readable unique image transferred through CUDA once</span></div>
+    </div>
+    <p class="note"><strong>Important counting rule:</strong> the run did not execute a scientific all-vs-all pairwise comparison of 290 images. It audited 290 unique images and repeatedly sampled from those images during self-supervised optimization. Therefore <strong>696,312 samples_seen must not be described as 696,312 satellite photographs</strong>.</p>
   </section>
+
   <section class="section">
-    <h2>Published structured logs</h2>
-    <div class="links">
-      <a href="metrics.json">metrics.json</a>
-      <a href="device.json">device.json</a>
-      <a href="gpu_audit_summary.json">gpu_audit_summary.json</a>
-      <a href="gpu_image_audit.jsonl">full GPU image audit</a>
-      <a href="site_corpus_manifest.json">site corpus manifest</a>
-      <a href="training_manifest.json">training manifest</a>
-      <a href="training_metrics.json">training metrics</a>
+    <h2>What the run actually taught us</h2>
+    <div class="finding-grid">
+      <article class="panel finding"><div><span class="finding-id">FINDING-01</span><span class="class">DERIVED_VALUE</span></div><h3>The full site corpus passed the GPU audit without unreadable inputs</h3><p>All <strong>290 of 290 unique images</strong> were processed by the CUDA audit, with <strong>0 unreadable files</strong>. That establishes that the collected research corpus was technically usable by the training pipeline at 512 px.</p><p class="support"><strong>Supports:</strong> corpus readability and end-to-end GPU ingestion. <strong>Does not support:</strong> scientific correctness of labels or environmental causation.</p></article>
+      <article class="panel finding"><div><span class="finding-id">FINDING-02</span><span class="class">DERIVED_VALUE</span></div><h3>The denoising objective improved strongly over a full hour</h3><p>Loss fell from <strong>0.337373</strong> to <strong>0.072435</strong>, a <strong>78.53% reduction</strong>. The best observed loss was <strong>0.037302</strong>, which is <strong>88.94% below</strong> the initial value.</p><p class="support"><strong>Supports:</strong> stable optimization on the broader site corpus. <strong>Does not support:</strong> accuracy of water, glacier, river or drought detection.</p></article>
+      <article class="panel finding"><div><span class="finding-id">FINDING-03</span><span class="class">DERIVED_VALUE</span></div><h3>Training #2 materially broadened source diversity relative to Training #1</h3><p>The source corpus grew from <strong>66 images in Training #1 to 290 unique images in Training #2</strong> — a <strong>4.39× larger corpus</strong>, or roughly <strong>+339%</strong>. It also introduced explicit project-region coverage including Grays Harbor, the Vistula and Himalaya–Tibet.</p><p class="support"><strong>Operational lesson:</strong> the project moved from a narrow baseline toward geographically identifiable research material.</p></article>
+      <article class="panel finding"><div><span class="finding-id">FINDING-04</span><span class="class model">MODEL_ESTIMATE</span></div><h3>Repeated sampling was still heavy enough that generalization remained a concern</h3><p>The run produced <strong>696,312 optimization samples from 290 unique source images</strong>, averaging about <strong>2,401 sampled training instances per source image</strong>. This is much healthier than Run #1's narrower corpus, but it still does not replace held-out scene validation.</p><p class="support"><strong>Interpretation:</strong> this is a methodological risk assessment, not a measured overfitting rate.</p></article>
+      <article class="panel finding"><div><span class="finding-id">FINDING-05</span><span class="class unknown">UNKNOWN</span></div><h3>No site-level change magnitude can be claimed from Training #2 alone</h3><p>The training objective reconstructed/denoised images. It did <strong>not</strong> persist deterministic water masks, shoreline vectors, glacier outlines, snow fractions, vegetation indices or matched before/after change metrics for each scene pair.</p><p class="support"><strong>Therefore:</strong> this run prepared the model and audited imagery, but it cannot honestly be cited as proof that a specific lake lost X hectares or a river narrowed by Y metres.</p></article>
+      <article class="panel finding"><div><span class="finding-id">FINDING-06</span><span class="class">DERIVED_VALUE</span></div><h3>The result directly justified the streaming design of Training #3</h3><p>Training #2 proved that the project could train stably on a broader site corpus, but <strong>290 unique images was still far below the intended global scale</strong>. That limitation led to Training #3, where new NASA GIBS geospatial/time windows were streamed continuously instead of replaying only a static local corpus.</p><p class="support"><strong>Design progression:</strong> 66-image baseline → 290-image site corpus → 200k-window streaming run.</p></article>
     </div>
   </section>
-  <section class="section">
-    <h2>Scientific interpretation</h2>
-    <p>The falling reconstruction loss is evidence that the optimization procedure learned the self-supervised reconstruction task on this corpus. It is <strong>not</strong> by itself evidence of a hydrological, climatic, geological or causal environmental discovery.</p>
-  </section>
+
+  <section class="section"><h2>Optimization and throughput</h2><div class="panel">
+    <div class="metricline"><span>Initial loss</span><div class="bar"><span style="width:100%"></span></div><strong>0.33737</strong></div>
+    <div class="metricline"><span>Final loss</span><div class="bar"><span style="width:21.47%"></span></div><strong>0.07244</strong></div>
+    <div class="metricline"><span>Best observed loss</span><div class="bar"><span style="width:11.06%"></span></div><strong>0.03730</strong></div>
+    <div class="throughput"><div><b>8.06</b><span>optimization steps / second</span></div><div><b>193.42</b><span>training samples / second</span></div><div><b>2,401</b><span>mean sampled instances / unique source image</span></div></div>
+  </div></section>
+
+  <section class="section"><h2>Evidence ledger</h2><div class="panel" style="padding:0;overflow:hidden"><table class="ledger"><thead><tr><th>ID</th><th>Class</th><th>Conclusion</th><th>Public evidence</th></tr></thead><tbody>
+    <tr><td>FINDING-01</td><td><span class="tag">DERIVED_VALUE</span></td><td>Every unique corpus image was GPU-readable.</td><td>290 images in corpus; 290 GPU-audited; 0 unreadable.</td></tr>
+    <tr><td>FINDING-02</td><td><span class="tag">DERIVED_VALUE</span></td><td>Self-supervised optimization improved substantially.</td><td>Loss 0.337373 → 0.072435; best 0.037302; 3,600.063 s.</td></tr>
+    <tr><td>FINDING-03</td><td><span class="tag">DERIVED_VALUE</span></td><td>Corpus diversity increased sharply over Training #1.</td><td>66 → 290 unique source images; 4.39× larger.</td></tr>
+    <tr><td>FINDING-04</td><td><span class="tag model">MODEL_ESTIMATE</span></td><td>Unseen-scene generalization still required independent validation.</td><td>696,312 samples were generated from 290 unique source images.</td></tr>
+    <tr><td>FINDING-05</td><td><span class="tag unknown">UNKNOWN</span></td><td>Environmental change magnitude is not established by the training objective.</td><td>No persisted scene-pair water/snow/shoreline change metrics.</td></tr>
+  </tbody></table></div></section>
+
+  <section class="section"><h2>Run #1 → Run #2 progression</h2><div class="compare">
+    <div class="run"><h3>Training #1 · narrow baseline</h3><div class="statrow"><span>Source images</span><b>66</b></div><div class="statrow"><span>Samples</span><b>704,232</b></div><div class="statrow"><span>Loss reduction</span><b>84.14%</b></div><div class="statrow"><span>Public site provenance</span><b>limited</b></div></div>
+    <div class="run active"><h3>Training #2 · site research corpus</h3><div class="statrow"><span>Unique images</span><b>290</b></div><div class="statrow"><span>Samples</span><b>696,312</b></div><div class="statrow"><span>Loss reduction</span><b>78.53%</b></div><div class="statrow"><span>Project-region coverage</span><b>explicit</b></div></div>
+  </div><p class="note"><strong>Do not rank the runs by raw loss alone.</strong> Training #2 used a different and much larger corpus, so its loss values are not a controlled apples-to-apples accuracy comparison with Training #1.</p></section>
+
+  <section class="section"><h2>Published evidence</h2><div class="panel"><div class="links"><a href="analysis.json">analysis.json</a><a href="metrics.json">metrics.json</a><a href="device.json">device.json</a><a href="gpu_audit_summary.json">GPU audit summary</a><a href="gpu_image_audit.jsonl">full GPU image audit</a><a href="site_corpus_manifest.json">site corpus manifest</a><a href="training_manifest.json">training manifest</a><a href="training_metrics.json">training metrics</a></div></div></section>
+
+  <section class="section"><h2>Scientific interpretation</h2><div class="panel"><p><strong>Training #2 was successful as a training and data-engineering experiment.</strong> It demonstrated one-hour CUDA stability on Windows/NVIDIA L4, complete GPU readability of a 290-image research corpus, and strong improvement of the self-supervised denoising objective. It also exposed the next scientific requirement: training success is not the same as Earth-change measurement. Reliable environmental conclusions require a separate deterministic analysis pass with matched dates/seasons, scene provenance, cloud/quality control and explicit pixel-derived measurements.</p></div></section>
+  <div class="footer">TP-26 evidence policy: OBSERVATION / DERIVED_VALUE / MODEL_ESTIMATE / HYPOTHESIS / UNKNOWN are kept distinct. Training counters are not silently promoted into environmental findings.</div>
 </main>
 </body>
 </html>
