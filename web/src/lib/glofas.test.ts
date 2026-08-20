@@ -2,14 +2,14 @@ import { describe, expect, it } from 'vitest'
 import { newestTemporalEnd, sourceStatusLabel, variableLabel, type GlofasCatalog } from './glofas'
 
 describe('GloFAS hydrology helpers', () => {
-  it('uses Polish labels for supported hydrology variables', () => {
-    expect(variableLabel('river_discharge')).toBe('Przepływ rzeczny')
-    expect(variableLabel('soil_wetness_index_root_zone')).toBe('Wilgotność strefy korzeniowej')
+  it('uses English labels for supported hydrology variables', () => {
+    expect(variableLabel('river_discharge')).toBe('River discharge')
+    expect(variableLabel('soil_wetness_index_root_zone')).toBe('Root-zone soil wetness')
   })
 
   it('does not describe a down source as available', () => {
-    expect(sourceStatusLabel('available')).toBe('DOSTĘPNE')
-    expect(sourceStatusLabel('down')).toBe('CHWILOWO NIEDOSTĘPNE')
+    expect(sourceStatusLabel('available')).toBe('AVAILABLE')
+    expect(sourceStatusLabel('down')).toBe('TEMPORARILY UNAVAILABLE')
   })
 
   it('selects the newest published temporal end across sources', () => {
