@@ -20,6 +20,11 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 # hot-path network loop. Keep all correctness/bug checks active while allowing
 # these formatting-only lines during the first streaming rollout.
 "terra_research_node/streaming_gibs_training.py" = ["E501", "I001"]
+# The Training #3 report generator intentionally embeds compact HTML/provenance
+# strings close to the derived-metrics code. These exceptions are formatting-only;
+# correctness, bugbear, modernization and simplification checks remain enabled.
+"scripts/publish_streaming_gibs_run.py" = ["E501"]
+"tests/test_streaming_gibs_report.py" = ["I001"]
 
 [tool.mypy]
 python_version = "3.12"
