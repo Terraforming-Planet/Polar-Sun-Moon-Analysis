@@ -1,5 +1,5 @@
 {
-  "generatedUtc": "2026-08-20T01:23:18.117984Z",
+  "generatedUtc": "2026-08-20T02:35:14.727603Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
@@ -273,33 +273,6 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22562",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_22561",
-      "title": "Tropical Storm Nangka",
-      "categories": [
-        "Severe Storms"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 25.0,
-        "magnitudeUnit": "kts",
-        "date": "2026-08-14T12:00:00Z",
-        "type": "Point",
-        "coordinates": [
-          154.5,
-          28.3
-        ]
-      },
-      "sources": [
-        {
-          "id": "JTWC",
-          "url": "https://www.metoc.navy.mil/jtwc/products/wp1626.tcw"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22561",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
@@ -5405,6 +5378,33 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21390",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_21380",
+      "title": "Wildfire P-L Gulch, Rio Blanco, Colorado",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 1500.0,
+        "magnitudeUnit": "acres",
+        "date": "2026-07-13T15:02:00Z",
+        "type": "Point",
+        "coordinates": [
+          -108.22355,
+          39.87355
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-COWRD-000853"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21380",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -5698,35 +5698,6 @@
           {
             "id": "NOAA_NHC",
             "url": "https://www.nhc.noaa.gov/archive/2026/HERNAN.shtml"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_22561",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          154.5,
-          28.3
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Tropical Storm Nangka",
-        "categories": [
-          "Severe Storms"
-        ],
-        "observationUtc": "2026-08-14T12:00:00Z",
-        "observation_time": "2026-08-14T12:00:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22561",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22561",
-        "sources": [
-          {
-            "id": "JTWC",
-            "url": "https://www.metoc.navy.mil/jtwc/products/wp1626.tcw"
           }
         ]
       }
@@ -11208,6 +11179,35 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2025-MNMNS-RX259294"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_21380",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -108.22355,
+          39.87355
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Wildfire P-L Gulch, Rio Blanco, Colorado",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-07-13T15:02:00Z",
+        "observation_time": "2026-07-13T15:02:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21380",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21380",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-COWRD-000853"
           }
         ]
       }
