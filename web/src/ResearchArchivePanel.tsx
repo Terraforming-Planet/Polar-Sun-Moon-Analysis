@@ -1,12 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { PUBLIC_RESEARCH_CATEGORIES, PUBLIC_RESEARCH_TESTS } from './researchCatalog'
+import { ResearchDataPreview } from './ResearchDataPreview'
 import {
   deleteResearchManifestLocally,
   downloadResearchManifest,
   loadLocalResearchArchive,
   type ResearchManifest,
 } from './researchArchive'
+import { PUBLIC_RESEARCH_CATEGORIES, PUBLIC_RESEARCH_TESTS } from './researchCatalog'
+import { researchShapeLabel } from './researchGeometry'
+import { temporalPresetLabel } from './researchTime'
 
 const base = import.meta.env.BASE_URL
 
@@ -24,6 +27,7 @@ export function ResearchArchivePanel({
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('wszystkie')
   const [localArchive, setLocalArchive] = useState<ResearchManifest[]>([])
+  const [expandedLocalId, setExpandedLocalId] = useState<string | null>(null)
 
   const refreshLocalArchive = () => setLocalArchive(loadLocalResearchArchive())
   useEffect(refreshLocalArchive, [])
@@ -39,6 +43,7 @@ export function ResearchArchivePanel({
 
   const removeLocal = (id: string) => {
     deleteResearchManifestLocally(id)
+    if (expandedLocalId === id) setExpandedLocalId(null)
     refreshLocalArchive()
   }
 
@@ -80,22 +85,36 @@ export function ResearchArchivePanel({
       <div><small>LOCAL DRAFT ARCHIVE</small><h2>Moje badania</h2></div>
       <span className="evidence-badge derived">DEVICE LOCAL</span>
     </div>
-    <p className="muted">Te szkice są zapisane wyłącznie w tej przeglądarce. Nie trafiają automatycznie do GitHuba ani do OpenAI. Eksport JSON jest bezpiecznym formatem do późniejszego zatwierdzenia i uruchomienia w kontrolowanym pipeline.</p>
+    <p className="muted">Szkice są zapisane lokalnie w tej przeglądarce. Możesz ponownie otworzyć dla nich oficjalne dane i obrazy satelitarne bez wysyłania szkicu do GitHuba ani OpenAI.</p>
 
     {localArchive.length ? <div className="local-research-list">
-      {localArchive.map(item => <article key={item.id} className="local-research-item">
-        <div><span className="evidence-badge derived">DRAFT</span><h3>{item.title}</h3></div>
-        <div className="local-research-meta">
-          <span><b>Obszar</b>{item.area.latitude.toFixed(5)}°, {item.area.longitude.toFixed(5)}° · {item.area.radius_km} km</span>
-          <span><b>Zakres</b>{item.temporal_scope.start_date} → {item.temporal_scope.end_date}</span>
-          <span><b>Analizy</b>{item.analyses.join(', ')}</span>
-        </div>
-        {item.notes && <p>{item.notes}</p>}
-        <div className="hero-actions">
-          <button type="button" className="secondary" onClick={() => downloadResearchManifest(item)}>Eksport JSON</button>
-          <button type="button" className="research-delete" onClick={() => removeLocal(item.id)}>Usuń lokalny szkic</button>
-        </div>
-      </article>)}
-    </div> : <div className="empty research-empty"><span>BRAK LOKALNYCH SZKICÓW</span><p>Utwórz nowe badanie w kreatorze obszaru. Po zapisaniu pojawi się tutaj i będzie można je wyeksportować.</p></div>}
+      {localArchive.map(item => {
+        const expanded = item.id === expandedLocalId
+        const shape = item.area.shape ?? 'circle'
+        const mode = item.temporal_scope.mode ?? 'custom'
+        return <article key={item.id} className={`local-research-item ${expanded ? 'expanded' : ''}`}>
+          <div><span className="evidence-badge derived">DRAFT</span><h3>{item.title}</h3></div>
+          <div className="local-research-meta">
+            <span><b>Obszar</b>{item.area.latitude.toFixed(5)}°, {item.area.longitude.toFixed(5)}° · {researchShapeLabel(shape)} · {item.area.radius_km} km</span>
+            <span><b>Zakres</b>{item.temporal_scope.start_date} → {item.temporal_scope.end_date} · {temporalPresetLabel(mode)}</span>
+            <span><b>Analizy</b>{item.analyses.join(', ')}</span>
+          </div>
+          {item.notes && <p>{item.notes}</p>}
+          <div className="hero-actions local-research-actions">
+            <button type="button" className="primary" onClick={() => setExpandedLocalId(expanded ? null : item.id)}>{expanded ? 'Ukryj dane' : 'Dane i obrazy'}</button>
+            <button type="button" className="secondary" onClick={() => downloadResearchManifest(item)}>Eksport JSON</button>
+            <button type="button" className="research-delete" onClick={() => removeLocal(item.id)}>Usuń lokalny szkic</button>
+          </div>
+          {expanded && <ResearchDataPreview
+            latitude={item.area.latitude}
+            longitude={item.area.longitude}
+            radiusKm={item.area.radius_km}
+            shape={shape}
+            startDate={item.temporal_scope.start_date}
+            endDate={item.temporal_scope.end_date}
+          />}
+        </article>
+      })}
+    </div> : <div className="empty research-empty"><span>BRAK LOKALNYCH SZKICÓW</span><p>Utwórz nowe badanie w kreatorze obszaru. Po zapisaniu pojawi się tutaj i będzie można pobrać dla niego dane oraz obrazy.</p></div>}
   </section>
 }
