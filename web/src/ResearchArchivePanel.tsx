@@ -2,9 +2,13 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { ResearchDataPreview } from './ResearchDataPreview'
 import {
+  deleteResearchFindingLocally,
   deleteResearchManifestLocally,
+  downloadResearchFinding,
   downloadResearchManifest,
   loadLocalResearchArchive,
+  loadLocalResearchFindings,
+  type ResearchFindingRecord,
   type ResearchManifest,
 } from './researchArchive'
 import { PUBLIC_RESEARCH_CATEGORIES, PUBLIC_RESEARCH_TESTS } from './researchCatalog'
@@ -27,9 +31,14 @@ export function ResearchArchivePanel({
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('wszystkie')
   const [localArchive, setLocalArchive] = useState<ResearchManifest[]>([])
+  const [findings, setFindings] = useState<ResearchFindingRecord[]>([])
   const [expandedLocalId, setExpandedLocalId] = useState<string | null>(null)
+  const [expandedFindingId, setExpandedFindingId] = useState<string | null>(null)
 
-  const refreshLocalArchive = () => setLocalArchive(loadLocalResearchArchive())
+  const refreshLocalArchive = () => {
+    setLocalArchive(loadLocalResearchArchive())
+    setFindings(loadLocalResearchFindings())
+  }
   useEffect(refreshLocalArchive, [])
 
   const filtered = useMemo(() => {
@@ -44,6 +53,12 @@ export function ResearchArchivePanel({
   const removeLocal = (id: string) => {
     deleteResearchManifestLocally(id)
     if (expandedLocalId === id) setExpandedLocalId(null)
+    refreshLocalArchive()
+  }
+
+  const removeFinding = (id: string) => {
+    deleteResearchFindingLocally(id)
+    if (expandedFindingId === id) setExpandedFindingId(null)
     refreshLocalArchive()
   }
 
@@ -82,10 +97,46 @@ export function ResearchArchivePanel({
     </div>
 
     <div className="research-section-head local-archive-title">
-      <div><small>LOCAL DRAFT ARCHIVE</small><h2>Moje badania</h2></div>
+      <div><small>SAVED RESEARCH FINDINGS · NO RAW CHAT</small><h2>Zapisane obrazy i wnioski</h2></div>
+      <span className="evidence-badge observation">CHAT EXCLUDED</span>
+    </div>
+    <p className="muted">Tutaj zapisujemy tylko jawnie wybrane wyniki: linki do obrazów źródłowych, daty/sensory, metadane Landsat i wnioski AI. Treść prywatnej rozmowy nie jest częścią tego rekordu.</p>
+
+    {findings.length ? <div className="local-research-list research-findings-list">
+      {findings.map(item => {
+        const expanded = item.id === expandedFindingId
+        return <article key={item.id} className={`local-research-item finding-item ${expanded ? 'expanded' : ''}`}>
+          <div><span className="evidence-badge observation">FINDING</span><h3>{item.title}</h3></div>
+          <div className="local-research-meta">
+            <span><b>Obszar</b>{item.area.latitude.toFixed(5)}°, {item.area.longitude.toFixed(5)}° · {item.area.radius_km} km</span>
+            <span><b>Zakres</b>{item.period.start_date} → {item.period.end_date}</span>
+            <span><b>Źródła</b>{item.source_images.length} obrazów · {item.landsat_catalog.matched} scen Landsat w katalogu</span>
+          </div>
+          <p><b>{item.conclusion.headline}</b></p>
+          <div className="hero-actions local-research-actions">
+            <button type="button" className="primary" onClick={() => setExpandedFindingId(expanded ? null : item.id)}>{expanded ? 'Ukryj szczegóły' : 'Obrazy i wnioski'}</button>
+            <button type="button" className="secondary" onClick={() => downloadResearchFinding(item)}>Eksport JSON</button>
+            <button type="button" className="research-delete" onClick={() => removeFinding(item.id)}>Usuń zapis</button>
+          </div>
+          {expanded && <div className="research-finding-details">
+            <div className="research-finding-summary">
+              <article><small>CO WIDAĆ</small><p>{item.conclusion.what_is_visible}</p></article>
+              <article><small>ZMIANY</small><p>{item.conclusion.change_over_time}</p></article>
+              <article><small>WODA / TEREN</small><p>{item.conclusion.water_assessment}</p></article>
+              <article><small>PEWNOŚĆ</small><p>{item.conclusion.confidence.level} · {item.conclusion.confidence.reason}</p></article>
+            </div>
+            {item.source_images.length > 0 && <div className="research-finding-images">{item.source_images.map(image => <figure key={`${image.date}-${image.source}`}><a href={image.url} target="_blank" rel="noreferrer"><img src={image.url} alt={`${image.source} ${image.date}`} loading="lazy" /></a><figcaption><b>{image.date}</b><span>{image.source}</span></figcaption></figure>)}</div>}
+            <p className="muted"><b>Prywatność:</b> {item.privacy_note === 'raw-chat-not-included' ? 'surowa rozmowa nie została zapisana.' : item.privacy_note}</p>
+          </div>}
+        </article>
+      })}
+    </div> : <div className="empty research-empty"><span>BRAK ZAPISANYCH WYNIKÓW</span><p>Po wykonaniu analizy użyj przycisku „Zapisz obrazy + wnioski”. Zapis nastąpi jawnie — nie zapisujemy automatycznie czatu.</p></div>}
+
+    <div className="research-section-head local-archive-title">
+      <div><small>LOCAL DRAFT ARCHIVE</small><h2>Szkice obszarów</h2></div>
       <span className="evidence-badge derived">DEVICE LOCAL</span>
     </div>
-    <p className="muted">Szkice są zapisane lokalnie w tej przeglądarce. Możesz ponownie otworzyć dla nich oficjalne dane i obrazy satelitarne bez wysyłania szkicu do GitHuba ani OpenAI.</p>
+    <p className="muted">Szkice obszaru są zapisane lokalnie w tej przeglądarce. Nie zawierają historii czatu.</p>
 
     {localArchive.length ? <div className="local-research-list">
       {localArchive.map(item => {
