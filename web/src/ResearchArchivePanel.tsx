@@ -111,7 +111,7 @@ export function ResearchArchivePanel({
       <div><small>ASSISTANT ANSWERS · USER PROMPTS EXCLUDED</small><h2>Saved assistant answers</h2></div>
       <span className="evidence-badge observation">PROMPTS NOT STORED</span>
     </div>
-    <p className="muted">This device-local archive can show where a research session was focused and what the assistant answered. It deliberately does not contain the user's question, prompt text or raw conversation history. Nothing in this section is a cross-user activity log.</p>
+    <p className="muted">Assistant answers and generated reports are kept automatically in this device-local archive so useful results survive a refresh. The matching user question, prompt text and raw conversation history are deliberately excluded. Nothing in this section is a cross-user activity log.</p>
 
     {assistantAnswers.length ? <div className="local-research-list research-findings-list">
       {assistantAnswers.map(item => <article key={item.id} className="local-research-item finding-item">
@@ -128,7 +128,7 @@ export function ResearchArchivePanel({
           <button type="button" className="research-delete" onClick={() => removeAssistantAnswer(item.id)}>Delete saved answer</button>
         </div>
       </article>)}
-    </div> : <div className="empty research-empty"><span>NO SAVED ASSISTANT ANSWERS</span><p>Use “Save assistant answer only” after a response. The matching user question is never written into this archive.</p></div>}
+    </div> : <div className="empty research-empty"><span>NO SAVED ASSISTANT ANSWERS</span><p>After the assistant returns a response, the answer/report appears here automatically. The matching private user question is never written into this archive.</p></div>}
 
     <div className="research-section-head local-archive-title">
       <div><small>SAVED RESEARCH FINDINGS · NO RAW CHAT</small><h2>Saved imagery and findings</h2></div>
