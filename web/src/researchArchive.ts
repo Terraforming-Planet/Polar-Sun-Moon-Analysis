@@ -1,3 +1,6 @@
+import type { ResearchAreaShape } from './researchGeometry'
+import type { ResearchTemporalPreset } from './researchTime'
+
 export type ResearchAnalysisKind = 'water-change' | 'hydrology' | 'terrain' | 'hazards' | 'multispectral'
 
 export type ResearchAreaInput = {
@@ -5,8 +8,10 @@ export type ResearchAreaInput = {
   latitude: number
   longitude: number
   radiusKm: number
+  shape?: ResearchAreaShape
   startDate: string
   endDate: string
+  temporalPreset?: ResearchTemporalPreset
   analyses: ResearchAnalysisKind[]
   notes?: string
 }
@@ -22,13 +27,16 @@ export type ResearchManifest = {
     latitude: number
     longitude: number
     radius_km: number
+    shape?: ResearchAreaShape
   }
   temporal_scope: {
     start_date: string
     end_date: string
+    mode?: ResearchTemporalPreset
   }
   analyses: ResearchAnalysisKind[]
   evidence_policy: 'official-public-only'
+  satellite_sources?: Array<'NASA_GIBS' | 'USGS_LANDSAT_STAC'>
   notes: string
 }
 
@@ -51,6 +59,8 @@ export function buildResearchManifest(input: ResearchAreaInput, now = new Date()
   if (input.startDate > input.endDate) throw new Error('Data początkowa nie może być późniejsza niż końcowa.')
   if (!input.analyses.length) throw new Error('Wybierz przynajmniej jeden rodzaj analizy.')
 
+  const shape = input.shape ?? 'circle'
+  const temporalPreset = input.temporalPreset ?? 'custom'
   const stamp = now.toISOString()
   const idSuffix = stamp.replace(/[-:.TZ]/g, '').slice(0, 14)
   const coordinateSuffix = `${latitude.toFixed(4)}_${longitude.toFixed(4)}`.replace(/-/g, 'm').replace(/\./g, 'p')
@@ -66,13 +76,16 @@ export function buildResearchManifest(input: ResearchAreaInput, now = new Date()
       latitude,
       longitude,
       radius_km: radiusKm,
+      shape,
     },
     temporal_scope: {
       start_date: input.startDate,
       end_date: input.endDate,
+      mode: temporalPreset,
     },
     analyses: [...new Set(input.analyses)],
     evidence_policy: 'official-public-only',
+    satellite_sources: ['NASA_GIBS', 'USGS_LANDSAT_STAC'],
     notes: input.notes?.trim() ?? '',
   }
 }
