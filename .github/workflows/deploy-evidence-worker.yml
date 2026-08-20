@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   actions: write
 
 concurrency:
@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Verify required deployment secrets exist
         shell: bash
@@ -36,6 +38,9 @@ jobs:
           test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo 'Missing CLOUDFLARE_ACCOUNT_ID repository secret.'; exit 1; }
           test -n "$OPENAI_API_KEY" || { echo 'Missing OPENAI_API_KEY repository secret.'; exit 1; }
           echo 'Required secret names are configured. Secret values are not printed.'
+
+      - name: Scan tracked files for leaked tokens
+        run: python scripts/ci/scan_tracked_secrets.py
 
       - name: Test Worker guardrails
         run: node --test cloudflare/evidence-worker/test/*.test.mjs
@@ -61,8 +66,11 @@ jobs:
         run: |
           set -euo pipefail
           test -n "$WORKER_URL" || { echo 'Cloudflare action did not return a deployment URL.'; exit 1; }
+          [[ "$WORKER_URL" == https://* ]] || { echo 'Worker deployment URL must use HTTPS.'; exit 1; }
           echo "Worker URL: $WORKER_URL"
-          curl --fail --silent --show-error --retry 5 --retry-delay 3 "$WORKER_URL/health" > /tmp/health.json
+          curl --fail --silent --show-error --retry 5 --retry-delay 3 \
+            -H 'Origin: https://terraforming-planet.github.io' \
+            "$WORKER_URL/health" > /tmp/health.json
           python - <<'PY'
           import json
           from pathlib import Path
@@ -74,6 +82,62 @@ jobs:
           print('Worker health check passed; OpenAI secret is configured.')
           PY
 
+      - name: Verify real OpenAI evidence explanation
+        shell: bash
+        env:
+          WORKER_URL: ${{ steps.deploy.outputs.deployment-url }}
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --retry 3 --retry-delay 3 \
+            -X POST \
+            -H 'Origin: https://terraforming-planet.github.io' \
+            -H 'Content-Type: application/json' \
+            --data '{"case_id":"vistula-test-014"}' \
+            "$WORKER_URL/explain" > /tmp/explain.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          payload = json.loads(Path('/tmp/explain.json').read_text(encoding='utf-8'))
+          assert payload.get('case_id') == 'vistula-test-014'
+          assert payload.get('evidence_source') == 'canonical-public-repository-artifacts'
+          explanation = payload.get('explanation')
+          assert isinstance(explanation, dict)
+          for field in ('summary', 'why_it_matters', 'uncertainty', 'next_checks'):
+              assert isinstance(explanation.get(field), str) and explanation[field].strip()
+          print('Live OpenAI Responses API explanation passed without printing model output.')
+          PY
+
+      - name: Persist public Evidence Worker URL for future Pages builds
+        shell: bash
+        env:
+          WORKER_URL: ${{ steps.deploy.outputs.deployment-url }}
+        run: |
+          set -euo pipefail
+          mkdir -p config
+          printf '%s\n' "${WORKER_URL%/}" > config/evidence-worker-url.txt
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/evidence-worker-url.txt
+          if git diff --cached --quiet; then
+            echo 'Public Worker URL is already persisted.'
+            exit 0
+          fi
+          git commit -m 'chore(config): persist public Evidence Worker URL'
+          for attempt in 1 2 3 4; do
+            echo "worker_url_persist_attempt=${attempt}"
+            if git fetch origin main \
+              && git rebase origin/main \
+              && git push origin HEAD:main; then
+              echo 'worker_url_persist=success'
+              exit 0
+            fi
+            git rebase --abort >/dev/null 2>&1 || true
+            sleep $((attempt * 4))
+          done
+          echo 'worker_url_persist=failed after 4 attempts'
+          exit 1
+
       - name: Rebuild GitHub Pages with the public Worker URL
         shell: bash
         env:
@@ -84,8 +148,36 @@ jobs:
           gh workflow run force-pages-deploy.yml \
             --repo "$GITHUB_REPOSITORY" \
             --ref main \
-            -f evidence_api_url="$WORKER_URL"
+            -f evidence_api_url="${WORKER_URL%/}"
           echo 'Dispatched force-pages-deploy.yml with the public Worker URL as a workflow input.'
+
+      - name: Verify public Pages bundle contains the Worker URL
+        shell: bash
+        env:
+          WORKER_URL: ${{ steps.deploy.outputs.deployment-url }}
+          SITE_URL: https://terraforming-planet.github.io/Polar-Sun-Moon-Analysis/
+        run: |
+          set -euo pipefail
+          worker_url="${WORKER_URL%/}"
+          for attempt in $(seq 1 18); do
+            nonce="$(date +%s)-$attempt"
+            if curl --connect-timeout 15 --max-time 30 -L -fsS -H 'Cache-Control: no-cache' \
+              "${SITE_URL}?evidence=${nonce}" > /tmp/site-index.html; then
+              asset_path=$(grep -oE '/Polar-Sun-Moon-Analysis/assets/index-[A-Za-z0-9_-]+\.js' /tmp/site-index.html | head -1 || true)
+              if [ -n "$asset_path" ] && curl --connect-timeout 15 --max-time 30 -L -fsS -H 'Cache-Control: no-cache' \
+                "https://terraforming-planet.github.io${asset_path}?evidence=${nonce}" > /tmp/site-app.js; then
+                if grep -Fq "$worker_url" /tmp/site-app.js \
+                  && grep -Fq 'Explain Vistula evidence with OpenAI' /tmp/site-app.js; then
+                  echo 'Public Pages bundle contains the live Evidence Worker URL and explainer UI.'
+                  exit 0
+                fi
+              fi
+            fi
+            echo "Pages handoff not visible yet (attempt $attempt/18)."
+            sleep 20
+          done
+          echo 'Public Pages bundle did not expose the deployed Worker URL in time.'
+          exit 1
 
       - name: Deployment summary
         shell: bash
@@ -95,10 +187,11 @@ jobs:
           {
             echo '## Terra OpenAI Evidence Worker'
             echo
-            echo "- Worker: $WORKER_URL"
+            echo "- Worker: ${WORKER_URL%/}"
             echo '- Health: passed'
+            echo '- Live /explain OpenAI call: passed'
             echo '- OPENAI_API_KEY: stored as Worker secret; value not exposed'
+            echo '- Public Worker URL: persisted in config/evidence-worker-url.txt'
             echo '- VITE_EVIDENCE_API_URL: handed directly to the controlled Pages workflow input'
-            echo '- Repository Actions variables: not mutated by the workflow'
-            echo '- GitHub Pages rebuild: dispatched'
+            echo '- Public Pages bundle: verified to contain the Worker URL'
           } >> "$GITHUB_STEP_SUMMARY"
