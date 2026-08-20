@@ -1,0 +1,48 @@
+{
+  "schema": "terra-real-data-test-context-v1",
+  "test_id": "experiment-014-vistula-gniew-grudziadz",
+  "title": "Vistula Gniew-Grudziadz real satellite data integrity context",
+  "test_type": "data_integrity_and_temporal_coverage",
+  "area_of_interest": {
+    "name": "Vistula Gniew-Grudziadz",
+    "reported_extent": "45 x 70 km"
+  },
+  "temporal_scope": {
+    "start_year": 1990,
+    "end_year": 2026,
+    "seasons": [
+      "spring",
+      "autumn"
+    ]
+  },
+  "integrity": {
+    "record_count": 74,
+    "accepted_count": 72,
+    "rejected_or_not_accepted_count": 2,
+    "per_record_provenance_fields": [
+      "year",
+      "season",
+      "date",
+      "platform",
+      "item_id",
+      "source_scene_key",
+      "sha256",
+      "average_hash_16"
+    ]
+  },
+  "source": {
+    "repository": "Terraforming-Planet/Polar-Sun-Moon-Analysis",
+    "source_branch": "experiment-014-wisla-gniew-grudziadz-53-660000-18-790000",
+    "source_path": "published/experiment-014/integrity.json",
+    "public_test_page": "https://terraforming-planet.github.io/Polar-Sun-Moon-Analysis/experiment-014/"
+  },
+  "evidence_class": "OBSERVATION",
+  "environmental_finding_claim": false,
+  "water_loss_claim": false,
+  "causal_claim": false,
+  "limitations": [
+    "This artifact establishes the integrity and temporal coverage of the real satellite-image test set, not a measured water-loss result.",
+    "Environmental before/after conclusions require a separate reproducible image-analysis stage.",
+    "A visible sandbar, exposed bed or channel constriction is not by itself proof of hydrological causation."
+  ]
+}
