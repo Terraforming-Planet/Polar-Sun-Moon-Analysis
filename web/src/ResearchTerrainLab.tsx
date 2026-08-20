@@ -40,9 +40,9 @@ const CDSE_WMS = `https://sh.dataspace.copernicus.eu/ogc/wms/${CDSE_INSTANCE}`
 const CDSE_TRUE_COLOR_LAYER = import.meta.env.VITE_CDSE_TRUE_COLOR_LAYER || import.meta.env.VITE_CDSE_LAYER || 'NATURAL-COLOR'
 
 const NILE_REFERENCE_FLAGS: Array<Omit<Flag, 'id' | 'number' | 'elevation'>> = [
-  { latitude: 12.0, longitude: 37.25, label: 'Jezioro Tana — punkt referencyjny źródłowego obszaru Nilu Błękitnego', color: '#2ca8ff' },
-  { latitude: 11.55, longitude: 37.6, label: 'Wyżyna Etiopska — punkt referencyjny zlewni górnego Nilu Błękitnego', color: '#2ca8ff' },
-  { latitude: 15.6031, longitude: 32.5265, label: 'Chartum — rejon połączenia Nilu Białego i Błękitnego', color: '#f4c64e' },
+  { latitude: 12.0, longitude: 37.25, label: 'Lake Tana — reference point for the Blue Nile source region', color: '#2ca8ff' },
+  { latitude: 11.55, longitude: 37.6, label: 'Ethiopian Highlands — reference point for the upper Blue Nile basin', color: '#2ca8ff' },
+  { latitude: 15.6031, longitude: 32.5265, label: 'Khartoum — White Nile / Blue Nile confluence region', color: '#f4c64e' },
 ]
 
 function boundsForMap(place: ResearchLabPlace, radiusKm = 25) {
@@ -57,6 +57,15 @@ function boundsForMap(place: ResearchLabPlace, radiusKm = 25) {
   }
 }
 
+function imageDimensions(place: ResearchLabPlace, maxDimension: number, radiusKm = 25) {
+  const bounds = boundsForMap(place, radiusKm)
+  const lonSpan = Math.max(0.0001, bounds.east - bounds.west)
+  const latSpan = Math.max(0.0001, bounds.north - bounds.south)
+  const aspect = Math.max(0.35, Math.min(2.85, lonSpan / latSpan))
+  if (aspect >= 1) return { width: maxDimension, height: Math.max(512, Math.round(maxDimension / aspect)) }
+  return { width: Math.max(512, Math.round(maxDimension * aspect)), height: maxDimension }
+}
+
 function dateDaysBefore(date: string, days: number) {
   const parsed = new Date(`${date}T12:00:00Z`)
   if (!Number.isFinite(parsed.getTime())) return date
@@ -64,8 +73,9 @@ function dateDaysBefore(date: string, days: number) {
   return parsed.toISOString().slice(0, 10)
 }
 
-function gibsUrl(place: ResearchLabPlace, date: string, layer: string, size: number, radiusKm = 25) {
+function gibsUrl(place: ResearchLabPlace, date: string, layer: string, maxDimension: number, radiusKm = 25) {
   const bounds = boundsForMap(place, radiusKm)
+  const dimensions = imageDimensions(place, maxDimension, radiusKm)
   const params = new URLSearchParams({
     SERVICE: 'WMS',
     REQUEST: 'GetMap',
@@ -76,15 +86,16 @@ function gibsUrl(place: ResearchLabPlace, date: string, layer: string, size: num
     TRANSPARENT: 'FALSE',
     SRS: 'EPSG:4326',
     BBOX: `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`,
-    WIDTH: String(size),
-    HEIGHT: String(size),
+    WIDTH: String(dimensions.width),
+    HEIGHT: String(dimensions.height),
     TIME: date,
   })
   return `https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?${params.toString()}`
 }
 
-function copernicusUrl(place: ResearchLabPlace, date: string, size: number, radiusKm = 25) {
+function copernicusUrl(place: ResearchLabPlace, date: string, maxDimension: number, radiusKm = 25) {
   const bounds = boundsForMap(place, radiusKm)
+  const dimensions = imageDimensions(place, maxDimension, radiusKm)
   const start = dateDaysBefore(date, 14)
   const params = new URLSearchParams({
     SERVICE: 'WMS',
@@ -96,8 +107,8 @@ function copernicusUrl(place: ResearchLabPlace, date: string, size: number, radi
     TRANSPARENT: 'FALSE',
     SRS: 'EPSG:4326',
     BBOX: `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`,
-    WIDTH: String(size),
-    HEIGHT: String(size),
+    WIDTH: String(dimensions.width),
+    HEIGHT: String(dimensions.height),
     TIME: `${start}/${date}`,
     MAXCC: '35',
     SHOWLOGO: 'false',
@@ -119,8 +130,8 @@ function sourceLabel(source: ImagerySource) {
 
 function sourceLimit(source: ImagerySource, date: string) {
   if (source === 'sentinel2') return `WMS searches the ${dateDaysBefore(date, 14)} → ${date} window with cloud limit 35%; optical coverage depends on revisit and clouds.`
-  if (source === 'modis') return 'MODIS is lower spatial resolution than Sentinel-2 but provides a long daily record useful for historical comparison.'
-  return 'VIIRS is a daily global visualization; it is much coarser than Sentinel-2 and should not be treated as 10 m imagery.'
+  if (source === 'modis') return 'MODIS has lower spatial resolution than Sentinel-2 but provides a long daily record useful for historical comparison.'
+  return 'VIIRS is a daily global visualization; it is much coarser than Sentinel-2 and must not be treated as 10 m imagery.'
 }
 
 function yesterdayUtc() {
@@ -212,6 +223,7 @@ export function ResearchTerrainLab({ apiUrl, place, satelliteDate }: {
   const [quality, setQuality] = useState<ImageQuality>(() => typeof window !== 'undefined' && window.innerWidth <= 700 ? 1024 : 2048)
   const date = satelliteDate ?? yesterdayUtc()
   const bounds = useMemo(() => boundsForMap(place, 25), [place])
+  const dimensions = useMemo(() => imageDimensions(place, quality), [place, quality])
   const mapUrl = useMemo(() => imageryUrl(imagerySource, place, date, quality), [imagerySource, place, date, quality])
   const fullUrl = useMemo(() => imageryUrl(imagerySource, place, date, 4096), [imagerySource, place, date])
 
@@ -236,15 +248,15 @@ export function ResearchTerrainLab({ apiUrl, place, satelliteDate }: {
       number,
       latitude: point.latitude,
       longitude: point.longitude,
-      label: label || `Punkt ${number}`,
+      label: label || `Point ${number}`,
       color,
     }
     setFlags(current => [...current, provisional])
-    setStatus(`Pobieram wysokość dla flagi ${number}…`)
+    setStatus(`Retrieving elevation for flag ${number}…`)
     try {
       const response = await fetchResearchElevations(apiUrl, [{ ...point, label: provisional.label }])
       setFlags(current => current.map(item => item.id === provisional.id ? { ...item, elevation: response.points[0] } : item))
-      setStatus(`Flaga ${number}: ${Math.round(response.points[0].elevation_m)} m n.p.m. · ${response.dataset.name}`)
+      setStatus(`Flag ${number}: ${Math.round(response.points[0].elevation_m)} m a.s.l. · ${response.dataset.name}`)
     } catch (reason) {
       setStatus(reason instanceof Error ? reason.message : String(reason))
     }
@@ -258,23 +270,23 @@ export function ResearchTerrainLab({ apiUrl, place, satelliteDate }: {
 
   const finishPath = () => {
     if (activePath.length < 2) {
-      setStatus('Linia wymaga co najmniej dwóch punktów.')
+      setStatus('A line requires at least two points.')
       return
     }
     const path: DrawPath = { id: crypto.randomUUID(), color, points: activePath }
     setPaths(current => [...current, path])
     setActivePath([])
-    setStatus('Linia zapisana. Możesz wygenerować profil 20 pomiarów DEM.')
+    setStatus('Line saved. You can now generate a 20-sample DEM profile.')
   }
 
   const buildProfile = async (path: DrawPath) => {
     const samples = samplePath(path.points, 20)
     if (!samples.length) return
-    setStatus('Pobieram 20 próbek DEM wzdłuż linii…')
+    setStatus('Retrieving 20 DEM samples along the line…')
     try {
-      const response = await fetchResearchElevations(apiUrl, samples.map((point, index) => ({ ...point, label: `Profil ${index + 1}` })))
+      const response = await fetchResearchElevations(apiUrl, samples.map((point, index) => ({ ...point, label: `Profile ${index + 1}` })))
       setProfile({ pathId: path.id, color: path.color, points: response.points, dataset: response.dataset })
-      setStatus(`Profil gotowy: 20 próbek · ${response.dataset.name} · nominalnie ${response.dataset.nominal_horizontal_resolution_m} m.`)
+      setStatus(`Profile ready: 20 samples · ${response.dataset.name} · nominal resolution ${response.dataset.nominal_horizontal_resolution_m} m.`)
     } catch (reason) {
       setStatus(reason instanceof Error ? reason.message : String(reason))
     }
@@ -282,7 +294,7 @@ export function ResearchTerrainLab({ apiUrl, place, satelliteDate }: {
 
   const addNileReferences = async () => {
     const nextNumber = flags.reduce((max, item) => Math.max(max, item.number), 0) + 1
-    setStatus('Dodaję trzy referencyjne punkty Nilu i pobieram ich wysokości DEM…')
+    setStatus('Adding three Nile reference points and retrieving their DEM elevations…')
     try {
       const response = await fetchResearchElevations(apiUrl, NILE_REFERENCE_FLAGS.map(item => ({
         latitude: item.latitude,
@@ -296,7 +308,7 @@ export function ResearchTerrainLab({ apiUrl, place, satelliteDate }: {
         elevation: response.points[index],
       }))
       setFlags(current => [...current, ...additions])
-      setStatus('Dodano trzy punkty Nilu. Wysokości pochodzą z DEM; położenia są jawnie opisane jako punkty referencyjne.')
+      setStatus('Three Nile reference points were added. Elevations come from the DEM; locations are explicitly described as reference points.')
     } catch (reason) {
       setStatus(reason instanceof Error ? reason.message : String(reason))
     }
@@ -306,35 +318,35 @@ export function ResearchTerrainLab({ apiUrl, place, satelliteDate }: {
   const globeMarkers = flags.map(flag => ({ longitude: flag.longitude, latitude: flag.latitude, color: flag.color === '#2ca8ff' ? 0x2ca8ff : 0xff2c2c, radius: 1.25 }))
   const visiblePaths = paths.filter(path => path.points.some(point => point.longitude >= bounds.west && point.longitude <= bounds.east && point.latitude >= bounds.south && point.latitude <= bounds.north))
 
-  return <section className="terrain-lab panel" aria-label="Laboratorium wysokości i oznaczeń terenu">
+  return <section className="terrain-lab panel" aria-label="Terrain elevation and annotation laboratory">
     <div className="terrain-lab-head">
-      <div><small>ADVANCED · DEM · FLAGI · PROFILE · HIGH-QUALITY IMAGERY</small><h2>Laboratorium terenu</h2></div>
+      <div><small>ADVANCED · DEM · FLAGS · PROFILES · HIGH-QUALITY IMAGERY</small><h2>Terrain laboratory</h2></div>
       <span className="evidence-badge observation">PROVENANCE VISIBLE</span>
     </div>
-    <p className="muted">Tutaj są narzędzia techniczne. Mapa używa kwadratowego obrazu bez rozciągania proporcji. Domyślnie próbuje Copernicus Sentinel-2; możesz przełączyć na stabilne globalne warstwy NASA VIIRS/MODIS. Wysokości DEM nie są zgadywane.</p>
+    <p className="muted">These are technical tools. The WMS request dimensions follow the AOI geometry so the image is not forced into an unrelated square. Sentinel-2 is attempted first; NASA VIIRS/MODIS remain available as stable global alternatives. DEM elevations are retrieved, not guessed.</p>
 
     <div className="terrain-imagery-controls">
-      <div className="terrain-source-buttons" role="group" aria-label="Źródło obrazu satelitarnego">
-        <button type="button" className={imagerySource === 'sentinel2' ? 'active' : ''} onClick={() => setImagerySource('sentinel2')}>Copernicus Sentinel-2 · najwyższa szczegółowość</button>
-        <button type="button" className={imagerySource === 'viirs' ? 'active' : ''} onClick={() => setImagerySource('viirs')}>NASA VIIRS · najnowszy globalny</button>
-        <button type="button" className={imagerySource === 'modis' ? 'active' : ''} onClick={() => setImagerySource('modis')}>NASA MODIS · historia</button>
+      <div className="terrain-source-buttons" role="group" aria-label="Satellite imagery source">
+        <button type="button" className={imagerySource === 'sentinel2' ? 'active' : ''} onClick={() => setImagerySource('sentinel2')}>Copernicus Sentinel-2 · highest detail</button>
+        <button type="button" className={imagerySource === 'viirs' ? 'active' : ''} onClick={() => setImagerySource('viirs')}>NASA VIIRS · recent global</button>
+        <button type="button" className={imagerySource === 'modis' ? 'active' : ''} onClick={() => setImagerySource('modis')}>NASA MODIS · historical</button>
       </div>
-      <label>Rozmiar obrazu<select value={quality} onChange={event => setQuality(Number(event.target.value) as ImageQuality)}><option value={1024}>1024 × 1024 · szybciej</option><option value={2048}>2048 × 2048 · dokładniej</option></select></label>
-      <a className="button-link compact" href={fullUrl} target="_blank" rel="noreferrer">Otwórz 4096 × 4096</a>
+      <label>Image size<select value={quality} onChange={event => setQuality(Number(event.target.value) as ImageQuality)}><option value={1024}>up to 1024 px · faster</option><option value={2048}>up to 2048 px · more detail</option></select></label>
+      <a className="button-link compact" href={fullUrl} target="_blank" rel="noreferrer">Open up to 4096 px</a>
     </div>
     <div className="terrain-source-note"><b>{sourceLabel(imagerySource)}</b><span>{sourceLimit(imagerySource, date)}</span></div>
 
     <div className="terrain-lab-toolbar">
-      <button type="button" className={tool === 'flag' ? 'active' : ''} onClick={() => setTool('flag')}>⚑ Flaga + wysokość</button>
-      <button type="button" className={tool === 'line' ? 'active' : ''} onClick={() => setTool('line')}>✎ Rysuj linię</button>
-      {tool === 'line' && <button type="button" onClick={finishPath} disabled={activePath.length < 2}>Zakończ linię ({activePath.length})</button>}
-      <button type="button" onClick={() => void addNileReferences()}>Dodaj 3 punkty Nilu</button>
-      <button type="button" onClick={() => { setFlags([]); setPaths([]); setActivePath([]); setProfile(null); setStatus('Wyczyszczono lokalne oznaczenia.') }}>Wyczyść</button>
-      <div className="terrain-colors" aria-label="Kolor oznaczeń">{DRAW_COLORS.map(value => <button key={value} type="button" className={color === value ? 'selected' : ''} style={{ background: value }} aria-label={`Kolor ${value}`} onClick={() => setColor(value)} />)}</div>
+      <button type="button" className={tool === 'flag' ? 'active' : ''} onClick={() => setTool('flag')}>⚑ Flag + elevation</button>
+      <button type="button" className={tool === 'line' ? 'active' : ''} onClick={() => setTool('line')}>✎ Draw line</button>
+      {tool === 'line' && <button type="button" onClick={finishPath} disabled={activePath.length < 2}>Finish line ({activePath.length})</button>}
+      <button type="button" onClick={() => void addNileReferences()}>Add 3 Nile reference points</button>
+      <button type="button" onClick={() => { setFlags([]); setPaths([]); setActivePath([]); setProfile(null); setStatus('Local annotations cleared.') }}>Clear</button>
+      <div className="terrain-colors" aria-label="Annotation color">{DRAW_COLORS.map(value => <button key={value} type="button" className={color === value ? 'selected' : ''} style={{ background: value }} aria-label={`Color ${value}`} onClick={() => setColor(value)} />)}</div>
     </div>
 
     <div className="terrain-map-wrap">
-      <div className="terrain-map" role="application" aria-label="Mapa satelitarna do dodawania flag" onClick={handleMapClick}>
+      <div className="terrain-map" style={{ aspectRatio: `${dimensions.width} / ${dimensions.height}` }} role="application" aria-label="Satellite map for adding flags" onClick={handleMapClick}>
         <img
           key={mapUrl}
           src={mapUrl}
@@ -345,9 +357,9 @@ export function ResearchTerrainLab({ apiUrl, place, satelliteDate }: {
           onError={() => {
             if (imagerySource === 'sentinel2') {
               setImagerySource('viirs')
-              setStatus('Copernicus WMS nie zwrócił obrazu dla tego zapytania. Automatycznie przełączono na NASA VIIRS.')
+              setStatus('Copernicus WMS returned no usable image for this request. The viewer switched automatically to NASA VIIRS.')
             } else {
-              setStatus('Wybrane źródło obrazu chwilowo nie zwróciło poprawnej warstwy. Spróbuj innego źródła lub daty.')
+              setStatus('The selected imagery source temporarily returned no valid layer. Try another source or date.')
             }
           }}
         />
@@ -363,39 +375,39 @@ export function ResearchTerrainLab({ apiUrl, place, satelliteDate }: {
             return `${x},${y}`
           }).join(' ')} fill="none" stroke={color} strokeWidth="7" strokeDasharray="12 8" strokeLinecap="round" />}
         </svg>
-        {localFlags.map(flag => <button key={flag.id} type="button" className="terrain-flag" style={{ ...flagPosition(flag, bounds), '--flag-color': flag.color } as React.CSSProperties} title={`${flag.label}${flag.elevation ? ` · ${Math.round(flag.elevation.elevation_m)} m n.p.m.` : ''}`} onClick={event => event.stopPropagation()}><span>{flag.number}</span></button>)}
+        {localFlags.map(flag => <button key={flag.id} type="button" className="terrain-flag" style={{ ...flagPosition(flag, bounds), '--flag-color': flag.color } as React.CSSProperties} title={`${flag.label}${flag.elevation ? ` · ${Math.round(flag.elevation.elevation_m)} m a.s.l.` : ''}`} onClick={event => event.stopPropagation()}><span>{flag.number}</span></button>)}
       </div>
-      <div className="terrain-map-meta"><b>{sourceLabel(imagerySource)} · request end {date} · {quality} px</b><span>AOI podglądu: 25 km · WGS84 · linie/flag są adnotacją użytkownika. Obraz optyczny nie jest „live video”; pokazujemy najnowszą dostępną warstwę dla wybranego okresu.</span></div>
+      <div className="terrain-map-meta"><b>{sourceLabel(imagerySource)} · request end {date} · {dimensions.width}×{dimensions.height} px</b><span>Preview AOI: 25 km · WGS84 · lines/flags are user annotations. Optical imagery is not live video; the view shows the latest available layer for the selected period.</span></div>
     </div>
 
     <details className="terrain-globe-preview">
-      <summary><b>🌍 Otwórz techniczny globus 3D</b><span>obracaj, oddalaj i przełączaj oficjalne warstwy NASA / Copernicus</span></summary>
+      <summary><b>🌍 Open technical 3D Earth</b><span>rotate, zoom and switch official NASA / Copernicus layers</span></summary>
       <RealisticEarthGlobe selectedTime={`${date}T12:00:00Z`} markers={globeMarkers.length ? globeMarkers : [{ longitude: place.longitude, latitude: place.latitude, color: 0x35cfff, radius: 1.3 }]} />
     </details>
 
     {status && <p className="terrain-status" role="status">{status}</p>}
 
     <div className="terrain-flags-table">
-      <div className="terrain-section-title"><h3>Flagi pomiarowe ({flags.length})</h3><small>kliknięte punkty + jawne źródło wysokości</small></div>
-      {flags.length ? <div className="terrain-table-scroll"><table><thead><tr><th>#</th><th>Nazwa</th><th>WGS84</th><th>Wysokość</th><th>Źródło / ograniczenie</th></tr></thead><tbody>{flags.map(flag => <tr key={flag.id}><td><span className="table-flag" style={{ background: flag.color }}>{flag.number}</span></td><td>{flag.label}</td><td>{flag.latitude.toFixed(5)}, {flag.longitude.toFixed(5)}</td><td>{flag.elevation ? `${Math.round(flag.elevation.elevation_m)} m` : 'pobieranie / brak'}</td><td>{flag.elevation ? `Copernicus DEM GLO-90 · ${flag.elevation.sample_method} · komórka ~${flag.elevation.nominal_cell_size_m} m` : '—'}</td></tr>)}</tbody></table></div> : <p className="muted">Nie dodano jeszcze flag.</p>}
+      <div className="terrain-section-title"><h3>Measurement flags ({flags.length})</h3><small>clicked points + explicit elevation source</small></div>
+      {flags.length ? <div className="terrain-table-scroll"><table><thead><tr><th>#</th><th>Name</th><th>WGS84</th><th>Elevation</th><th>Source / limitation</th></tr></thead><tbody>{flags.map(flag => <tr key={flag.id}><td><span className="table-flag" style={{ background: flag.color }}>{flag.number}</span></td><td>{flag.label}</td><td>{flag.latitude.toFixed(5)}, {flag.longitude.toFixed(5)}</td><td>{flag.elevation ? `${Math.round(flag.elevation.elevation_m)} m` : 'loading / unavailable'}</td><td>{flag.elevation ? `Copernicus DEM GLO-90 · ${flag.elevation.sample_method} · cell ~${flag.elevation.nominal_cell_size_m} m` : '—'}</td></tr>)}</tbody></table></div> : <p className="muted">No flags have been added yet.</p>}
     </div>
 
     {paths.length > 0 && <div className="terrain-profiles-list">
-      <div className="terrain-section-title"><h3>Narysowane linie ({paths.length})</h3><small>z każdej możesz pobrać 20 próbek DEM</small></div>
-      {paths.map((path, index) => <button type="button" key={path.id} onClick={() => void buildProfile(path)}><i style={{ background: path.color }} />Linia {index + 1} · {path.points.length} węzłów → profil 20 punktów</button>)}
+      <div className="terrain-section-title"><h3>Drawn lines ({paths.length})</h3><small>retrieve 20 DEM samples from any line</small></div>
+      {paths.map((path, index) => <button type="button" key={path.id} onClick={() => void buildProfile(path)}><i style={{ background: path.color }} />Line {index + 1} · {path.points.length} nodes → 20-point profile</button>)}
     </div>}
 
     {profile && <section className="terrain-profile">
-      <div className="terrain-section-title"><h3>Profil wysokości — 20 próbek</h3><small>{profile.dataset.name} · nominalna rozdzielczość {profile.dataset.nominal_horizontal_resolution_m} m</small></div>
-      <svg viewBox="0 0 720 210" role="img" aria-label="Wykres wysokości terenu"><line x1="24" y1="180" x2="696" y2="180" stroke="currentColor" opacity=".35"/><polyline points={profilePolyline(profile.points)} fill="none" stroke={profile.color} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />{profile.points.map((point, index) => {
+      <div className="terrain-section-title"><h3>Elevation profile — 20 samples</h3><small>{profile.dataset.name} · nominal resolution {profile.dataset.nominal_horizontal_resolution_m} m</small></div>
+      <svg viewBox="0 0 720 210" role="img" aria-label="Terrain elevation chart"><line x1="24" y1="180" x2="696" y2="180" stroke="currentColor" opacity=".35"/><polyline points={profilePolyline(profile.points)} fill="none" stroke={profile.color} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />{profile.points.map((point, index) => {
         const values = profile.points.map(item => item.elevation_m)
         const min = Math.min(...values); const max = Math.max(...values); const range = Math.max(1, max - min)
         const x = 24 + (index / Math.max(1, profile.points.length - 1)) * 672
         const y = 180 - ((point.elevation_m - min) / range) * 140
         return <circle key={`${point.latitude}-${point.longitude}-${index}`} cx={x} cy={y} r="4" fill={profile.color}><title>{index + 1}: {Math.round(point.elevation_m)} m</title></circle>
       })}</svg>
-      <div className="terrain-profile-stats"><span>min <b>{Math.round(Math.min(...profile.points.map(point => point.elevation_m)))} m</b></span><span>max <b>{Math.round(Math.max(...profile.points.map(point => point.elevation_m)))} m</b></span><span>próbek <b>{profile.points.length}</b></span></div>
-      <p className="muted">Profil pokazuje próbki rastra DEM. Między punktami nie wykonujemy sztucznego „dokładnego” pomiaru. Przy stromych zboczach rzeczywista wysokość może zmieniać się istotnie wewnątrz jednej komórki.</p>
+      <div className="terrain-profile-stats"><span>min <b>{Math.round(Math.min(...profile.points.map(point => point.elevation_m)))} m</b></span><span>max <b>{Math.round(Math.max(...profile.points.map(point => point.elevation_m)))} m</b></span><span>samples <b>{profile.points.length}</b></span></div>
+      <p className="muted">The profile displays DEM raster samples. We do not invent an artificially exact measurement between points. On steep slopes, real elevation may vary significantly within one DEM cell.</p>
     </section>}
   </section>
 }

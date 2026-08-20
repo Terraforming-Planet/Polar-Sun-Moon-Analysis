@@ -62,8 +62,15 @@ describe('RealisticEarthGlobe scene lifecycle', () => {
   it('does not present an in-progress UTC day as a complete daily global satellite layer', () => {
     expect(cesiumSource).toContain('function previousUtcDay(value: Date)')
     expect(cesiumSource).toContain('const completeDailyDate = useMemo(')
+    expect(cesiumSource).toContain('live ? previousUtcDay(new Date(nowTick)) : date')
     expect(cesiumSource).toContain('dimensions: { Time: completeDay }')
-    expect(cesiumSource).toContain('Daily imagery may intentionally use the previous complete UTC day.')
+  })
+
+  it('starts every shared 3D Earth preview from the tested high-resolution reference basemap', () => {
+    expect(cesiumSource).toContain("const [layer, setLayer] = useState<Layer>('high-resolution')")
+    expect(cesiumSource).toContain('<option value="high-resolution">High-resolution reference basemap</option>')
+    expect(cesiumSource).toContain('HIGH-RESOLUTION REFERENCE BASEMAP')
+    expect(cesiumSource).toContain('Dated scientific conclusions must still be verified')
   })
 
   it('uses a closer and sharper mobile camera instead of the distant blurred globe', () => {

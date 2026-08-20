@@ -34,14 +34,14 @@ export function periodForPreset(
 
 export function temporalPresetLabel(preset: ResearchTemporalPreset) {
   const labels: Record<ResearchTemporalPreset, string> = {
-    custom: 'własny zakres',
-    date: 'dokładna data',
-    spring: 'wiosna',
-    summer: 'lato',
-    autumn: 'jesień',
-    winter: 'zima',
-    year: 'cały rok',
-    decade: 'dekada',
+    custom: 'custom range',
+    date: 'exact date',
+    spring: 'spring',
+    summer: 'summer',
+    autumn: 'autumn',
+    winter: 'winter',
+    year: 'full year',
+    decade: 'decade',
   }
   return labels[preset]
 }

@@ -77,6 +77,7 @@ type AreaData = {
 const LANDSAT_COLLECTION = 'landsat-c2l2-sr'
 const LANDSAT_STAC = `https://landsatlook.usgs.gov/stac-server/collections/${LANDSAT_COLLECTION}/items`
 const GIBS_START = '2000-02-24'
+const GIBS_MAX_PREVIEW_DIMENSION = 1600
 
 function dateOnly(value: Date) {
   return value.toISOString().slice(0, 10)
@@ -95,6 +96,23 @@ export function representativeResearchDates(startDate: string, endDate: string, 
   return [...new Set([dateOnly(effectiveStart), dateOnly(middle), dateOnly(end)])]
 }
 
+export function gibsPreviewDimensions(latitude: number, longitude: number, radiusKm: number) {
+  const bounds = researchAreaBounds(latitude, longitude, Math.max(radiusKm, 2))
+  const longitudeSpan = Math.max(0.0001, bounds.east - bounds.west)
+  const latitudeSpan = Math.max(0.0001, bounds.north - bounds.south)
+  const aspect = Math.max(0.35, Math.min(2.85, longitudeSpan / latitudeSpan))
+  if (aspect >= 1) {
+    return {
+      width: GIBS_MAX_PREVIEW_DIMENSION,
+      height: Math.max(560, Math.round(GIBS_MAX_PREVIEW_DIMENSION / aspect)),
+    }
+  }
+  return {
+    width: Math.max(560, Math.round(GIBS_MAX_PREVIEW_DIMENSION * aspect)),
+    height: GIBS_MAX_PREVIEW_DIMENSION,
+  }
+}
+
 export function buildNasaGibsPreviewUrl(
   latitude: number,
   longitude: number,
@@ -102,6 +120,7 @@ export function buildNasaGibsPreviewUrl(
   date: string,
 ) {
   const bounds = researchAreaBounds(latitude, longitude, Math.max(radiusKm, 2))
+  const dimensions = gibsPreviewDimensions(latitude, longitude, radiusKm)
   const params = new URLSearchParams({
     SERVICE: 'WMS',
     REQUEST: 'GetMap',
@@ -112,8 +131,8 @@ export function buildNasaGibsPreviewUrl(
     TRANSPARENT: 'FALSE',
     SRS: 'EPSG:4326',
     BBOX: `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`,
-    WIDTH: '768',
-    HEIGHT: '512',
+    WIDTH: String(dimensions.width),
+    HEIGHT: String(dimensions.height),
     TIME: date,
   })
   return `https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?${params.toString()}`
@@ -170,7 +189,7 @@ function stacScene(item: StacItem): LandsatScene {
   const cloud = item.properties?.['eo:cloud_cover']
   return {
     id: item.id,
-    datetime: item.properties?.datetime ?? 'brak daty',
+    datetime: item.properties?.datetime ?? 'date unavailable',
     platform: item.properties?.platform ?? 'Landsat',
     cloudCover: typeof cloud === 'number' ? cloud : null,
     previewUrl: preview,
@@ -206,11 +225,11 @@ function featurePoint(feature: HazardFeature): ResearchPoint | null {
 }
 
 function hazardTitle(feature: HazardFeature) {
-  return feature.properties?.title ?? feature.properties?.categories?.[0] ?? 'Zdarzenie środowiskowe'
+  return feature.properties?.title ?? feature.properties?.categories?.[0] ?? 'Environmental event'
 }
 
 function hazardSource(feature: HazardFeature) {
-  return feature.properties?.source ?? 'oficjalny feed projektu'
+  return feature.properties?.source ?? 'official project feed'
 }
 
 export function ResearchDataPreview({
@@ -284,7 +303,7 @@ export function ResearchDataPreview({
         landsatRelayed: Boolean(stacPayload?.terra_source?.relayed_by),
       })
       if (failures.length === 2) throw new Error(failures.join(' · '))
-      if (failures.length) setError(`Część źródeł nie odpowiedziała: ${failures.join(' · ')}`)
+      if (failures.length) setError(`Some sources did not respond: ${failures.join(' · ')}`)
       setStatus('ready')
     } catch (reason) {
       setData(null)
@@ -294,61 +313,61 @@ export function ResearchDataPreview({
   }
 
   const bounds = researchAreaBounds(latitude, longitude, radiusKm)
-  return <section className="research-data-preview panel" aria-label="Dane i obrazy badanego terenu">
+  return <section className="research-data-preview panel" aria-label="Research-area data and imagery">
     <div className="research-section-head">
-      <div><small>OFFICIAL AREA DATA · NASA GIBS · USGS LANDSAT</small><h2>Dane i obrazy badanego terenu</h2></div>
+      <div><small>OFFICIAL AREA DATA · NASA GIBS · USGS LANDSAT</small><h2>Research-area data and imagery</h2></div>
       <span className="evidence-badge observation">ON DEMAND</span>
     </div>
-    <p className="muted">Nic nie jest zgadywane. Po naciśnięciu pobieramy katalog scen Landsat dla wybranego AOI, filtrujemy zarejestrowane zdarzenia w obszarze i tworzymy podglądy NASA GIBS dla reprezentatywnych dat dostępnych od 2000 r. Katalog USGS jest przekazywany przez ograniczony publiczny Worker tylko po to, aby działał poprawnie w przeglądarce.</p>
+    <p className="muted">Nothing is guessed. On request, the tool retrieves the Landsat catalogue for the selected AOI, filters registered hazard events inside the selected shape and creates NASA GIBS previews for representative dates available from 2000 onward. The USGS catalogue may be relayed through the restricted public Worker only to make browser access reliable.</p>
     <div className="research-area-summary">
-      <span><b>Kształt</b>{researchShapeLabel(shape)}</span>
-      <span><b>Środek</b>{latitude.toFixed(5)}°, {longitude.toFixed(5)}°</span>
-      <span><b>Zasięg</b>{radiusKm} km</span>
-      <span><b>Okres</b>{startDate} → {endDate}</span>
+      <span><b>Shape</b>{researchShapeLabel(shape)}</span>
+      <span><b>Center</b>{latitude.toFixed(5)}°, {longitude.toFixed(5)}°</span>
+      <span><b>Range</b>{radiusKm} km</span>
+      <span><b>Period</b>{startDate} → {endDate}</span>
       <span><b>BBOX</b>{bounds.west.toFixed(3)}, {bounds.south.toFixed(3)} → {bounds.east.toFixed(3)}, {bounds.north.toFixed(3)}</span>
     </div>
     <div className="hero-actions research-data-actions">
       <button type="button" className="primary" onClick={run} disabled={status === 'loading'}>
-        {status === 'loading' ? 'Pobieranie oficjalnych danych…' : 'Pobierz dane i obrazy badanego terenu'}
+        {status === 'loading' ? 'Retrieving official data…' : 'Retrieve area data and imagery'}
       </button>
-      <a className="button-link compact" href={landsatUrl} target="_blank" rel="noreferrer">Otwórz zapytanie USGS STAC</a>
+      <a className="button-link compact" href={landsatUrl} target="_blank" rel="noreferrer">Open USGS STAC query</a>
     </div>
     {error && <p className="notice" role="alert">{error}</p>}
 
     {status === 'ready' && data && <div className="research-area-results">
       <div className="research-result-metrics">
-        <article><b>{data.landsatScenes.length}</b><span>scen Landsat w tej odpowiedzi</span></article>
-        <article><b>{data.matchedScenes ?? '—'}</b><span>scen dopasowanych wg katalogu</span></article>
-        <article><b>{data.hazards.length}</b><span>zdarzeń w wybranym kształcie AOI</span></article>
-        <article><b>{gibs.length}</b><span>podglądów NASA GIBS</span></article>
+        <article><b>{data.landsatScenes.length}</b><span>Landsat scenes in this response</span></article>
+        <article><b>{data.matchedScenes ?? '—'}</b><span>catalogue-matched scenes</span></article>
+        <article><b>{data.hazards.length}</b><span>events inside the selected AOI shape</span></article>
+        <article><b>{gibs.length}</b><span>NASA GIBS previews</span></article>
       </div>
 
       <div className="research-result-section">
-        <div className="research-result-title"><h3>NASA GIBS · MODIS Terra True Color</h3><span>{GIBS_START} → teraz</span></div>
+        <div className="research-result-title"><h3>NASA GIBS · MODIS Terra True Color</h3><span>{GIBS_START} → now</span></div>
         {gibs.length ? <div className="research-satellite-grid">
           {gibs.map(item => <figure key={item.date}>
-            <img src={item.url} loading="lazy" alt={`NASA GIBS MODIS Terra dla ${item.date}`} />
-            <figcaption><b>{item.date}</b><span>NASA GIBS · MODIS Terra</span><a href={item.url} target="_blank" rel="noreferrer">Otwórz obraz</a></figcaption>
+            <img src={item.url} loading="lazy" alt={`NASA GIBS MODIS Terra for ${item.date}`} />
+            <figcaption><b>{item.date}</b><span>NASA GIBS · MODIS Terra</span><a href={item.url} target="_blank" rel="noreferrer">Open image</a></figcaption>
           </figure>)}
-        </div> : <p className="notice">Wybrany okres kończy się przed 24.02.2000. Dla niego korzystaj z listy scen Landsat poniżej; MODIS Terra nie istniał jeszcze w tym okresie.</p>}
+        </div> : <p className="notice">The selected period ends before 24 February 2000. Use the Landsat scene list below for that period; MODIS Terra did not exist yet.</p>}
       </div>
 
       <div className="research-result-section">
-        <div className="research-result-title"><h3>USGS Landsat Collection 2 · Surface Reflectance</h3><span>1982 → teraz · {data.landsatRelayed ? 'przez zabezpieczony relay' : 'bezpośrednio'}</span></div>
+        <div className="research-result-title"><h3>USGS Landsat Collection 2 · Surface Reflectance</h3><span>1982 → now · {data.landsatRelayed ? 'through restricted relay' : 'direct request'}</span></div>
         {data.landsatScenes.length ? <div className="research-landsat-list">
           {data.landsatScenes.map(scene => <article key={scene.id}>
-            {scene.previewUrl && <img src={scene.previewUrl} loading="lazy" alt={`Podgląd ${scene.id}`} />}
-            <div><b>{scene.id}</b><span>{scene.datetime.slice(0, 10)} · {scene.platform}</span><small>zachmurzenie: {scene.cloudCover === null ? 'brak w metadanych' : `${scene.cloudCover.toFixed(1)}%`}</small></div>
+            {scene.previewUrl && <img src={scene.previewUrl} loading="lazy" alt={`Preview ${scene.id}`} />}
+            <div><b>{scene.id}</b><span>{scene.datetime.slice(0, 10)} · {scene.platform}</span><small>cloud cover: {scene.cloudCover === null ? 'not present in metadata' : `${scene.cloudCover.toFixed(1)}%`}</small></div>
             {scene.itemUrl && <a className="button-link compact" href={scene.itemUrl} target="_blank" rel="noreferrer">STAC</a>}
           </article>)}
-        </div> : <p className="muted">Katalog nie zwrócił scen w pierwszej stronie odpowiedzi dla tego zakresu i AOI.</p>}
+        </div> : <p className="muted">The catalogue returned no scenes on the first response page for this range and AOI.</p>}
       </div>
 
       <div className="research-result-section">
-        <div className="research-result-title"><h3>Zdarzenia z warstwy bezpieczeństwa</h3><span>{data.hazardGeneratedAt ?? 'czas źródła nieznany'}</span></div>
+        <div className="research-result-title"><h3>Safety-layer events</h3><span>{data.hazardGeneratedAt ?? 'source time unknown'}</span></div>
         {data.hazards.length ? <div className="research-hazard-list">
-          {data.hazards.slice(0, 12).map((feature, index) => <article key={`${hazardTitle(feature)}-${index}`}><b>{hazardTitle(feature)}</b><span>{hazardSource(feature)}</span><small>{feature.properties?.observation_time ?? feature.properties?.observationUtc ?? 'brak czasu obserwacji'}</small></article>)}
-        </div> : <p className="muted">Brak zarejestrowanych punktów zagrożeń wewnątrz wybranego kształtu w aktualnym pliku danych. To nie oznacza braku zagrożenia — tylko brak pasujących wpisów w tej warstwie.</p>}
+          {data.hazards.slice(0, 12).map((feature, index) => <article key={`${hazardTitle(feature)}-${index}`}><b>{hazardTitle(feature)}</b><span>{hazardSource(feature)}</span><small>{feature.properties?.observation_time ?? feature.properties?.observationUtc ?? 'observation time unavailable'}</small></article>)}
+        </div> : <p className="muted">No registered hazard points are present inside the selected shape in the current project data file. This does not prove that no hazard exists; it only means this layer has no matching entries.</p>}
       </div>
     </div>}
   </section>

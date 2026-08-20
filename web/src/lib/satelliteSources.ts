@@ -54,7 +54,7 @@ export const SATELLITE_SOURCES: SatelliteSource[] = [
     cloudIndependent: false,
     nearRealTime: true,
     availability: 'global',
-    description: 'Pełna tarcza, kontynenty i globalne warstwy czasowe.',
+    description: 'Complete Earth disk, continents and global time-aware layers.',
   },
   {
     id: 'sentinel-2',
@@ -67,7 +67,7 @@ export const SATELLITE_SOURCES: SatelliteSource[] = [
     cloudIndependent: false,
     nearRealTime: false,
     availability: 'regional',
-    description: 'Najlepszy obraz optyczny regionu, gdy zachmurzenie jest niskie.',
+    description: 'High-detail regional optical imagery when cloud cover is sufficiently low.',
   },
   {
     id: 'sentinel-1',
@@ -80,12 +80,12 @@ export const SATELLITE_SOURCES: SatelliteSource[] = [
     cloudIndependent: true,
     nearRealTime: false,
     availability: 'regional',
-    description: 'Radar przez chmury; priorytet dla powodzi i mokrego terenu.',
+    description: 'Radar through clouds; prioritized for floods and wet-terrain analysis.',
   },
   {
     id: 'local-ortho',
-    label: 'Lokalna ortofotomapa',
-    provider: 'Oficjalny dostawca lokalny',
+    label: 'Local orthophoto',
+    provider: 'Official local provider',
     product: 'Ortho / aerial imagery',
     minZoom: 14,
     maxZoom: 22,
@@ -93,7 +93,7 @@ export const SATELLITE_SOURCES: SatelliteSource[] = [
     cloudIndependent: false,
     nearRealTime: false,
     availability: 'local',
-    description: 'Największy szczegół tam, gdzie legalne źródło jest dostępne.',
+    description: 'Highest detail where a legal official local source is available.',
   },
 ]
 
@@ -143,16 +143,16 @@ export function formatSatelliteSourceStatus(
   return {
     source: `${source.label} · ${source.provider}`,
     product: source.product,
-    observationTime: Number.isFinite(observedMs) ? new Date(observedMs).toISOString() : 'brak czasu obserwacji',
-    age: ageHours === null ? 'wiek nieznany' : ageHours < 1 ? `${Math.round(ageHours * 60)} min` : `${ageHours.toFixed(1)} h`,
-    resolution: `około ${source.resolutionMeters} m/piksel`,
+    observationTime: Number.isFinite(observedMs) ? new Date(observedMs).toISOString() : 'observation time unavailable',
+    age: ageHours === null ? 'age unknown' : ageHours < 1 ? `${Math.round(ageHours * 60)} min` : `${ageHours.toFixed(1)} h`,
+    resolution: `about ${source.resolutionMeters} m/pixel`,
     cloudCover: source.cloudIndependent
-      ? 'niezależne od zachmurzenia'
+      ? 'cloud-independent'
       : Number.isFinite(cloudCover)
         ? `${Math.max(0, Math.min(100, cloudCover as number)).toFixed(0)}%`
-        : 'brak metadanych o zachmurzeniu',
-    coverage: observation.hasCoverage === false ? 'brak pokrycia wybranego obszaru' : observation.hasCoverage === true ? 'pokrycie potwierdzone' : 'pokrycie niezweryfikowane',
-    rendering: observation.tilesConnected ? 'kafle źródłowe są podłączone' : 'wybrane źródło — renderer nadal używa tekstury bazowej 2K',
+        : 'cloud-cover metadata unavailable',
+    coverage: observation.hasCoverage === false ? 'no coverage for selected area' : observation.hasCoverage === true ? 'coverage confirmed' : 'coverage not verified',
+    rendering: observation.tilesConnected ? 'source tiles are connected' : 'selected source — renderer still uses the 2K base texture',
   }
 }
 

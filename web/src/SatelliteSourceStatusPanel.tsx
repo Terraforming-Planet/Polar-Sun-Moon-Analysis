@@ -17,16 +17,16 @@ export function SatelliteSourceStatusPanel({
 }: Props) {
   const status = formatSatelliteSourceStatus(source, observation, nowMs)
 
-  return <aside className="panel satellite-source-status" aria-label="Status aktywnego źródła satelitarnego">
-    <div className="fact"><span>Tryb</span><b>{modeLabel}</b></div>
-    <div className="fact"><span>Źródło</span><b>{status.source}</b></div>
-    <div className="fact"><span>Produkt</span><b>{status.product}</b></div>
-    <div className="fact"><span>Poziom LOD</span><b>{logicalZoom}</b></div>
-    <div className="fact"><span>Czas obserwacji</span><b>{status.observationTime}</b></div>
-    <div className="fact"><span>Wiek danych</span><b>{status.age}</b></div>
-    <div className="fact"><span>Rozdzielczość</span><b>{status.resolution}</b></div>
-    <div className="fact"><span>Zachmurzenie</span><b>{status.cloudCover}</b></div>
-    <div className="fact"><span>Pokrycie obszaru</span><b>{status.coverage}</b></div>
+  return <aside className="panel satellite-source-status" aria-label="Active satellite source status">
+    <div className="fact"><span>Mode</span><b>{modeLabel}</b></div>
+    <div className="fact"><span>Source</span><b>{status.source}</b></div>
+    <div className="fact"><span>Product</span><b>{status.product}</b></div>
+    <div className="fact"><span>LOD level</span><b>{logicalZoom}</b></div>
+    <div className="fact"><span>Observation time</span><b>{status.observationTime}</b></div>
+    <div className="fact"><span>Data age</span><b>{status.age}</b></div>
+    <div className="fact"><span>Resolution</span><b>{status.resolution}</b></div>
+    <div className="fact"><span>Cloud cover</span><b>{status.cloudCover}</b></div>
+    <div className="fact"><span>Area coverage</span><b>{status.coverage}</b></div>
     <p className="muted">{status.rendering}</p>
   </aside>
 }

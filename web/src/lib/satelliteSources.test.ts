@@ -31,27 +31,27 @@ describe('formatSatelliteSourceStatus', () => {
 
     expect(status.observationTime).toBe('2026-08-01T08:00:00.000Z')
     expect(status.age).toBe('2.5 h')
-    expect(status.resolution).toBe('około 10 m/piksel')
+    expect(status.resolution).toBe('about 10 m/pixel')
     expect(status.cloudCover).toBe('17%')
-    expect(status.coverage).toBe('pokrycie potwierdzone')
-    expect(status.rendering).toBe('kafle źródłowe są podłączone')
+    expect(status.coverage).toBe('coverage confirmed')
+    expect(status.rendering).toBe('source tiles are connected')
   })
 
   it('does not pretend that a selected source is already rendered', () => {
     const source = SATELLITE_SOURCES.find(item => item.id === 'nasa-gibs')!
     const status = formatSatelliteSourceStatus(source)
 
-    expect(status.observationTime).toBe('brak czasu obserwacji')
-    expect(status.age).toBe('wiek nieznany')
-    expect(status.coverage).toBe('pokrycie niezweryfikowane')
-    expect(status.rendering).toContain('tekstury bazowej 2K')
+    expect(status.observationTime).toBe('observation time unavailable')
+    expect(status.age).toBe('age unknown')
+    expect(status.coverage).toBe('coverage not verified')
+    expect(status.rendering).toContain('2K base texture')
   })
 
   it('labels Sentinel-1 as cloud independent', () => {
     const source = SATELLITE_SOURCES.find(item => item.id === 'sentinel-1')!
     const status = formatSatelliteSourceStatus(source, { cloudCoverPercent: 100 })
 
-    expect(status.cloudCover).toBe('niezależne od zachmurzenia')
+    expect(status.cloudCover).toBe('cloud-independent')
   })
 })
 

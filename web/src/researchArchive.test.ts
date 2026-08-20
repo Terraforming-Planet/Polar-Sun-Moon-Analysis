@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest'
 
 import type { AreaAnalysisResponse } from './lib/evidenceApi'
 import {
+  buildAssistantAnswerRecord,
   buildResearchFindingRecord,
   buildResearchManifest,
+  parseLocalAssistantAnswers,
   parseLocalResearchArchive,
   parseLocalResearchFindings,
 } from './researchArchive'
@@ -18,7 +20,7 @@ describe('researchArchive', () => {
 
   it('builds a bounded official-public-only research manifest', () => {
     const manifest = buildResearchManifest({
-      title: 'Wisła test area',
+      title: 'Vistula test area',
       latitude: 53.66,
       longitude: 18.79,
       radiusKm: 80,
@@ -63,12 +65,12 @@ describe('researchArchive', () => {
     expect(() => buildResearchManifest({
       title: 'bad date', latitude: 0, longitude: 0, radiusKm: 10,
       startDate: '2026-01-01', endDate: '2025-01-01', analyses: ['terrain'],
-    })).toThrow(/Data początkowa/)
+    })).toThrow(/start date/i)
 
     expect(() => buildResearchManifest({
       title: 'no analysis', latitude: 0, longitude: 0, radiusKm: 10,
       startDate: '2025-01-01', endDate: '2026-01-01', analyses: [],
-    })).toThrow(/przynajmniej jeden/)
+    })).toThrow(/at least one/i)
   })
 
   it('keeps compatible v1 local archive entries', () => {
@@ -110,14 +112,14 @@ describe('researchArchive', () => {
         full_catalog_url: 'https://example.test/catalog',
       },
       analysis: {
-        headline: 'Wynik',
-        what_is_visible: 'Widoczna woda.',
-        change_over_time: 'Zmiany wymagają matched-season.',
-        water_assessment: 'Woda obecna.',
-        notable_features: ['linia brzegowa'],
-        confidence: { level: 'medium', reason: 'Dwie próbki wizualne.' },
-        limitations: ['zachmurzenie'],
-        recommended_next_step: 'Pobrać sceny oryginalne.',
+        headline: 'Result',
+        what_is_visible: 'Visible water.',
+        change_over_time: 'Changes require matched-season comparison.',
+        water_assessment: 'Water is present.',
+        notable_features: ['shoreline'],
+        confidence: { level: 'medium', reason: 'Two visual samples.' },
+        limitations: ['cloud cover'],
+        recommended_next_step: 'Retrieve original scenes.',
       },
       evidence_policy: 'official-public-only',
     }
@@ -126,12 +128,36 @@ describe('researchArchive', () => {
     expect(finding.schema).toBe('terra-research-finding/v1')
     expect(finding.privacy_note).toBe('raw-chat-not-included')
     expect(finding.source_images).toHaveLength(2)
-    expect(finding.conclusion.headline).toBe('Wynik')
-    expect(JSON.stringify(finding)).not.toContain('messages')
-    expect(JSON.stringify(finding)).not.toContain('Treść prywatnej rozmowy testowej')
+    expect(finding.conclusion.headline).toBe('Result')
+    expect(JSON.stringify(finding)).not.toContain('"messages":')
+    expect(JSON.stringify(finding)).not.toContain('private user question')
 
     const parsed = parseLocalResearchFindings(JSON.stringify([finding, { schema: 'terra-research-finding/v1', privacy_note: 'raw-chat-included' }]))
     expect(parsed).toHaveLength(1)
     expect(parsed[0].id).toBe(finding.id)
+  })
+
+  it('stores an assistant answer without ever storing the matching user prompt', () => {
+    const record = buildAssistantAnswerRecord({
+      answer: 'The assistant found two candidate channels that require DEM verification.',
+      model: 'gpt-5.6-terra',
+      place: { label: 'Test area', latitude: 53.59, longitude: 19.01 },
+    }, new Date('2026-08-21T00:30:00Z'))
+
+    const serialized = JSON.stringify(record)
+    expect(record.schema).toBe('terra-assistant-answer/v1')
+    expect(record.privacy_note).toBe('user-prompt-not-stored')
+    expect(serialized).toContain('candidate channels')
+    expect(serialized).not.toContain('"prompt":')
+    expect(serialized).not.toContain('"question":')
+    expect(serialized).not.toContain('"messages":')
+
+    const parsed = parseLocalAssistantAnswers(JSON.stringify([
+      record,
+      { ...record, id: 'bad', prompt: 'private text' },
+      { ...record, id: 'bad2', privacy_note: 'user-prompt-stored' },
+    ]))
+    expect(parsed).toHaveLength(1)
+    expect(parsed[0].id).toBe(record.id)
   })
 })

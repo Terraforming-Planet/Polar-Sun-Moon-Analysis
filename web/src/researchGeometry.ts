@@ -100,7 +100,7 @@ export function pointInResearchArea(
 }
 
 export function researchShapeLabel(shape: ResearchAreaShape) {
-  if (shape === 'square') return 'kwadrat'
-  if (shape === 'triangle') return 'trójkąt'
-  return 'koło'
+  if (shape === 'square') return 'square'
+  if (shape === 'triangle') return 'triangle'
+  return 'circle'
 }

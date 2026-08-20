@@ -216,7 +216,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
   }, [])
   const [ready, setReady] = useState(false)
   const [view, setView] = useState<ViewMode>('globe')
-  const [layer, setLayer] = useState<Layer>('full-live-earth')
+  const [layer, setLayer] = useState<Layer>('high-resolution')
   const [nightVision, setNightVision] = useState(false)
   const [live, setLive] = useState(true)
   const [solarLighting, setSolarLighting] = useState(true)
@@ -256,25 +256,27 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
     ? 'FULL EARTH · NASA COMPLETE BASE + REAL-TIME SUN'
     : 'FULL EARTH · NASA BASE + LATEST COMPLETE VIIRS + WAVES'
   const coverageNote =
-    layer === 'full-live-earth' && constrainedDevice
-      ? `Mobile reliability mode uses the complete NASA Blue Marble base. Live Sun lighting is ${day} UTC; select NASA VIIRS to inspect the latest dated satellite layer (${completeDay}).`
-      : layer === 'full-live-earth'
-        ? `Complete NASA Blue Marble remains underneath the dated VIIRS overlay (${completeDay}); the Sun/terminator uses ${day} UTC.`
-        : layer === 'nasa-day' || layer === 'global-clouds'
-          ? `NASA VIIRS imagery date: ${completeDay}. Real-time solar lighting remains tied to ${day} UTC.`
-          : layer === 'nasa-modis'
-            ? `NASA Terra MODIS imagery date: ${completeDay}. Real-time solar lighting remains tied to ${day} UTC.`
-            : layer === 'regional-clouds'
-              ? 'Regional geostationary imagery is blended over a complete NASA base. Sensor boundaries remain visible where the source has no coverage.'
-              : layer === 'goes-east' || layer === 'goes-west'
-                ? 'NOAA ABI GeoColor is distributed through NASA GIBS at sub-daily cadence; no-data outside the satellite footprint remains visible.'
-                : layer === 'copernicus-true-color' || layer === 'copernicus-safe'
-                  ? 'Copernicus Sentinel Hub supplies high-detail optical imagery for the selected UTC date; revisit and cloud cover depend on the source scene.'
-                  : layer === 'copernicus-ndvi'
-                    ? 'Copernicus NDVI is a derived vegetation index from official Sentinel imagery; it is not a natural-colour photograph.'
-                    : layer === 'eumetsat-live'
-                      ? 'EUMETView is a public near-real-time OGC service. The exact Meteosat layer is configured outside the static browser bundle.'
-                      : 'The complete NASA base remains visible while the selected official overlay loads.'
+    layer === 'high-resolution'
+      ? 'High-resolution reference imagery is the default visual layer for tracing riverbeds, channels and terrain. Dated scientific conclusions must still be verified against official Copernicus/NASA/USGS products.'
+      : layer === 'full-live-earth' && constrainedDevice
+        ? `Mobile reliability mode uses the complete NASA Blue Marble base. Live Sun lighting is ${day} UTC; select NASA VIIRS to inspect the latest dated satellite layer (${completeDay}).`
+        : layer === 'full-live-earth'
+          ? `Complete NASA Blue Marble remains underneath the dated VIIRS overlay (${completeDay}); the Sun/terminator uses ${day} UTC.`
+          : layer === 'nasa-day' || layer === 'global-clouds'
+            ? `NASA VIIRS imagery date: ${completeDay}. Real-time solar lighting remains tied to ${day} UTC.`
+            : layer === 'nasa-modis'
+              ? `NASA Terra MODIS imagery date: ${completeDay}. Real-time solar lighting remains tied to ${day} UTC.`
+              : layer === 'regional-clouds'
+                ? 'Regional geostationary imagery is blended over a complete NASA base. Sensor boundaries remain visible where the source has no coverage.'
+                : layer === 'goes-east' || layer === 'goes-west'
+                  ? 'NOAA ABI GeoColor is distributed through NASA GIBS at sub-daily cadence; no-data outside the satellite footprint remains visible.'
+                  : layer === 'copernicus-true-color' || layer === 'copernicus-safe'
+                    ? 'Copernicus Sentinel Hub supplies high-detail optical imagery for the selected UTC date; revisit and cloud cover depend on the source scene.'
+                    : layer === 'copernicus-ndvi'
+                      ? 'Copernicus NDVI is a derived vegetation index from official Sentinel imagery; it is not a natural-colour photograph.'
+                      : layer === 'eumetsat-live'
+                        ? 'EUMETView is a public near-real-time OGC service. The exact Meteosat layer is configured outside the static browser bundle.'
+                        : 'The complete NASA base remains visible while the selected official overlay loads.'
 
   useEffect(() => {
     const timer = window.setInterval(() => setNowTick(Date.now()), 60_000)
@@ -558,8 +560,6 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
       }
     }
 
-    // Every imagery mode uses the same UTC instant for the Sun/terminator.
-    // Daily imagery may intentionally use the previous complete UTC day.
     viewer.scene.globe.enableLighting = solarLighting
     viewer.scene.highDynamicRange = !constrainedDevice
     viewer.scene.postProcessStages.fxaa.enabled = true
@@ -633,13 +633,13 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
                   setPlaying(false)
                 }}
               >
+                <option value="high-resolution">High-resolution reference basemap</option>
                 <option value="full-live-earth">FULL EARTH — stable complete Earth + live Sun</option>
                 <option value="global-clouds">NASA VIIRS — latest complete daily imagery</option>
                 <option value="regional-clouds">Regional clouds — GOES/Himawari, ~10 min</option>
                 <option value="goes-east">NOAA GOES-East — GeoColor, sub-daily</option>
                 <option value="goes-west">NOAA GOES-West — GeoColor, sub-daily</option>
                 <option value="ocean-waves">Ocean waves — significant wave height</option>
-                <option value="high-resolution">High-resolution reference basemap</option>
                 <option value="nasa-day">NASA VIIRS — true colour</option>
                 <option value="nasa-modis">NASA Terra MODIS — true colour</option>
                 <option value="nasa-night">NASA VIIRS — night band</option>
@@ -673,25 +673,27 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
         )}
         <div className="location-globe-status">
           <strong>
-            {layer === 'full-live-earth'
-              ? fullLiveTitle
-              : layer === 'global-clouds' || layer === 'nasa-day'
-                ? 'NASA VIIRS · DATED TRUE COLOUR'
-                : layer === 'nasa-modis'
-                  ? 'NASA TERRA MODIS · DATED TRUE COLOUR'
-                  : layer === 'goes-east'
-                    ? 'NOAA GOES-EAST · ABI GEOCOLOR'
-                    : layer === 'goes-west'
-                      ? 'NOAA GOES-WEST · ABI GEOCOLOR'
-                      : layer === 'copernicus-true-color'
-                        ? 'COPERNICUS SENTINEL · TRUE COLOUR'
-                        : layer === 'copernicus-ndvi'
-                          ? 'COPERNICUS SENTINEL · NDVI'
-                          : layer === 'eumetsat-live'
-                            ? 'EUMETSAT EUMETVIEW · NEAR REAL TIME'
-                            : animatedMode
-                              ? 'SOURCE ANIMATION · 10-MINUTE STEP'
-                              : 'FULL EARTH · OFFICIAL SOURCE LAYERS'}
+            {layer === 'high-resolution'
+              ? 'HIGH-RESOLUTION REFERENCE BASEMAP'
+              : layer === 'full-live-earth'
+                ? fullLiveTitle
+                : layer === 'global-clouds' || layer === 'nasa-day'
+                  ? 'NASA VIIRS · DATED TRUE COLOUR'
+                  : layer === 'nasa-modis'
+                    ? 'NASA TERRA MODIS · DATED TRUE COLOUR'
+                    : layer === 'goes-east'
+                      ? 'NOAA GOES-EAST · ABI GEOCOLOR'
+                      : layer === 'goes-west'
+                        ? 'NOAA GOES-WEST · ABI GEOCOLOR'
+                        : layer === 'copernicus-true-color'
+                          ? 'COPERNICUS SENTINEL · TRUE COLOUR'
+                          : layer === 'copernicus-ndvi'
+                            ? 'COPERNICUS SENTINEL · NDVI'
+                            : layer === 'eumetsat-live'
+                              ? 'EUMETSAT EUMETVIEW · NEAR REAL TIME'
+                              : animatedMode
+                                ? 'SOURCE ANIMATION · 10-MINUTE STEP'
+                                : 'FULL EARTH · OFFICIAL SOURCE LAYERS'}
           </strong>
           <span>Lighting / timeline: {date.toLocaleString('en-GB', { timeZone: 'UTC' })} UTC</span>
           <span>{coverageNote}</span>
