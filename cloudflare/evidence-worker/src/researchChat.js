@@ -15,7 +15,7 @@ const MAX_MESSAGE_CHARS = 12_000
 const MAX_CONTEXT_CHARS = 64_000
 
 const SYSTEM_INSTRUCTIONS = `You are the Terra Observation research assistant for environmental and terrain analysis.
-Respond in Polish unless the user asks for another language.
+Respond in the same language as the latest user message. If the language is unclear, default to English.
 Answer every valid user turn. If the evidence is insufficient, still answer by stating what can be concluded, what cannot be concluded, and exactly what data is missing. Never silently omit an answer.
 Be technically useful and reasonably detailed. Prefer concrete comparisons, source/date references from the supplied context, uncertainty, and next checks over generic advice.
 The supplied research context may contain user annotations, DEM samples, satellite-analysis summaries and provenance. Clearly distinguish user-drawn annotations from official/public observations.
@@ -27,7 +27,7 @@ For terrain questions, discuss elevation gradients, likely drainage direction ca
 For satellite comparisons, identify which supplied dates/sources were actually inspected and separate visual observations from metadata-only catalogue coverage.
 For reports, organize findings into: study area, inputs and provenance, dated observations, measurements, uncertainty/limitations, interpretation candidates, and recommended next checks. Do not turn hypotheses into facts.
 Do not identify private people or infer private activity from Earth-observation imagery.
-Raw conversation text is transient application context, not an archived scientific evidence record.`
+Raw user prompts and conversation text are transient application context. They must never be described as an archived scientific evidence record, and archive outputs must omit the user's prompt text.`
 
 function corsHeaders(origin, env = {}) {
   const headers = {
@@ -127,8 +127,8 @@ function buildInput(parsed) {
   }))
   const latest = input[input.length - 1]
   const contextPrefix = parsed.reportMode
-    ? 'Wygeneruj szczegółowy raport badawczy na podstawie rozmowy i kontekstu.\n\n'
-    : 'Kontynuuj szczegółową analizę na podstawie rozmowy i kontekstu.\n\n'
+    ? 'Generate a detailed research report from the conversation and supplied research context. Do not reproduce private user prompt text in archive-ready output.\n\n'
+    : 'Continue the detailed analysis using the conversation and supplied research context.\n\n'
   latest.content.unshift({ type: 'input_text', text: `${contextPrefix}RESEARCH_CONTEXT:\n${parsed.context || '{}'}\n` })
   for (const attachment of parsed.attachments) {
     if (attachment.kind === 'image') {
@@ -215,7 +215,7 @@ export async function handleResearchChat(request, env = {}) {
       attachment_files: parsed.fileCount,
       attachment_bytes: parsed.totalBytes,
       attachment_names: parsed.attachments.map(item => item.name),
-      evidence_policy: 'official-public evidence + explicit transient user research inputs; raw chat is not a project archive record',
+      evidence_policy: 'official-public evidence + explicit transient user research inputs; raw user prompts are never archive records',
     }, 200, origin, env)
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Research chat failed safely.'
