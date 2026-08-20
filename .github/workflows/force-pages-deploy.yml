@@ -8,6 +8,11 @@ on:
       - 'published/**'
       - '.github/workflows/force-pages-deploy.yml'
   workflow_dispatch:
+    inputs:
+      evidence_api_url:
+        description: 'Public Cloudflare Evidence Worker URL for this Pages build.'
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -45,10 +50,30 @@ jobs:
         working-directory: web
         run: npm test
 
+      - name: Resolve public Evidence Worker URL
+        id: evidence-url
+        shell: bash
+        env:
+          DISPATCH_URL: ${{ inputs.evidence_api_url }}
+          REPOSITORY_URL: ${{ vars.VITE_EVIDENCE_API_URL }}
+        run: |
+          set -euo pipefail
+          worker_url="${DISPATCH_URL:-$REPOSITORY_URL}"
+          if [ -n "$worker_url" ] && [[ "$worker_url" != https://* ]]; then
+            echo 'VITE_EVIDENCE_API_URL must use HTTPS for a production Pages build.'
+            exit 1
+          fi
+          echo "url=$worker_url" >> "$GITHUB_OUTPUT"
+          if [ -n "$worker_url" ]; then
+            echo 'Evidence Worker URL resolved for this Pages build.'
+          else
+            echo 'No Evidence Worker URL configured; frontend will use its explicit DISCONNECTED state.'
+          fi
+
       - name: Build Vite application
         working-directory: web
         env:
-          VITE_EVIDENCE_API_URL: ${{ vars.VITE_EVIDENCE_API_URL }}
+          VITE_EVIDENCE_API_URL: ${{ steps.evidence-url.outputs.url }}
         run: npm run build
 
       - name: Verify build output
