@@ -54,7 +54,7 @@ test('production research analyze route supplies square NASA imagery plus high-d
       const sentinelUrl = new URL(sentinel.image_url)
       assert.equal(sentinelUrl.searchParams.get('WIDTH'), '1600')
       assert.equal(sentinelUrl.searchParams.get('HEIGHT'), '1600')
-      assert.match(sentinelUrl.searchParams.get('TIME'), /^2026-08-07\/2026-08-21$/)
+      assert.match(sentinelUrl.searchParams.get('TIME'), /^2026-08-06\/2026-08-20$/)
       return new Response(JSON.stringify({ output_text: JSON.stringify(validAnalysis()) }), { status: 200, headers: { 'Content-Type': 'application/json' } })
     }
     throw new Error(`unexpected upstream ${target}`)
@@ -69,7 +69,7 @@ test('production research analyze route supplies square NASA imagery plus high-d
         longitude: 37.25,
         radius_km: 25,
         start_date: '1990-01-01',
-        end_date: '2026-08-21',
+        end_date: '2026-08-20',
         depth: 'quick',
         place_name: 'Lake Tana',
       }),
@@ -112,7 +112,7 @@ test('deep analysis asks OpenAI for high-detail imagery and a larger output budg
     const response = await handleWorkerRequest(new Request('https://worker.example/research/analyze', {
       method: 'POST',
       headers: { Origin: allowedOrigin, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ latitude: 53.59, longitude: 19.01, radius_km: 25, start_date: '2000-01-01', end_date: '2026-08-21', depth: 'deep', place_name: 'test' }),
+      body: JSON.stringify({ latitude: 53.59, longitude: 19.01, radius_km: 25, start_date: '2000-01-01', end_date: '2026-08-20', depth: 'deep', place_name: 'test' }),
     }), env)
     assert.equal(response.status, 200)
   } finally {
