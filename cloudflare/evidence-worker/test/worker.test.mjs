@@ -8,6 +8,7 @@ import {
   extractOutputText,
   handleRequest,
   isAllowedOrigin,
+  loadPublishedCase,
   validateExplainPayload,
   validateExplanation,
 } from '../src/index.js'
@@ -61,7 +62,41 @@ test('health route never returns the OpenAI secret', async () => {
   const body = await response.text()
   assert.equal(response.status, 200)
   assert.match(body, /"openai_configured":true/)
+  assert.match(body, /"evidence_mode":"bundled-fixed-published-snapshot"/)
   assert.equal(body.includes('test-secret-not-real'), false)
+})
+
+test('root route is a human-readable backend status page', async () => {
+  const response = await handleRequest(new Request('https://worker.example/'), {
+    OPENAI_API_KEY: 'test-secret-not-real',
+  })
+  const body = await response.text()
+  assert.equal(response.status, 200)
+  assert.match(response.headers.get('content-type') ?? '', /text\/html/)
+  assert.match(body, /Terra Observation Evidence API/)
+  assert.match(body, /Open Terra Observation System/)
+  assert.match(body, /BACKEND READY/)
+  assert.equal(body.includes('test-secret-not-real'), false)
+})
+
+test('published evidence case is bundled and keeps scientific claim flags false', async () => {
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = async () => {
+    throw new Error('network access should not be needed to load bundled evidence')
+  }
+  try {
+    const bundle = await loadPublishedCase('vistula-test-014')
+    assert.equal(bundle.evidence_snapshot, 'bundled-at-deploy-time')
+    assert.equal(bundle.evidence.real_data_test.environmental_finding_claim, false)
+    assert.equal(bundle.evidence.real_data_test.water_loss_claim, false)
+    assert.equal(bundle.evidence.real_data_test.causal_claim, false)
+    assert.equal(bundle.evidence.l4_training_2.claims.ground_truth_claim, false)
+    assert.equal(bundle.evidence.l4_training_3.ground_truth_claim, false)
+    assert.equal(bundle.evidence.l4_training_3.coverage.line_count, 200016)
+    assert.equal(bundle.provenance.repository, 'Terraforming-Planet/Polar-Sun-Moon-Analysis')
+  } finally {
+    globalThis.fetch = originalFetch
+  }
 })
 
 test('POST rejects unapproved browser origin before any OpenAI call', async () => {
