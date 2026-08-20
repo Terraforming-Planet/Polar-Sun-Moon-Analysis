@@ -10,6 +10,24 @@ export type EvidenceHealth = {
   status: 'ready' | 'degraded'
   openai_configured: boolean
   supported_case_ids: string[]
+  evidence_mode?: string
+}
+
+export type EvidenceCaseSummary = {
+  case_id: string
+  short_label: string
+  title: string
+  category: string
+  public_page: string
+  evidence_class: string
+  record_count?: number
+  accepted_count?: number
+  temporal_scope?: string
+}
+
+export type EvidenceCasesResponse = {
+  service: string
+  cases: EvidenceCaseSummary[]
 }
 
 export type EvidenceResponse = {
@@ -38,6 +56,13 @@ export async function checkEvidenceApiHealth(apiUrl: string, signal?: AbortSigna
   if (!url) throw new Error('Evidence API URL is not configured.')
   const response = await fetch(`${url}/health`, { cache: 'no-store', signal })
   return readJson<EvidenceHealth>(response)
+}
+
+export async function listPublishedCases(apiUrl: string, signal?: AbortSignal) {
+  const url = normalizeEvidenceApiUrl(apiUrl)
+  if (!url) throw new Error('Evidence API URL is not configured.')
+  const response = await fetch(`${url}/cases`, { cache: 'no-store', signal })
+  return readJson<EvidenceCasesResponse>(response)
 }
 
 export async function explainPublishedCase(apiUrl: string, caseId: string, signal?: AbortSignal) {

@@ -12,6 +12,7 @@ type Status = 'disconnected' | 'checking' | 'ready' | 'explaining' | 'error'
 type Props = {
   apiUrl?: string
   caseId?: string
+  caseLabel?: string
 }
 
 const statusLabel: Record<Status, string> = {
@@ -25,18 +26,20 @@ const statusLabel: Record<Status, string> = {
 export function EvidenceExplainer({
   apiUrl = import.meta.env.VITE_EVIDENCE_API_URL,
   caseId = 'vistula-test-014',
+  caseLabel = 'Vistula Test 014',
 }: Props) {
   const endpoint = useMemo(() => normalizeEvidenceApiUrl(apiUrl), [apiUrl])
   const [status, setStatus] = useState<Status>(endpoint ? 'checking' : 'disconnected')
   const [healthReady, setHealthReady] = useState(false)
   const [error, setError] = useState('')
   const [explanation, setExplanation] = useState<EvidenceExplanation | null>(null)
-  const [caseTitle, setCaseTitle] = useState('Vistula Test 014')
+  const [caseTitle, setCaseTitle] = useState(caseLabel)
 
   useEffect(() => {
     setExplanation(null)
     setError('')
     setHealthReady(false)
+    setCaseTitle(caseLabel)
     if (!endpoint) {
       setStatus('disconnected')
       return
@@ -58,7 +61,7 @@ export function EvidenceExplainer({
         setStatus('error')
       })
     return () => controller.abort()
-  }, [caseId, endpoint])
+  }, [caseId, caseLabel, endpoint])
 
   const explain = async () => {
     if (!endpoint || !healthReady || status === 'explaining') return
@@ -80,7 +83,7 @@ export function EvidenceExplainer({
   return <section className="panel" aria-labelledby="ai-evidence-title">
     <div className="workspace-head">
       <div>
-        <small>OPENAI RESPONSES API · CLOUDFLARE WORKER · FIXED PUBLISHED EVIDENCE</small>
+        <small>OPENAI RESPONSES API · CLOUDFLARE WORKER · REGISTERED PUBLIC EVIDENCE</small>
         <h2 id="ai-evidence-title">AI Evidence / Research Explainer</h2>
       </div>
       <span className={`evidence-badge ${status === 'ready' ? 'observation' : status === 'error' ? 'unknown' : 'estimate'}`} aria-live="polite">
@@ -89,10 +92,10 @@ export function EvidenceExplainer({
     </div>
 
     <p>
-      OpenAI explains a fixed, published evidence bundle for <b>{caseTitle}</b>: real Test 014 satellite-data integrity records plus NVIDIA L4 Training #2 and #3 context. The browser cannot send an arbitrary prompt, model name or source URL.
+      OpenAI explains the server-selected evidence bundle for <b>{caseTitle}</b>. The browser cannot send an arbitrary prompt, model name or source URL, and it cannot ask the Worker to read an unregistered repository path.
     </p>
     <p className="muted">
-      AI does not create the underlying satellite measurement. The current Vistula evidence explicitly does not claim a measured water-loss magnitude or confirmed hydrological cause.
+      AI interprets published evidence; it does not create the underlying satellite measurements and it must preserve every scientific limitation stored with the selected test.
     </p>
 
     {status === 'disconnected' && <p className="notice">Public AI explanation is not connected in this Pages build yet. Configure the public Worker URL as <code>VITE_EVIDENCE_API_URL</code>; never place the OpenAI key in the browser.</p>}
@@ -101,7 +104,7 @@ export function EvidenceExplainer({
 
     <div className="hero-actions">
       <button className="primary" type="button" onClick={explain} disabled={!canExplain}>
-        {status === 'explaining' ? 'Explaining evidence…' : status === 'error' && healthReady ? 'Retry OpenAI evidence explanation' : 'Explain Vistula evidence with OpenAI'}
+        {status === 'explaining' ? 'Explaining selected evidence…' : status === 'error' && healthReady ? 'Retry OpenAI explanation' : 'Explain selected test with OpenAI'}
       </button>
     </div>
 
