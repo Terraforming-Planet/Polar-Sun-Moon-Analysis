@@ -9,8 +9,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: refresh-hazard-data-main
-  cancel-in-progress: true
+  group: hazard-data-publication
+  cancel-in-progress: false
 
 jobs:
   refresh:
@@ -32,26 +32,57 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade requests
 
-      - name: Refresh official public feeds
+      - name: Refresh auxiliary official public feeds
         run: python scripts/refresh_public_hazard_feeds.py
 
-      - name: Validate generated JSON
+      - name: Preserve canonical global hazards owner
+        shell: bash
         run: |
-          python -m json.tool web/public/data/hazards.json >/dev/null
+          set -euo pipefail
+          # build_global_safety_feed.py is the only production owner of hazards.json.
+          # This older helper still builds useful USGS/EONET auxiliary files, but its
+          # temporary hazards.json must never overwrite the multi-source 3D layer.
+          git restore --source=HEAD -- web/public/data/hazards.json
+
+      - name: Validate auxiliary generated JSON
+        run: |
           python -m json.tool web/public/data/earthquakes.geojson >/dev/null
           python -m json.tool web/public/data/eonet-events.json >/dev/null
 
-      - name: Commit changed data to main
+      - name: Sync auxiliary NRT files into branch-based Pages source
+        shell: bash
         run: |
-          if git diff --quiet -- web/public/data; then
-            echo "No feed changes"
-            exit 0
-          fi
+          set -euo pipefail
+          mkdir -p docs/data
+          cp web/public/data/earthquakes.geojson docs/data/earthquakes.geojson
+          cp web/public/data/eonet-events.json docs/data/eonet-events.json
+
+      - name: Commit changed auxiliary data to main
+        shell: bash
+        run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add web/public/data/hazards.json \
+          git add \
             web/public/data/earthquakes.geojson \
-            web/public/data/eonet-events.json
-          git commit -m "data: refresh official hazard feeds"
-          git pull --rebase origin main
-          git push origin HEAD:main
+            web/public/data/eonet-events.json \
+            docs/data/earthquakes.geojson \
+            docs/data/eonet-events.json
+          if git diff --cached --quiet; then
+            echo "No auxiliary feed changes"
+            exit 0
+          fi
+
+          git commit -m "data: refresh auxiliary official hazard feeds"
+          for attempt in 1 2 3 4; do
+            if git fetch origin main \
+              && git rebase origin/main \
+              && git push origin HEAD:main; then
+              echo 'auxiliary_hazard_publish=success'
+              exit 0
+            fi
+            git rebase --abort >/dev/null 2>&1 || true
+            sleep $((attempt * 4))
+          done
+          echo 'auxiliary_hazard_publish=failed after 4 attempts'
+          exit 1

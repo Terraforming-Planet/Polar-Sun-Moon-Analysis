@@ -7,36 +7,34 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
-  group: global-safety-monitor
+  group: hazard-data-publication
   cancel-in-progress: false
 
 jobs:
-  update-and-deploy:
+  update-global-safety:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Checkout
+      - name: Checkout current main branch
         uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
 
       - name: Configure Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Build global safety feed and 3D hazard layer
+      - name: Build canonical global safety feed and 3D hazard layer
         env:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
         run: python scripts/build_global_safety_feed.py
 
-      - name: Validate generated data
+      - name: Validate canonical generated data
         run: |
           python - <<'PY'
           import json
@@ -48,43 +46,45 @@ jobs:
           assert isinstance(hazards.get("features"), list)
           assert events.get("event_count", 0) > 0
           assert hazards.get("feature_count", 0) > 0
+          assert "generated_at_utc" in hazards
           print("Events:", events["event_count"])
           print("3D markers:", hazards["feature_count"])
           PY
 
-      - name: Commit public data
+      - name: Sync NRT data into branch-based Pages source
+        shell: bash
         run: |
+          set -euo pipefail
+          mkdir -p docs/data/events
+          cp web/public/data/events/latest.json docs/data/events/latest.json
+          cp web/public/data/hazards.json docs/data/hazards.json
+
+      - name: Commit canonical public data with rebase retry
+        shell: bash
+        run: |
+          set -euo pipefail
           git config user.name "terraforming-planet-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add web/public/data/events/latest.json web/public/data/hazards.json
+          git add \
+            web/public/data/events/latest.json \
+            web/public/data/hazards.json \
+            docs/data/events/latest.json \
+            docs/data/hazards.json
           if git diff --cached --quiet; then
-            echo "No data changes"
-          else
-            git commit -m "chore(data): update global safety feed and 3D markers"
-            git push
+            echo "No global safety data changes"
+            exit 0
           fi
 
-      - name: Configure Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: web/package-lock.json
-
-      - name: Install and build
-        working-directory: web
-        run: |
-          npm ci
-          npm run build
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: web/dist
-
-      - name: Deploy Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          git commit -m "chore(data): update global safety feed and 3D markers"
+          for attempt in 1 2 3 4; do
+            if git fetch origin main \
+              && git rebase origin/main \
+              && git push origin HEAD:main; then
+              echo 'global_safety_publish=success'
+              exit 0
+            fi
+            git rebase --abort >/dev/null 2>&1 || true
+            sleep $((attempt * 4))
+          done
+          echo 'global_safety_publish=failed after 4 attempts'
+          exit 1

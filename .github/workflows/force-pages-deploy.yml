@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'web/**'
+      - '!web/public/data/**'
       - 'published/**'
       - 'config/evidence-worker-url.txt'
       - '.github/workflows/force-pages-deploy.yml'
@@ -96,7 +97,7 @@ jobs:
           VITE_EVIDENCE_API_URL: ${{ steps.production-inputs.outputs.url }}
         run: npm run build
 
-      - name: Verify global AI Research production bundle
+      - name: Verify AI Research workspace production bundle
         shell: bash
         env:
           EVIDENCE_URL: ${{ steps.production-inputs.outputs.url }}
@@ -106,10 +107,14 @@ jobs:
           test -d web/dist/assets
           grep -q '/Polar-Sun-Moon-Analysis/' web/dist/index.html
           grep -R -Fq "$EVIDENCE_URL" web/dist/assets
-          grep -R -Fq 'AI Research' web/dist/assets
+          grep -R -Fq 'AI Research Workspace' web/dist/assets
+          grep -R -Fq 'Nowe badanie' web/dist/assets
+          grep -R -Fq 'Archiwum' web/dist/assets
+          grep -R -Fq 'OpenAI Explainer' web/dist/assets
+          grep -R -Fq 'terra-research-manifest/v1' web/dist/assets
           grep -R -Fq 'Explain selected test with OpenAI' web/dist/assets
-          grep -R -Fq 'wszystkie zarejestrowane testy' web/dist/assets
-          echo 'Production bundle contains the Worker URL and global AI Research workspace.'
+          test -s web/dist/research-archive/index.json
+          echo 'Production bundle contains the Worker URL, area builder, TEST archive and guarded OpenAI workspace.'
 
       - name: Publish build into docs
         shell: bash
@@ -131,6 +136,7 @@ jobs:
           test -s docs/index.html
           test -d docs/assets
           test -s docs/deployment-probe.txt
+          test -s docs/research-archive/index.json
 
       - name: Commit generated Pages files with rebase retry
         shell: bash
