@@ -16,6 +16,10 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 "terra_research_node/global_public_dataset.py" = ["E501", "F401", "UP035"]
 "terra_research_node/global_public_training.py" = ["E501"]
 "terra_research_node/historical_public_seed.py" = ["E501", "I001"]
+# The streaming trainer keeps long provenance/counting strings adjacent to the
+# hot-path network loop. Keep all correctness/bug checks active while allowing
+# these formatting-only lines during the first streaming rollout.
+"terra_research_node/streaming_gibs_training.py" = ["E501", "I001"]
 
 [tool.mypy]
 python_version = "3.12"
