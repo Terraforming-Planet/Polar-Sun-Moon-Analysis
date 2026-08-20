@@ -26,7 +26,6 @@ type StacItem = {
   bbox?: number[]
   properties?: Record<string, unknown>
   assets?: Record<string, { href?: string; type?: string }>
-  links?: Array<{ rel?: string; href?: string }>
 }
 type CesiumApi = {
   Viewer: new (element: HTMLElement, options: Record<string, unknown>) => any
@@ -49,11 +48,12 @@ declare global {
 
 const CESIUM_VERSION = '1.126'
 const CESIUM_BASE = `https://cdn.jsdelivr.net/npm/cesium@${CESIUM_VERSION}/Build/Cesium/`
-const HIGH_RESOLUTION_WORLD =
-  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
 const NASA_WMTS = 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/wmts.cgi'
+const NASA_BLUE_MARBLE = 'BlueMarble_ShadedRelief_Bathymetry'
 const NASA_GLOBAL_TRUE_COLOR = 'VIIRS_SNPP_CorrectedReflectance_TrueColor'
 const NASA_MODIS_TRUE_COLOR = 'MODIS_Terra_CorrectedReflectance_TrueColor'
+const HIGH_RESOLUTION_WORLD =
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
 const WAVEWATCH_WMS = 'https://erddap.aoml.noaa.gov/hdb/erddap/wms/WaveWatch_2026/request'
 const EUMETVIEW_WMS = 'https://view.eumetsat.int/geoserver/wms'
 const EUMETVIEW_LAYER = import.meta.env.VITE_EUMETVIEW_LAYER || ''
@@ -76,6 +76,12 @@ const REGIONAL_CLOUD_PRODUCTS = [
 
 function floorToTenMinutes(value: Date) {
   return new Date(Math.floor(value.getTime() / TEN_MINUTES) * TEN_MINUTES)
+}
+
+function previousUtcDay(value: Date) {
+  const copy = new Date(value)
+  copy.setUTCDate(copy.getUTCDate() - 1)
+  return copy
 }
 
 function markerCssColor(marker: Marker) {
@@ -118,11 +124,7 @@ function assetUrl(item?: StacItem) {
   for (const key of ['visual', 'rendered_preview', 'thumbnail', 'overview', 'preview', 'quicklook']) {
     if (item.assets?.[key]?.href) return item.assets[key]?.href ?? ''
   }
-  return (
-    Object.values(item.assets ?? {}).find(
-      asset => asset.href && asset.type?.startsWith('image/'),
-    )?.href ?? ''
-  )
+  return Object.values(item.assets ?? {}).find(asset => asset.href)?.href ?? ''
 }
 
 function PolarScene({ mode, date }: { mode: 'north' | 'south'; date: Date }) {
@@ -178,9 +180,7 @@ function PolarScene({ mode, date }: { mode: 'north' | 'south'; date: Date }) {
         <label>
           Original product
           <select value={selected?.id ?? ''} onChange={event => setSelectedId(event.target.value)}>
-            {items.map(item => (
-              <option key={item.id}>{item.id}</option>
-            ))}
+            {items.map(item => <option key={item.id}>{item.id}</option>)}
           </select>
         </label>
         <button type="button" onClick={() => setZoom(value => Math.min(32, value * 1.45))}>+</button>
@@ -245,27 +245,36 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
     () => (animatedMode ? animatedDate : live ? new Date(nowTick) : new Date(selectedTime)),
     [animatedMode, animatedDate, live, nowTick, selectedTime],
   )
+  const completeDailyDate = useMemo(
+    () => (live ? previousUtcDay(new Date(nowTick)) : date),
+    [live, nowTick, date],
+  )
   const day = date.toISOString().slice(0, 10)
+  const completeDay = completeDailyDate.toISOString().slice(0, 10)
   const subdailyTime = date.toISOString().slice(0, 16) + ':00Z'
   const fullLiveTitle = constrainedDevice
-    ? 'FULL EARTH · GLOBAL TRUE COLOUR + CLOUDS'
-    : 'FULL EARTH · GLOBAL TRUE COLOUR + CLOUDS + WAVES'
+    ? 'FULL EARTH · NASA COMPLETE BASE + REAL-TIME SUN'
+    : 'FULL EARTH · NASA BASE + LATEST COMPLETE VIIRS + WAVES'
   const coverageNote =
-    layer === 'regional-clouds'
-      ? 'Regional geostationary imagery is blended over the global VIIRS layer. Sensor boundaries are a source characteristic.'
-      : layer === 'goes-east' || layer === 'goes-west'
-        ? 'NOAA ABI GeoColor is distributed through NASA GIBS at sub-daily cadence; no-data outside the satellite footprint remains visible.'
-        : layer === 'copernicus-true-color' || layer === 'copernicus-safe'
-          ? 'Copernicus Sentinel Hub supplies high-detail optical imagery for the selected UTC date; revisit and cloud cover depend on the source scene.'
-          : layer === 'copernicus-ndvi'
-            ? 'Copernicus NDVI is a derived vegetation index from official Sentinel imagery; it is not a natural-colour photograph.'
-            : layer === 'eumetsat-live'
-              ? 'EUMETView is a public near-real-time OGC service. The exact Meteosat layer is configured outside the static browser bundle.'
-              : layer === 'full-live-earth' || layer === 'global-clouds'
-                ? 'Global imagery remains time-specific and the WGS84 globe uses the same UTC instant for real-time solar illumination.'
-                : constrainedDevice
-                  ? 'Mobile mode uses adaptive tile quality, a smaller cache and a safe close-zoom limit.'
-                  : 'Detail depends on the spatial resolution of the selected official imagery source.'
+    layer === 'full-live-earth' && constrainedDevice
+      ? `Mobile reliability mode uses the complete NASA Blue Marble base. Live Sun lighting is ${day} UTC; select NASA VIIRS to inspect the latest dated satellite layer (${completeDay}).`
+      : layer === 'full-live-earth'
+        ? `Complete NASA Blue Marble remains underneath the dated VIIRS overlay (${completeDay}); the Sun/terminator uses ${day} UTC.`
+        : layer === 'nasa-day' || layer === 'global-clouds'
+          ? `NASA VIIRS imagery date: ${completeDay}. Real-time solar lighting remains tied to ${day} UTC.`
+          : layer === 'nasa-modis'
+            ? `NASA Terra MODIS imagery date: ${completeDay}. Real-time solar lighting remains tied to ${day} UTC.`
+            : layer === 'regional-clouds'
+              ? 'Regional geostationary imagery is blended over a complete NASA base. Sensor boundaries remain visible where the source has no coverage.'
+              : layer === 'goes-east' || layer === 'goes-west'
+                ? 'NOAA ABI GeoColor is distributed through NASA GIBS at sub-daily cadence; no-data outside the satellite footprint remains visible.'
+                : layer === 'copernicus-true-color' || layer === 'copernicus-safe'
+                  ? 'Copernicus Sentinel Hub supplies high-detail optical imagery for the selected UTC date; revisit and cloud cover depend on the source scene.'
+                  : layer === 'copernicus-ndvi'
+                    ? 'Copernicus NDVI is a derived vegetation index from official Sentinel imagery; it is not a natural-colour photograph.'
+                    : layer === 'eumetsat-live'
+                      ? 'EUMETView is a public near-real-time OGC service. The exact Meteosat layer is configured outside the static browser bundle.'
+                      : 'The complete NASA base remains visible while the selected official overlay loads.'
 
   useEffect(() => {
     const timer = window.setInterval(() => setNowTick(Date.now()), 60_000)
@@ -309,13 +318,13 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
           maximumRenderTimeChange: Infinity,
         })
         viewerRef.current = viewer
-        viewer.resolutionScale = constrainedDevice ? 0.72 : 1
+        viewer.resolutionScale = constrainedDevice ? 1 : 1.2
         viewer.scene.globe.baseColor = Cesium.Color.fromCssColorString('#02060a')
-        viewer.scene.globe.maximumScreenSpaceError = constrainedDevice ? 1.5 : 0.5
-        viewer.scene.globe.tileCacheSize = constrainedDevice ? 250 : 900
+        viewer.scene.globe.maximumScreenSpaceError = constrainedDevice ? 0.9 : 0.5
+        viewer.scene.globe.tileCacheSize = constrainedDevice ? 450 : 900
         viewer.scene.skyAtmosphere.show = true
         viewer.scene.globe.showGroundAtmosphere = true
-        viewer.scene.fog.enabled = true
+        viewer.scene.fog.enabled = false
         viewer.scene.screenSpaceCameraController.minimumZoomDistance = constrainedDevice ? 25 : 5
         viewer.scene.screenSpaceCameraController.maximumZoomDistance = 80_000_000
         viewer.scene.screenSpaceCameraController.enableCollisionDetection = true
@@ -323,7 +332,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
           destination: Cesium.Cartesian3.fromDegrees(
             15,
             15,
-            constrainedDevice ? 27_000_000 : 21_000_000,
+            constrainedDevice ? 13_500_000 : 16_500_000,
           ),
         })
         setReady(true)
@@ -368,23 +377,36 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
     viewer.imageryLayers.removeAll()
     viewer.clock.currentTime = Cesium.JulianDate.fromIso8601(date.toISOString())
 
-    const base = viewer.imageryLayers.addImageryProvider(
-      new Cesium.UrlTemplateImageryProvider({
-        url: HIGH_RESOLUTION_WORLD,
-        minimumLevel: 0,
-        maximumLevel: 23,
-        credit: 'Esri World Imagery',
+    const nasaBase = viewer.imageryLayers.addImageryProvider(
+      new Cesium.WebMapTileServiceImageryProvider({
+        url: NASA_WMTS,
+        layer: NASA_BLUE_MARBLE,
+        style: 'default',
+        format: 'image/jpeg',
+        tileMatrixSetID: 'GoogleMapsCompatible_Level8',
+        maximumLevel: 8,
+        credit: 'NASA GIBS · Blue Marble Shaded Relief and Bathymetry',
       }),
     )
-    base.alpha = 1
-    base.contrast = 1.04
+    nasaBase.alpha = 1
 
-    const usesGlobalTrueColor =
-      layer === 'full-live-earth' ||
+    if (layer === 'high-resolution') {
+      const highResolution = viewer.imageryLayers.addImageryProvider(
+        new Cesium.UrlTemplateImageryProvider({
+          url: HIGH_RESOLUTION_WORLD,
+          minimumLevel: 0,
+          maximumLevel: 23,
+          credit: 'Esri World Imagery',
+        }),
+      )
+      highResolution.alpha = 1
+    }
+
+    const usesDatedViirs =
+      layer === 'nasa-day' ||
       layer === 'global-clouds' ||
-      layer === 'regional-clouds' ||
-      layer === 'nasa-day'
-    if (usesGlobalTrueColor) {
+      (!constrainedDevice && layer === 'full-live-earth')
+    if (usesDatedViirs) {
       const trueColor = viewer.imageryLayers.addImageryProvider(
         new Cesium.WebMapTileServiceImageryProvider({
           url: NASA_WMTS,
@@ -393,11 +415,11 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
           format: 'image/jpeg',
           tileMatrixSetID: 'GoogleMapsCompatible_Level9',
           maximumLevel: 9,
-          dimensions: { Time: day },
+          dimensions: { Time: completeDay },
           credit: 'NASA GIBS · Suomi NPP VIIRS True Color',
         }),
       )
-      trueColor.alpha = layer === 'regional-clouds' ? 0.9 : 1
+      trueColor.alpha = layer === 'full-live-earth' ? 0.82 : 1
     }
 
     if (layer === 'nasa-modis') {
@@ -409,7 +431,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
           format: 'image/jpeg',
           tileMatrixSetID: 'GoogleMapsCompatible_Level9',
           maximumLevel: 9,
-          dimensions: { Time: day },
+          dimensions: { Time: completeDay },
           credit: 'NASA GIBS · Terra MODIS Corrected Reflectance True Color',
         }),
       )
@@ -430,7 +452,7 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
           credit: `NOAA ${layer === 'goes-east' ? 'GOES-East' : 'GOES-West'} ABI · NASA GIBS distribution`,
         }),
       )
-      goes.alpha = 1
+      goes.alpha = 0.96
     }
 
     if (layer === 'regional-clouds') {
@@ -438,8 +460,8 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
         ? REGIONAL_CLOUD_PRODUCTS.slice(0, 1)
         : REGIONAL_CLOUD_PRODUCTS
       const regionalAlpha = constrainedDevice
-        ? Math.min(0.3, cloudOpacity * 0.42)
-        : Math.min(0.4, cloudOpacity * 0.55)
+        ? Math.min(0.34, cloudOpacity * 0.48)
+        : Math.min(0.45, cloudOpacity * 0.62)
       for (const [name, credit] of cloudProducts) {
         const clouds = viewer.imageryLayers.addImageryProvider(
           new Cesium.WebMapTileServiceImageryProvider({
@@ -483,11 +505,11 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
           format: 'image/png',
           tileMatrixSetID: 'GoogleMapsCompatible_Level9',
           maximumLevel: 9,
-          dimensions: { Time: day },
-          credit: 'NASA VIIRS night lights',
+          dimensions: { Time: completeDay },
+          credit: 'NASA VIIRS Day/Night Band',
         }),
       )
-      night.alpha = 0.78
+      night.alpha = 0.82
     }
 
     if (
@@ -537,15 +559,16 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
     }
 
     // Every imagery mode uses the same UTC instant for the Sun/terminator.
-    // This is what makes Poland night and the Americas day when that is physically correct.
+    // Daily imagery may intentionally use the previous complete UTC day.
     viewer.scene.globe.enableLighting = solarLighting
     viewer.scene.highDynamicRange = !constrainedDevice
-    viewer.scene.postProcessStages.fxaa.enabled = !constrainedDevice
+    viewer.scene.postProcessStages.fxaa.enabled = true
     viewer.scene.requestRender()
   }, [
     ready,
     layer,
     day,
+    completeDay,
     subdailyTime,
     view,
     date,
@@ -581,9 +604,9 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
       destination: Cesium.Cartesian3.fromDegrees(
         15,
         15,
-        constrainedDevice ? 27_000_000 : 21_000_000,
+        constrainedDevice ? 13_500_000 : 16_500_000,
       ),
-      duration: 1.2,
+      duration: 0.8,
     })
   }
 
@@ -610,16 +633,16 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
                   setPlaying(false)
                 }}
               >
-                <option value="full-live-earth">FULL EARTH — daytime imagery + clouds + waves</option>
-                <option value="global-clouds">Global clouds — NASA VIIRS daily mosaic</option>
+                <option value="full-live-earth">FULL EARTH — stable complete Earth + live Sun</option>
+                <option value="global-clouds">NASA VIIRS — latest complete daily imagery</option>
                 <option value="regional-clouds">Regional clouds — GOES/Himawari, ~10 min</option>
                 <option value="goes-east">NOAA GOES-East — GeoColor, sub-daily</option>
                 <option value="goes-west">NOAA GOES-West — GeoColor, sub-daily</option>
                 <option value="ocean-waves">Ocean waves — significant wave height</option>
-                <option value="high-resolution">High-resolution satellite basemap</option>
+                <option value="high-resolution">High-resolution reference basemap</option>
                 <option value="nasa-day">NASA VIIRS — true colour</option>
                 <option value="nasa-modis">NASA Terra MODIS — true colour</option>
-                <option value="nasa-night">NASA VIIRS — night lights</option>
+                <option value="nasa-night">NASA VIIRS — night band</option>
                 <option value="copernicus-safe">Copernicus — current observation</option>
                 <option value="copernicus-true-color">Copernicus Sentinel — true colour</option>
                 <option value="copernicus-ndvi">Copernicus Sentinel — NDVI</option>
@@ -652,23 +675,25 @@ export function RealisticEarthGlobe({ selectedTime, markers = [] }: Props) {
           <strong>
             {layer === 'full-live-earth'
               ? fullLiveTitle
-              : layer === 'global-clouds'
-                ? 'GLOBAL CLOUDS · NASA VIIRS'
-                : layer === 'goes-east'
-                  ? 'NOAA GOES-EAST · ABI GEOCOLOR'
-                  : layer === 'goes-west'
-                    ? 'NOAA GOES-WEST · ABI GEOCOLOR'
-                    : layer === 'copernicus-true-color'
-                      ? 'COPERNICUS SENTINEL · TRUE COLOUR'
-                      : layer === 'copernicus-ndvi'
-                        ? 'COPERNICUS SENTINEL · NDVI'
-                        : layer === 'eumetsat-live'
-                          ? 'EUMETSAT EUMETVIEW · NEAR REAL TIME'
-                          : animatedMode
-                            ? 'SOURCE ANIMATION · 10-MINUTE STEP'
-                            : 'FULL EARTH · MAXIMUM SOURCE DETAIL'}
+              : layer === 'global-clouds' || layer === 'nasa-day'
+                ? 'NASA VIIRS · DATED TRUE COLOUR'
+                : layer === 'nasa-modis'
+                  ? 'NASA TERRA MODIS · DATED TRUE COLOUR'
+                  : layer === 'goes-east'
+                    ? 'NOAA GOES-EAST · ABI GEOCOLOR'
+                    : layer === 'goes-west'
+                      ? 'NOAA GOES-WEST · ABI GEOCOLOR'
+                      : layer === 'copernicus-true-color'
+                        ? 'COPERNICUS SENTINEL · TRUE COLOUR'
+                        : layer === 'copernicus-ndvi'
+                          ? 'COPERNICUS SENTINEL · NDVI'
+                          : layer === 'eumetsat-live'
+                            ? 'EUMETSAT EUMETVIEW · NEAR REAL TIME'
+                            : animatedMode
+                              ? 'SOURCE ANIMATION · 10-MINUTE STEP'
+                              : 'FULL EARTH · OFFICIAL SOURCE LAYERS'}
           </strong>
-          <span>{date.toLocaleString('en-GB', { timeZone: 'UTC' })} UTC</span>
+          <span>Lighting / timeline: {date.toLocaleString('en-GB', { timeZone: 'UTC' })} UTC</span>
           <span>{coverageNote}</span>
           {error && <span>{error}</span>}
         </div>
