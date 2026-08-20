@@ -4,6 +4,7 @@ import './ai-research.css'
 import { EvidenceExplainer } from './EvidenceExplainer'
 import { ResearchArchivePanel } from './ResearchArchivePanel'
 import { ResearchAreaBuilder } from './ResearchAreaBuilder'
+import { SimpleResearchAssistant } from './SimpleResearchAssistant'
 import {
   listPublishedCases,
   normalizeEvidenceApiUrl,
@@ -44,50 +45,55 @@ export function AIResearchPanel() {
   return <section className="workspace ai-research-workspace">
     <div className="workspace-head ai-research-head">
       <div>
-        <small>OPENAI · PUBLIC RESEARCH ARCHIVE · NVIDIA L4 · OFFICIAL DATA</small>
-        <h1>AI Research Workspace</h1>
-        <p>Wybierz obszar, przygotuj nowe badanie, wróć do archiwum TEST 001–016 albo uruchom OpenAI wyłącznie na zatwierdzonym pakiecie evidence.</p>
+        <small>OPENAI · NASA · USGS · OPENSTREETMAP · NVIDIA L4</small>
+        <h1>Zbadaj dowolne miejsce na Ziemi</h1>
+        <p>Wpisz nazwę miejsca. System znajdzie je na mapie, pobierze oficjalne dane satelitarne i pokaże prostą odpowiedź AI. Ustawienia techniczne są schowane w „Zaawansowane”.</p>
       </div>
-      <span className="evidence-badge observation">RESEARCH CONTROL CENTER</span>
+      <span className="evidence-badge observation">AI RESEARCH</span>
     </div>
 
     <div className="research-mode-tabs" role="tablist" aria-label="Tryb AI Research">
       <button type="button" className={activeView === 'new' ? 'active' : ''} onClick={() => setActiveView('new')}>
-        <b>01</b><span>Nowe badanie<small>obszar · daty · manifest</small></span>
+        <b>01</b><span>Zbadaj teren<small>mapa → satelity → AI</small></span>
       </button>
       <button type="button" className={activeView === 'archive' ? 'active' : ''} onClick={() => setActiveView('archive')}>
-        <b>02</b><span>Archiwum<small>TEST 001–016 + moje szkice</small></span>
+        <b>02</b><span>Archiwum<small>TEST 001–016 + moje badania</small></span>
       </button>
       <button type="button" className={activeView === 'explain' ? 'active' : ''} onClick={() => setActiveView('explain')}>
-        <b>03</b><span>OpenAI Explainer<small>tylko zatwierdzone evidence</small></span>
+        <b>03</b><span>Zatwierdzone testy AI<small>opublikowane evidence</small></span>
       </button>
-    </div>
-
-    <div className="research-policy-strip">
-      <span><b>Publiczne testy:</b> 16</span>
-      <span><b>OpenAI evidence:</b> {cases.length || 'ładowanie…'}</span>
-      <span><b>NVIDIA L4:</b> Training #1 + #2 + #3</span>
-      <span><b>Zasada:</b> evidence before claims</span>
     </div>
 
     {!endpoint && <p className="notice">Publiczny Worker AI nie jest skonfigurowany w tym buildzie.</p>}
     {error && <p className="notice" role="alert">Nie udało się pobrać rejestru OpenAI: {error}</p>}
 
-    <details className="research-training-context">
-      <summary><span><small>NVIDIA L4 · PUBLIC RESEARCH CONTEXT</small><b>Trzy opublikowane treningi AI</b></span><em>Training ≠ ground truth · rozwiń</em></summary>
-      <p className="muted">Każda analiza zatwierdzonego testu otrzymuje wspólny kontekst trzech opublikowanych treningów NVIDIA L4. Metryki treningowe opisują uczenie i pipeline danych — nie są automatycznie dowodem zmian środowiskowych.</p>
-      <div className="research-training-list">
-        {trainings.map(item => <article key={item.training_id}>
-          <span className="evidence-badge derived">{item.short_label}</span>
-          <div><h3>{item.title}</h3><p>{item.gpu} · {item.summary}</p></div>
-          <a className="button-link compact" href={item.public_page}>Raport</a>
-        </article>)}
-        {!trainings.length && endpoint && !error && <p className="muted">Ładowanie Training #1, #2 i #3…</p>}
-      </div>
-      <span className="evidence-badge derived">TRAINING ≠ GROUND TRUTH</span>
-    </details>
+    {activeView === 'new' && <SimpleResearchAssistant
+      apiUrl={endpoint}
+      advanced={<ResearchAreaBuilder onOpenArchive={() => setActiveView('archive')} />}
+    />}
 
-    {activeView === 'new' && <ResearchAreaBuilder onOpenArchive={() => setActiveView('archive')} />}
+    {activeView !== 'new' && <>
+      <div className="research-policy-strip">
+        <span><b>Publiczne testy:</b> 16</span>
+        <span><b>OpenAI evidence:</b> {cases.length || 'ładowanie…'}</span>
+        <span><b>NVIDIA L4:</b> Training #1 + #2 + #3</span>
+        <span><b>Zasada:</b> evidence before claims</span>
+      </div>
+
+      <details className="research-training-context">
+        <summary><span><small>NVIDIA L4 · PUBLIC RESEARCH CONTEXT</small><b>Trzy opublikowane treningi AI</b></span><em>Training ≠ ground truth · rozwiń</em></summary>
+        <p className="muted">Każda analiza zatwierdzonego testu otrzymuje wspólny kontekst trzech opublikowanych treningów NVIDIA L4. Metryki treningowe opisują uczenie i pipeline danych — nie są automatycznie dowodem zmian środowiskowych.</p>
+        <div className="research-training-list">
+          {trainings.map(item => <article key={item.training_id}>
+            <span className="evidence-badge derived">{item.short_label}</span>
+            <div><h3>{item.title}</h3><p>{item.gpu} · {item.summary}</p></div>
+            <a className="button-link compact" href={item.public_page}>Raport</a>
+          </article>)}
+          {!trainings.length && endpoint && !error && <p className="muted">Ładowanie Training #1, #2 i #3…</p>}
+        </div>
+        <span className="evidence-badge derived">TRAINING ≠ GROUND TRUTH</span>
+      </details>
+    </>}
 
     {activeView === 'archive' && <ResearchArchivePanel
       aiCaseIds={aiCaseIds}
@@ -101,7 +107,7 @@ export function AIResearchPanel() {
         <div><small>REGISTERED OPENAI EVIDENCE</small><h2>Wyjaśnij zatwierdzony test</h2></div>
         <span className="evidence-badge observation">SERVER-SELECTED EVIDENCE</span>
       </div>
-      <p className="muted">OpenAI nie może samodzielnie przeszukiwać prywatnych plików, wybierać dowolnych URL-i ani analizować nowego szkicu obszaru, dopóki dane nie przejdą kontrolowanego pipeline'u i nie zostaną zarejestrowane jako publiczny pakiet evidence.</p>
+      <p className="muted">Ten widok służy do publicznych testów, które przeszły kontrolowany pipeline evidence. Nowe miejsce badaj w pierwszej zakładce.</p>
       <div className="research-explainer-selector">
         <label className="research-field">Test z aktywnym pakietem AI<select value={selectedId} onChange={event => setSelectedId(event.target.value)} disabled={!cases.length}>
           {cases.map(item => <option key={item.case_id} value={item.case_id}>{item.short_label} · {item.title}</option>)}
