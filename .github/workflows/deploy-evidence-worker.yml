@@ -74,24 +74,18 @@ jobs:
           print('Worker health check passed; OpenAI secret is configured.')
           PY
 
-      - name: Publish Worker URL as a non-secret repository variable
+      - name: Rebuild GitHub Pages with the public Worker URL
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           WORKER_URL: ${{ steps.deploy.outputs.deployment-url }}
         run: |
           set -euo pipefail
-          gh variable set VITE_EVIDENCE_API_URL --body "$WORKER_URL" --repo "$GITHUB_REPOSITORY"
-          echo 'Updated repository variable VITE_EVIDENCE_API_URL.'
-
-      - name: Rebuild GitHub Pages with the public Worker URL
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          gh workflow run force-pages-deploy.yml --repo "$GITHUB_REPOSITORY" --ref main
-          echo 'Dispatched force-pages-deploy.yml.'
+          gh workflow run force-pages-deploy.yml \
+            --repo "$GITHUB_REPOSITORY" \
+            --ref main \
+            -f evidence_api_url="$WORKER_URL"
+          echo 'Dispatched force-pages-deploy.yml with the public Worker URL as a workflow input.'
 
       - name: Deployment summary
         shell: bash
@@ -104,6 +98,7 @@ jobs:
             echo "- Worker: $WORKER_URL"
             echo '- Health: passed'
             echo '- OPENAI_API_KEY: stored as Worker secret; value not exposed'
-            echo '- VITE_EVIDENCE_API_URL: updated as public repository variable'
+            echo '- VITE_EVIDENCE_API_URL: handed directly to the controlled Pages workflow input'
+            echo '- Repository Actions variables: not mutated by the workflow'
             echo '- GitHub Pages rebuild: dispatched'
           } >> "$GITHUB_STEP_SUMMARY"
