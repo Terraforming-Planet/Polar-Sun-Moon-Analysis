@@ -22,11 +22,13 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout repository
+        id: checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Verify required deployment secrets exist
+        id: secrets
         shell: bash
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -40,9 +42,11 @@ jobs:
           echo 'Required secret names are configured. Secret values are not printed.'
 
       - name: Scan tracked files for leaked tokens
+        id: secret_scan
         run: python scripts/ci/scan_tracked_secrets.py
 
       - name: Test Worker guardrails
+        id: guardrails
         run: node --test cloudflare/evidence-worker/test/*.test.mjs
 
       - name: Deploy Worker and bind OpenAI secret
@@ -83,6 +87,7 @@ jobs:
           PY
 
       - name: Verify real OpenAI evidence explanation
+        id: explain
         shell: bash
         env:
           WORKER_URL: ${{ steps.deploy.outputs.deployment-url }}
@@ -109,6 +114,7 @@ jobs:
           PY
 
       - name: Persist public Evidence Worker URL for future Pages builds
+        id: persist
         shell: bash
         env:
           WORKER_URL: ${{ steps.deploy.outputs.deployment-url }}
@@ -139,6 +145,7 @@ jobs:
           exit 1
 
       - name: Rebuild GitHub Pages with the public Worker URL
+        id: pages_dispatch
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -152,6 +159,7 @@ jobs:
           echo 'Dispatched force-pages-deploy.yml with the public Worker URL as a workflow input.'
 
       - name: Verify public Pages bundle contains the Worker URL
+        id: live_pages
         shell: bash
         env:
           WORKER_URL: ${{ steps.deploy.outputs.deployment-url }}
@@ -180,6 +188,7 @@ jobs:
           exit 1
 
       - name: Deployment summary
+        id: summary
         shell: bash
         env:
           WORKER_URL: ${{ steps.deploy.outputs.deployment-url }}
@@ -195,3 +204,75 @@ jobs:
             echo '- VITE_EVIDENCE_API_URL: handed directly to the controlled Pages workflow input'
             echo '- Public Pages bundle: verified to contain the Worker URL'
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Persist safe deployment diagnostics
+        if: ${{ always() }}
+        continue-on-error: true
+        shell: bash
+        env:
+          JOB_STATUS: ${{ job.status }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          SOURCE_SHA: ${{ github.sha }}
+          WORKER_URL: ${{ steps.deploy.outputs.deployment-url }}
+          SECRETS_OUTCOME: ${{ steps.secrets.outcome }}
+          SECRET_SCAN_OUTCOME: ${{ steps.secret_scan.outcome }}
+          GUARDRAILS_OUTCOME: ${{ steps.guardrails.outcome }}
+          DEPLOY_OUTCOME: ${{ steps.deploy.outcome }}
+          HEALTH_OUTCOME: ${{ steps.health.outcome }}
+          EXPLAIN_OUTCOME: ${{ steps.explain.outcome }}
+          PERSIST_OUTCOME: ${{ steps.persist.outcome }}
+          PAGES_DISPATCH_OUTCOME: ${{ steps.pages_dispatch.outcome }}
+          LIVE_PAGES_OUTCOME: ${{ steps.live_pages.outcome }}
+        run: |
+          set -euo pipefail
+          mkdir -p config
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          worker_url = os.environ.get('WORKER_URL', '').strip().rstrip('/')
+          payload = {
+              'status': os.environ.get('JOB_STATUS', 'unknown'),
+              'run_url': os.environ.get('RUN_URL', ''),
+              'source_sha': os.environ.get('SOURCE_SHA', ''),
+              'worker_url': worker_url or None,
+              'stages': {
+                  'required_secrets': os.environ.get('SECRETS_OUTCOME', ''),
+                  'tracked_secret_scan': os.environ.get('SECRET_SCAN_OUTCOME', ''),
+                  'worker_guardrails': os.environ.get('GUARDRAILS_OUTCOME', ''),
+                  'cloudflare_deploy': os.environ.get('DEPLOY_OUTCOME', ''),
+                  'health': os.environ.get('HEALTH_OUTCOME', ''),
+                  'openai_explain': os.environ.get('EXPLAIN_OUTCOME', ''),
+                  'persist_public_url': os.environ.get('PERSIST_OUTCOME', ''),
+                  'pages_dispatch': os.environ.get('PAGES_DISPATCH_OUTCOME', ''),
+                  'live_pages': os.environ.get('LIVE_PAGES_OUTCOME', ''),
+              },
+              'contains_secret_values': False,
+              'contains_openai_output': False,
+          }
+          Path('config/evidence-worker-deploy-status.json').write_text(
+              json.dumps(payload, indent=2, sort_keys=True) + '\n',
+              encoding='utf-8',
+          )
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/evidence-worker-deploy-status.json
+          if git diff --cached --quiet; then
+            echo 'Deployment diagnostics are unchanged.'
+            exit 0
+          fi
+          git commit -m 'chore(config): record Evidence Worker deploy status'
+          for attempt in 1 2 3 4; do
+            if git fetch origin main \
+              && git rebase origin/main \
+              && git push origin HEAD:main; then
+              echo 'Safe deployment diagnostics persisted.'
+              exit 0
+            fi
+            git rebase --abort >/dev/null 2>&1 || true
+            sleep $((attempt * 4))
+          done
+          echo 'Could not persist deployment diagnostics; primary job result is unchanged.'
+          exit 0
