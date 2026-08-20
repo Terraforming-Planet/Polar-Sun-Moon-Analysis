@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 
-import { buildLandsatStacUrl, buildNasaGibsPreviewUrl, representativeResearchDates } from './ResearchDataPreview'
+import {
+  buildLandsatProxyUrl,
+  buildLandsatStacUrl,
+  buildNasaGibsPreviewUrl,
+  representativeResearchDates,
+} from './ResearchDataPreview'
 import { pointInResearchArea, researchAreaBounds } from './researchGeometry'
 import { parseResearchLocation } from './researchLocation'
 import { periodForPreset } from './researchTime'
@@ -42,6 +47,12 @@ describe('research area tools', () => {
     expect(landsat).toContain('https://landsatlook.usgs.gov/stac-server/collections/landsat-c2l2-sr/items?')
     expect(landsat).toContain('bbox=')
     expect(decodeURIComponent(landsat)).toContain('1990-01-01T00:00:00Z/1999-12-31T23:59:59Z')
+
+    const relay = buildLandsatProxyUrl('https://terra.example.workers.dev/', 53.5914, 19.010717, 25, '1990-01-01', '1999-12-31')
+    expect(relay).toContain('https://terra.example.workers.dev/research/landsat?')
+    expect(decodeURIComponent(relay)).toContain('start=1990-01-01')
+    expect(decodeURIComponent(relay)).toContain('end=1999-12-31')
+    expect(relay).not.toContain('landsatlook.usgs.gov')
   })
 
   it('uses GIBS only from MODIS Terra availability and clamps future dates', () => {

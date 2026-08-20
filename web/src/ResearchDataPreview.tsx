@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 
+import { normalizeEvidenceApiUrl } from './lib/evidenceApi'
 import {
   pointInResearchArea,
   researchAreaBounds,
@@ -47,6 +48,13 @@ type StacResponse = {
   features?: StacItem[]
   numberMatched?: number
   numberReturned?: number
+  terra_source?: {
+    agency?: string
+    service?: string
+    collection?: string
+    upstream_url?: string
+    relayed_by?: string
+  }
 }
 
 type LandsatScene = {
@@ -63,6 +71,7 @@ type AreaData = {
   hazardGeneratedAt: string | null
   landsatScenes: LandsatScene[]
   matchedScenes: number | null
+  landsatRelayed: boolean
 }
 
 const LANDSAT_COLLECTION = 'landsat-c2l2-sr'
@@ -125,6 +134,27 @@ export function buildLandsatStacUrl(
     limit: String(limit),
   })
   return `${LANDSAT_STAC}?${params.toString()}`
+}
+
+export function buildLandsatProxyUrl(
+  workerUrl: string,
+  latitude: number,
+  longitude: number,
+  radiusKm: number,
+  startDate: string,
+  endDate: string,
+  limit = 12,
+) {
+  const endpoint = normalizeEvidenceApiUrl(workerUrl)
+  if (!endpoint) return ''
+  const bounds = researchAreaBounds(latitude, longitude, Math.max(radiusKm, 1))
+  const params = new URLSearchParams({
+    bbox: `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`,
+    start: startDate,
+    end: endDate,
+    limit: String(limit),
+  })
+  return `${endpoint}/research/landsat?${params.toString()}`
 }
 
 function stacScene(item: StacItem): LandsatScene {
@@ -210,6 +240,12 @@ export function ResearchDataPreview({
     () => buildLandsatStacUrl(latitude, longitude, radiusKm, startDate, endDate),
     [endDate, latitude, longitude, radiusKm, startDate],
   )
+  const evidenceApiUrl = normalizeEvidenceApiUrl(import.meta.env.VITE_EVIDENCE_API_URL)
+  const landsatProxyUrl = useMemo(
+    () => buildLandsatProxyUrl(evidenceApiUrl, latitude, longitude, radiusKm, startDate, endDate),
+    [endDate, evidenceApiUrl, latitude, longitude, radiusKm, startDate],
+  )
+  const landsatFetchUrl = landsatProxyUrl || landsatUrl
 
   const run = async () => {
     setStatus('loading')
@@ -220,9 +256,10 @@ export function ResearchDataPreview({
           if (!response.ok) throw new Error(`hazards.json: HTTP ${response.status}`)
           return response.json() as Promise<HazardPayload>
         }),
-        fetch(landsatUrl, { headers: { Accept: 'application/geo+json,application/json' } }).then(async response => {
-          if (!response.ok) throw new Error(`USGS STAC: HTTP ${response.status}`)
-          return response.json() as Promise<StacResponse>
+        fetch(landsatFetchUrl, { headers: { Accept: 'application/geo+json,application/json' } }).then(async response => {
+          const payload = await response.json().catch(() => ({})) as StacResponse & { error?: string }
+          if (!response.ok) throw new Error(payload.error ?? `USGS STAC: HTTP ${response.status}`)
+          return payload
         }),
       ])
 
@@ -244,6 +281,7 @@ export function ResearchDataPreview({
         hazardGeneratedAt: hazardPayload?.generated_at_utc ?? hazardPayload?.generatedUtc ?? null,
         landsatScenes,
         matchedScenes: typeof stacPayload?.numberMatched === 'number' ? stacPayload.numberMatched : null,
+        landsatRelayed: Boolean(stacPayload?.terra_source?.relayed_by),
       })
       if (failures.length === 2) throw new Error(failures.join(' · '))
       if (failures.length) setError(`Część źródeł nie odpowiedziała: ${failures.join(' · ')}`)
@@ -261,7 +299,7 @@ export function ResearchDataPreview({
       <div><small>OFFICIAL AREA DATA · NASA GIBS · USGS LANDSAT</small><h2>Dane i obrazy badanego terenu</h2></div>
       <span className="evidence-badge observation">ON DEMAND</span>
     </div>
-    <p className="muted">Nic nie jest zgadywane. Po naciśnięciu pobieramy katalog scen Landsat dla wybranego AOI, filtrujemy zarejestrowane zdarzenia w obszarze i tworzymy podglądy NASA GIBS dla reprezentatywnych dat dostępnych od 2000 r.</p>
+    <p className="muted">Nic nie jest zgadywane. Po naciśnięciu pobieramy katalog scen Landsat dla wybranego AOI, filtrujemy zarejestrowane zdarzenia w obszarze i tworzymy podglądy NASA GIBS dla reprezentatywnych dat dostępnych od 2000 r. Katalog USGS jest przekazywany przez ograniczony publiczny Worker tylko po to, aby działał poprawnie w przeglądarce.</p>
     <div className="research-area-summary">
       <span><b>Kształt</b>{researchShapeLabel(shape)}</span>
       <span><b>Środek</b>{latitude.toFixed(5)}°, {longitude.toFixed(5)}°</span>
@@ -296,7 +334,7 @@ export function ResearchDataPreview({
       </div>
 
       <div className="research-result-section">
-        <div className="research-result-title"><h3>USGS Landsat Collection 2 · Surface Reflectance</h3><span>1982 → teraz</span></div>
+        <div className="research-result-title"><h3>USGS Landsat Collection 2 · Surface Reflectance</h3><span>1982 → teraz · {data.landsatRelayed ? 'przez zabezpieczony relay' : 'bezpośrednio'}</span></div>
         {data.landsatScenes.length ? <div className="research-landsat-list">
           {data.landsatScenes.map(scene => <article key={scene.id}>
             {scene.previewUrl && <img src={scene.previewUrl} loading="lazy" alt={`Podgląd ${scene.id}`} />}
