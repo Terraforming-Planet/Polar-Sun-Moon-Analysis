@@ -2,6 +2,18 @@
 
 **BUILD FOR GOOD — open Earth observation for protecting water, land, agriculture and communities with real public satellite data.**
 
+## BUILD FOR GOOD in one minute
+
+- **What we built:** an open-source Earth-observation platform that combines official/public satellite and scientific data, a global interactive 3D Earth, reproducible environmental analysis, documented NVIDIA L4 GPU research and a guarded OpenAI Evidence / Research Explainer.
+- **Who it helps:** communities, farmers and water managers, educators, students, researchers, NGOs, environmental teams and open-source developers who need clearer evidence about water, rivers, drylands and environmental change.
+- **Real GPU work:** the project includes published NVIDIA L4 training/evaluation runs, including a streaming NASA GIBS run that processed **200,016 geospatial/time windows across 75 research regions**. These are training/evaluation facts, not environmental ground truth.
+- **How OpenAI helps:** OpenAI explains a fixed, server-selected evidence bundle in four fields — summary, why it matters, uncertainty and next checks — without replacing the underlying measurements or inventing causes.
+- **Long-term public-good goal:** help people recognize and investigate water loss, changing river and lake systems, drylands, paleochannels and environmental hazards earlier so communities can make better decisions about restoration, preparedness and protection of life, homes, farmland, infrastructure and water resources.
+- **Scientific rule:** satellite observations and deterministic analysis produce evidence; AI helps interpret and prioritize it. Training success is never presented as proof of a real environmental event, and the project does not claim exact-time-and-place earthquake prediction.
+
+**Live demo:** <https://terraforming-planet.github.io/Polar-Sun-Moon-Analysis/>  
+**Public repository:** <https://github.com/Terraforming-Planet/Polar-Sun-Moon-Analysis>
+
 ## Terraforming Planet — short mission
 
 **Terraforming Planet** is an open research initiative focused on understanding how water, terrain and environmental systems change — and how better observation can help people restore damaged landscapes instead of reacting only after the damage is visible on the ground.
