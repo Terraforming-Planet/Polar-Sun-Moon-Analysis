@@ -1,8 +1,15 @@
 import { describe, expect, it } from 'vitest'
 
+import { PUBLIC_RESEARCH_TESTS } from './researchCatalog'
 import { buildResearchManifest, parseLocalResearchArchive } from './researchArchive'
 
 describe('researchArchive', () => {
+  it('publishes the complete TEST 001-016 archive and marks guarded AI cases explicitly', () => {
+    expect(PUBLIC_RESEARCH_TESTS).toHaveLength(16)
+    expect(PUBLIC_RESEARCH_TESTS.map(item => item.testId)).toEqual(Array.from({ length: 16 }, (_, index) => String(index + 1).padStart(3, '0')))
+    expect(PUBLIC_RESEARCH_TESTS.filter(item => item.aiCaseId).map(item => item.testId)).toEqual(['001', '011', '013', '014', '015'])
+  })
+
   it('builds a bounded official-public-only research manifest', () => {
     const manifest = buildResearchManifest({
       title: 'Wisła test area',
