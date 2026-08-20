@@ -128,7 +128,7 @@ describe('researchArchive', () => {
     expect(finding.source_images).toHaveLength(2)
     expect(finding.conclusion.headline).toBe('Wynik')
     expect(JSON.stringify(finding)).not.toContain('messages')
-    expect(JSON.stringify(finding)).not.toContain('chat')
+    expect(JSON.stringify(finding)).not.toContain('Treść prywatnej rozmowy testowej')
 
     const parsed = parseLocalResearchFindings(JSON.stringify([finding, { schema: 'terra-research-finding/v1', privacy_note: 'raw-chat-included' }]))
     expect(parsed).toHaveLength(1)
