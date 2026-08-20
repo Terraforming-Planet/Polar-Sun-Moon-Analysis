@@ -76,17 +76,17 @@ export const SATELLITE_SOURCES: SatelliteSource[] = [
 
 export function SatelliteSourceRegistry() {
   return (
-    <section className="satellite-source-registry" aria-label="Globalny rejestr oryginalnych źródeł satelitarnych">
-      <h3>Globalny zestaw oryginalnych produktów satelitarnych</h3>
-      <p>Źródła są zapisane w jednym rejestrze. Aktywne API pobiera wyłącznie produkty z konkretnym ID, czasem rejestracji i footprintem.</p>
+    <section className="satellite-source-registry" aria-label="Global registry of original satellite sources">
+      <h3>Global registry of original satellite products</h3>
+      <p>Sources are maintained in one registry. Active APIs retrieve only products with a concrete product ID, acquisition time and footprint.</p>
       <div className="satellite-source-grid">
         {SATELLITE_SOURCES.map(source => (
           <article key={source.id} className={source.enabledInViewer ? 'is-enabled' : ''}>
             <strong>{source.agency}</strong>
             <span>{source.missions.join(' · ')}</span>
-            <span>{source.enabledInViewer ? 'Zsynchronizowane z widokiem' : source.access === 'public-api' ? 'Gotowe do kolejnego adaptera API' : 'Wymaga autoryzacji dostawcy'}</span>
+            <span>{source.enabledInViewer ? 'Synchronized with the viewer' : source.access === 'public-api' ? 'Ready for the next API adapter' : 'Provider authorization required'}</span>
             <small>{source.note}</small>
-            <a href={source.catalogueUrl} target="_blank" rel="noreferrer">Otwórz oficjalny katalog</a>
+            <a href={source.catalogueUrl} target="_blank" rel="noreferrer">Open official catalogue</a>
           </article>
         ))}
       </div>
