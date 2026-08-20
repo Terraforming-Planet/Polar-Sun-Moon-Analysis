@@ -25,10 +25,10 @@ export type GlofasCatalog = {
 }
 
 const VARIABLE_LABELS: Record<string, string> = {
-  river_discharge: 'Przepływ rzeczny',
-  soil_wetness_index_root_zone: 'Wilgotność strefy korzeniowej',
-  snow_water_equivalent: 'Ekwiwalent wodny śniegu',
-  runoff_water_equivalent_surface_plus_subsurface: 'Spływ powierzchniowy i podpowierzchniowy',
+  river_discharge: 'River discharge',
+  soil_wetness_index_root_zone: 'Root-zone soil wetness',
+  snow_water_equivalent: 'Snow water equivalent',
+  runoff_water_equivalent_surface_plus_subsurface: 'Surface + subsurface runoff water equivalent',
 }
 
 export function variableLabel(variable: string) {
@@ -36,9 +36,9 @@ export function variableLabel(variable: string) {
 }
 
 export function sourceStatusLabel(status?: string) {
-  if (status === 'available') return 'DOSTĘPNE'
-  if (status === 'down') return 'CHWILOWO NIEDOSTĘPNE'
-  return status ? status.toUpperCase() : 'BRAK STATUSU'
+  if (status === 'available') return 'AVAILABLE'
+  if (status === 'down') return 'TEMPORARILY UNAVAILABLE'
+  return status ? status.toUpperCase() : 'NO STATUS'
 }
 
 export function newestTemporalEnd(catalog?: GlofasCatalog | null) {
