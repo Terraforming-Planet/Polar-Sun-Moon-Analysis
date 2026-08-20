@@ -27,33 +27,81 @@ if (-not (Test-Path $metricsPath)) {
 }
 
 $metrics = Get-Content $metricsPath -Raw | ConvertFrom-Json
+$training = if ($null -ne $metrics.PSObject.Properties['training']) { $metrics.training } else { $metrics }
+$sourceManifestPath = Join-Path $resolvedRun 'source_manifest.json'
+$sourceManifest = if (Test-Path $sourceManifestPath) {
+    Get-Content $sourceManifestPath -Raw | ConvertFrom-Json
+} else {
+    $null
+}
+
+function Pick-Value {
+    param(
+        [object]$Primary,
+        [string]$PrimaryName,
+        [object]$Fallback,
+        [string]$FallbackName
+    )
+    if ($null -ne $Primary -and $null -ne $Primary.PSObject.Properties[$PrimaryName]) {
+        return $Primary.$PrimaryName
+    }
+    if ($null -ne $Fallback -and $null -ne $Fallback.PSObject.Properties[$FallbackName]) {
+        return $Fallback.$FallbackName
+    }
+    return $null
+}
+
+$uniqueTrainingImages = Pick-Value $training 'unique_training_images' $sourceManifest 'train_image_count'
+if ($null -eq $uniqueTrainingImages -and $null -ne $metrics.PSObject.Properties['dataset']) {
+    $uniqueTrainingImages = $metrics.dataset.train_count
+}
+$uniqueValidationImages = Pick-Value $training 'unique_validation_images' $sourceManifest 'validation_count'
+$uniqueTestImages = Pick-Value $training 'unique_test_images' $sourceManifest 'test_count'
+$trainingMode = Pick-Value $training 'training_mode' $training 'mode'
+$groundTruthClaim = Pick-Value $training 'ground_truth_claim' $metrics 'ground_truth_claim'
+if ($null -eq $groundTruthClaim) {
+    $groundTruthClaim = $false
+}
+$completed = Pick-Value $training 'completed' $metrics 'completed'
+if ($null -eq $completed) {
+    $completed = $true
+}
+
 $publicationDir = Join-Path $repoRoot "published\training-runs\$runName"
 New-Item -ItemType Directory -Force -Path $publicationDir | Out-Null
 
 $summary = [ordered]@{
-    schema = 'tp26-training-publication-v1'
+    schema = 'tp26-training-publication-v2'
     run = $runName
     generated_utc = (Get-Date).ToUniversalTime().ToString('o')
     evidence_class = 'DERIVED_VALUE'
     scientific_finding_claim = $false
-    ground_truth_claim = [bool]($metrics.ground_truth_claim)
-    completed = [bool]($metrics.completed)
-    elapsed_seconds = $metrics.elapsed_seconds
-    steps = $metrics.steps
-    epochs = $metrics.epochs
-    samples_seen = $metrics.samples_seen
-    unique_training_images = $metrics.unique_training_images
-    unique_validation_images = $metrics.unique_validation_images
-    unique_test_images = $metrics.unique_test_images
-    loss_first = $metrics.loss_first
-    loss_last = $metrics.loss_last
-    loss_best = $metrics.loss_best
-    validation_loss = $metrics.validation_loss
+    ground_truth_claim = [bool]$groundTruthClaim
+    completed = [bool]$completed
+    training_mode = $trainingMode
+    elapsed_seconds = $training.elapsed_seconds
+    steps = $training.steps
+    epochs = $training.epochs
+    samples_seen = $training.samples_seen
+    unique_training_images = $uniqueTrainingImages
+    unique_validation_images = $uniqueValidationImages
+    unique_test_images = $uniqueTestImages
+    image_count = Pick-Value $training 'image_count' $sourceManifest 'train_image_count'
+    loss_first = $training.loss_first
+    loss_last = $training.loss_last
+    loss_best = $training.loss_best
+    validation_loss = Pick-Value $training 'validation_loss' $metrics 'validation_loss'
     note = 'Training metrics describe model optimization. They are not by themselves evidence of an environmental discovery or causal conclusion.'
 }
 $summaryPath = Join-Path $publicationDir 'summary.json'
 $summary | ConvertTo-Json -Depth 8 | Set-Content -Encoding UTF8 $summaryPath
 
+$validationLoss = Pick-Value $training 'validation_loss' $metrics 'validation_loss'
+$elapsedSeconds = if ($null -ne $training.elapsed_seconds) {
+    [Math]::Round([double]$training.elapsed_seconds, 2)
+} else {
+    ''
+}
 $summaryHtml = @"
 <!doctype html>
 <html lang="en">
@@ -68,14 +116,14 @@ body{font-family:system-ui;background:#04101d;color:#dff7ff;margin:0;padding:32p
 <h1>TP-26 training run: $runName</h1>
 <p>Reproducible optimization report generated from the saved run metrics.</p>
 <div class="grid">
-<div class="metric"><span>Unique training images</span><b>$($metrics.unique_training_images)</b></div>
-<div class="metric"><span>Validation images</span><b>$($metrics.unique_validation_images)</b></div>
-<div class="metric"><span>Test images</span><b>$($metrics.unique_test_images)</b></div>
-<div class="metric"><span>Steps</span><b>$($metrics.steps)</b></div>
-<div class="metric"><span>Samples seen</span><b>$($metrics.samples_seen)</b></div>
-<div class="metric"><span>Elapsed seconds</span><b>$([Math]::Round([double]$metrics.elapsed_seconds,2))</b></div>
+<div class="metric"><span>Unique training images</span><b>$uniqueTrainingImages</b></div>
+<div class="metric"><span>Validation images</span><b>$uniqueValidationImages</b></div>
+<div class="metric"><span>Test images</span><b>$uniqueTestImages</b></div>
+<div class="metric"><span>Steps</span><b>$($training.steps)</b></div>
+<div class="metric"><span>Samples seen</span><b>$($training.samples_seen)</b></div>
+<div class="metric"><span>Elapsed seconds</span><b>$elapsedSeconds</b></div>
 </div>
-<div class="card"><h2>Loss</h2><p>First: <code>$($metrics.loss_first)</code><br/>Last: <code>$($metrics.loss_last)</code><br/>Best: <code>$($metrics.loss_best)</code><br/>Validation: <code>$($metrics.validation_loss)</code></p></div>
+<div class="card"><h2>Loss</h2><p>First: <code>$($training.loss_first)</code><br/>Last: <code>$($training.loss_last)</code><br/>Best: <code>$($training.loss_best)</code><br/>Validation: <code>$validationLoss</code></p></div>
 <div class="card warn"><strong>Scientific integrity</strong><p>These values are DERIVED_VALUE training metrics. They show optimization behaviour only. They do not independently prove a water-loss cause, blocked river, hazard, or other environmental finding.</p></div>
 </main></body></html>
 "@
