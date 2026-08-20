@@ -1,0 +1,167 @@
+export type PublicResearchTest = {
+  testId: string
+  label: string
+  title: string
+  category: string
+  temporalScope: string
+  publicPath: string
+  aiCaseId?: string
+  archiveStatus: 'published'
+}
+
+export const PUBLIC_RESEARCH_TESTS: PublicResearchTest[] = [
+  {
+    testId: '001',
+    label: 'TEST 001',
+    title: 'Staw leśny w pobliżu jeziora Kuchnia — zapis zmian satelitarnych i wieloletnie obserwacje terenowe',
+    category: 'woda / hydrologia / teren',
+    temporalScope: '1990–2026 · wiosna + jesień',
+    publicPath: 'experiment-001/',
+    aiCaseId: 'test-001-forest-pond-kuchnia',
+    archiveStatus: 'published',
+  },
+  {
+    testId: '002',
+    label: 'TEST 002',
+    title: 'Zmiana powierzchni wody — porównanie wieloletnie',
+    category: 'woda / zmiana powierzchni',
+    temporalScope: '1990–2026',
+    publicPath: 'experiment-002/',
+    archiveStatus: 'published',
+  },
+  {
+    testId: '003',
+    label: 'TEST 003',
+    title: 'Jezioro Nogat — monitoring zmian wody',
+    category: 'woda / jeziora',
+    temporalScope: '1990–2026',
+    publicPath: 'experiment-003/',
+    archiveStatus: 'published',
+  },
+  {
+    testId: '004',
+    label: 'TEST 004',
+    title: 'Kacze + Głęboczek — porównanie zbiorników',
+    category: 'woda / jeziora',
+    temporalScope: '1990–2026',
+    publicPath: 'experiment-004/',
+    archiveStatus: 'published',
+  },
+  {
+    testId: '005',
+    label: 'TEST 005',
+    title: 'Jezioro Tarpno — monitoring satelitarny',
+    category: 'woda / jeziora',
+    temporalScope: 'wieloletni zapis satelitarny',
+    publicPath: 'experiment-005/',
+    archiveStatus: 'published',
+  },
+  {
+    testId: '006',
+    label: 'TEST 006',
+    title: 'Jezioro Wieczno — test kontrolny zmian wody',
+    category: 'woda / kontrola',
+    temporalScope: 'wieloletni zapis satelitarny',
+    publicPath: 'experiment-006/',
+    archiveStatus: 'published',
+  },
+  {
+    testId: '007',
+    label: 'TEST 007',
+    title: 'Karaś / Iława — lokalny monitoring wody',
+    category: 'woda / monitoring lokalny',
+    temporalScope: 'wieloletni zapis satelitarny',
+    publicPath: 'experiment-007/',
+    archiveStatus: 'published',
+  },
+  {
+    testId: '008',
+    label: 'TEST 008',
+    title: 'Jezioro Stelchno — monitoring zmian',
+    category: 'woda / jeziora',
+    temporalScope: 'wieloletni zapis satelitarny',
+    publicPath: 'experiment-008/',
+    archiveStatus: 'published',
+  },
+  {
+    testId: '009',
+    label: 'TEST 009',
+    title: 'Jezioro Płowęż — monitoring zmian',
+    category: 'woda / jeziora',
+    temporalScope: 'wieloletni zapis satelitarny',
+    publicPath: 'experiment-009/',
+    archiveStatus: 'published',
+  },
+  {
+    testId: '010',
+    label: 'TEST 010',
+    title: 'Dolina Drwęcy — rzeka, mokradła i otoczenie',
+    category: 'rzeka / mokradła / hydrologia',
+    temporalScope: 'wieloletni zapis satelitarny',
+    publicPath: 'experiment-010/',
+    archiveStatus: 'published',
+  },
+  {
+    testId: '011',
+    label: 'TEST 011',
+    title: 'Iława–Zalewo — sezonowe dowody satelitarne',
+    category: 'woda / monitoring regionalny',
+    temporalScope: '1990–2026 · wiosna + jesień',
+    publicPath: 'experiment-011/',
+    aiCaseId: 'test-011-ilawa-zalewo',
+    archiveStatus: 'published',
+  },
+  {
+    testId: '012',
+    label: 'TEST 012',
+    title: 'Great Salt Lake — monitoring dużego jeziora',
+    category: 'woda / jeziora / USA',
+    temporalScope: 'wieloletni zapis satelitarny',
+    publicPath: 'experiment-012/',
+    archiveStatus: 'published',
+  },
+  {
+    testId: '013',
+    label: 'TEST 013',
+    title: 'Cosmopolis / Grays Harbor — wybrzeże i estuarium',
+    category: 'wybrzeże / estuarium / woda',
+    temporalScope: '1990–2026 · wiosna + jesień',
+    publicPath: 'experiment-013/',
+    aiCaseId: 'test-013-grays-harbor',
+    archiveStatus: 'published',
+  },
+  {
+    testId: '014',
+    label: 'TEST 014',
+    title: 'Wisła Gniew–Grudziądz — rzeka i monitoring systemów wodnych',
+    category: 'rzeka / hydrologia',
+    temporalScope: '1990–2026 · wiosna + jesień',
+    publicPath: 'experiment-014/',
+    aiCaseId: 'vistula-test-014',
+    archiveStatus: 'published',
+  },
+  {
+    testId: '015',
+    label: 'TEST 015',
+    title: 'Himalaje / Wyżyna Tybetańska — teren, śnieg i woda',
+    category: 'teren / śnieg / woda',
+    temporalScope: '1990–2026 · wiosna + jesień',
+    publicPath: 'experiment-015/',
+    aiCaseId: 'test-015-himalaya-tibet',
+    archiveStatus: 'published',
+  },
+  {
+    testId: '016',
+    label: 'TEST 016',
+    title: 'Woda + teren + AI — wieloźródłowy kierunek badawczy',
+    category: 'AI / teren / hydrologia',
+    temporalScope: 'badanie wieloźródłowe',
+    publicPath: 'experiment-016/',
+    archiveStatus: 'published',
+  },
+]
+
+export const PUBLIC_RESEARCH_CATEGORIES = [
+  'wszystkie',
+  ...Array.from(new Set(PUBLIC_RESEARCH_TESTS.map(item => item.category))).sort(),
+]
