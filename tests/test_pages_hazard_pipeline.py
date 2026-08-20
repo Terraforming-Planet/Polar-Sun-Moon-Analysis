@@ -34,9 +34,12 @@ def test_pages_build_ignores_nrt_data_only_changes_and_checks_new_workspace() ->
     workflow = read(".github/workflows/force-pages-deploy.yml")
 
     assert "!web/public/data/**" in workflow
-    assert "AI Research Workspace" in workflow
-    assert "Nowe badanie" in workflow
+    assert "Zbadaj dowolne miejsce na Ziemi" in workflow
+    assert "Wpisz miejsce. Resztę zrobi AI." in workflow
+    assert "Zbadaj teren" in workflow
     assert "Archiwum" in workflow
-    assert "OpenAI Explainer" in workflow
+    assert "Zatwierdzone testy AI" in workflow
+    assert "Zaawansowane" in workflow
+    assert "Pełny katalog satelitarny USGS" in workflow
     assert "terra-research-manifest/v1" in workflow
     assert "wszystkie zarejestrowane testy" not in workflow
