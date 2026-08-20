@@ -1,17 +1,37 @@
 # Terra Observation System
 
-**BUILD FOR GOOD — open Earth observation for finding, measuring and explaining environmental change with real public satellite data.**
+**BUILD FOR GOOD — open Earth observation for protecting water, land, agriculture and communities with real public satellite data.**
 
-Terra Observation System is being built to help people investigate questions such as:
+## Terraforming Planet — short mission
 
-- Where are lakes, ponds or wetlands losing visible surface water?
-- Where has a river channel narrowed, shifted or become fragmented by exposed sediment?
-- Which locations deserve closer hydrological or field investigation?
-- What do decades of satellite observations actually show — and what do they **not** prove?
+**Terraforming Planet** is an open research initiative focused on understanding how water, terrain and environmental systems change — and how better observation can help people restore damaged landscapes instead of reacting only after the damage is visible on the ground.
+
+A long-term goal is to study **deserts, drylands and ancient river systems** to understand where water once flowed, where it is disappearing today, and where future restoration, water retention or carefully planned agriculture may be physically possible. The project does not assume that every desert can or should be converted to farmland. It aims to provide evidence that can help researchers decide where intervention may be realistic, safe and environmentally responsible.
+
+## Why Terra Observation System matters
+
+Terra Observation System is being built to help answer practical questions such as:
+
+- Where are **lakes, ponds and wetlands losing visible surface water**?
+- Where has a **river channel narrowed, shifted, fragmented or become blocked by sediment or other obstacles**?
+- Where can historical imagery reveal **old riverbeds, paleochannels and former water routes** that deserve field or hydrological investigation?
+- Which dryland areas may have enough water, terrain and soil potential to justify future research into **agriculture, retention or landscape restoration**?
+- Which areas show conditions associated with **flood risk, drought, wildfire, landslides, coastal change or other hazards**?
+- Can multiple official datasets help identify **risk indicators** before a disaster causes loss of life, homes, farms or infrastructure?
 
 The project combines official/public Earth-observation data, deterministic measurements, NVIDIA L4 training and evaluation, an interactive 3D Earth, reproducible evidence records and a guarded OpenAI **Evidence / Research Explainer**.
 
-The central rule is simple: **satellites and deterministic analysis produce the evidence; AI helps people understand it.** OpenAI never replaces measurements, source metadata or scientific verification.
+The central rule is simple: **satellites and deterministic analysis produce the evidence; AI helps people understand, compare and prioritize it.** OpenAI never replaces measurements, source metadata or scientific verification.
+
+## Public-good vision
+
+The most important use case is **water and land resilience**.
+
+If a lake is shrinking, a pond disappears, a river changes course or a historical channel becomes disconnected, the system should help researchers find that change early, compare it with older observations and determine what needs to be investigated next. In the future, the same architecture can support large-scale studies of drylands and former river networks to help identify places where water retention, channel restoration or agriculture may be worth testing.
+
+The hazard side is equally important. Better satellite and environmental monitoring can support earlier recognition of areas exposed to **flooding, drought, wildfire, landslides, volcanic activity, severe storms and other hazards**. For earthquakes, the project can in future combine public seismic catalogues, ground-deformation products and other scientific indicators to support **risk research and anomaly review**. It must not claim that AI can currently predict the exact place and time of an earthquake.
+
+The goal is practical: **give people more time and better evidence before environmental damage or a natural hazard costs lives, destroys homes, damages farms or wipes out years of work and savings.**
 
 ## Live demo and public repository
 
@@ -20,7 +40,7 @@ The central rule is simple: **satellites and deterministic analysis produce the 
 
 ## BUILD FOR GOOD submission summary
 
-Terra Observation System helps communities, researchers, educators, NGOs and environmental responders investigate environmental change using legal, official and publicly available Earth-observation data. A primary use case is the long-term study of **drying lakes, disappearing ponds, river morphology and water connectivity**.
+Terra Observation System helps communities, researchers, educators, NGOs and environmental responders investigate environmental change using legal, official and publicly available Earth-observation data. Its primary use cases are the long-term study of **drying lakes, disappearing ponds, river morphology, water connectivity, desert hydrology, old river systems and environmental hazards**.
 
 Instead of asking an AI model to guess what happened, the system first collects and processes satellite/public-source evidence, preserves dates and provenance, and computes reproducible metrics. NVIDIA L4 training helps develop and evaluate the image-processing pipeline. The OpenAI Responses API is then used as a final explanation layer over structured findings, training/evaluation artifacts and real-data test results.
 
@@ -30,36 +50,40 @@ The project currently combines:
 
 - an interactive 3D Earth for environmental and satellite context;
 - water, lake, river, wetland, terrain and environmental-change research workflows;
+- desert, dryland and paleochannel research for studying former and present water pathways;
 - multi-year and multi-region Earth-observation experiments;
-- official/public data integrations including NASA, NASA GIBS, NASA EONET/FIRMS, ESA/Copernicus/CDSE, USGS and other documented sources;
+- official/public data integrations including NASA, NASA GIBS, NASA EONET/FIRMS, ESA/Copernicus/CDSE, USGS, NOAA and other documented sources;
 - reproducible manifests, timestamps, hashes, source references and evidence classes;
 - NVIDIA L4 GPU training and streaming research pipelines;
 - published L4 training reports with explicit limitations and reproducibility information;
 - an OpenAI-powered Evidence / Research Explainer grounded in already-produced scientific artifacts;
-- environmental hazard monitoring;
+- environmental hazard monitoring and a framework that can grow toward flood, drought, wildfire, landslide, storm, volcanic and seismic-risk research;
 - Arctic, Sahara, Ocean and Earth–Space research stations;
 - NASA JPL Horizons astronomy/polar research as an additional scientific module;
 - privacy safeguards and no person tracking.
 
-For BUILD FOR GOOD, the main story is **Earth, water and environmental protection**. The astronomy and Earth–Space modules remain part of the wider research platform, but they are not the primary example of community impact.
+For BUILD FOR GOOD, the main story is **Earth, water, land restoration and community protection**. The astronomy and Earth–Space modules remain part of the wider research platform, but they are not the primary example of community impact.
 
 ## The problem we want to help solve
 
-Satellite archives contain decades of evidence, but turning those observations into something useful for a local community, student, NGO or researcher is difficult. A person may notice that a pond has disappeared or that a river contains more exposed sediment than decades ago, but visual inspection alone does not establish the magnitude or cause of that change.
+Satellite archives contain decades of evidence, but turning those observations into something useful for a local community, student, NGO or researcher is difficult. A person may notice that a pond has disappeared, a lake shoreline has retreated, a river contains more exposed sediment than decades ago or an old channel is no longer carrying water, but visual inspection alone does not establish the magnitude or cause of that change.
 
 Terra Observation System is designed to make that process more rigorous:
 
 1. locate the area of interest;
 2. collect comparable public satellite observations;
 3. preserve acquisition date, source, sensor and provenance;
-4. derive water masks, shoreline/channel measurements or other documented metrics;
+4. derive water masks, shoreline/channel measurements, exposed-bed metrics or other documented indicators;
 5. compare matched periods where possible;
-6. label the result by evidence class;
-7. use GPU/AI tooling to improve analysis and evaluate the pipeline;
-8. explain the verified result in language that non-specialists can understand;
-9. state clearly what additional evidence would be required before claiming a physical cause.
+6. identify old river routes, paleochannels or landscape features that deserve additional hydrological investigation;
+7. label the result by evidence class;
+8. use GPU/AI tooling to improve analysis and evaluate the pipeline;
+9. explain the verified result in language that non-specialists can understand;
+10. state clearly what additional evidence would be required before claiming a physical cause or recommending intervention.
 
-A visually suspected obstruction or constriction is therefore recorded as a `flow_connectivity_candidate` or `possible_constriction`, **not** as proof that an outlet is blocked. Confirming cause can require discharge records, DEM/bathymetry, hydraulic structures, groundwater information or field inspection.
+A visually suspected obstruction or constriction is therefore recorded as a `flow_connectivity_candidate` or `possible_constriction`, **not** as proof that an outlet is blocked. Confirming cause can require discharge records, DEM/bathymetry, hydraulic structures, groundwater information, rainfall history or field inspection.
+
+For desert and agricultural research, satellite evidence may help identify former drainage, water-retention opportunities, soil/vegetation signals and terrain constraints. Any real agricultural or restoration proposal would still require field hydrology, soil science, ecology, water-balance analysis and local legal/environmental review.
 
 ## Real NVIDIA L4 training and public satellite data
 
@@ -127,30 +151,48 @@ That means OpenAI can understand that the Vistula test has real, provenance-chec
 
 Terra Observation System is designed for:
 
-- **local communities** trying to understand visible changes in nearby lakes, ponds, rivers or wetlands;
+- **local communities** trying to understand visible changes in nearby lakes, ponds, rivers, wetlands or drylands;
+- **farmers, land and water managers** who may benefit from better long-term information about water availability, flood exposure, drainage and landscape change;
 - **educators and students** learning Earth observation, hydrology, climate science and uncertainty;
 - **researchers and citizen scientists** who need transparent provenance and reproducible comparisons;
-- **NGOs and environmental organizations** reviewing water loss, drought, river change, floods, fires and ecosystem stress;
+- **NGOs and environmental organizations** reviewing water loss, drought, desertification, river change, floods, fires and ecosystem stress;
 - **environmental and emergency-response professionals** who need rapid context from official public sources;
 - **open-source developers** building transparent tools for environmental protection and the common good.
 
-The application is research and educational software. It does not replace official emergency warnings or professional field/hydrological assessment.
+The application is research and educational software. It does not replace official emergency warnings, professional field/hydrological assessment or authoritative earthquake forecasting/seismic-hazard services.
 
 ## How it will be used — and how it is already used
 
-A practical water-loss workflow can look like this:
+A practical water-loss or river-restoration workflow can look like this:
 
-1. choose a lake, pond, river reach, wetland or AOI;
+1. choose a lake, pond, river reach, wetland, dryland basin or AOI;
 2. retrieve historical and recent observations from official/public sources;
 3. use matched seasons and quality filters where possible;
 4. compute water-area, shoreline, channel, exposed-bed or morphology metrics;
 5. save the source dates, sensor information, hashes and analysis configuration;
 6. compare the result with previous tests and relevant L4 training/evaluation artifacts;
 7. classify the evidence as `OBSERVATION`, `DERIVED_VALUE`, `MODEL_ESTIMATE`, `HYPOTHESIS` or `UNKNOWN`;
-8. optionally send that **structured evidence bundle** to the OpenAI Evidence Explainer;
-9. show users a clear explanation of what changed, why it may matter, what remains uncertain and what should be checked next.
+8. identify locations that deserve hydrological, geological, agricultural or field verification;
+9. optionally send that **structured evidence bundle** to the OpenAI Evidence Explainer;
+10. show users a clear explanation of what changed, why it may matter, what remains uncertain and what should be checked next.
 
-This creates a path from **satellite data → reproducible measurement → GPU research → understandable evidence**, instead of satellite image → unsupported AI claim.
+This creates a path from **satellite data → reproducible measurement → GPU research → understandable evidence → better human decisions**, instead of satellite image → unsupported AI claim.
+
+## Future hazard and resilience research
+
+The same evidence-first architecture can be extended to additional public-good problems:
+
+- **floods** — combine rainfall, river level, topography, soil moisture, flood history and satellite observations to identify elevated-risk areas and changing floodplains;
+- **drought and desertification** — monitor surface water, vegetation, soil-moisture proxies and long-term land change;
+- **wildfires** — use official active-fire, thermal and burn-scar products;
+- **landslides** — combine terrain, rainfall and ground-change indicators;
+- **storms and coastal hazards** — monitor storm systems, coastal flooding and shoreline change;
+- **volcanic activity** — use official alerts plus thermal/deformation products where available;
+- **earthquake-risk research** — examine public seismic catalogues, known faults, ground-deformation measurements and other validated indicators.
+
+AI can help compare many datasets and flag areas that deserve expert attention. For floods and some weather-related hazards, earlier identification can directly improve preparedness. For earthquakes, **current science cannot reliably predict the exact time and location of a future earthquake**, so Terra Observation System must present seismic outputs as risk indicators, anomalies or research hypotheses — never guaranteed predictions.
+
+The public-good objective is still substantial: better situational awareness and earlier investigation can help communities protect **life, homes, infrastructure, farmland, water resources and personal property**.
 
 ## How the OpenAI API adds value
 
@@ -175,12 +217,15 @@ A community user should not need to understand WMS windows, SHA-256 provenance, 
 
 For example, if a dedicated real-data analysis later measures reduced mapped surface water in a lake, while L4 evaluation shows how the pipeline was trained and the Vistula/Landsat integrity records show the provenance of comparable observations, OpenAI can explain the combined evidence and recommend verification steps. It may **not** turn successful training or visual morphology into a claim that a lake dried because of a blocked river.
 
+In future hazard modules, OpenAI can perform the same explanatory role: combine structured outputs from deterministic models and official sources into a concise public-facing explanation of **what is known, what is uncertain, who may be affected and what should be checked next**. It is not an emergency authority and must not invent alerts.
+
 ### Guardrails
 
 - OpenAI does **not** create satellite measurements;
 - OpenAI does **not** invent dates, source URLs, acquisition IDs, environmental events or missing observations;
 - L4 loss/throughput metrics are never treated as environmental ground truth;
 - OpenAI does **not** promote a candidate into a confirmed cause;
+- OpenAI does **not** claim deterministic earthquake prediction;
 - original evidence classes and explicit `false` / `UNKNOWN` claim flags remain part of the input;
 - deterministic results remain usable when OpenAI is disabled;
 - if `OPENAI_API_KEY` is missing, the explainer fails clearly instead of producing a fake result.
@@ -255,7 +300,7 @@ Terra Observation System grew from the Polar Sun/Moon research project and still
 - Ocean research;
 - Earth–Space 512 research.
 
-These modules broaden the scientific platform, but the BUILD FOR GOOD environmental use case is centered on **Earth observation, water, hazards and environmental change**.
+These modules broaden the scientific platform, but the BUILD FOR GOOD environmental use case is centered on **Earth observation, water, drylands, hazards and environmental change**.
 
 ## Security and privacy
 
@@ -328,6 +373,9 @@ Without that secret, the public application continues to work with NASA EONET an
 - Seasonal mismatch can create false change signals; matched-season comparisons are preferred.
 - Satellite morphology can identify candidates, not automatically establish hydrological causation.
 - Training success is not the same as environmental detection accuracy.
+- Desert greening or agricultural suitability cannot be established from imagery alone; water balance, soil, ecology and field validation are required.
+- Flood-risk indicators are not equivalent to an official warning.
+- Current science does not support reliable exact-time-and-place earthquake prediction from satellite imagery or AI alone.
 - GRACE/GRACE-FO estimates regional mass change, not fine-scale water in individual fractures or channels.
 - Satellite-derived broad bathymetric structure is not equivalent to detailed multibeam sonar mapping.
 - NASA EONET is an event catalogue, not an official emergency alert system.
