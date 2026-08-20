@@ -7,6 +7,7 @@ import {
   type AreaAnalysisResponse,
   type GeocodeResult,
 } from './lib/evidenceApi'
+import { buildResearchFindingRecord, saveResearchFindingLocally } from './researchArchive'
 import { parseResearchLocation } from './researchLocation'
 import { RealisticEarthGlobe } from './RealisticEarthGlobe'
 import { ResearchChatNotebook } from './ResearchChatNotebook'
@@ -80,6 +81,7 @@ export function SimpleResearchAssistant({
   const [status, setStatus] = useState<'idle' | 'searching' | 'analyzing' | 'ready' | 'error'>('idle')
   const [analysis, setAnalysis] = useState<AreaAnalysisResponse | null>(null)
   const [error, setError] = useState('')
+  const [archiveNotice, setArchiveNotice] = useState('')
   const analysisController = useRef<AbortController | null>(null)
   const period = useMemo(() => periodForPreset(periodPreset), [periodPreset])
   const previewUtc = useMemo(() => new Date().toISOString(), [])
@@ -90,6 +92,7 @@ export function SimpleResearchAssistant({
     analysisController.current = controller
     setStatus('analyzing')
     setError('')
+    setArchiveNotice('')
     try {
       const result = await analyzeResearchArea(apiUrl, {
         latitude: target.latitude,
@@ -112,6 +115,7 @@ export function SimpleResearchAssistant({
   const choosePlace = (target: Place, depth: 'quick' | 'deep' = 'quick') => {
     setPlace(target)
     setAnalysis(null)
+    setArchiveNotice('')
     void runAnalysis(target, depth)
   }
 
@@ -157,6 +161,7 @@ export function SimpleResearchAssistant({
     analysisController.current = controller
     setStatus('analyzing')
     setError('')
+    setArchiveNotice('')
     analyzeResearchArea(apiUrl, {
       latitude: place.latitude,
       longitude: place.longitude,
@@ -173,6 +178,13 @@ export function SimpleResearchAssistant({
       setError(reason instanceof Error ? reason.message : String(reason))
       setStatus('error')
     })
+  }
+
+  const saveCurrentFinding = () => {
+    if (!analysis) return
+    const finding = buildResearchFindingRecord(analysis)
+    saveResearchFindingLocally(finding)
+    setArchiveNotice(`Zapisano „${finding.title}”: ${finding.source_images.length} linków do obrazów źródłowych + wnioski AI. Surowa rozmowa nie została zapisana.`)
   }
 
   const globeMarkers = place ? [{
@@ -256,7 +268,11 @@ export function SimpleResearchAssistant({
         <article><b>Co widać</b><p>{analysis.analysis.what_is_visible}</p></article>
         <article><b>Woda / teren</b><p>{analysis.analysis.water_assessment}</p></article>
       </div>
-      {consoleMode === 'simple' && <button type="button" className="secondary simple-open-advanced" onClick={() => setConsoleMode('advanced')}>Pokaż zdjęcia, pomiary i szczegóły</button>}
+      <div className="simple-result-actions">
+        <button type="button" className="secondary" onClick={saveCurrentFinding}>Zapisz obrazy + wnioski</button>
+        {consoleMode === 'simple' && <button type="button" className="secondary" onClick={() => setConsoleMode('advanced')}>Pokaż zdjęcia, pomiary i szczegóły</button>}
+      </div>
+      {archiveNotice && <p className="simple-archive-notice" role="status">{archiveNotice}</p>}
     </section>}
 
     {consoleMode === 'advanced' && <>
@@ -299,17 +315,19 @@ export function SimpleResearchAssistant({
         </div>
 
         {analysis.preview_images.length > 0 && <div className="simple-image-grid">
-          {analysis.preview_images.slice(0, 10).map(image => <figure key={image.date}>
+          {analysis.preview_images.slice(0, 10).map(image => <figure key={`${image.date}-${image.source}`}>
             <a href={image.url} target="_blank" rel="noreferrer"><img src={image.url} alt={`Satelita ${image.date}`} loading="lazy" /></a>
             <figcaption><b>{image.date}</b><span>{image.source}</span><small>Dotknij zdjęcia, aby otworzyć je osobno.</small></figcaption>
           </figure>)}
         </div>}
 
         <div className="simple-result-actions">
+          <button type="button" className="secondary" onClick={saveCurrentFinding}>Zapisz tylko obrazy + wnioski</button>
           {analysis.landsat_catalog.full_catalog_url && <a className="button-link" href={analysis.landsat_catalog.full_catalog_url} target="_blank" rel="noreferrer">Pełny katalog satelitarny USGS</a>}
           {analysis.depth === 'quick' && place && <button type="button" className="secondary" onClick={() => void runAnalysis(place, 'deep')} disabled={status === 'analyzing'}>Zbadaj dokładniej całą serię lat</button>}
         </div>
-        <p className="simple-full-catalog-note">Podgląd nie zastępuje oryginalnych produktów. Dla prac badawczych otwieraj obraz w pełnym rozmiarze i zapisuj datę/sensor.</p>
+        {archiveNotice && <p className="simple-archive-notice" role="status">{archiveNotice}</p>}
+        <p className="simple-full-catalog-note">Podgląd nie zastępuje oryginalnych produktów. Dla prac badawczych otwieraj obraz w pełnym rozmiarze i zapisuj datę/sensor. Archiwum wyniku nie zawiera surowej rozmowy.</p>
         <div className="simple-limitations">
           <b>Ograniczenia</b>
           <ul>{analysis.analysis.limitations.map(item => <li key={item}>{item}</li>)}</ul>
