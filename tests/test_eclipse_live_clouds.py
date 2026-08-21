@@ -14,10 +14,12 @@ def test_eclipse_live_counts_down_to_next_nasa_catalog_event() -> None:
     assert "NAJBLIŻSZE ZAĆMIENIE" in html
     assert "count-seconds" in html
     assert "countdown to greatest eclipse" in script
-    assert "2026-08-28T04:14:04Z" in script
-    assert "2027-02-06T16:00:47Z" in script
-    assert "2027-08-02T10:07:49Z" in script
-    assert "NASA GSFC Five Millennium Catalog" in script
+    assert "2026-08-28T04:13:00Z" in script
+    assert "04:14:04 TD" in script
+    assert "2027-02-06T16:00:00Z" in script
+    assert "2027-08-02T10:07:00Z" in script
+    assert "UT rounded to nearest minute" in script
+    assert "dokładny czas katalogowy TD" in html
 
 
 def test_eclipse_live_keeps_olszowka_and_representative_test_areas() -> None:
@@ -40,7 +42,8 @@ def test_2026_eclipse_is_archived_with_evidence_classes() -> None:
     payload = json.loads(ARCHIVE.read_text(encoding="utf-8"))
 
     assert payload["status"] == "archived"
-    assert payload["event"]["greatest_eclipse_utc"] == "2026-08-12T17:47:05Z"
+    assert payload["event"]["greatest_eclipse_ut"] == "2026-08-12T17:46:00Z"
+    assert payload["event"]["catalog_greatest_td"] == "2026-08-12T17:47:06 TD"
     assert payload["project_test_site"]["name"].startswith("Olszówka")
     classes = {item["source"]: item["class"] for item in payload["evidence_classes"]}
     assert classes["EUMETSAT Meteosat-12 FCI VIS 0.6 HRFI"] == "OFFICIAL_SATELLITE_OBSERVATION"

@@ -21,7 +21,7 @@
   <section class="hero">
     <div class="kicker">REAL DATA FIRST · NASA GSFC · OPEN SCIENCE</div>
     <h1>Zaćmienia<br/>LIVE + archiwum</h1>
-    <div class="badges"><span class="badge">licznik UTC</span><span class="badge">NASA eclipse catalogs</span><span class="badge">obszary testowe</span><span class="badge">archiwum 12.08.2026</span><span class="badge">Mars + Jowisz</span></div>
+    <div class="badges"><span class="badge">licznik UT</span><span class="badge">NASA eclipse catalogs</span><span class="badge">obszary testowe</span><span class="badge">archiwum 12.08.2026</span><span class="badge">Mars + Jowisz</span></div>
     <p>Po zakończeniu eksperymentu z 12 sierpnia 2026 ta zakładka nie udaje już transmisji „LIVE” z minionego wydarzenia. Zachowuje wyniki i źródła w archiwum, a główny panel automatycznie przełącza się na najbliższe przyszłe zaćmienie z katalogów NASA GSFC.</p>
     <div class="notice"><b>Ważne:</b> „obszar obserwacji” oznacza zgodność z szerokim regionem widoczności z katalogu NASA. Nie jest to prognoza pogody ani gwarancja dobrej wysokości Księżyca/Słońca nad horyzontem. Przed obserwacją trzeba sprawdzić lokalną geometrię i zachmurzenie.</div>
   </section>
@@ -38,14 +38,14 @@
           <div class="count-box"><b id="count-seconds">—</b><span>sekundy</span></div>
         </div>
         <div class="status-line" id="count-time">—</div>
-        <p>Licznik odmierza czas do <b>maksimum / greatest eclipse</b>, a nie do pierwszego kontaktu.</p>
+        <p>Licznik odmierza czas do <b>maksimum / greatest eclipse</b>, a nie do pierwszego kontaktu. NASA publikuje na rocznych stronach czas UT do najbliższej minuty; dokładny czas katalogowy TD pokazujemy osobno, zamiast błędnie nazywać go UTC.</p>
       </div>
       <div class="event-summary">
         <div class="fact"><span>Widoczność wg NASA</span><b id="count-visibility">—</b></div>
         <div class="fact"><span>Źródło</span><b id="count-source">—</b></div>
         <div class="fact"><span>Następne słoneczne</span><b id="next-solar">—</b></div>
         <div class="fact"><span>Następne całkowite słoneczne</span><b id="next-total">—</b></div>
-        <p class="tiny">Stan startowy po 21.08.2026: najbliższe wydarzenie to częściowe zaćmienie Księżyca 28.08.2026, maksimum 04:14:04 UTC. Następne słoneczne jest obrączkowe 06.02.2027; następne całkowite słoneczne 02.08.2027.</p>
+        <p class="tiny">Stan startowy po 21.08.2026: najbliższe wydarzenie to częściowe zaćmienie Księżyca 28.08.2026. NASA podaje maksimum <b>04:13 UT</b> na stronie rocznej oraz <b>04:14:04 TD</b> w katalogu. Następne słoneczne jest obrączkowe 06.02.2027; następne całkowite słoneczne 02.08.2027.</p>
       </div>
     </div>
   </section>
@@ -83,10 +83,11 @@
         <div class="archive-links"><a href="./archive/2026-08-12.json">JSON archiwum</a><a href="./gallery.html">Galeria / animacja</a><a href="./close.html">CLOSE · IR10.5</a></div>
       </article>
       <article class="event-card">
-        <small>NASA GSFC</small><h3>Parametr katalogowy wydarzenia</h3>
+        <small>NASA GSFC</small><h3>Parametry czasu wydarzenia</h3>
         <div class="fact"><span>Data</span><b>2026-08-12</b></div>
         <div class="fact"><span>Typ</span><b>Total Solar Eclipse</b></div>
-        <div class="fact"><span>Greatest eclipse</span><b>17:47:05 UTC</b></div>
+        <div class="fact"><span>Greatest eclipse · UT</span><b>17:46 UT</b></div>
+        <div class="fact"><span>Catalog greatest · TD</span><b>17:47:06 TD</b></div>
         <div class="fact"><span>Trasa całkowitości</span><b>Arctic · Greenland · Iceland · Spain</b></div>
       </article>
     </div>
@@ -120,8 +121,8 @@
   <section class="section panel">
     <div class="section-head"><div><div class="kicker">METODY I ŹRÓDŁA</div><h2>Oficjalne katalogi</h2></div></div>
     <div class="sources">
-      <article class="source-card"><small>NASA GSFC</small><h3>Solar eclipses</h3><p>Five Millennium Catalog / decade tables.</p><a href="https://eclipse.gsfc.nasa.gov/solar.html" target="_blank" rel="noreferrer">eclipse.gsfc.nasa.gov ↗</a></article>
-      <article class="source-card"><small>NASA GSFC</small><h3>Lunar eclipses</h3><p>Five Millennium Catalog / decade tables.</p><a href="https://eclipse.gsfc.nasa.gov/lunar.html" target="_blank" rel="noreferrer">eclipse.gsfc.nasa.gov ↗</a></article>
+      <article class="source-card"><small>NASA GSFC</small><h3>Solar eclipses</h3><p>Five Millennium Catalog / annual UT tables.</p><a href="https://eclipse.gsfc.nasa.gov/solar.html" target="_blank" rel="noreferrer">eclipse.gsfc.nasa.gov ↗</a></article>
+      <article class="source-card"><small>NASA GSFC</small><h3>Lunar eclipses</h3><p>Five Millennium Catalog / annual UT tables.</p><a href="https://eclipse.gsfc.nasa.gov/lunar.html" target="_blank" rel="noreferrer">eclipse.gsfc.nasa.gov ↗</a></article>
       <article class="source-card"><small>NASA/JPL</small><h3>Planetary archive</h3><p>Photojournal / mission images for Mars and Jupiter examples.</p><a href="https://science.nasa.gov/photojournal/" target="_blank" rel="noreferrer">NASA Photojournal ↗</a></article>
       <article class="source-card"><small>PROJECT ARCHIVE</small><h3>12 Aug 2026</h3><p>Preserved experiment metadata and existing imagery pages.</p><a href="./archive/index.json">archive/index.json ↗</a></article>
     </div>

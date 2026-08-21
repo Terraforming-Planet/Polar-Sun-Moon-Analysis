@@ -39,7 +39,8 @@ Add an archive record for the 12 Aug 2026 total solar eclipse including the exis
 
 Main `/eclipse-live/` becomes a current observatory dashboard:
 
-- Countdown updates every second to the next eclipse after 21 Aug 2026: partial lunar eclipse, 28 Aug 2026, greatest eclipse 04:14:04 UTC (NASA GSFC Five Millennium Catalog).
+- Countdown updates every second to the next eclipse after 21 Aug 2026: partial lunar eclipse, 28 Aug 2026. Use the NASA annual-page value `04:13 UT` for the countdown target and show the Five Millennium Catalog value `04:14:04 TD` separately. Never label a TD catalog value as UTC/UT.
+- Every stored/displayed eclipse time must explicitly preserve its time scale (`UT` versus catalog `TD`) and source precision.
 - Also show next solar eclipse: annular, 6 Feb 2027, and next total solar eclipse: 2 Aug 2027.
 - Clearly label countdown as time to greatest eclipse, not first contact.
 - Add selectable observation/test areas based on NASA visibility regions, not weather promises. Include representative presets in the Americas, western Europe and western Africa plus the existing Olszówka test point.
