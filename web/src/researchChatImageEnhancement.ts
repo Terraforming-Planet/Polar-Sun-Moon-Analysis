@@ -7,7 +7,7 @@ let previousFetch: typeof window.fetch | null = null
 let observer: MutationObserver | null = null
 let renderFrame = 0
 let requestSequence = 0
-let pending: { sequence: number; text: string; autoExpand: boolean; year: number | null } | null = null
+let pending: { sequence: number; autoExpand: boolean; year: number | null } | null = null
 
 function requestUrl(input: RequestInfo | URL) {
   if (typeof input === 'string') return input
@@ -61,6 +61,7 @@ type CurrentVisual = {
   href: string
   meta: string
   label: string
+  openOriginal: (() => void) | null
 }
 
 function visualFromElement(root: Element | null, label: string): CurrentVisual | null {
@@ -68,6 +69,7 @@ function visualFromElement(root: Element | null, label: string): CurrentVisual |
   const image = root.querySelector<HTMLImageElement>('img')
   if (!image?.src) return null
   const anchor = image.closest<HTMLAnchorElement>('a[href]') ?? root.querySelector<HTMLAnchorElement>('a[href]')
+  const fullButton = root.querySelector<HTMLButtonElement>('.terrain-thumb-button, .terrain-study-actions button')
   const metaNode = root.querySelector<HTMLElement>('figcaption, .terrain-study-meta, p, small')
   const meta = (metaNode?.textContent ?? root.textContent ?? '').replace(/\s+/g, ' ').trim().slice(0, 360)
   return {
@@ -75,6 +77,7 @@ function visualFromElement(root: Element | null, label: string): CurrentVisual |
     href: anchor?.href || image.currentSrc || image.src,
     meta,
     label,
+    openOriginal: !anchor && fullButton ? () => fullButton.click() : null,
   }
 }
 
@@ -98,8 +101,7 @@ function currentSatelliteVisual(year: number | null): CurrentVisual | null {
   const context = visualFromElement(visibleContext ?? contextFigures[0] ?? null, 'Aktualny oficjalny obraz satelitarny')
   if (context) return context
 
-  const selected = visualFromElement(document.querySelector<HTMLElement>('.simple-image-grid figure'), 'Oficjalny obraz z wybranego okresu')
-  return selected
+  return visualFromElement(document.querySelector<HTMLElement>('.simple-image-grid figure'), 'Oficjalny obraz z wybranego okresu')
 }
 
 function lastAssistantTarget() {
@@ -111,7 +113,7 @@ function lastAssistantTarget() {
   return [...document.querySelectorAll<HTMLElement>('.research-chat-log article.assistant')].at(-1) ?? null
 }
 
-function appendSatelliteCard(target: HTMLElement, visual: CurrentVisual | null, autoExpand: boolean, sequence: number) {
+function appendSatelliteCard(target: HTMLElement, visual: CurrentVisual, autoExpand: boolean, sequence: number) {
   target.querySelector('.research-chat-satellite-image')?.remove()
   const wrapper = document.createElement('div')
   wrapper.className = 'research-chat-satellite-image'
@@ -120,42 +122,44 @@ function appendSatelliteCard(target: HTMLElement, visual: CurrentVisual | null, 
   const toggle = document.createElement('button')
   toggle.type = 'button'
   toggle.className = 'secondary research-chat-satellite-toggle'
-  toggle.textContent = visual ? '🛰️ Pokaż dokładny obraz satelitarny z bieżącego badania' : '🛰️ Brak załadowanego obrazu satelitarnego'
-  toggle.disabled = !visual
+  toggle.textContent = autoExpand ? '🛰️ Ukryj obraz satelitarny' : '🛰️ Pokaż dokładny obraz satelitarny z bieżącego badania'
   wrapper.appendChild(toggle)
 
-  if (visual) {
-    const panel = document.createElement('div')
-    panel.className = 'research-chat-satellite-panel'
-    panel.hidden = !autoExpand
-    const top = document.createElement('div')
-    top.className = 'research-chat-satellite-head'
-    const title = document.createElement('b')
-    title.textContent = visual.label
-    const provenance = document.createElement('small')
-    provenance.textContent = 'Ten sam oficjalny/publiczny obraz, który jest aktualnie załadowany w badaniu — bez generowania zastępczej grafiki.'
-    top.append(title, provenance)
-    const link = document.createElement('a')
-    link.href = visual.href
-    link.target = '_blank'
-    link.rel = 'noreferrer'
-    const image = document.createElement('img')
-    image.src = visual.src
-    image.alt = visual.label
-    image.loading = 'lazy'
-    image.decoding = 'async'
-    link.appendChild(image)
-    const meta = document.createElement('small')
-    meta.className = 'research-chat-satellite-meta'
-    meta.textContent = visual.meta || 'Oficjalny obraz z bieżącego badania.'
-    panel.append(top, link, meta)
-    wrapper.appendChild(panel)
-    toggle.addEventListener('click', () => {
-      panel.hidden = !panel.hidden
-      toggle.textContent = panel.hidden ? '🛰️ Pokaż dokładny obraz satelitarny z bieżącego badania' : '🛰️ Ukryj obraz satelitarny'
+  const panel = document.createElement('div')
+  panel.className = 'research-chat-satellite-panel'
+  panel.hidden = !autoExpand
+  const top = document.createElement('div')
+  top.className = 'research-chat-satellite-head'
+  const title = document.createElement('b')
+  title.textContent = visual.label
+  const provenance = document.createElement('small')
+  provenance.textContent = 'Ten sam oficjalny/publiczny obraz, który jest aktualnie załadowany w badaniu — bez generowania zastępczej grafiki.'
+  top.append(title, provenance)
+  const link = document.createElement('a')
+  link.href = visual.href
+  link.target = '_blank'
+  link.rel = 'noreferrer'
+  if (visual.openOriginal) {
+    link.addEventListener('click', event => {
+      event.preventDefault()
+      visual.openOriginal?.()
     })
-    if (autoExpand) toggle.textContent = '🛰️ Ukryj obraz satelitarny'
   }
+  const image = document.createElement('img')
+  image.src = visual.src
+  image.alt = visual.label
+  image.loading = 'lazy'
+  image.decoding = 'async'
+  link.appendChild(image)
+  const meta = document.createElement('small')
+  meta.className = 'research-chat-satellite-meta'
+  meta.textContent = visual.meta || 'Oficjalny obraz z bieżącego badania.'
+  panel.append(top, link, meta)
+  wrapper.appendChild(panel)
+  toggle.addEventListener('click', () => {
+    panel.hidden = !panel.hidden
+    toggle.textContent = panel.hidden ? '🛰️ Pokaż dokładny obraz satelitarny z bieżącego badania' : '🛰️ Ukryj obraz satelitarny'
+  })
 
   target.appendChild(wrapper)
   target.dataset.terraSatelliteImageSequence = String(sequence)
@@ -166,7 +170,9 @@ function renderPending() {
   const target = lastAssistantTarget()
   if (!target) return
   if (target.dataset.terraSatelliteImageSequence === String(pending.sequence)) return
-  appendSatelliteCard(target, currentSatelliteVisual(pending.year), pending.autoExpand, pending.sequence)
+  const visual = currentSatelliteVisual(pending.year)
+  if (!visual) return
+  appendSatelliteCard(target, visual, pending.autoExpand, pending.sequence)
 }
 
 function scheduleRender() {
@@ -189,7 +195,6 @@ function installFetchWrapper() {
       requestSequence += 1
       pending = {
         sequence: requestSequence,
-        text,
         autoExpand: wantsSatelliteImage(text),
         year: requestedSatelliteImageYear(text),
       }
