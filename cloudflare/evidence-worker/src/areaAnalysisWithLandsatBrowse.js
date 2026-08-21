@@ -14,12 +14,14 @@ const UPSTREAM_TIMEOUT_MS = 6500
 const CANONICAL_FIELDS = new Set(['latitude', 'longitude', 'radius_km', 'start_date', 'end_date', 'depth', 'place_name'])
 const GALLERY_FIELDS = new Set(['latitude', 'longitude', 'radius_km', 'years', 'season', 'cloud_mode'])
 const SEASON_REFERENCE = {
+  all: '07-15',
   spring: '04-15',
   summer: '07-15',
   autumn: '10-15',
   winter: '01-15',
 }
 const SEASON_WINDOWS = {
+  all: ['01-01', '12-31'],
   spring: ['03-01', '05-31'],
   summer: ['06-01', '08-31'],
   autumn: ['09-01', '11-30'],
@@ -185,20 +187,6 @@ async function fetchYearBrowseImages(body, year) {
   return extractLandsatBrowseImages(await response.json(), MAX_QUERY_FEATURES)
 }
 
-async function fetchBulkBrowseImages(body) {
-  const latitude = Number(body?.latitude)
-  const longitude = Number(body?.longitude)
-  const radiusKm = Number(body?.radius_km ?? 25)
-  const start = typeof body?.start_date === 'string' ? body.start_date : ''
-  const end = typeof body?.end_date === 'string' ? body.end_date : ''
-  if (!Number.isFinite(latitude) || !Number.isFinite(longitude) || !Number.isFinite(radiusKm) || !start || !end) return []
-  const bounds = researchBounds(latitude, longitude, radiusKm)
-  const upstreamUrl = buildUsGsLandsatUrl({ bbox: [bounds.west, bounds.south, bounds.east, bounds.north], start, end, limit: MAX_QUERY_FEATURES })
-  const response = await fetchWithTimeout(upstreamUrl, { headers: { Accept: 'application/geo+json,application/json' } })
-  if (!response.ok) return []
-  return extractLandsatBrowseImages(await response.json(), MAX_BROWSE_IMAGES)
-}
-
 function nasaFallbackImage(body, year) {
   if (year < Number(GIBS_START.slice(0, 4))) return null
   const season = String(body?.season ?? '')
@@ -213,7 +201,7 @@ function nasaFallbackImage(body, year) {
   const bounds = researchBounds(latitude, longitude, Math.max(radiusKm, 2))
   const recentViirs = date >= '2012-01-19'
   const layer = recentViirs ? 'VIIRS_SNPP_CorrectedReflectance_TrueColor' : 'MODIS_Terra_CorrectedReflectance_TrueColor'
-  const source = recentViirs ? 'NASA GIBS · Suomi NPP VIIRS True Color · seasonal fallback' : 'NASA GIBS · Terra MODIS True Color · seasonal fallback'
+  const source = recentViirs ? 'NASA GIBS · Suomi NPP VIIRS True Color · yearly fallback' : 'NASA GIBS · Terra MODIS True Color · yearly fallback'
   const params = new URLSearchParams({
     SERVICE: 'WMS', REQUEST: 'GetMap', VERSION: '1.1.1', LAYERS: layer, STYLES: '',
     FORMAT: 'image/jpeg', TRANSPARENT: 'FALSE', SRS: 'EPSG:4326',
@@ -238,20 +226,6 @@ function proxiedImage(request, image) {
   const originalUrl = image.original_url ?? image.url
   const params = new URLSearchParams({ url: originalUrl })
   return { ...image, original_url: originalUrl, url: `${workerOrigin}/research/image?${params.toString()}` }
-}
-
-function mergePreviewImages(request, existing, landsat) {
-  const merged = []
-  const seen = new Set()
-  for (const image of [...landsat, ...(Array.isArray(existing) ? existing : [])]) {
-    if (!image?.url || !image?.date || !image?.source) continue
-    const originalUrl = image.original_url ?? image.url
-    const key = `${image.date}|${originalUrl}`
-    if (seen.has(key)) continue
-    seen.add(key)
-    merged.push(proxiedImage(request, { ...image, original_url: originalUrl }))
-  }
-  return merged.sort((a, b) => a.date.localeCompare(b.date)).slice(-MAX_BROWSE_IMAGES)
 }
 
 function canonicalBody(body) {
@@ -287,35 +261,11 @@ export async function handleAreaAnalysisWithLandsatBrowse(request, env = {}) {
   if (!response.ok) return response
 
   const payload = await response.json()
-  if (legacySeasonalYears.length) {
-    payload.gallery_policy = {
-      mode: 'progressive-separate-endpoint',
-      requested_year_count: legacySeasonalYears.length,
-      note: 'Core OpenAI terrain analysis is returned without waiting for annual catalogue requests. The client loads one official yearly image per selected year from /research/yearly-gallery in small batches.',
-    }
-  } else {
-    let landsat = []
-    try { landsat = await fetchBulkBrowseImages(body) } catch { landsat = [] }
-    if (landsat.length) {
-      payload.preview_images = mergePreviewImages(request, payload.preview_images, landsat).map(image => ({
-        date: image.date,
-        source: image.source,
-        url: image.url,
-        original_url: image.original_url,
-        scene_id: image.scene_id,
-        cloud_cover: image.cloud_cover,
-      }))
-      payload.landsat_browse_images = landsat.map(image => ({
-        date: image.date,
-        source: image.source,
-        url: proxiedImage(request, image).url,
-        original_url: image.original_url,
-        scene_id: image.scene_id,
-        cloud_cover: image.cloud_cover,
-      }))
-    }
+  payload.gallery_policy = {
+    mode: 'progressive-separate-endpoint',
+    requested_year_count: legacySeasonalYears.length || null,
+    note: 'Core OpenAI terrain analysis returns without waiting for annual catalogue requests. The browser loads one official image slot per requested year from /research/yearly-gallery in bounded batches.',
   }
-
   payload.evidence_policy = `${payload.evidence_policy}; annual historical gallery loads separately so long year ranges do not block the core AI analysis`
   const headers = new Headers(response.headers)
   headers.set('Content-Type', 'application/json; charset=utf-8')
@@ -334,7 +284,7 @@ function parseGalleryPayload(value) {
   if (!Number.isFinite(latitude) || latitude < -90 || latitude > 90) throw new Error('latitude is outside WGS84 bounds.')
   if (!Number.isFinite(longitude) || longitude < -180 || longitude > 180) throw new Error('longitude is outside WGS84 bounds.')
   if (!Number.isFinite(radiusKm) || radiusKm < 1 || radiusKm > 500) throw new Error('radius_km must be from 1 to 500.')
-  if (!SEASON_WINDOWS[season]) throw new Error('season must be spring, summer, autumn or winter.')
+  if (!SEASON_WINDOWS[season]) throw new Error('season must be all, spring, summer, autumn or winter.')
   if (!Array.isArray(value.years) || value.years.length < 1 || value.years.length > MAX_GALLERY_BATCH_YEARS) {
     throw new Error(`years must contain 1 to ${MAX_GALLERY_BATCH_YEARS} years.`)
   }
