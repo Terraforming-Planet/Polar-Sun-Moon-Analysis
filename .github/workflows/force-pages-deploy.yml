@@ -97,7 +97,7 @@ jobs:
           VITE_EVIDENCE_API_URL: ${{ steps.production-inputs.outputs.url }}
         run: npm run build
 
-      - name: Verify privacy-first AI Research production bundle
+      - name: Verify privacy-first Simple research production bundle
         shell: bash
         env:
           EVIDENCE_URL: ${{ steps.production-inputs.outputs.url }}
@@ -108,16 +108,22 @@ jobs:
           grep -q '/Polar-Sun-Moon-Analysis/' web/dist/index.html
           grep -R -Fq "$EVIDENCE_URL" web/dist/assets
           grep -R -Fq 'Research any place on Earth' web/dist/assets
-          grep -R -Fq 'Search any area and investigate it immediately' web/dist/assets
-          grep -R -Fq 'Research area' web/dist/assets
+          grep -R -Fq 'Wpisz miejsce. Resztę przygotuje system.' web/dist/assets
+          grep -R -Fq 'MINIMUM 4 PRAWDZIWE WIDOKI' web/dist/assets
+          grep -R -Fq 'Wyślij prywatnie' web/dist/assets
+          grep -R -Fq 'ODPOWIEDŹ NA PYTANIE' web/dist/assets
+          grep -R -Fq 'MAPA POMOCNICZA · PAŃSTWA + RZEKI' web/dist/assets
+          grep -R -Fq 'KONCEPCJA / WIZJA PROJEKTU' web/dist/assets
+          grep -R -Fq 'Tests 1–16' web/dist/assets
+          grep -R -Fq 'Training 1' web/dist/assets
           grep -R -Fq 'Research archive' web/dist/assets
           grep -R -Fq 'Approved AI tests' web/dist/assets
-          grep -R -Fq 'Advanced terrain research' web/dist/assets
-          grep -R -Fq 'High-resolution reference basemap' web/dist/assets
-          grep -R -Fq 'Private question sent' web/dist/assets
-          grep -R -Fq 'Assistant answer archived on this device' web/dist/assets
           grep -R -Fq 'terra-research-manifest/v1' web/dist/assets
           grep -R -Fq 'Explain selected test with OpenAI' web/dist/assets
+          if grep -Fq 'result-nav' web/dist/index.html || grep -Fq 'station-strip' web/dist/index.html; then
+            echo 'Legacy pre-React navigation/station strip leaked back into the production entry page.'
+            exit 1
+          fi
           if grep -R -Fq 'Research account · Sign in with ChatGPT' web/dist/assets; then
             echo 'Unsupported ChatGPT sign-in control leaked into the production research chat.'
             exit 1
@@ -127,7 +133,7 @@ jobs:
             exit 1
           fi
           test -s web/dist/research-archive/index.json
-          echo 'Production bundle contains the Worker URL, English simple/advanced research UI, privacy-first answer archive, high-resolution Earth view and guarded OpenAI workspace.'
+          echo 'Production bundle contains the privacy-first Simple flow, four real NASA context views, compact test/training navigation, river helper and guarded OpenAI workspace.'
 
       - name: Publish build into docs
         shell: bash
