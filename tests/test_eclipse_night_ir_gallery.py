@@ -7,12 +7,13 @@ GALLERY = ROOT / "web" / "public" / "eclipse-live" / "gallery.html"
 PAGES = ROOT / ".github" / "workflows" / "force-pages-deploy.yml"
 
 
-def test_main_observer_exposes_night_ir_and_gallery() -> None:
+def test_main_observer_exposes_archived_night_ir_and_gallery() -> None:
     source = LIVE.read_text(encoding="utf-8")
 
-    assert "🌙 Noktowizor + IR10.5 · CLOSE" in source
+    assert "ARCHIWUM EKSPERYMENTU" in source
     assert 'href="./close.html"' in source
     assert 'href="./gallery.html"' in source
+    assert 'href="./archive/2026-08-12.json"' in source
 
 
 def test_close_night_mode_switches_to_official_eumetsat_ir() -> None:
