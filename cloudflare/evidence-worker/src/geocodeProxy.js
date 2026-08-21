@@ -2,8 +2,9 @@ import { isAllowedOrigin } from './index.js'
 
 export const GEOCODE_PATH = '/research/geocode'
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search'
-const MAX_QUERY_LENGTH = 120
+const MAX_QUERY_LENGTH = 160
 const MAX_RESULTS = 10
+const MAX_VARIANTS = 8
 
 function corsHeaders(origin, env = {}) {
   const headers = {
@@ -39,34 +40,95 @@ export function parseGeocodeQuery(url) {
 }
 
 function normalizeSearchText(value) {
-  return value.replace(/\s+/g, ' ').replace(/\s*,\s*/g, ', ').trim()
+  return String(value ?? '')
+    .replace(/[\u00a0\u2007\u202f]/g, ' ')
+    .replace(/[·•|]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .replace(/\s*,\s*/g, ', ')
+    .trim()
+}
+
+function accentFold(value) {
+  return normalizeSearchText(value)
+    .normalize('NFKD')
+    .replace(/\p{M}+/gu, '')
+}
+
+function searchKey(value) {
+  return accentFold(value).toLocaleLowerCase('en').replace(/[^\p{L}\p{N}]+/gu, ' ').trim()
+}
+
+function queryParts(query) {
+  return normalizeSearchText(query).split(',').map(part => part.trim()).filter(Boolean)
+}
+
+function structuredHints(query) {
+  const parts = queryParts(query)
+  if (parts.length < 2) return null
+  return {
+    locality: parts[0],
+    country: parts.at(-1),
+  }
 }
 
 export function geocodeQueryVariants(query) {
-  const variants = [normalizeSearchText(query)]
-  const withoutAdministrativeWords = normalizeSearchText(query
-    .replace(/\b(gmina|gm\.?|powiat|województwo|woj\.?)\b/giu, ' '))
-  if (withoutAdministrativeWords && !variants.includes(withoutAdministrativeWords)) variants.push(withoutAdministrativeWords)
+  const original = normalizeSearchText(query)
+  const variants = [original]
+  const push = value => {
+    const normalized = normalizeSearchText(value)
+    if (normalized && !variants.some(item => searchKey(item) === searchKey(normalized))) variants.push(normalized)
+  }
 
-  const hasCountryHint = /\b(polska|poland|niemcy|germany|czechy|czechia|słowacja|slovakia|ukraine|litwa|lithuania|usa|canada|france|spain|italy|egypt|brazil|india|china|japan)\b/iu.test(query)
-  const looksPolish = /[ąćęłńóśźż]/iu.test(query) || /\b(gmina|powiat|województwo|wieś|jezioro|rzeka)\b/iu.test(query)
-  if (!hasCountryHint && looksPolish) variants.push(`${normalizeSearchText(query)}, Polska`)
+  const withoutAdministrativeWords = normalizeSearchText(original
+    .replace(/\b(gmina|gm\.?|powiat|województwo|woj\.?|district|region|province|governorate|municipality)\b/giu, ' '))
+  push(withoutAdministrativeWords)
 
-  return [...new Set(variants)].slice(0, 3)
+  const folded = accentFold(original)
+  push(folded)
+  push(original.replace(/,/g, ' '))
+  push(folded.replace(/,/g, ' '))
+
+  const hints = structuredHints(original)
+  if (hints) {
+    push(`${hints.locality} ${hints.country}`)
+    push(`${accentFold(hints.locality)} ${accentFold(hints.country)}`)
+    push(hints.locality)
+  }
+
+  const hasCountryHint = /\b(polska|poland|niemcy|germany|czechy|czechia|słowacja|slovakia|ukraine|litwa|lithuania|usa|canada|france|spain|italy|egypt|brazil|india|china|japan|senegal|somalia)\b/iu.test(original)
+  const looksPolish = /[ąćęłńóśźż]/iu.test(original) || /\b(gmina|powiat|województwo|wieś|jezioro|rzeka)\b/iu.test(original)
+  if (!hasCountryHint && looksPolish) push(`${withoutAdministrativeWords || original}, Polska`)
+
+  return variants.slice(0, MAX_VARIANTS)
 }
 
 function mapNominatimItem(item) {
   return {
-    display_name: String(item?.display_name ?? '').slice(0, 240),
+    display_name: String(item?.display_name ?? '').slice(0, 300),
     latitude: Number(item?.lat),
     longitude: Number(item?.lon),
     type: String(item?.type ?? ''),
     category: String(item?.category ?? ''),
     importance: Number.isFinite(Number(item?.importance)) ? Number(item.importance) : 0,
+    namedetails: item?.namedetails && typeof item.namedetails === 'object' ? item.namedetails : null,
   }
 }
 
-function dedupeResults(items) {
+function resultScore(item, query) {
+  const display = searchKey(item.display_name)
+  const parts = queryParts(query)
+  const locality = searchKey(parts[0] ?? query)
+  const country = parts.length > 1 ? searchKey(parts.at(-1)) : ''
+  let score = Number(item.importance ?? 0)
+  if (locality && display.includes(locality)) score += 5
+  if (country && display.includes(country)) score += 8
+  const foldedLocality = searchKey(accentFold(parts[0] ?? query))
+  if (foldedLocality && display.includes(foldedLocality)) score += 3
+  if (['city', 'town', 'village', 'hamlet', 'municipality', 'administrative'].includes(String(item.type).toLowerCase())) score += 0.5
+  return score
+}
+
+function dedupeResults(items, query) {
   const seen = new Set()
   const results = []
   for (const item of items) {
@@ -76,12 +138,12 @@ function dedupeResults(items) {
     seen.add(key)
     results.push(item)
   }
-  return results.sort((a, b) => b.importance - a.importance).slice(0, MAX_RESULTS)
+  return results.sort((a, b) => resultScore(b, query) - resultScore(a, query)).slice(0, MAX_RESULTS)
 }
 
 const sleep = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds))
 
-async function requestNominatim(query) {
+async function requestNominatimFreeText(query) {
   const params = new URLSearchParams({
     q: query,
     format: 'jsonv2',
@@ -91,23 +153,48 @@ async function requestNominatim(query) {
     dedupe: '1',
     'accept-language': 'pl,en',
   })
+  return requestNominatimParams(params)
+}
+
+async function requestNominatimStructured(locality, country) {
+  const params = new URLSearchParams({
+    city: locality,
+    country,
+    format: 'jsonv2',
+    limit: String(MAX_RESULTS),
+    addressdetails: '1',
+    namedetails: '1',
+    dedupe: '1',
+    'accept-language': 'pl,en',
+  })
+  return requestNominatimParams(params)
+}
+
+async function requestNominatimParams(params) {
   const url = `${NOMINATIM_URL}?${params.toString()}`
   let lastStatus = 0
   for (let attempt = 1; attempt <= 2; attempt += 1) {
-    const upstream = await fetch(url, {
-      headers: {
-        Accept: 'application/json',
-        Referer: 'https://terraforming-planet.github.io/Polar-Sun-Moon-Analysis/',
-        'User-Agent': 'TerraObservationResearch/1.1 (public environmental research UI)',
-      },
-    })
-    lastStatus = upstream.status
-    if (upstream.ok) {
-      const payload = await upstream.json()
-      return Array.isArray(payload) ? payload.map(mapNominatimItem) : []
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 6000)
+    try {
+      const upstream = await fetch(url, {
+        signal: controller.signal,
+        headers: {
+          Accept: 'application/json',
+          Referer: 'https://terraforming-planet.github.io/Polar-Sun-Moon-Analysis/',
+          'User-Agent': 'TerraObservationResearch/1.2 (public environmental research UI; contact: https://github.com/Terraforming-Planet/Polar-Sun-Moon-Analysis)',
+        },
+      })
+      lastStatus = upstream.status
+      if (upstream.ok) {
+        const payload = await upstream.json()
+        return Array.isArray(payload) ? payload.map(mapNominatimItem) : []
+      }
+      if (![429, 500, 502, 503, 504].includes(upstream.status) || attempt === 2) break
+    } finally {
+      clearTimeout(timeout)
     }
-    if (![429, 500, 502, 503, 504].includes(upstream.status) || attempt === 2) break
-    await sleep(250 * attempt)
+    await sleep(350 * attempt)
   }
   throw new Error(`Nominatim HTTP ${lastStatus || 'network error'}`)
 }
@@ -134,18 +221,39 @@ export async function handleGeocodeProxy(request, env = {}) {
     const attempted = []
     let upstreamFailed = false
 
-    for (const variant of variants) {
+    for (const variant of variants.slice(0, 4)) {
       attempted.push(variant)
       try {
-        const matches = await requestNominatim(variant)
+        const matches = await requestNominatimFreeText(variant)
         collected.push(...matches)
-        if (dedupeResults(collected).length >= 5) break
+        const ranked = dedupeResults(collected, query)
+        if (ranked.length && resultScore(ranked[0], query) >= 5) break
       } catch {
         upstreamFailed = true
       }
     }
 
-    const results = dedupeResults(collected)
+    if (!dedupeResults(collected, query).length) {
+      const hints = structuredHints(query)
+      if (hints) {
+        attempted.push(`structured: city=${hints.locality}; country=${hints.country}`)
+        try {
+          collected.push(...await requestNominatimStructured(hints.locality, hints.country))
+          if (!dedupeResults(collected, query).length) {
+            const foldedLocality = accentFold(hints.locality)
+            const foldedCountry = accentFold(hints.country)
+            if (foldedLocality !== hints.locality || foldedCountry !== hints.country) {
+              attempted.push(`structured-folded: city=${foldedLocality}; country=${foldedCountry}`)
+              collected.push(...await requestNominatimStructured(foldedLocality, foldedCountry))
+            }
+          }
+        } catch {
+          upstreamFailed = true
+        }
+      }
+    }
+
+    const results = dedupeResults(collected, query)
     if (!results.length && upstreamFailed) {
       return jsonResponse({ error: 'OpenStreetMap search is temporarily unavailable. Try again in a moment or enter WGS84 coordinates.' }, 502, origin, env)
     }
@@ -153,9 +261,10 @@ export async function handleGeocodeProxy(request, env = {}) {
     return jsonResponse({
       query,
       attempted_queries: attempted,
-      results,
+      results: results.map(({ namedetails: _namedetails, ...item }) => item),
       source: 'OpenStreetMap Nominatim',
       source_url: 'https://nominatim.openstreetmap.org/',
+      note: 'Search uses exact, accent-folded and structured locality/country fallbacks for small or transliterated place names.',
     }, 200, origin, env, 'public, max-age=3600')
   } catch {
     return jsonResponse({ error: 'OpenStreetMap search failed safely. Try again or enter WGS84 coordinates.' }, 502, origin, env)
