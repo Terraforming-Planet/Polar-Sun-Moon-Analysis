@@ -1,6 +1,6 @@
 import evidenceWorker from './index.js'
 import { AREA_ANALYSIS_V2_PATH } from './areaAnalysisV2.js'
-import { handleAreaAnalysisWithLandsatBrowse } from './areaAnalysisWithLandsatBrowse.js'
+import { handleAreaAnalysisWithLandsatBrowse, handleYearlyGallery, YEARLY_GALLERY_PATH } from './areaAnalysisWithLandsatBrowse.js'
 import { COMET_VISION_PATH, handleCometVision } from './cometVision.js'
 import { ELEVATION_PATH, handleElevationProxy } from './elevationProxy.js'
 import { GEOCODE_PATH, handleGeocodeProxy } from './geocodeProxy.js'
@@ -12,6 +12,7 @@ export async function handleWorkerRequest(request, env = {}, context) {
   const url = new URL(request.url)
   if (url.pathname === GEOCODE_PATH) return handleGeocodeProxy(request, env)
   if (url.pathname === AREA_ANALYSIS_V2_PATH) return handleAreaAnalysisWithLandsatBrowse(request, env)
+  if (url.pathname === YEARLY_GALLERY_PATH) return handleYearlyGallery(request, env)
   if (url.pathname === IMAGE_PROXY_PATH) return handleSatelliteImageProxy(request, env)
   if (url.pathname === LANDSAT_PROXY_PATH) return handleLandsatProxy(request, env)
   if (url.pathname === ELEVATION_PATH) return handleElevationProxy(request, env)

@@ -1,23 +1,53 @@
 import { handleAreaAnalysisV2 } from './areaAnalysisV2.js'
+import { isAllowedOrigin } from './index.js'
 import { buildUsGsLandsatUrl } from './landsatProxy.js'
+
+export const YEARLY_GALLERY_PATH = '/research/yearly-gallery'
 
 const MAX_BROWSE_IMAGES = 60
 const MAX_QUERY_FEATURES = 25
-const MAX_YEARLY_QUERIES = 36
+const MAX_GALLERY_BATCH_YEARS = 6
 const CLEAR_CLOUD_THRESHOLD = 20
 const GIBS_START = '2000-02-24'
+const LANDSAT_START_YEAR = 1972
+const UPSTREAM_TIMEOUT_MS = 6500
 const CANONICAL_FIELDS = new Set(['latitude', 'longitude', 'radius_km', 'start_date', 'end_date', 'depth', 'place_name'])
+const GALLERY_FIELDS = new Set(['latitude', 'longitude', 'radius_km', 'years', 'season', 'cloud_mode'])
 const SEASON_REFERENCE = {
+  all: '07-15',
   spring: '04-15',
   summer: '07-15',
   autumn: '10-15',
   winter: '01-15',
 }
 const SEASON_WINDOWS = {
+  all: ['01-01', '12-31'],
   spring: ['03-01', '05-31'],
   summer: ['06-01', '08-31'],
   autumn: ['09-01', '11-30'],
   winter: ['01-01', '02-28'],
+}
+
+function corsHeaders(origin, env = {}) {
+  const headers = {
+    'Access-Control-Allow-Methods': 'POST,OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Max-Age': '86400',
+    Vary: 'Origin',
+  }
+  if (origin && isAllowedOrigin(origin, env)) headers['Access-Control-Allow-Origin'] = origin
+  return headers
+}
+
+function jsonResponse(payload, status, origin, env, cacheControl = 'no-store') {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': cacheControl,
+      ...corsHeaders(origin, env),
+    },
+  })
 }
 
 function researchBounds(latitude, longitude, radiusKm) {
@@ -128,22 +158,14 @@ export function chooseYearBrowseImage(images, year, season, cloudMode = 'clear')
   })[0]
 }
 
-function seasonalYears(body) {
-  const startYear = Number(body?.start_year)
-  const endYear = Number(body?.end_year)
-  const season = String(body?.season ?? '')
-  if (!Number.isInteger(startYear) || !Number.isInteger(endYear) || !SEASON_WINDOWS[season] || startYear > endYear) return []
-  const count = Math.min(MAX_BROWSE_IMAGES, endYear - startYear + 1)
-  return Array.from({ length: count }, (_, index) => startYear + index)
-}
-
-function selectedQueryYears(years) {
-  if (years.length <= MAX_YEARLY_QUERIES) return years
-  const selected = new Set([years[0], years[years.length - 1]])
-  for (let index = 0; index < MAX_YEARLY_QUERIES; index += 1) {
-    selected.add(years[Math.round(index * (years.length - 1) / Math.max(1, MAX_YEARLY_QUERIES - 1))])
+async function fetchWithTimeout(url, options = {}, timeoutMs = UPSTREAM_TIMEOUT_MS) {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), timeoutMs)
+  try {
+    return await fetch(url, { ...options, signal: controller.signal })
+  } finally {
+    clearTimeout(timeout)
   }
-  return [...selected].sort((a, b) => a - b).slice(0, MAX_YEARLY_QUERIES)
 }
 
 async function fetchYearBrowseImages(body, year) {
@@ -160,48 +182,9 @@ async function fetchYearBrowseImages(body, year) {
     end: `${year}-${endSuffix}`,
     limit: MAX_QUERY_FEATURES,
   })
-  const response = await fetch(upstreamUrl, { headers: { Accept: 'application/geo+json,application/json' } })
+  const response = await fetchWithTimeout(upstreamUrl, { headers: { Accept: 'application/geo+json,application/json' } })
   if (!response.ok) return []
   return extractLandsatBrowseImages(await response.json(), MAX_QUERY_FEATURES)
-}
-
-async function fetchSeasonalBrowseImages(body) {
-  const years = seasonalYears(body)
-  if (!years.length) return { images: [], years: [], missingYears: [] }
-  const cloudMode = body?.cloud_mode === 'any' ? 'any' : 'clear'
-  const queryYears = new Set(selectedQueryYears(years))
-  const selected = await Promise.all(years.map(async year => {
-    if (!queryYears.has(year)) return null
-    try {
-      const images = await fetchYearBrowseImages(body, year)
-      const chosen = chooseYearBrowseImage(images, year, String(body.season), cloudMode)
-      if (!chosen) return null
-      return {
-        ...chosen,
-        year,
-        cloud_preference_met: Number.isFinite(chosen.cloud_cover) ? chosen.cloud_cover <= CLEAR_CLOUD_THRESHOLD : false,
-      }
-    } catch {
-      return null
-    }
-  }))
-  const images = selected.filter(Boolean)
-  const foundYears = new Set(images.map(image => image.year))
-  return { images, years, missingYears: years.filter(year => !foundYears.has(year)) }
-}
-
-async function fetchBulkBrowseImages(body) {
-  const latitude = Number(body?.latitude)
-  const longitude = Number(body?.longitude)
-  const radiusKm = Number(body?.radius_km ?? 25)
-  const start = typeof body?.start_date === 'string' ? body.start_date : ''
-  const end = typeof body?.end_date === 'string' ? body.end_date : ''
-  if (!Number.isFinite(latitude) || !Number.isFinite(longitude) || !Number.isFinite(radiusKm) || !start || !end) return []
-  const bounds = researchBounds(latitude, longitude, radiusKm)
-  const upstreamUrl = buildUsGsLandsatUrl({ bbox: [bounds.west, bounds.south, bounds.east, bounds.north], start, end, limit: MAX_QUERY_FEATURES })
-  const response = await fetch(upstreamUrl, { headers: { Accept: 'application/geo+json,application/json' } })
-  if (!response.ok) return []
-  return extractLandsatBrowseImages(await response.json(), MAX_BROWSE_IMAGES)
 }
 
 function nasaFallbackImage(body, year) {
@@ -218,12 +201,12 @@ function nasaFallbackImage(body, year) {
   const bounds = researchBounds(latitude, longitude, Math.max(radiusKm, 2))
   const recentViirs = date >= '2012-01-19'
   const layer = recentViirs ? 'VIIRS_SNPP_CorrectedReflectance_TrueColor' : 'MODIS_Terra_CorrectedReflectance_TrueColor'
-  const source = recentViirs ? 'NASA GIBS · Suomi NPP VIIRS True Color · seasonal fallback' : 'NASA GIBS · Terra MODIS True Color · seasonal fallback'
+  const source = recentViirs ? 'NASA GIBS · Suomi NPP VIIRS True Color · yearly fallback' : 'NASA GIBS · Terra MODIS True Color · yearly fallback'
   const params = new URLSearchParams({
     SERVICE: 'WMS', REQUEST: 'GetMap', VERSION: '1.1.1', LAYERS: layer, STYLES: '',
     FORMAT: 'image/jpeg', TRANSPARENT: 'FALSE', SRS: 'EPSG:4326',
     BBOX: `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`,
-    WIDTH: '1400', HEIGHT: '1400', TIME: date,
+    WIDTH: '1100', HEIGHT: '1100', TIME: date,
   })
   const url = `https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?${params.toString()}`
   return {
@@ -234,7 +217,7 @@ function nasaFallbackImage(body, year) {
     original_url: url,
     cloud_cover: null,
     cloud_preference_met: false,
-    provenance_note: 'NASA GIBS fallback date for a year where a browser-renderable Landsat browse image was not returned. GIBS does not provide the same per-scene cloud-cover metadata.',
+    provenance_note: 'NASA GIBS fallback for a year where a browser-renderable Landsat browse image was not returned. GIBS does not provide the same per-scene cloud-cover metadata.',
   }
 }
 
@@ -243,35 +226,6 @@ function proxiedImage(request, image) {
   const originalUrl = image.original_url ?? image.url
   const params = new URLSearchParams({ url: originalUrl })
   return { ...image, original_url: originalUrl, url: `${workerOrigin}/research/image?${params.toString()}` }
-}
-
-function buildSeasonalGallery(request, body, seasonalResult) {
-  const byYear = new Map(seasonalResult.images.map(image => [image.year, image]))
-  const gallery = []
-  const missingYears = []
-  for (const year of seasonalResult.years) {
-    const selected = byYear.get(year) ?? nasaFallbackImage(body, year)
-    if (!selected) {
-      missingYears.push(year)
-      continue
-    }
-    gallery.push(proxiedImage(request, selected))
-  }
-  return { gallery, missingYears }
-}
-
-function mergePreviewImages(request, existing, landsat) {
-  const merged = []
-  const seen = new Set()
-  for (const image of [...landsat, ...(Array.isArray(existing) ? existing : [])]) {
-    if (!image?.url || !image?.date || !image?.source) continue
-    const originalUrl = image.original_url ?? image.url
-    const key = `${image.date}|${originalUrl}`
-    if (seen.has(key)) continue
-    seen.add(key)
-    merged.push(proxiedImage(request, { ...image, original_url: originalUrl }))
-  }
-  return merged.sort((a, b) => a.date.localeCompare(b.date)).slice(-MAX_BROWSE_IMAGES)
 }
 
 function canonicalBody(body) {
@@ -284,86 +238,143 @@ function requestForCanonicalHandler(request, body) {
   return new Request(request.url, { method: request.method, headers, body: JSON.stringify(canonicalBody(body)) })
 }
 
+function seasonalYearsFromLegacyBody(body) {
+  const startYear = Number(body?.start_year)
+  const endYear = Number(body?.end_year)
+  const season = String(body?.season ?? '')
+  if (!Number.isInteger(startYear) || !Number.isInteger(endYear) || !SEASON_WINDOWS[season] || startYear > endYear) return []
+  const count = Math.min(MAX_BROWSE_IMAGES, endYear - startYear + 1)
+  return Array.from({ length: count }, (_, index) => startYear + index)
+}
+
 export async function handleAreaAnalysisWithLandsatBrowse(request, env = {}) {
   let body = null
   try {
     body = await request.clone().json()
   } catch {
-    // The canonical V2 handler owns validation if the body cannot be parsed.
+    // Canonical handler owns malformed-request validation.
   }
-
   if (!body) return handleAreaAnalysisV2(request, env)
-  const years = seasonalYears(body)
-  const browsePromise = years.length ? fetchSeasonalBrowseImages(body) : fetchBulkBrowseImages(body)
+
+  const legacySeasonalYears = seasonalYearsFromLegacyBody(body)
   const response = await handleAreaAnalysisV2(requestForCanonicalHandler(request, body), env)
   if (!response.ok) return response
 
-  let browseResult
-  try {
-    browseResult = await browsePromise
-  } catch {
-    browseResult = years.length ? { images: [], years, missingYears: years } : []
-  }
-
   const payload = await response.json()
-  if (years.length) {
-    const seasonalResult = Array.isArray(browseResult) ? { images: browseResult, years, missingYears: [] } : browseResult
-    const { gallery, missingYears } = buildSeasonalGallery(request, body, seasonalResult)
-    if (gallery.length) payload.preview_images = gallery.map(image => ({
-      date: image.date,
-      source: image.source,
-      url: image.url,
-      original_url: image.original_url,
-      scene_id: image.scene_id,
-      cloud_cover: image.cloud_cover,
-      cloud_preference_met: image.cloud_preference_met,
-    }))
-    payload.gallery_policy = {
-      mode: 'one-image-per-selected-year',
-      season: body.season,
-      start_year: Number(body.start_year),
-      end_year: Number(body.end_year),
-      requested_year_count: years.length,
-      returned_image_count: payload.preview_images.length,
-      cloud_mode: body.cloud_mode === 'any' ? 'any' : 'clear',
-      clear_cloud_threshold_percent: CLEAR_CLOUD_THRESHOLD,
-      missing_years: missingYears,
-      note: 'Clear mode chooses the lowest-cloud browser-renderable Landsat scene found for each queried year. If none is returned and NASA GIBS covers that year, a dated GIBS fallback is used and is labelled as not cloud-screened.',
-    }
-    payload.landsat_browse_images = seasonalResult.images.map(image => ({
-      year: image.year,
-      date: image.date,
-      source: image.source,
-      url: proxiedImage(request, image).url,
-      original_url: image.original_url,
-      scene_id: image.scene_id,
-      cloud_cover: image.cloud_cover,
-      cloud_preference_met: image.cloud_preference_met,
-    }))
-  } else {
-    const landsat = Array.isArray(browseResult) ? browseResult : browseResult.images
-    if (landsat.length) {
-      payload.preview_images = mergePreviewImages(request, payload.preview_images, landsat).map(image => ({
-        date: image.date,
-        source: image.source,
-        url: image.url,
-        original_url: image.original_url,
-        scene_id: image.scene_id,
-        cloud_cover: image.cloud_cover,
-      }))
-      payload.landsat_browse_images = landsat.map(image => ({
-        date: image.date,
-        source: image.source,
-        url: proxiedImage(request, image).url,
-        original_url: image.original_url,
-        scene_id: image.scene_id,
-        cloud_cover: image.cloud_cover,
-      }))
-    }
+  payload.gallery_policy = {
+    mode: 'progressive-separate-endpoint',
+    requested_year_count: legacySeasonalYears.length || null,
+    note: 'Core OpenAI terrain analysis returns without waiting for annual catalogue requests. The browser loads one official image slot per requested year from /research/yearly-gallery in bounded batches.',
   }
-
-  payload.evidence_policy = `${payload.evidence_policy}; yearly low-cloud USGS Landsat browse selection when seasonal mode is requested; allowlisted Worker image proxy for browser reliability`
+  payload.evidence_policy = `${payload.evidence_policy}; annual historical gallery loads separately so long year ranges do not block the core AI analysis`
   const headers = new Headers(response.headers)
   headers.set('Content-Type', 'application/json; charset=utf-8')
   return new Response(JSON.stringify(payload), { status: response.status, headers })
+}
+
+function parseGalleryPayload(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Request body must be one JSON object.')
+  for (const key of Object.keys(value)) if (!GALLERY_FIELDS.has(key)) throw new Error(`Unexpected field: ${key}.`)
+
+  const latitude = Number(value.latitude)
+  const longitude = Number(value.longitude)
+  const radiusKm = Number(value.radius_km ?? 25)
+  const season = String(value.season ?? '')
+  const cloudMode = value.cloud_mode === 'any' ? 'any' : 'clear'
+  if (!Number.isFinite(latitude) || latitude < -90 || latitude > 90) throw new Error('latitude is outside WGS84 bounds.')
+  if (!Number.isFinite(longitude) || longitude < -180 || longitude > 180) throw new Error('longitude is outside WGS84 bounds.')
+  if (!Number.isFinite(radiusKm) || radiusKm < 1 || radiusKm > 500) throw new Error('radius_km must be from 1 to 500.')
+  if (!SEASON_WINDOWS[season]) throw new Error('season must be all, spring, summer, autumn or winter.')
+  if (!Array.isArray(value.years) || value.years.length < 1 || value.years.length > MAX_GALLERY_BATCH_YEARS) {
+    throw new Error(`years must contain 1 to ${MAX_GALLERY_BATCH_YEARS} years.`)
+  }
+  const currentYear = new Date().getUTCFullYear()
+  const years = [...new Set(value.years.map(Number))]
+  if (years.some(year => !Number.isInteger(year) || year < LANDSAT_START_YEAR || year > currentYear)) {
+    throw new Error(`years must be integers from ${LANDSAT_START_YEAR} to ${currentYear}.`)
+  }
+  return { latitude, longitude, radius_km: radiusKm, season, cloud_mode: cloudMode, years }
+}
+
+async function gallerySlot(request, body, year) {
+  try {
+    const images = await fetchYearBrowseImages(body, year)
+    const chosen = chooseYearBrowseImage(images, year, body.season, body.cloud_mode)
+    const selected = chosen ?? nasaFallbackImage(body, year)
+    if (!selected) {
+      return { year, status: 'missing', reason: 'Brak browser-renderowalnego obrazu Landsat i brak dostępnego fallbacku NASA GIBS dla tego rocznika.' }
+    }
+    const proxied = proxiedImage(request, {
+      ...selected,
+      year,
+      cloud_preference_met: Number.isFinite(selected.cloud_cover) ? selected.cloud_cover <= CLEAR_CLOUD_THRESHOLD : false,
+    })
+    return {
+      year,
+      status: 'image',
+      image: {
+        year,
+        date: proxied.date,
+        source: proxied.source,
+        url: proxied.url,
+        original_url: proxied.original_url,
+        scene_id: proxied.scene_id ?? null,
+        cloud_cover: proxied.cloud_cover ?? null,
+        cloud_preference_met: proxied.cloud_preference_met,
+      },
+    }
+  } catch (error) {
+    const fallback = nasaFallbackImage(body, year)
+    if (fallback) {
+      const proxied = proxiedImage(request, fallback)
+      return {
+        year,
+        status: 'image',
+        image: {
+          year,
+          date: proxied.date,
+          source: proxied.source,
+          url: proxied.url,
+          original_url: proxied.original_url,
+          scene_id: null,
+          cloud_cover: null,
+          cloud_preference_met: false,
+        },
+        warning: error instanceof Error && error.name === 'AbortError' ? 'USGS timeout; NASA GIBS fallback used.' : 'USGS query failed; NASA GIBS fallback used.',
+      }
+    }
+    return { year, status: 'missing', reason: error instanceof Error && error.name === 'AbortError' ? 'USGS timeout and no NASA GIBS fallback.' : 'USGS query failed and no NASA GIBS fallback.' }
+  }
+}
+
+export async function handleYearlyGallery(request, env = {}) {
+  const origin = request.headers.get('Origin') ?? ''
+  if (request.method === 'OPTIONS') {
+    if (origin && !isAllowedOrigin(origin, env)) return jsonResponse({ error: 'Origin not allowed.' }, 403, origin, env)
+    return new Response(null, { status: 204, headers: corsHeaders(origin, env) })
+  }
+  if (request.method !== 'POST') return jsonResponse({ error: 'Method not allowed.' }, 405, origin, env)
+  if (origin && !isAllowedOrigin(origin, env)) return jsonResponse({ error: 'Origin not allowed.' }, 403, origin, env)
+  if (!(request.headers.get('content-type') ?? '').toLowerCase().includes('application/json')) return jsonResponse({ error: 'Content-Type must be application/json.' }, 415, origin, env)
+
+  let body
+  try {
+    const text = await request.text()
+    if (new TextEncoder().encode(text).byteLength > 4096) throw new Error('Request is too large.')
+    body = parseGalleryPayload(JSON.parse(text))
+  } catch (error) {
+    return jsonResponse({ error: error instanceof Error ? error.message : 'Invalid yearly gallery request.' }, 400, origin, env)
+  }
+
+  const slots = await Promise.all(body.years.map(year => gallerySlot(request, body, year)))
+  return jsonResponse({
+    service: 'terra-observation-yearly-gallery-v1',
+    generated_at_utc: new Date().toISOString(),
+    season: body.season,
+    cloud_mode: body.cloud_mode,
+    requested_years: body.years,
+    returned_slots: slots.length,
+    slots,
+    policy: 'One slot per requested year. Prefer official USGS Landsat browse imagery; use clearly-labelled NASA GIBS fallback when available. Missing years remain explicit.',
+  }, 200, origin, env, 'public, max-age=300')
 }
