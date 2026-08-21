@@ -38,12 +38,6 @@ export function satelliteTodayUtc() {
   return new Date().toISOString().slice(0, 10)
 }
 
-function shiftYears(date: string, years: number) {
-  const value = new Date(`${date}T12:00:00Z`)
-  value.setUTCFullYear(value.getUTCFullYear() + years)
-  return value.toISOString().slice(0, 10)
-}
-
 function clampDate(value: string, fallback: string) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return fallback
   if (value < SATELLITE_ARCHIVE_START) return SATELLITE_ARCHIVE_START
@@ -76,6 +70,7 @@ function clampYear(value: unknown, minYear: number, maxYear: number, fallback: n
 
 export function selectionForPreset(preset: SatelliteTimePreset, current?: SatelliteTimeSelection): SatelliteTimeSelection {
   const today = satelliteTodayUtc()
+  const currentYear = Number(today.slice(0, 4))
   const exactDate = clampDate(current?.exactDate ?? today, today)
   const exactTimeUtc = /^\d{2}:\d{2}$/.test(current?.exactTimeUtc ?? '') ? current!.exactTimeUtc : '12:00'
   const season = normalizeSeason(current?.season)
@@ -97,10 +92,10 @@ export function selectionForPreset(preset: SatelliteTimePreset, current?: Satell
     startDate = '2015-01-01'
     endDate = today
   } else if (preset === 'five-years') {
-    startDate = shiftYears(today, -5)
+    startDate = `${currentYear - 4}-01-01`
     endDate = today
   } else if (preset === 'one-year') {
-    startDate = shiftYears(today, -1)
+    startDate = `${currentYear}-01-01`
     endDate = today
   } else if (preset === 'exact') {
     startDate = exactDate
