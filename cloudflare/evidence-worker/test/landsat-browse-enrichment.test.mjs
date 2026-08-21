@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { extractLandsatBrowseImage, extractLandsatBrowseImages } from '../src/areaAnalysisWithLandsatBrowse.js'
+import { chooseYearBrowseImage, extractLandsatBrowseImage, extractLandsatBrowseImages } from '../src/areaAnalysisWithLandsatBrowse.js'
 
 function scene({ id, date, cloud = null, assets = {}, links = [], platform = 'LANDSAT_5' }) {
   return {
@@ -53,4 +53,14 @@ test('returns only real renderable browse images and prefers lower cloud cover',
   }
   const images = extractLandsatBrowseImages(payload, 2)
   assert.deepEqual(images.map(item => item.scene_id), ['CLEAR', 'CLOUDY'])
+})
+
+test('selects one lowest-cloud image for a seasonal year in clear mode', () => {
+  const images = [
+    { scene_id: 'NEAR_BUT_CLOUDY', date: '2005-07-15', cloud_cover: 64 },
+    { scene_id: 'CLEAR', date: '2005-08-02', cloud_cover: 3 },
+    { scene_id: 'OTHER_YEAR', date: '2006-07-15', cloud_cover: 0 },
+  ]
+  assert.equal(chooseYearBrowseImage(images, 2005, 'summer', 'clear')?.scene_id, 'CLEAR')
+  assert.equal(chooseYearBrowseImage(images, 2005, 'summer', 'any')?.scene_id, 'NEAR_BUT_CLOUDY')
 })
