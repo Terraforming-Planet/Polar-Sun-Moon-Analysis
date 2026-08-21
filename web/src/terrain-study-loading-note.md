@@ -1,0 +1,1 @@
+Deterministic yearly gallery implementation note: each selected calendar year is an independent image slot; year requests are bounded and concurrent; exact-time mode remains original-only.
