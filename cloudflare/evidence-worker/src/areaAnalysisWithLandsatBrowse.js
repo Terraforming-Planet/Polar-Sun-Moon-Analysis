@@ -1,21 +1,9 @@
 import { handleAreaAnalysisV2 } from './areaAnalysisV2.js'
-import { buildUsGsLandsatUrl } from './landsatProxy.js'
 
-// Keep this module in the Worker deployment path so the production smoke test verifies the same historical-imagery build served by GitHub Pages.
-const MAX_BROWSE_IMAGES = 6
-const MAX_QUERY_FEATURES = 40
-
-function researchBounds(latitude, longitude, radiusKm) {
-  const latDelta = radiusKm / 111.32
-  const lonScale = Math.max(0.15, Math.cos(latitude * Math.PI / 180))
-  const lonDelta = radiusKm / (111.32 * lonScale)
-  return {
-    west: Math.max(-180, longitude - lonDelta),
-    south: Math.max(-90, latitude - latDelta),
-    east: Math.min(180, longitude + lonDelta),
-    north: Math.min(90, latitude + latDelta),
-  }
-}
+// Compatibility helpers retained for the existing Worker tests and any downstream imports.
+// The V2 handler now performs low-cloud Landsat browse selection before OpenAI analysis,
+// so this wrapper must not append a second unfiltered gallery afterwards.
+const MAX_BROWSE_IMAGES = 4
 
 function imageAssetScore(key, asset) {
   const lowerKey = String(key ?? '').toLowerCase()
@@ -23,16 +11,15 @@ function imageAssetScore(key, asset) {
   const title = String(asset?.title ?? '').toLowerCase()
   const roles = Array.isArray(asset?.roles) ? asset.roles.map(role => String(role).toLowerCase()) : []
   let score = 0
-  if (lowerKey.includes('thumbnail')) score += 120
-  if (lowerKey.includes('browse')) score += 110
-  if (lowerKey.includes('preview')) score += 100
+  if (title.includes('full resolution browse')) score += 150
+  if (lowerKey.includes('browse')) score += 130
+  if (lowerKey.includes('preview')) score += 120
+  if (lowerKey.includes('thumbnail')) score += 110
+  if (roles.includes('overview')) score += 100
   if (roles.includes('thumbnail')) score += 90
-  if (roles.includes('overview')) score += 80
-  if (title.includes('full resolution browse')) score += 75
-  if (title.includes('browse')) score += 65
-  if (title.includes('thumbnail')) score += 60
-  if (type === 'image/jpeg' || type === 'image/jpg') score += 55
-  if (type === 'image/png' || type === 'image/webp') score += 45
+  if (title.includes('browse')) score += 80
+  if (type === 'image/jpeg' || type === 'image/jpg') score += 60
+  if (type === 'image/png' || type === 'image/webp') score += 50
   return score
 }
 
@@ -95,7 +82,7 @@ export function extractLandsatBrowseImages(payload, limit = MAX_BROWSE_IMAGES) {
   const selected = []
   const seenDates = new Set()
   for (const image of images) {
-    if (seenDates.has(image.date) && selected.length >= Math.ceil(limit / 2)) continue
+    if (seenDates.has(image.date)) continue
     seenDates.add(image.date)
     selected.push(image)
     if (selected.length >= limit) break
@@ -103,71 +90,6 @@ export function extractLandsatBrowseImages(payload, limit = MAX_BROWSE_IMAGES) {
   return selected.sort((a, b) => a.date.localeCompare(b.date))
 }
 
-async function fetchHistoricalBrowseImages(body) {
-  const latitude = Number(body?.latitude)
-  const longitude = Number(body?.longitude)
-  const radiusKm = Number(body?.radius_km ?? 25)
-  const start = typeof body?.start_date === 'string' ? body.start_date : ''
-  const end = typeof body?.end_date === 'string' ? body.end_date : ''
-  if (!Number.isFinite(latitude) || !Number.isFinite(longitude) || !Number.isFinite(radiusKm) || !start || !end) return []
-
-  const bounds = researchBounds(latitude, longitude, radiusKm)
-  const upstreamUrl = buildUsGsLandsatUrl({
-    bbox: [bounds.west, bounds.south, bounds.east, bounds.north],
-    start,
-    end,
-    limit: MAX_QUERY_FEATURES,
-  })
-  const response = await fetch(upstreamUrl, { headers: { Accept: 'application/geo+json,application/json' } })
-  if (!response.ok) return []
-  const payload = await response.json()
-  return extractLandsatBrowseImages(payload)
-}
-
-function mergePreviewImages(existing, landsat) {
-  const merged = []
-  const seen = new Set()
-  for (const image of [...landsat, ...(Array.isArray(existing) ? existing : [])]) {
-    if (!image?.url || !image?.date || !image?.source) continue
-    const key = `${image.date}|${image.url}`
-    if (seen.has(key)) continue
-    seen.add(key)
-    merged.push({ date: image.date, source: image.source, url: image.url })
-  }
-  return merged.sort((a, b) => a.date.localeCompare(b.date)).slice(-16)
-}
-
 export async function handleAreaAnalysisWithLandsatBrowse(request, env = {}) {
-  let body = null
-  try {
-    body = await request.clone().json()
-  } catch {
-    // The canonical V2 handler owns request validation and its error response.
-  }
-
-  const response = await handleAreaAnalysisV2(request, env)
-  if (!response.ok || !body) return response
-
-  let landsatBrowse = []
-  try {
-    landsatBrowse = await fetchHistoricalBrowseImages(body)
-  } catch {
-    landsatBrowse = []
-  }
-  if (!landsatBrowse.length) return response
-
-  const payload = await response.json()
-  payload.preview_images = mergePreviewImages(payload.preview_images, landsatBrowse)
-  payload.landsat_browse_images = landsatBrowse.map(image => ({
-    date: image.date,
-    source: image.source,
-    url: image.url,
-    scene_id: image.scene_id,
-    cloud_cover: image.cloud_cover,
-  }))
-  payload.evidence_policy = `${payload.evidence_policy}; official USGS Landsat Full Resolution Browse/thumbnail images when STAC exposes a browser-renderable asset`
-
-  const headers = new Headers(response.headers)
-  headers.set('Content-Type', 'application/json; charset=utf-8')
-  return new Response(JSON.stringify(payload), { status: response.status, headers })
+  return handleAreaAnalysisV2(request, env)
 }

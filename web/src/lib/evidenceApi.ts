@@ -79,7 +79,18 @@ export type AreaAnalysisResponse = {
   }
   period: { start_date: string; end_date: string }
   depth: 'quick' | 'deep'
-  preview_images: Array<{ date: string; source: string; url: string }>
+  image_policy?: {
+    mode: 'clear' | 'all'
+    max_cloud_cover: number
+    preview_limit: number
+  }
+  preview_images: Array<{
+    date: string
+    source: string
+    url: string
+    cloud_cover?: number | null
+    scene_id?: string | null
+  }>
   ai_visual_image_count: number
   landsat_catalog: {
     matched: number
@@ -87,6 +98,7 @@ export type AreaAnalysisResponse = {
     scenes: Array<{ id: string; date: string | null; platform: string | null; cloud_cover: number | null }>
     query_url: string | null
     full_catalog_url: string | null
+    all_years_catalog_url?: string | null
     warning?: string
   }
   analysis: AreaAnalysisResult
@@ -200,6 +212,9 @@ export async function analyzeResearchArea(apiUrl: string, input: {
   endDate: string
   placeName?: string
   depth?: 'quick' | 'deep'
+  imageMode?: 'clear' | 'all'
+  maxCloudCover?: number
+  previewLimit?: number
 }, signal?: AbortSignal) {
   const url = normalizeEvidenceApiUrl(apiUrl)
   if (!url) throw new Error('Evidence API URL is not configured.')
@@ -214,6 +229,9 @@ export async function analyzeResearchArea(apiUrl: string, input: {
       end_date: input.endDate,
       place_name: input.placeName ?? '',
       depth: input.depth ?? 'quick',
+      image_mode: input.imageMode ?? 'clear',
+      max_cloud_cover: input.maxCloudCover ?? 10,
+      preview_limit: input.previewLimit ?? 4,
     }),
     signal,
   })
