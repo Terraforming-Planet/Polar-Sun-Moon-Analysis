@@ -5,7 +5,15 @@ from urllib.parse import urlparse
 ROOT = Path(__file__).resolve().parents[1]
 CALENDAR = ROOT / "web" / "public" / "eclipse-live" / "eclipse-events.json"
 PLANETARY = ROOT / "web" / "public" / "eclipse-live" / "planetary-events.json"
-MANIFEST = ROOT / "web" / "public" / "eclipse" / "2026-08-12" / "goes19-band02" / "manifest.json"
+MANIFEST = (
+    ROOT
+    / "web"
+    / "public"
+    / "eclipse"
+    / "2026-08-12"
+    / "goes19-band02"
+    / "manifest.json"
+)
 ARCHIVE = ROOT / "web" / "public" / "eclipse" / "2026-08-12" / "archive.json"
 
 
@@ -40,7 +48,10 @@ def test_calendar_contains_all_five_2027_nasa_eclipses() -> None:
         "solar-2027-08-02-total",
         "lunar-2027-08-17-penumbral",
     }
-    assert any(item["id"] == "solar-2027-08-02-total" and item["magnitude"] == 1.079 for item in data["events"])
+    assert any(
+        item["id"] == "solar-2027-08-02-total" and item["magnitude"] == 1.079
+        for item in data["events"]
+    )
 
 
 def test_test_areas_are_explicitly_not_all_official_path_points() -> None:
