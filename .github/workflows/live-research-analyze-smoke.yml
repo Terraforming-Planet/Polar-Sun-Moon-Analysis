@@ -1,0 +1,69 @@
+name: Live Research Analyze Smoke
+
+on:
+  workflow_run:
+    workflows: ["Deploy OpenAI Evidence Worker"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: live-research-analyze-smoke
+  cancel-in-progress: true
+
+jobs:
+  live-research-analyze:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      WORKER_URL: https://terra-observation-evidence-explainer.xodobrox.workers.dev
+    steps:
+      - name: Exercise the real Zbadaj teren route
+        shell: bash
+        run: |
+          set -euo pipefail
+          status="$(curl --silent --show-error --connect-timeout 20 --max-time 240 \
+            -X POST \
+            -H 'Origin: https://terraforming-planet.github.io' \
+            -H 'Content-Type: application/json' \
+            --data '{"latitude":22.72438,"longitude":32.10533,"radius_km":25,"start_date":"2026-08-01","end_date":"2026-08-20","depth":"quick","place_name":"CI Nil Egypt terrain smoke"}' \
+            -o /tmp/area-analysis.json \
+            -w '%{http_code}' \
+            "$WORKER_URL/research/analyze")"
+
+          python - "$status" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          status = int(sys.argv[1])
+          payload = json.loads(Path('/tmp/area-analysis.json').read_text(encoding='utf-8'))
+          if status != 200:
+              error = str(payload.get('error', 'unknown error')).replace('\n', ' ')[:300]
+              raise SystemExit(f'Live /research/analyze failed with HTTP {status}: {error}')
+
+          assert payload.get('service') == 'terra-observation-area-analysis-v2'
+          assert int(payload.get('ai_visual_image_count', 0)) >= 1
+          analysis = payload.get('analysis')
+          assert isinstance(analysis, dict)
+          for field in ('headline', 'what_is_visible', 'change_over_time', 'water_assessment', 'recommended_next_step'):
+              assert isinstance(analysis.get(field), str) and analysis[field].strip(), field
+          assert isinstance(payload.get('preview_images'), list) and payload['preview_images']
+          assert 'OPENAI_API_KEY' not in json.dumps(payload)
+          print('Live /research/analyze passed with at least one Worker-verified official satellite image. Model output was not printed.')
+          PY
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo '## Live terrain research smoke test'
+            echo
+            echo '- Endpoint: /research/analyze'
+            echo '- UI path: Zbadaj teren'
+            echo '- Requires at least one Worker-verified official satellite image'
+            echo '- Real OpenAI call is exercised; model output is not printed'
+          } >> "$GITHUB_STEP_SUMMARY"
