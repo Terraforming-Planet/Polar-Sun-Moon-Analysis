@@ -36,6 +36,7 @@ export function SatelliteTimeSelector() {
   const applyPreset = (preset: SatelliteTimePreset) => commit(selectionForPreset(preset, selection))
 
   useEffect(() => {
+    saveSatelliteTimeSelection(readSatelliteTimeSelection())
     const receive = (event: Event) => {
       const detail = (event as CustomEvent<SatelliteTimeMatch | null>).detail
       setTimeMatch(detail ?? null)
