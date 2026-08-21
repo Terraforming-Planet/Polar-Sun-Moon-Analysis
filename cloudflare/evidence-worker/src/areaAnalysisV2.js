@@ -10,12 +10,15 @@ const MAX_REQUEST_BYTES = 4096
 const MAX_RADIUS_KM = 500
 const QUICK_NASA_LIMIT = 7
 const DEEP_NASA_LIMIT = 20
-const QUICK_OPENAI_IMAGE_LIMIT = 5
-const DEEP_OPENAI_IMAGE_LIMIT = 10
+const QUICK_OPENAI_IMAGE_LIMIT = 4
+const DEEP_OPENAI_IMAGE_LIMIT = 8
 const MAX_IMAGE_BYTES = 6 * 1024 * 1024
 const MAX_VISUAL_BYTES = 24 * 1024 * 1024
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
-const ALLOWED_FIELDS = new Set(['latitude', 'longitude', 'radius_km', 'start_date', 'end_date', 'depth', 'place_name'])
+const ALLOWED_FIELDS = new Set([
+  'latitude', 'longitude', 'radius_km', 'start_date', 'end_date', 'depth', 'place_name',
+  'image_mode', 'max_cloud_cover', 'preview_limit',
+])
 const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp'])
 const DEFAULT_CDSE_INSTANCE = 'd708f736-b553-4328-9b5e-39bdb444790c'
 
@@ -52,8 +55,9 @@ Give a substantially detailed answer: describe visible terrain, water bodies/cha
 Never invent measurements, causes, dates, missing imagery, water depths, exact shoreline areas, hydrological mechanisms, model accuracy, or ground truth.
 A visual pattern is an observation candidate, not proof of physical causation. A suspected blocked channel, drainage change, watershed boundary or flow direction is a hypothesis unless supported by DEM/hydrological evidence supplied separately.
 Distinguish three evidence classes explicitly in your reasoning: (1) images visually inspected by the model, (2) catalogue metadata only, and (3) user annotations or hypotheses.
+The default clear-imagery mode is intentionally strict: prefer official Landsat browse imagery with reported scene cloud cover at or below the supplied threshold, plus Copernicus Sentinel-2 requests constrained by MAXCC. Do not describe a NASA image as cloud-screened because NASA GIBS true-colour requests do not provide a local cloud-cover guarantee.
 Copernicus Sentinel-2 WMS can provide higher spatial detail but may represent a multi-day request window/mosaic rather than one exact acquisition. Do not invent an exact sensing time from a WMS request window.
-NASA GIBS imagery is used for temporal continuity; recent VIIRS is generally more spatially detailed than MODIS, while older dates may use MODIS.
+NASA GIBS imagery is used for temporal continuity only when the user explicitly allows all/cloudy imagery; recent VIIRS is generally more spatially detailed than MODIS, while older dates may use MODIS.
 Pre-2000 Landsat catalogue metadata can establish archive availability but is not itself visual inspection. Do not pretend metadata-only years were visually inspected.
 If the metadata says that zero images passed the Worker preflight, explicitly say that no satellite image was visually inspected in this run and keep confidence low.
 When comparing water, distinguish visible water present, visible water reduced/absent in supplied samples, and insufficient evidence. Never claim permanent drying from a small sample.
@@ -113,7 +117,24 @@ function parsePayload(value) {
   if (start.timestamp > end.timestamp) throw new Error('start_date must not be later than the effective end_date.')
   const depth = value.depth === 'deep' ? 'deep' : 'quick'
   const placeName = typeof value.place_name === 'string' ? value.place_name.trim().slice(0, 160) : ''
-  return { latitude, longitude, radiusKm, startDate: start.value, endDate: end.value, depth, placeName }
+  const imageMode = value.image_mode === 'all' ? 'all' : 'clear'
+  const defaultCloudCover = imageMode === 'clear' ? 10 : 100
+  const maxCloudCover = Number(value.max_cloud_cover ?? defaultCloudCover)
+  if (!Number.isFinite(maxCloudCover) || maxCloudCover < 0 || maxCloudCover > 100) throw new Error('max_cloud_cover must be from 0 to 100.')
+  const previewLimit = Number(value.preview_limit ?? 4)
+  if (!Number.isInteger(previewLimit) || previewLimit < 1 || previewLimit > 4) throw new Error('preview_limit must be an integer from 1 to 4.')
+  return {
+    latitude,
+    longitude,
+    radiusKm,
+    startDate: start.value,
+    endDate: end.value,
+    depth,
+    placeName,
+    imageMode,
+    maxCloudCover,
+    previewLimit,
+  }
 }
 
 async function readSmallJson(request) {
@@ -178,14 +199,21 @@ function nasaImage(date, parsed) {
   const recentViirs = date >= '2012-01-19'
   const layer = recentViirs ? 'VIIRS_SNPP_CorrectedReflectance_TrueColor' : 'MODIS_Terra_CorrectedReflectance_TrueColor'
   const source = recentViirs ? 'NASA GIBS · Suomi NPP VIIRS True Color' : 'NASA GIBS · Terra MODIS True Color'
-  const size = parsed.depth === 'deep' ? 1600 : 1400
+  const size = parsed.depth === 'deep' ? 1800 : 1600
   const params = new URLSearchParams({
     SERVICE: 'WMS', REQUEST: 'GetMap', VERSION: '1.1.1', LAYERS: layer, STYLES: '',
     FORMAT: 'image/jpeg', TRANSPARENT: 'FALSE', SRS: 'EPSG:4326',
     BBOX: `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`,
     WIDTH: String(size), HEIGHT: String(size), TIME: date,
   })
-  return { date, source, url: `https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?${params.toString()}`, provenance_note: 'single requested UTC day; visual layer from NASA GIBS' }
+  return {
+    date,
+    source,
+    url: `https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?${params.toString()}`,
+    cloud_cover: null,
+    scene_id: null,
+    provenance_note: 'single requested UTC day; NASA GIBS has no local cloud-cover guarantee; used only in all/cloudy mode',
+  }
 }
 
 function sentinelImage(parsed, env) {
@@ -193,19 +221,22 @@ function sentinelImage(parsed, env) {
   const bounds = researchBounds(parsed.latitude, parsed.longitude, Math.max(parsed.radiusKm, 2))
   const instance = typeof env.CDSE_INSTANCE_ID === 'string' && env.CDSE_INSTANCE_ID.trim() ? env.CDSE_INSTANCE_ID.trim() : DEFAULT_CDSE_INSTANCE
   const layer = typeof env.CDSE_TRUE_COLOR_LAYER === 'string' && env.CDSE_TRUE_COLOR_LAYER.trim() ? env.CDSE_TRUE_COLOR_LAYER.trim() : 'NATURAL-COLOR'
-  const start = daysBefore(parsed.endDate, parsed.depth === 'deep' ? 30 : 14)
-  const size = parsed.depth === 'deep' ? 2048 : 1600
+  const start = daysBefore(parsed.endDate, parsed.depth === 'deep' ? 45 : 21)
+  const size = 2048
   const params = new URLSearchParams({
     SERVICE: 'WMS', REQUEST: 'GetMap', VERSION: '1.1.1', LAYERS: layer, STYLES: '',
     FORMAT: 'image/jpeg', TRANSPARENT: 'FALSE', SRS: 'EPSG:4326',
     BBOX: `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`,
-    WIDTH: String(size), HEIGHT: String(size), TIME: `${start}/${parsed.endDate}`, MAXCC: '35', SHOWLOGO: 'false',
+    WIDTH: String(size), HEIGHT: String(size), TIME: `${start}/${parsed.endDate}`,
+    MAXCC: String(Math.round(parsed.maxCloudCover)), SHOWLOGO: 'false',
   })
   return {
     date: parsed.endDate,
     source: 'Copernicus Data Space · Sentinel-2 L2A true-colour WMS',
     url: `https://sh.dataspace.copernicus.eu/ogc/wms/${instance}?${params.toString()}`,
-    provenance_note: `request window ${start}..${parsed.endDate}; may be a mosaic/latest usable optical observation, not an asserted exact sensing date`,
+    cloud_cover: parsed.maxCloudCover,
+    scene_id: null,
+    provenance_note: `request window ${start}..${parsed.endDate}; MAXCC=${Math.round(parsed.maxCloudCover)}%; may be a mosaic/latest usable optical observation, not an asserted exact sensing date`,
   }
 }
 
@@ -218,9 +249,96 @@ function landsatSceneSummary(item) {
   }
 }
 
+function imageAssetScore(key, asset) {
+  const lowerKey = String(key ?? '').toLowerCase()
+  const type = String(asset?.type ?? '').toLowerCase()
+  const title = String(asset?.title ?? '').toLowerCase()
+  const roles = Array.isArray(asset?.roles) ? asset.roles.map(role => String(role).toLowerCase()) : []
+  let score = 0
+  if (title.includes('full resolution browse')) score += 150
+  if (lowerKey.includes('browse')) score += 130
+  if (lowerKey.includes('preview')) score += 120
+  if (lowerKey.includes('thumbnail')) score += 110
+  if (roles.includes('overview')) score += 100
+  if (roles.includes('thumbnail')) score += 90
+  if (title.includes('browse')) score += 80
+  if (type === 'image/jpeg' || type === 'image/jpg') score += 60
+  if (type === 'image/png' || type === 'image/webp') score += 50
+  return score
+}
+
+function safeRasterImageUrl(value) {
+  if (typeof value !== 'string') return null
+  const url = value.trim()
+  if (!url.startsWith('https://')) return null
+  if (/\.(?:jpe?g|png|webp)(?:\?|$)/i.test(url)) return url
+  return null
+}
+
+export function extractLandsatVisual(item) {
+  if (!item || typeof item !== 'object') return null
+  const date = typeof item?.properties?.datetime === 'string' ? item.properties.datetime.slice(0, 10) : null
+  const sceneId = String(item?.id ?? '').slice(0, 180)
+  if (!date || !sceneId) return null
+
+  const candidates = []
+  if (item.assets && typeof item.assets === 'object') {
+    for (const [key, asset] of Object.entries(item.assets)) {
+      const href = safeRasterImageUrl(asset?.href)
+      if (!href) continue
+      const score = imageAssetScore(key, asset)
+      if (score > 0) candidates.push({ href, score })
+    }
+  }
+  if (Array.isArray(item.links)) {
+    for (const link of item.links) {
+      const rel = String(link?.rel ?? '').toLowerCase()
+      if (!['preview', 'thumbnail'].includes(rel)) continue
+      const href = safeRasterImageUrl(link?.href)
+      if (href) candidates.push({ href, score: rel === 'thumbnail' ? 95 : 85 })
+    }
+  }
+  candidates.sort((a, b) => b.score - a.score)
+  if (!candidates[0]) return null
+
+  const platform = typeof item?.properties?.platform === 'string' ? item.properties.platform : 'Landsat'
+  const cloudCover = typeof item?.properties?.['eo:cloud_cover'] === 'number' ? item.properties['eo:cloud_cover'] : null
+  return {
+    date,
+    source: `USGS Landsat Collection 2 · ${platform} · Full Resolution Browse`,
+    url: candidates[0].href,
+    scene_id: sceneId,
+    cloud_cover: cloudCover,
+    provenance_note: `Official USGS STAC browse/thumbnail for scene ${sceneId}; reported scene cloud cover ${cloudCover == null ? 'unknown' : `${cloudCover}%`}.`,
+  }
+}
+
+export function selectLandsatVisuals(payload, parsed, limit) {
+  const features = Array.isArray(payload?.features) ? payload.features : []
+  const candidates = features
+    .map(extractLandsatVisual)
+    .filter(Boolean)
+    .filter(image => parsed.imageMode === 'all' || (Number.isFinite(image.cloud_cover) && image.cloud_cover <= parsed.maxCloudCover))
+    .sort((a, b) => {
+      const aCloud = Number.isFinite(a.cloud_cover) ? a.cloud_cover : 101
+      const bCloud = Number.isFinite(b.cloud_cover) ? b.cloud_cover : 101
+      return aCloud - bCloud || b.date.localeCompare(a.date)
+    })
+
+  const selected = []
+  const seenDates = new Set()
+  for (const image of candidates) {
+    if (seenDates.has(image.date)) continue
+    seenDates.add(image.date)
+    selected.push(image)
+    if (selected.length >= limit) break
+  }
+  return selected.sort((a, b) => a.date.localeCompare(b.date))
+}
+
 async function fetchLandsatContext(parsed) {
   const bounds = researchBounds(parsed.latitude, parsed.longitude, parsed.radiusKm)
-  const query = { bbox: [bounds.west, bounds.south, bounds.east, bounds.north], start: parsed.startDate, end: parsed.endDate, limit: 40 }
+  const query = { bbox: [bounds.west, bounds.south, bounds.east, bounds.north], start: parsed.startDate, end: parsed.endDate, limit: 100 }
   const upstreamUrl = buildUsGsLandsatUrl(query)
   const upstream = await fetch(upstreamUrl, { headers: { Accept: 'application/geo+json,application/json' } })
   if (!upstream.ok) throw new Error(`USGS Landsat catalogue returned HTTP ${upstream.status}.`)
@@ -228,8 +346,27 @@ async function fetchLandsatContext(parsed) {
   const matched = Number(payload?.numberMatched ?? payload?.context?.matched ?? payload?.features?.length ?? 0)
   const returned = Array.isArray(payload?.features) ? payload.features.length : 0
   const scenes = Array.isArray(payload?.features) ? payload.features.slice(0, 40).map(landsatSceneSummary) : []
-  const fullParams = new URLSearchParams({ bbox: query.bbox.join(','), datetime: `${query.start}T00:00:00Z/${query.end}T23:59:59Z`, limit: '1000' })
-  return { matched, returned, scenes, query_url: upstreamUrl, full_catalog_url: `https://landsatlook.usgs.gov/stac-server/collections/landsat-c2l2-sr/items?${fullParams.toString()}` }
+  const visualLimit = parsed.depth === 'deep' ? DEEP_OPENAI_IMAGE_LIMIT : QUICK_OPENAI_IMAGE_LIMIT
+  const browseImages = selectLandsatVisuals(payload, parsed, visualLimit)
+  const fullParams = new URLSearchParams({
+    bbox: query.bbox.join(','),
+    datetime: `${query.start}T00:00:00Z/${query.end}T23:59:59Z`,
+    limit: '1000',
+  })
+  const allYearsParams = new URLSearchParams({
+    bbox: query.bbox.join(','),
+    datetime: `1972-01-01T00:00:00Z/${todayUtc()}T23:59:59Z`,
+    limit: '1000',
+  })
+  return {
+    matched,
+    returned,
+    scenes,
+    browse_images: browseImages,
+    query_url: upstreamUrl,
+    full_catalog_url: `https://landsatlook.usgs.gov/stac-server/collections/landsat-c2l2-sr/items?${fullParams.toString()}`,
+    all_years_catalog_url: `https://landsatlook.usgs.gov/stac-server/collections/landsat-c2l2-sr/items?${allYearsParams.toString()}`,
+  }
 }
 
 function extractOutputText(payload) {
@@ -321,7 +458,15 @@ function buildOpenAIRequest(parsed, visuals, landsat, env, visualWarnings = []) 
     radius_km: parsed.radiusKm,
     requested_period: [parsed.startDate, parsed.endDate],
     analysis_depth: parsed.depth,
-    visually_supplied_images: visuals.map(item => ({ date_or_request_end: item.date, source: item.source, provenance_note: item.provenance_note })),
+    image_mode: parsed.imageMode,
+    max_cloud_cover_percent: parsed.maxCloudCover,
+    visually_supplied_images: visuals.map(item => ({
+      date_or_request_end: item.date,
+      source: item.source,
+      cloud_cover: item.cloud_cover ?? null,
+      scene_id: item.scene_id ?? null,
+      provenance_note: item.provenance_note,
+    })),
     visual_preflight_warnings: visualWarnings,
     landsat_catalog_source: 'USGS Landsat Collection 2 Surface Reflectance STAC',
     landsat_matched_scene_count: landsat.matched,
@@ -409,31 +554,60 @@ export async function handleAreaAnalysisV2(request, env = {}) {
 
   try {
     const parsed = parsePayload(await readSmallJson(request))
-    const nasaDates = representativeNasaDates(parsed.startDate, parsed.endDate, parsed.depth)
-    const requestedVisuals = nasaDates.map(date => nasaImage(date, parsed))
+
+    let landsat
+    try {
+      landsat = await fetchLandsatContext(parsed)
+    } catch (error) {
+      landsat = {
+        matched: 0,
+        returned: 0,
+        scenes: [],
+        browse_images: [],
+        query_url: null,
+        full_catalog_url: null,
+        all_years_catalog_url: null,
+        warning: error instanceof Error ? error.message : 'USGS catalogue unavailable.',
+      }
+    }
+
+    const requestedVisuals = []
+    if (Array.isArray(landsat.browse_images)) requestedVisuals.push(...landsat.browse_images)
+
     const sentinel = sentinelImage(parsed, env)
     if (sentinel) requestedVisuals.push(sentinel)
 
-    let landsat
-    try { landsat = await fetchLandsatContext(parsed) } catch (error) {
-      landsat = { matched: 0, returned: 0, scenes: [], query_url: null, full_catalog_url: null, warning: error instanceof Error ? error.message : 'USGS catalogue unavailable.' }
+    if (parsed.imageMode === 'all') {
+      const nasaDates = representativeNasaDates(parsed.startDate, parsed.endDate, parsed.depth)
+      requestedVisuals.push(...nasaDates.map(date => nasaImage(date, parsed)))
     }
 
     const visualPreflight = await prepareVisualInputs(requestedVisuals, parsed.depth)
     const analysis = await analyzeWithOpenAI(parsed, visualPreflight.prepared, landsat, env, visualPreflight.warnings)
-    const previews = [...visualPreflight.prepared].sort((a, b) => a.date.localeCompare(b.date)).slice(-10)
+    const previews = visualPreflight.prepared.slice(0, parsed.previewLimit)
+    const { browse_images: _browseImages, ...publicLandsat } = landsat
+
     return jsonResponse({
       service: 'terra-observation-area-analysis-v2',
       generated_at_utc: new Date().toISOString(),
       area: { place_name: parsed.placeName || null, latitude: parsed.latitude, longitude: parsed.longitude, radius_km: parsed.radiusKm },
       period: { start_date: parsed.startDate, end_date: parsed.endDate },
       depth: parsed.depth,
-      preview_images: previews.map(item => ({ date: item.date, source: item.source, url: item.url })),
+      image_policy: { mode: parsed.imageMode, max_cloud_cover: parsed.maxCloudCover, preview_limit: parsed.previewLimit },
+      preview_images: previews.map(item => ({
+        date: item.date,
+        source: item.source,
+        url: item.url,
+        cloud_cover: item.cloud_cover ?? null,
+        scene_id: item.scene_id ?? null,
+      })),
       ai_visual_image_count: visualPreflight.prepared.length,
       visual_preflight_warnings: visualPreflight.warnings,
-      landsat_catalog: landsat,
+      landsat_catalog: publicLandsat,
       analysis,
-      evidence_policy: 'official-public-only; Worker-verified image responses only; NASA/Copernicus imagery + USGS catalogue metadata',
+      evidence_policy: parsed.imageMode === 'clear'
+        ? `official-public-only; clear-imagery preference; Landsat scene cloud cover <= ${parsed.maxCloudCover}% when metadata is available; Copernicus Sentinel-2 MAXCC=${parsed.maxCloudCover}; maximum ${parsed.previewLimit} preview images`
+        : `official-public-only; all/cloudy imagery allowed; maximum ${parsed.previewLimit} preview images`,
     }, 200, origin, env)
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Area analysis failed safely.'
