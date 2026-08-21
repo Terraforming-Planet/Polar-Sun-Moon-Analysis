@@ -2,41 +2,55 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGE = ROOT / "web" / "public" / "eclipse-live" / "index.html"
+CALENDAR = ROOT / "web" / "public" / "eclipse-live" / "eclipse-events.json"
 
 
-def test_eclipse_live_uses_real_visible_satellite_sources() -> None:
+def test_eclipse_observatory_keeps_real_visible_satellite_sources() -> None:
     source = PAGE.read_text(encoding="utf-8")
 
     assert "mtg_fd:vis06_hrfi" in source
     assert "mtg_fd:rgb_geocolour" not in source
     assert "view.eumetsat.int/geoserver/wms" in source
-    assert "Meteosat-12 · Europa · VIS 0.6 HRFI" in source
-    assert "NOAA GOES-19 · Band 2 · 0.64 µm RAW VIS" in source
+    assert "EUMETSAT Meteosat-12" in source
+    assert "NOAA GOES-19" in source
     assert "Zdjęcie satelitarne = obserwacja" in source
+    assert "nie jest prognozą pogody na 2027" in source
 
 
-def test_eclipse_live_has_olszowka_and_camera_presets() -> None:
+def test_eclipse_observatory_has_live_countdown_to_official_calendar_event() -> None:
+    source = PAGE.read_text(encoding="utf-8")
+    calendar = CALENDAR.read_text(encoding="utf-8")
+
+    for element_id in ("count-days", "count-hours", "count-minutes", "count-seconds"):
+        assert f'id="{element_id}"' in source
+    assert "setInterval(tickCountdown,1000)" in source
+    assert "./eclipse-events.json" in source
+    assert '"next_event_id": "solar-2027-02-06-annular"' in calendar
+    assert '"greatest_utc": "2027-02-06T15:59:32Z"' in calendar
+    assert '"magnitude": 0.9281' in calendar
+    assert '"path_width_km": 281.6' in calendar
+
+
+def test_eclipse_observatory_exposes_3d_research_areas_without_faking_path_limits() -> None:
+    source = PAGE.read_text(encoding="utf-8")
+    calendar = CALENDAR.read_text(encoding="utf-8")
+
+    assert 'id="event-select"' in source
+    assert 'id="area-select"' in source
+    assert 'id="future-cesium"' in source
+    assert "OpenStreetMapImageryProvider" in source
+    assert "PUNKT TESTOWY" in source
+    assert "marker „obszar testowy” jest punktem badawczym do ustawienia kamery, a nie granicą pasa zaćmienia" in source
+    assert "SEsearchmap.php?Ecl=20270206" in calendar
+    assert '"evidence": "official-greatest-point"' in calendar
+    assert '"evidence": "regional-test-point"' in calendar
+
+
+def test_2026_campaign_is_presented_as_closed_integrity_archive() -> None:
     source = PAGE.read_text(encoding="utf-8")
 
-    assert "Olszówka · gmina Gardeja" in source
-    assert "53.61586" in source
-    assert "18.99546" in source
-    assert "fly(5000,-35)" in source
-    assert "fly(2500000,-90,0)" in source
-    assert "fly(10000000,-90,0)" in source
-    assert "humanView" in source
-
-
-def test_eclipse_live_computes_local_circumstances_from_nasa() -> None:
-    source = PAGE.read_text(encoding="utf-8")
-
-    assert "deltaT:75.4" in source
-    assert "0.4755140" in source
-    assert "0.7711830" in source
-    assert "0.5379550" in source
-    assert "-0.0081420" in source
-    assert "localState" in source
-    assert "circleOverlap" in source
-    assert "Zakrycie tarczy Słońca" in source
-    assert "Wysokość Słońca" in source
-    assert "Azymut Słońca" in source
+    assert "Zamknięta kampania obserwacyjna 2026" in source
+    assert "../eclipse/2026-08-12/archive.json" in source
+    assert "../eclipse/2026-08-12/goes19-band02/manifest.json" in source
+    assert "SHA-256" in source
+    assert "Model NASA i render Cesium nie są wypalane w surowe obrazy satelitarne" in source
