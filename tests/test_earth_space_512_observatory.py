@@ -11,7 +11,9 @@ AU_KM = 149_597_870.7
 
 def test_earth_space_512_observatory_is_mirrored() -> None:
     for filename in ("index.html", "earth-space-512.css", "earth-space-512.js"):
-        assert (DOCS / filename).read_text(encoding="utf-8") == (PUBLIC / filename).read_text(encoding="utf-8")
+        docs_source = (DOCS / filename).read_text(encoding="utf-8")
+        public_source = (PUBLIC / filename).read_text(encoding="utf-8")
+        assert docs_source == public_source
 
 
 def test_observatory_uses_official_space_sources_and_mobile_safe_modules() -> None:
@@ -32,9 +34,11 @@ def test_observatory_uses_official_space_sources_and_mobile_safe_modules() -> No
 def test_512_grid_is_exact_and_is_the_final_research_section() -> None:
     html = (DOCS / "index.html").read_text(encoding="utf-8")
     javascript = (DOCS / "earth-space-512.js").read_text(encoding="utf-8")
+    comet_section = html.index("Experimental Sun + AI comet observation lab")
+    planet_section = html.index("Experimental Moon and planet observations")
+    grid_section = html.index("8 × 8 × 8 = 512 addressable cells")
 
-    assert html.index("Experimental Sun + AI comet observation lab") < html.index("Experimental Moon and planet observations")
-    assert html.index("Experimental Moon and planet observations") < html.index("8 × 8 × 8 = 512 addressable cells")
+    assert comet_section < planet_section < grid_section
     assert "const index = z * 64 + y * 8 + x" in javascript
     assert "cells.length !== 512" in javascript
     assert "CELL-${String(index + 1).padStart(3, '0')}" in javascript
@@ -48,6 +52,7 @@ def test_moon_distance_experiment_is_derived_from_jpl_vectors() -> None:
     distance_au = math.dist(earth, moon)
     distance_km = distance_au * AU_KM
 
-    assert bodies["Earth"]["source"] == "https://ssd.jpl.nasa.gov/api/horizons.api"
-    assert bodies["Moon"]["source"] == "https://ssd.jpl.nasa.gov/api/horizons.api"
+    jpl_api = "https://ssd.jpl.nasa.gov/api/horizons.api"
+    assert bodies["Earth"]["source"] == jpl_api
+    assert bodies["Moon"]["source"] == jpl_api
     assert 350_000 < distance_km < 420_000
