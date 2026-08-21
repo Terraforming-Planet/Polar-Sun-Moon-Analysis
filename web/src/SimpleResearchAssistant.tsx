@@ -39,26 +39,13 @@ function periodForPreset(preset: PeriodPreset) {
   return { startDate: '1990-01-01', endDate }
 }
 
-function boundsForMap(latitude: number, longitude: number, radiusKm = 25) {
-  const latDelta = Math.max(0.08, radiusKm / 111.32)
-  const lonScale = Math.max(0.2, Math.cos(latitude * Math.PI / 180))
-  const lonDelta = Math.max(0.08, radiusKm / (111.32 * lonScale))
-  return {
-    west: Math.max(-180, longitude - lonDelta),
-    south: Math.max(-90, latitude - latDelta),
-    east: Math.min(180, longitude + lonDelta),
-    north: Math.min(90, latitude + latDelta),
-  }
-}
-
-function osmEmbedUrl(place: Place) {
-  const bounds = boundsForMap(place.latitude, place.longitude, 25)
+function riverHelperEmbedUrl(place: Place) {
   const params = new URLSearchParams({
-    bbox: `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`,
-    layer: 'mapnik',
-    marker: `${place.latitude},${place.longitude}`,
+    lat: String(place.latitude),
+    lon: String(place.longitude),
+    label: place.label,
   })
-  return `https://www.openstreetmap.org/export/embed.html?${params.toString()}`
+  return `${import.meta.env.BASE_URL}river-helper-map/index.html?${params.toString()}`
 }
 
 function confidenceLabel(level: 'low' | 'medium' | 'high') {
@@ -202,7 +189,7 @@ export function SimpleResearchAssistant({
   return <section className="simple-research" aria-label="AI terrain research">
     {canSwitchMode && <div className="simple-console-mode panel" role="group" aria-label="Research interface level">
       <button type="button" className={effectiveMode === 'simple' ? 'active' : ''} onClick={() => setConsoleMode('simple')}>
-        <b>Simple</b><span>search a place → inspect Earth → ask the assistant</span>
+        <b>Simple</b><span>search a place → ask the assistant → inspect Earth</span>
       </button>
       <button type="button" className={effectiveMode === 'advanced' ? 'active' : ''} onClick={() => setConsoleMode('advanced')}>
         <b>Advanced</b><span>HQ imagery · files · models · flags · DEM · profiles · reports</span>
@@ -211,10 +198,10 @@ export function SimpleResearchAssistant({
 
     <div className="simple-research-hero panel">
       <div className="simple-research-copy">
-        <small>{effectiveMode === 'simple' ? 'SIMPLE CONSOLE · 3D EARTH · SATELLITES · ASSISTANT' : 'LABORATORY · SATELLITES · DEM · OPENAI'}</small>
+        <small>{effectiveMode === 'simple' ? 'SIMPLE CONSOLE · PLACE · ASSISTANT · 3D EARTH' : 'LABORATORY · SATELLITES · DEM · OPENAI'}</small>
         <h2>{effectiveMode === 'simple' ? 'Search any area and investigate it immediately' : 'Advanced terrain research'}</h2>
         <p>{effectiveMode === 'simple'
-          ? 'Enter a lake, river, city or region. The system marks it on the 3D Earth view, retrieves available official evidence and returns a concise analysis. The assistant stays beside the map for follow-up questions.'
+          ? 'Enter a lake, river, city or region. Ask the assistant immediately; then inspect the marked place on the high-resolution 3D Earth view and review available official evidence.'
           : 'Use the full laboratory: GPT model selection, attachments, high-quality Copernicus/NASA imagery, numbered flags, DEM samples, colored paths, elevation profiles and reports.'}</p>
       </div>
       <form className="simple-search" onSubmit={submitSearch}>
@@ -242,7 +229,9 @@ export function SimpleResearchAssistant({
       {error && <p className="research-error" role="alert">{error}</p>}
     </div>
 
-    <div className="simple-console-grid">
+    <div className="simple-console-grid" style={effectiveMode === 'simple' ? { gridTemplateColumns: '1fr' } : undefined}>
+      {effectiveMode === 'simple' && <ResearchChatNotebook apiUrl={apiUrl} place={place} analysis={analysis} advancedControls={false} />}
+
       <div className="simple-map panel simple-earth-preview">
         <div className="simple-map-head">
           <div><small>3D EARTH · HIGH-RESOLUTION REFERENCE VIEW</small><h3>{place ? place.label : 'Rotate Earth or search for a place'}</h3></div>
@@ -252,11 +241,11 @@ export function SimpleResearchAssistant({
         <p className="simple-map-source">The high-resolution reference basemap is the default visual layer because it is useful for tracing riverbeds and terrain. Dated scientific conclusions must still be checked against official Copernicus, NASA and USGS observations.</p>
       </div>
 
-      <ResearchChatNotebook apiUrl={apiUrl} place={place} analysis={analysis} advancedControls={effectiveMode === 'advanced'} />
+      {effectiveMode === 'advanced' && <ResearchChatNotebook apiUrl={apiUrl} place={place} analysis={analysis} advancedControls />}
     </div>
 
     {!place && <div className="simple-guidance panel">
-      <b>How to start:</b><span>1. Enter a place.</span><span>2. A marker appears on the 3D Earth view.</span><span>3. Review the analysis and ask private follow-up questions.</span>{canSwitchMode && effectiveMode === 'simple' && <button type="button" className="secondary" onClick={() => setConsoleMode('advanced')}>I need measurements and files → Advanced</button>}
+      <b>How to start:</b><span>1. Enter a place.</span><span>2. Ask the private assistant.</span><span>3. Inspect the marker and evidence on the 3D Earth view.</span>{canSwitchMode && effectiveMode === 'simple' && <button type="button" className="secondary" onClick={() => setConsoleMode('advanced')}>I need measurements and files → Advanced</button>}
     </div>}
 
     {(status === 'analyzing' || status === 'searching') && <div className="simple-ai-loading panel" role="status">
@@ -283,11 +272,11 @@ export function SimpleResearchAssistant({
     {effectiveMode === 'advanced' && <>
       {place && <div className="simple-map panel">
         <div className="simple-map-head">
-          <div><small>CONTEXT MAP</small><h3>{place.label}</h3></div>
-          <a href={`https://www.openstreetmap.org/?mlat=${place.latitude}&mlon=${place.longitude}#map=10/${place.latitude}/${place.longitude}`} target="_blank" rel="noreferrer">Open larger map</a>
+          <div><small>RIVER HELPER MAP · COUNTRIES + HYDROGRAPHY</small><h3>{place.label}</h3></div>
+          <a href={`https://www.openstreetmap.org/?mlat=${place.latitude}&mlon=${place.longitude}#map=10/${place.latitude}/${place.longitude}`} target="_blank" rel="noreferrer">Open general map</a>
         </div>
-        <iframe title={`Map of ${place.label}`} src={osmEmbedUrl(place)} loading="lazy" />
-        <p className="simple-map-source">OpenStreetMap is used for orientation. Measurement and observation imagery below keep their own provenance.</p>
+        <iframe title={`River helper map of ${place.label}`} src={riverHelperEmbedUrl(place)} loading="lazy" />
+        <p className="simple-map-source">Hydrology helper view: a light no-label basemap plus Natural Earth country names, country outlines, major lakes and river centerlines. Province/admin-1 borders and local-place clutter are intentionally omitted. Use it for orientation when tracing riverbeds; scientific measurements keep their own provenance.</p>
       </div>}
 
       {place && <ResearchTerrainLab
