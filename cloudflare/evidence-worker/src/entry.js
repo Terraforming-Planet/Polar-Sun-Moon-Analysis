@@ -8,12 +8,20 @@ import { IMAGE_PROXY_PATH, handleSatelliteImageProxy } from './imageProxy.js'
 import { LANDSAT_PROXY_PATH, handleLandsatProxy } from './landsatProxy.js'
 import { handleObservationView, OBSERVATION_VIEW_PATH } from './observationView.js'
 import { RESEARCH_CHAT_PATH, handleResearchChat } from './researchChat.js'
+import {
+  handleTerrainStudy,
+  handleTerrainStudyAnalyze,
+  TERRAIN_STUDY_ANALYZE_PATH,
+  TERRAIN_STUDY_PATH,
+} from './terrainStudy.js'
 
 export async function handleWorkerRequest(request, env = {}, context) {
   const url = new URL(request.url)
   if (url.pathname === GEOCODE_PATH) return handleGeocodeProxy(request, env)
   if (url.pathname === AREA_ANALYSIS_V2_PATH) return handleAreaAnalysisWithLandsatBrowse(request, env)
   if (url.pathname === YEARLY_GALLERY_PATH) return handleYearlyGallery(request, env)
+  if (url.pathname === TERRAIN_STUDY_PATH) return handleTerrainStudy(request, env)
+  if (url.pathname === TERRAIN_STUDY_ANALYZE_PATH) return handleTerrainStudyAnalyze(request, env)
   if (url.pathname === OBSERVATION_VIEW_PATH) return handleObservationView(request, env)
   if (url.pathname === IMAGE_PROXY_PATH) return handleSatelliteImageProxy(request, env)
   if (url.pathname === LANDSAT_PROXY_PATH) return handleLandsatProxy(request, env)
