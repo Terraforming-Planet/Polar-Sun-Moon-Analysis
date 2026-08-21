@@ -234,9 +234,9 @@ function sentinelImage(parsed, env) {
     date: parsed.endDate,
     source: 'Copernicus Data Space · Sentinel-2 L2A true-colour WMS',
     url: `https://sh.dataspace.copernicus.eu/ogc/wms/${instance}?${params.toString()}`,
-    cloud_cover: parsed.maxCloudCover,
+    cloud_cover: null,
     scene_id: null,
-    provenance_note: `request window ${start}..${parsed.endDate}; MAXCC=${Math.round(parsed.maxCloudCover)}%; may be a mosaic/latest usable optical observation, not an asserted exact sensing date`,
+    provenance_note: `request window ${start}..${parsed.endDate}; MAXCC=${Math.round(parsed.maxCloudCover)}%; threshold/filter value, not measured local cloud cover; may be a mosaic/latest usable optical observation, not an asserted exact sensing date`,
   }
 }
 
