@@ -10,7 +10,12 @@ AU_KM = 149_597_870.7
 
 
 def test_earth_space_512_observatory_is_mirrored() -> None:
-    for filename in ("index.html", "earth-space-512.css", "earth-space-512.js"):
+    for filename in (
+        "index.html",
+        "earth-space-512.css",
+        "earth-space-512.js",
+        "comet-ai-client.js",
+    ):
         docs_source = (DOCS / filename).read_text(encoding="utf-8")
         public_source = (PUBLIC / filename).read_text(encoding="utf-8")
         assert docs_source == public_source
@@ -19,6 +24,7 @@ def test_earth_space_512_observatory_is_mirrored() -> None:
 def test_observatory_uses_official_space_sources_and_mobile_safe_modules() -> None:
     html = (DOCS / "index.html").read_text(encoding="utf-8")
     javascript = (DOCS / "earth-space-512.js").read_text(encoding="utf-8")
+    comet_client = (DOCS / "comet-ai-client.js").read_text(encoding="utf-8")
 
     assert "SOHO / LASCO C2" in html
     assert "SOHO / LASCO C3" in html
@@ -29,6 +35,9 @@ def test_observatory_uses_official_space_sources_and_mobile_safe_modules() -> No
     assert "https://esm.sh/three@0.180.0" in javascript
     assert "deps=three@0.180.0" in javascript
     assert "cdn.jsdelivr.net/npm/three" not in javascript
+    assert "/space/comet-candidates" in comet_client
+    assert "No verified candidate asserted" in comet_client
+    assert "confirmed comet or discovery" in html
 
 
 def test_512_grid_is_exact_and_is_the_final_research_section() -> None:

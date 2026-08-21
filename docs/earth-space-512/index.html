@@ -61,12 +61,12 @@
         <p>The wider C3 field is useful for tracking motion over a larger angular region and comparing candidate trajectories.</p>
       </article>
       <article class="panel ai-card">
-        <div class="card-head"><div><small>OPENAI-READY RESEARCH MODULE</small><h3>AI comet candidate detector</h3></div><span class="status-pill experimental">EXPERIMENTAL</span></div>
-        <p>This panel prepares an evidence bundle from official C2/C3 frames. It does not invent detections. A candidate is shown only after a vision worker returns a result tied to source frames and UTC.</p>
+        <div class="card-head"><div><small>OPENAI VISION · FIXED OFFICIAL FRAME BUNDLE</small><h3>AI comet candidate detector</h3></div><span class="status-pill experimental">EXPERIMENTAL</span></div>
+        <p>The server resolves three time-separated LASCO C2/C3 pairs through Helioviewer and sends only that fixed official/public evidence bundle to OpenAI. The browser cannot supply arbitrary prompts or image URLs.</p>
         <div class="ai-status"><span>Frame readiness</span><b id="frame-readiness">Checking feeds…</b></div>
         <div class="ai-status"><span>Candidate state</span><b id="candidate-state">No verified candidate asserted</b></div>
-        <button class="primary" id="comet-scan" type="button">Run experimental readiness scan</button>
-        <div class="ai-output" id="ai-output">The browser first checks whether both official SOHO frames are available. Full visual classification stays evidence-gated until the project’s server-side OpenAI worker is connected to this module.</div>
+        <button class="primary" id="comet-scan" type="button">Run OpenAI comet candidate scan</button>
+        <div class="ai-output" id="ai-output">Candidate screening is evidence-gated. A positive result remains an experimental AI candidate requiring human verification; it is never presented as a confirmed comet or discovery.</div>
       </article>
     </div>
   </section>
@@ -113,5 +113,6 @@
   <div class="footer">Terraforming Planet · Earth–Space 512 Research Station · official/public-data-first scientific visualization</div>
 </main>
 <script type="module" src="./earth-space-512.js"></script>
+<script type="module" src="./comet-ai-client.js"></script>
 </body>
 </html>

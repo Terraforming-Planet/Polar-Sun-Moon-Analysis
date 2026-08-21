@@ -1,42 +1,49 @@
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGE = ROOT / "web" / "public" / "eclipse-live" / "index.html"
+LIVE = ROOT / "web" / "public" / "eclipse-live" / "index.html"
+SCRIPT = ROOT / "web" / "public" / "eclipse-live" / "eclipse-live.js"
+ARCHIVE = ROOT / "web" / "public" / "eclipse-live" / "archive" / "2026-08-12.json"
 
 
-def test_eclipse_live_uses_real_visible_satellite_sources() -> None:
-    source = PAGE.read_text(encoding="utf-8")
+def test_eclipse_live_counts_down_to_next_nasa_catalog_event() -> None:
+    html = LIVE.read_text(encoding="utf-8")
+    script = SCRIPT.read_text(encoding="utf-8")
 
-    assert "mtg_fd:vis06_hrfi" in source
-    assert "mtg_fd:rgb_geocolour" not in source
-    assert "view.eumetsat.int/geoserver/wms" in source
-    assert "Meteosat-12 · Europa · VIS 0.6 HRFI" in source
-    assert "NOAA GOES-19 · Band 2 · 0.64 µm RAW VIS" in source
-    assert "Zdjęcie satelitarne = obserwacja" in source
-
-
-def test_eclipse_live_has_olszowka_and_camera_presets() -> None:
-    source = PAGE.read_text(encoding="utf-8")
-
-    assert "Olszówka · gmina Gardeja" in source
-    assert "53.61586" in source
-    assert "18.99546" in source
-    assert "fly(5000,-35)" in source
-    assert "fly(2500000,-90,0)" in source
-    assert "fly(10000000,-90,0)" in source
-    assert "humanView" in source
+    assert "NAJBLIŻSZE ZAĆMIENIE" in html
+    assert "count-seconds" in html
+    assert "countdown to greatest eclipse" in script
+    assert "2026-08-28T04:14:04Z" in script
+    assert "2027-02-06T16:00:47Z" in script
+    assert "2027-08-02T10:07:49Z" in script
+    assert "NASA GSFC Five Millennium Catalog" in script
 
 
-def test_eclipse_live_computes_local_circumstances_from_nasa() -> None:
-    source = PAGE.read_text(encoding="utf-8")
+def test_eclipse_live_keeps_olszowka_and_representative_test_areas() -> None:
+    html = LIVE.read_text(encoding="utf-8")
+    script = SCRIPT.read_text(encoding="utf-8")
 
-    assert "deltaT:75.4" in source
-    assert "0.4755140" in source
-    assert "0.7711830" in source
-    assert "0.5379550" in source
-    assert "-0.0081420" in source
-    assert "localState" in source
-    assert "circleOverlap" in source
-    assert "Zakrycie tarczy Słońca" in source
-    assert "Wysokość Słońca" in source
-    assert "Azymut Słońca" in source
+    assert "Wybierz obszar testowy" in html
+    assert "Olszówka" in script
+    assert "53.61586" in script
+    assert "18.99546" in script
+    assert "Lisbon" in script
+    assert "Dakar" in script
+    assert "New York" in script
+    assert "Santiago" in script
+    assert "Honolulu" in script
+    assert "not a weather forecast" in script
+
+
+def test_2026_eclipse_is_archived_with_evidence_classes() -> None:
+    payload = json.loads(ARCHIVE.read_text(encoding="utf-8"))
+
+    assert payload["status"] == "archived"
+    assert payload["event"]["greatest_eclipse_utc"] == "2026-08-12T17:47:05Z"
+    assert payload["project_test_site"]["name"].startswith("Olszówka")
+    classes = {item["source"]: item["class"] for item in payload["evidence_classes"]}
+    assert classes["EUMETSAT Meteosat-12 FCI VIS 0.6 HRFI"] == "OFFICIAL_SATELLITE_OBSERVATION"
+    assert classes["NOAA GOES-19 ABI Band 2"] == "OFFICIAL_SATELLITE_OBSERVATION"
+    assert classes["NASA GSFC Besselian Elements"] == "OFFICIAL_GEOMETRIC_MODEL"
+    assert classes["Cesium"] == "VISUALIZATION"
