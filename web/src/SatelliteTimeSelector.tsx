@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 
 import './satellite-time-selector.css'
 import { installObservationHeightEnhancement } from './observationHeightEnhancement'
-import { installResearchGalleryEnhancements } from './researchGalleryEnhancements'
+import { installTerrainStudyEnhancement } from './terrainStudyEnhancement'
 import {
   SATELLITE_ARCHIVE_START,
   SATELLITE_TIME_MATCH_EVENT,
@@ -70,9 +70,9 @@ export function SatelliteTimeSelector() {
 
   useEffect(() => {
     const cleanupObservationHeight = installObservationHeightEnhancement()
-    const cleanupGallery = installResearchGalleryEnhancements()
+    const cleanupTerrainStudy = installTerrainStudyEnhancement()
     return () => {
-      cleanupGallery()
+      cleanupTerrainStudy()
       cleanupObservationHeight()
     }
   }, [])
@@ -84,7 +84,7 @@ export function SatelliteTimeSelector() {
       <div><small>CZAS OBSERWACJI · OFICJALNE ARCHIWA SATELITARNE</small><h2>Wybierz datę zdjęć</h2></div>
       <span className="evidence-badge observation">1972 → DZIŚ</span>
     </div>
-    <p className="satellite-time-note">Najwcześniejsza data tego porównywalnego archiwum lądowego to <b>23.07.1972</b> — start Landsat 1. Tryb <b>Pory roku</b> celowo ukrywa miesiące i dni: wybierasz tylko roczniki i sezon, a system dobiera porównywalny punkt tej samej pory roku w kolejnych latach.</p>
+    <p className="satellite-time-note">Najwcześniejsza data tego porównywalnego archiwum lądowego to <b>23.07.1972</b> — start Landsat 1. Tryb <b>Pory roku</b> porównuje kolejne roczniki w tym samym sezonie. W badaniach wieloletnich system szuka dla każdego rocznika obrazu z minimalnym zachmurzeniem do analizy terenu i zachowuje osobno oryginalną scenę. Tryb <b>dokładna data + godzina</b> zawsze pozostawia oryginalną obserwację, nawet z chmurami.</p>
 
     <div className="satellite-time-presets" role="group" aria-label="Szybki zakres czasu">
       {PRESETS.map(item => <button key={item.id} type="button" className={selection.preset === item.id ? 'active' : ''} onClick={() => applyPreset(item.id)}>{item.label}</button>)}
@@ -110,9 +110,9 @@ export function SatelliteTimeSelector() {
             {SEASONS.map(season => <option key={season.id} value={season.id}>{season.label}</option>)}
           </select>
         </label>
-        <div className="season-study-card"><b>Porównanie sezonowe</b><span>Ten sam sezon · kolejne roczniki · bez ręcznego wyboru miesięcy.</span></div>
+        <div className="season-study-card"><b>Porównanie sezonowe</b><span>Ten sam sezon · kolejne roczniki · automatyczny wybór najmniej zachmurzonej sceny.</span></div>
       </div>
-      <div className="season-study-note">Tryb służy do badań zmian między rocznikami przy możliwie zbliżonej porze roku. To ogranicza błąd porównania wynikający z zestawiania np. zdjęcia letniego ze zdjęciem zimowym.</div>
+      <div className="season-study-note">Tryb służy do badań zmian między rocznikami przy możliwie zbliżonej porze roku. Dla każdego rocznika Worker przeszukuje oficjalne archiwa; standard badawczy to Landsat ≤10% zachmurzenia sceny albo jawnie oznaczony cloud-minimized Sentinel‑2 MAXCC≤10. Oryginały pozostają dostępne osobno.</div>
     </> : selection.preset === 'exact' ? <div className="satellite-time-fields exact-fields">
       <label>Dokładna data<input type="date" min={SATELLITE_ARCHIVE_START} max={today} value={selection.exactDate} onChange={event => commit(selectionForPreset('exact', { ...selection, preset: 'exact', exactDate: event.target.value }))} /></label>
       <label>Godzina UTC<input type="time" step="60" value={selection.exactTimeUtc} onChange={event => commit(selectionForPreset('exact', { ...selection, preset: 'exact', exactTimeUtc: event.target.value }))} /></label>
@@ -125,11 +125,11 @@ export function SatelliteTimeSelector() {
       {selection.preset === 'seasonal'
         ? <span><b>Badanie pory roku:</b> {SEASON_LABELS[selection.season]} · roczniki {selection.startYear} → {selection.endYear}</span>
         : <span><b>Aktywny zakres:</b> {selection.startDate} → {selection.endDate}</span>}
-      {requestedUtc && <span><b>Żądany moment:</b> {requestedUtc.replace('T', ' ').replace(':00Z', ' UTC')}</span>}
+      {requestedUtc && <span><b>Żądany moment:</b> {requestedUtc.replace('T', ' ').replace(':00Z', ' UTC')} · filtr chmur WYŁ.</span>}
     </div>
 
     {selection.preset === 'exact' && <div className={`satellite-time-match ${timeMatch?.status ?? 'waiting'}`}>
-      {!timeMatch && <span>Po uruchomieniu „Zbadaj teren” sprawdzę timestampy scen Landsat. Jeśli dokładna godzina nie istnieje, pokażę najbliższą rzeczywistą obserwację.</span>}
+      {!timeMatch && <span>Po uruchomieniu „Zbadaj teren” sprawdzę timestampy scen Landsat. Jeśli dokładna godzina nie istnieje, pokażę najbliższą rzeczywistą obserwację. Chmury pozostają bez zmian.</span>}
       {timeMatch?.status === 'matched' && <span><b>Najbliższa scena Landsat:</b> {timeMatch.nearestUtc} · różnica {timeMatch.differenceMinutes?.toFixed(1)} min{timeMatch.platform ? ` · ${timeMatch.platform}` : ''}{timeMatch.sceneId ? ` · ${timeMatch.sceneId}` : ''}</span>}
       {timeMatch?.status === 'unavailable' && <span><b>Brak dokładnego czasu sceny:</b> {timeMatch.reason ?? 'Katalog nie zwrócił timestampu dla tego dnia.'} Analiza nadal używa wybranego dnia i jawnie pokazuje dostępne źródła.</span>}
     </div>}
