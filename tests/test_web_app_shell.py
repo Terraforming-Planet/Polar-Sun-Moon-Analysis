@@ -3,6 +3,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 INDEX_HTML = ROOT / "web" / "index.html"
 AI_RESEARCH_PANEL = ROOT / "web" / "src" / "AIResearchPanel.tsx"
+QUICK_ACCESS = ROOT / "web" / "src" / "SimpleContestQuickAccess.tsx"
 CONTROL_CENTER_CSS = ROOT / "web" / "src" / "control-center.css"
 
 
@@ -20,13 +21,15 @@ def test_app_shell_keeps_react_navigation_isolated_from_legacy_dom_observers() -
 
 
 def test_react_research_navigation_contains_published_tests_and_station_links() -> None:
-    source = AI_RESEARCH_PANEL.read_text(encoding="utf-8")
+    panel = AI_RESEARCH_PANEL.read_text(encoding="utf-8")
+    source = QUICK_ACCESS.read_text(encoding="utf-8")
 
+    assert "SimpleContestQuickAccess" in panel
     assert "PUBLIC_RESEARCH_TESTS.map" in source
     assert "Tests 1–16" in source
-    assert "Training 1" in source
-    assert "Training 2" in source
-    assert "Training 3" in source
+    assert "L4 Training #1" in source
+    assert "L4 Training #2" in source
+    assert "L4 Training #3" in source
     assert "arctic-90n/" in source
     assert "sahara-station/" in source
     assert "ocean-station/" in source
