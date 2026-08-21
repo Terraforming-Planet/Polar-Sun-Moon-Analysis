@@ -50,6 +50,7 @@ let latestProgressiveRequest: ProgressiveRequest | null = null
 let progressiveTotal = 0
 let progressiveLoaded = 0
 let progressiveMode: ResearchCloudMode = 'clear'
+let progressiveSlots = new Map<number, GallerySlot>()
 
 export function readResearchCloudMode(): ResearchCloudMode {
   if (typeof window === 'undefined') return 'clear'
@@ -73,9 +74,15 @@ function isAreaAnalysisRequest(input: RequestInfo | URL, init?: RequestInit) {
   try { return new URL(requestUrl(input), window.location.href).pathname.endsWith('/research/analyze') } catch { return false }
 }
 
-function yearsForSelection(selection: SatelliteTimeSelection) {
-  if (selection.preset !== 'seasonal') return []
-  return Array.from({ length: Math.max(0, selection.endYear - selection.startYear + 1) }, (_, index) => selection.startYear + index)
+export function yearsForResearchSelection(selection: SatelliteTimeSelection) {
+  const startYear = Number(selection.startYear)
+  const endYear = Number(selection.endYear)
+  if (!Number.isInteger(startYear) || !Number.isInteger(endYear) || startYear > endYear) return []
+  return Array.from({ length: endYear - startYear + 1 }, (_, index) => startYear + index)
+}
+
+function gallerySeason(selection: SatelliteTimeSelection) {
+  return selection.preset === 'seasonal' ? selection.season : 'all'
 }
 
 function chunks<T>(values: T[], size: number) {
@@ -90,10 +97,11 @@ function progressiveSection() {
 
 function removeProgressiveSection() {
   progressiveSection()?.remove()
+  document.querySelectorAll<HTMLElement>('.simple-context-gallery .simple-selected-period-images:not(.research-progressive-yearly-gallery)').forEach(element => { element.hidden = false })
 }
 
 function createProgressiveSection(runId: number) {
-  const sourceGallery = document.querySelector<HTMLElement>('.simple-context-gallery .simple-selected-period-images')
+  const sourceGallery = document.querySelector<HTMLElement>('.simple-context-gallery .simple-selected-period-images:not(.research-progressive-yearly-gallery)')
   if (!sourceGallery) return null
   const existing = progressiveSection()
   if (existing?.dataset.runId === String(runId)) return existing
@@ -113,7 +121,7 @@ function createProgressiveSection(runId: number) {
   title.textContent = 'Zdjęcia źródłowe — jedno miejsce, jeden rocznik'
   const note = document.createElement('p')
   note.className = 'research-progressive-note'
-  note.textContent = 'Analiza AI terenu jest już dostępna. Roczniki są pobierane osobno w małych paczkach, aby telefon i strona pozostały responsywne.'
+  note.textContent = 'Analiza AI terenu pojawia się niezależnie. Roczniki są pobierane osobno w małych paczkach, dzięki czemu telefon i strona pozostają responsywne.'
   headCopy.append(small, title, note)
   head.appendChild(headCopy)
 
@@ -178,17 +186,23 @@ function makeSlotFigure(slot: GallerySlot) {
   return figure
 }
 
-function appendSlots(runId: number, slots: GallerySlot[]) {
+function syncBufferedSlots(runId: number) {
   const section = createProgressiveSection(runId)
   const grid = section?.querySelector<HTMLElement>('.simple-image-grid')
-  if (!grid) return
-  for (const slot of slots) {
+  if (!section || !grid) return
+  const ordered = [...progressiveSlots.values()].sort((a, b) => a.year - b.year)
+  for (const slot of ordered) {
     if (grid.querySelector(`[data-year="${slot.year}"]`)) continue
     grid.appendChild(makeSlotFigure(slot))
   }
-  progressiveLoaded = grid.querySelectorAll(':scope > figure').length
+  progressiveLoaded = progressiveSlots.size
   updateProgress(runId)
-  enhanceOneGallery(section!)
+  enhanceOneGallery(section)
+}
+
+function appendSlots(runId: number, slots: GallerySlot[]) {
+  for (const slot of slots) progressiveSlots.set(slot.year, slot)
+  syncBufferedSlots(runId)
 }
 
 async function fetchGalleryBatch(request: ProgressiveRequest, years: number[], cloudMode: ResearchCloudMode, signal: AbortSignal) {
@@ -203,7 +217,7 @@ async function fetchGalleryBatch(request: ProgressiveRequest, years: number[], c
       longitude: request.longitude,
       radius_km: request.radiusKm,
       years,
-      season: request.selection.season,
+      season: gallerySeason(request.selection),
       cloud_mode: cloudMode,
     }),
     signal,
@@ -214,11 +228,12 @@ async function fetchGalleryBatch(request: ProgressiveRequest, years: number[], c
 }
 
 async function startProgressiveGallery(request: ProgressiveRequest, cloudMode = readResearchCloudMode()) {
-  const years = yearsForSelection(request.selection)
+  const years = yearsForResearchSelection(request.selection)
   latestProgressiveRequest = request
   progressiveMode = cloudMode
   progressiveTotal = years.length
   progressiveLoaded = 0
+  progressiveSlots = new Map()
   progressiveRunId += 1
   const runId = progressiveRunId
   progressiveController?.abort()
@@ -260,7 +275,7 @@ function installFetchPolicy() {
     // Keep /research/analyze canonical and fast. Annual catalogue work starts only after
     // this response has returned to React, so a 20-year gallery never blocks the AI result.
     const response = await originalFetch(input, init)
-    if (response.ok && parsed && selection.preset === 'seasonal') {
+    if (response.ok && parsed) {
       const endpoint = new URL(requestUrl(input), window.location.href).toString()
       const latitude = Number(parsed.latitude)
       const longitude = Number(parsed.longitude)
@@ -269,10 +284,6 @@ function installFetchPolicy() {
         const request: ProgressiveRequest = { endpoint, latitude, longitude, radiusKm, selection }
         queueMicrotask(() => { void startProgressiveGallery(request) })
       }
-    } else if (selection.preset !== 'seasonal') {
-      latestProgressiveRequest = null
-      progressiveController?.abort()
-      removeProgressiveSection()
     }
     return response
   }
@@ -492,12 +503,14 @@ function enhanceOneGallery(parent: HTMLElement) {
 
 function enhanceGalleries() {
   document.querySelectorAll<HTMLElement>('.simple-selected-period-images:not(.research-progressive-yearly-gallery)').forEach(parent => {
-    if (!latestProgressiveRequest) parent.hidden = false
-    else parent.hidden = true
+    parent.hidden = Boolean(latestProgressiveRequest)
   })
-  document.querySelectorAll<HTMLElement>('.research-progressive-yearly-gallery').forEach(enhanceOneGallery)
-  if (!latestProgressiveRequest) document.querySelectorAll<HTMLElement>('.simple-selected-period-images').forEach(enhanceOneGallery)
-  if (latestProgressiveRequest && !progressiveSection()) createProgressiveSection(progressiveRunId)
+  if (latestProgressiveRequest) {
+    createProgressiveSection(progressiveRunId)
+    syncBufferedSlots(progressiveRunId)
+  } else {
+    document.querySelectorAll<HTMLElement>('.simple-selected-period-images').forEach(enhanceOneGallery)
+  }
 }
 
 function enhanceAll() {
@@ -529,6 +542,7 @@ export function installResearchGalleryEnhancements() {
     progressiveController?.abort()
     progressiveController = null
     latestProgressiveRequest = null
+    progressiveSlots = new Map()
     removeProgressiveSection()
     if (originalFetch) window.fetch = originalFetch
     originalFetch = null
