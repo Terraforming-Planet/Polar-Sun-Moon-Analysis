@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Terra Observation — River helper map</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQ3yns/9c+vJKlZ3Z4S8p9H6h9kLxwo=" crossorigin="" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous" />
   <style>
     html,body,#map{height:100%;margin:0;background:#f7fafc}body{font-family:Inter,system-ui,sans-serif;color:#172736}.leaflet-container{background:#f7fafc}.country-label{background:transparent;border:0;box-shadow:none;color:#243747;font-size:11px;font-weight:800;text-shadow:0 1px 0 #fff,1px 0 0 #fff,0 -1px 0 #fff,-1px 0 0 #fff;white-space:nowrap}.country-label:before{display:none}.target-label{background:#08324a;color:#fff;border:1px solid #45d7ff;border-radius:8px;padding:4px 7px;font-size:10px;font-weight:700;box-shadow:0 2px 12px rgba(0,0,0,.18)}.target-label:before{border-top-color:#08324a}.helper-status{position:absolute;z-index:900;left:10px;top:10px;max-width:min(390px,calc(100% - 70px));padding:8px 10px;border:1px solid #c8d8e4;border-radius:9px;background:rgba(255,255,255,.94);box-shadow:0 2px 14px rgba(22,48,70,.12);font-size:10px;line-height:1.45;color:#4c6171}.helper-status b{display:block;color:#17384b;font-size:11px}.helper-status.error{border-color:#d88;color:#842c2c}.leaflet-control-attribution{font-size:8px!important}
   </style>
@@ -12,7 +12,7 @@
 <body>
   <div id="map" aria-label="River helper map showing countries and rivers"></div>
   <div id="status" class="helper-status"><b>River helper map</b>Country names + major rivers. Province and district borders are intentionally hidden.</div>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
   <script>
     (() => {
       const query = new URLSearchParams(location.search)
@@ -57,11 +57,10 @@
             onEachFeature: (feature, layer) => {
               const name = feature?.properties?.ADMIN || feature?.properties?.NAME_EN || feature?.properties?.NAME
               if (!name || !layer.getBounds) return
-              const marker = L.marker(layer.getBounds().getCenter(), {
+              L.marker(layer.getBounds().getCenter(), {
                 interactive: false,
                 icon: L.divIcon({ className: 'country-label', html: String(name), iconSize: null })
-              })
-              marker.addTo(map)
+              }).addTo(map)
             }
           }).addTo(map)
 
