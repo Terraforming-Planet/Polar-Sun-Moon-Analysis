@@ -83,32 +83,20 @@ export function readSatelliteTimeSelection(): SatelliteTimeSelection {
   if (typeof window === 'undefined') return defaultSatelliteTimeSelection()
   try {
     const raw = window.localStorage.getItem(SATELLITE_TIME_STORAGE_KEY)
-    if (!raw) {
-      const initial = defaultSatelliteTimeSelection()
-      window.localStorage.setItem(SATELLITE_TIME_STORAGE_KEY, JSON.stringify(initial))
-      return initial
-    }
+    if (!raw) return defaultSatelliteTimeSelection()
     const parsed = JSON.parse(raw) as Partial<SatelliteTimeSelection>
     const preset: SatelliteTimePreset = ['archive', 'from-1990', 'from-2015', 'five-years', 'one-year', 'custom', 'exact'].includes(String(parsed.preset))
       ? parsed.preset as SatelliteTimePreset
       : 'archive'
-    const normalized = selectionForPreset(preset, {
+    return selectionForPreset(preset, {
       preset,
       startDate: String(parsed.startDate ?? SATELLITE_ARCHIVE_START),
       endDate: String(parsed.endDate ?? satelliteTodayUtc()),
       exactDate: String(parsed.exactDate ?? satelliteTodayUtc()),
       exactTimeUtc: String(parsed.exactTimeUtc ?? '12:00'),
     })
-    window.localStorage.setItem(SATELLITE_TIME_STORAGE_KEY, JSON.stringify(normalized))
-    return normalized
   } catch {
-    const initial = defaultSatelliteTimeSelection()
-    try {
-      window.localStorage.setItem(SATELLITE_TIME_STORAGE_KEY, JSON.stringify(initial))
-    } catch {
-      // Storage can be disabled; the in-memory default remains valid.
-    }
-    return initial
+    return defaultSatelliteTimeSelection()
   }
 }
 
