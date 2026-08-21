@@ -1,6 +1,7 @@
 import type { AreaAnalysisResponse } from './lib/evidenceApi'
 import type { ResearchAreaShape } from './researchGeometry'
 import type { ResearchTemporalPreset } from './researchTime'
+import { readSatelliteTimeSelection, requestedSatelliteDateTimeUtc } from './satelliteTimeSelection'
 
 export type ResearchAnalysisKind = 'water-change' | 'hydrology' | 'terrain' | 'hazards' | 'multispectral'
 
@@ -34,6 +35,8 @@ export type ResearchManifest = {
     start_date: string
     end_date: string
     mode?: ResearchTemporalPreset
+    requested_datetime_utc?: string | null
+    satellite_time_preset?: string
   }
   analyses: ResearchAnalysisKind[]
   evidence_policy: 'official-public-only'
@@ -90,16 +93,19 @@ export function buildResearchManifest(input: ResearchAreaInput, now = new Date()
   const latitude = finiteNumber(input.latitude, 'Latitude')
   const longitude = finiteNumber(input.longitude, 'Longitude')
   const radiusKm = finiteNumber(input.radiusKm, 'Radius')
+  const sharedTime = typeof window !== 'undefined' ? readSatelliteTimeSelection() : null
+  const startDate = sharedTime?.startDate ?? input.startDate
+  const endDate = sharedTime?.endDate ?? input.endDate
   if (latitude < -90 || latitude > 90) throw new Error('Latitude must be within -90…90°.')
   if (longitude < -180 || longitude > 180) throw new Error('Longitude must be within -180…180°.')
   if (radiusKm <= 0 || radiusKm > 2500) throw new Error('Research radius must be greater than 0 and no more than 2500 km.')
   if (!input.title.trim()) throw new Error('Enter a research title.')
-  if (!input.startDate || !input.endDate) throw new Error('Enter the start and end dates.')
-  if (input.startDate > input.endDate) throw new Error('The start date cannot be later than the end date.')
+  if (!startDate || !endDate) throw new Error('Enter the start and end dates.')
+  if (startDate > endDate) throw new Error('The start date cannot be later than the end date.')
   if (!input.analyses.length) throw new Error('Select at least one analysis type.')
 
   const shape = input.shape ?? 'circle'
-  const temporalPreset = input.temporalPreset ?? 'custom'
+  const temporalPreset = sharedTime ? 'custom' : (input.temporalPreset ?? 'custom')
   const stamp = now.toISOString()
   const idSuffix = stamp.replace(/[-:.TZ]/g, '').slice(0, 14)
   const coordinateSuffix = `${latitude.toFixed(4)}_${longitude.toFixed(4)}`.replace(/-/g, 'm').replace(/\./g, 'p')
@@ -118,9 +124,13 @@ export function buildResearchManifest(input: ResearchAreaInput, now = new Date()
       shape,
     },
     temporal_scope: {
-      start_date: input.startDate,
-      end_date: input.endDate,
+      start_date: startDate,
+      end_date: endDate,
       mode: temporalPreset,
+      ...(sharedTime ? {
+        requested_datetime_utc: requestedSatelliteDateTimeUtc(sharedTime),
+        satellite_time_preset: sharedTime.preset,
+      } : {}),
     },
     analyses: [...new Set(input.analyses)],
     evidence_policy: 'official-public-only',
