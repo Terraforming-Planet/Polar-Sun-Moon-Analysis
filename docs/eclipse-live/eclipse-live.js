@@ -1,15 +1,15 @@
 const ECLIPSE_EVENTS = [
-  { id: '2026-08-28-lunar-partial', kind: 'Lunar', type: 'Partial', greatestUtc: '2026-08-28T04:14:04Z', visibility: 'Eastern Pacific, Americas, Europe, Africa', source: 'NASA GSFC Five Millennium Catalog of Lunar Eclipses' },
-  { id: '2027-02-06-solar-annular', kind: 'Solar', type: 'Annular', greatestUtc: '2027-02-06T16:00:47Z', visibility: 'South America, Antarctica, western and southern Africa; annular path through Chile, Argentina and Atlantic', source: 'NASA GSFC Five Millennium Catalog of Solar Eclipses' },
-  { id: '2027-02-20-lunar-penumbral', kind: 'Lunar', type: 'Penumbral', greatestUtc: '2027-02-20T23:14:06Z', visibility: 'Americas, Europe, Africa, Asia', source: 'NASA GSFC Five Millennium Catalog of Lunar Eclipses' },
-  { id: '2027-07-18-lunar-penumbral', kind: 'Lunar', type: 'Penumbral', greatestUtc: '2027-07-18T16:04:09Z', visibility: 'Eastern Africa, Asia, Australia, Pacific', source: 'NASA GSFC Five Millennium Catalog of Lunar Eclipses' },
-  { id: '2027-08-02-solar-total', kind: 'Solar', type: 'Total', greatestUtc: '2027-08-02T10:07:49Z', visibility: 'Africa, Europe, Middle East, western and southern Asia; totality: Morocco, Spain, Algeria, Libya, Egypt, Saudi Arabia, Yemen, Somalia', source: 'NASA GSFC Five Millennium Catalog of Solar Eclipses' },
-  { id: '2027-08-17-lunar-penumbral', kind: 'Lunar', type: 'Penumbral', greatestUtc: '2027-08-17T07:14:59Z', visibility: 'Pacific, Americas', source: 'NASA GSFC Five Millennium Catalog of Lunar Eclipses' },
-  { id: '2028-01-12-lunar-partial', kind: 'Lunar', type: 'Partial', greatestUtc: '2028-01-12T04:14:13Z', visibility: 'Americas, Europe, Africa', source: 'NASA GSFC Five Millennium Catalog of Lunar Eclipses' },
-  { id: '2028-01-26-solar-annular', kind: 'Solar', type: 'Annular', greatestUtc: '2028-01-26T15:08:58Z', visibility: 'Eastern North America, Central and South America, western Europe, northwestern Africa', source: 'NASA GSFC Five Millennium Catalog of Solar Eclipses' },
-  { id: '2028-07-06-lunar-partial', kind: 'Lunar', type: 'Partial', greatestUtc: '2028-07-06T18:20:57Z', visibility: 'Europe, Africa, Asia, Australia', source: 'NASA GSFC Five Millennium Catalog of Lunar Eclipses' },
-  { id: '2028-07-22-solar-total', kind: 'Solar', type: 'Total', greatestUtc: '2028-07-22T02:56:39Z', visibility: 'Southeast Asia, East Indies, Australia, New Zealand', source: 'NASA GSFC Five Millennium Catalog of Solar Eclipses' },
-  { id: '2028-12-31-lunar-total', kind: 'Lunar', type: 'Total', greatestUtc: '2028-12-31T16:53:15Z', visibility: 'Europe, Africa, Asia, Australia, Pacific', source: 'NASA GSFC Five Millennium Catalog of Lunar Eclipses' },
+  { id: '2026-08-28-lunar-partial', kind: 'Lunar', type: 'Partial', greatestUtc: '2026-08-28T04:13:00Z', catalogTd: '04:14:04 TD', visibility: 'Eastern Pacific, Americas, Europe, Africa', source: 'NASA GSFC Eclipses During 2026 (UT rounded to nearest minute)' },
+  { id: '2027-02-06-solar-annular', kind: 'Solar', type: 'Annular', greatestUtc: '2027-02-06T16:00:00Z', catalogTd: '16:00:48 TD', visibility: 'South America, Antarctica, western and southern Africa; annular path through Chile, Argentina and Atlantic', source: 'NASA GSFC Eclipses During 2027 (UT rounded to nearest minute)' },
+  { id: '2027-02-20-lunar-penumbral', kind: 'Lunar', type: 'Penumbral', greatestUtc: '2027-02-20T23:13:00Z', catalogTd: '23:14:06 TD', visibility: 'Americas, Europe, Africa, Asia', source: 'NASA GSFC Eclipses During 2027 (UT rounded to nearest minute)' },
+  { id: '2027-07-18-lunar-penumbral', kind: 'Lunar', type: 'Penumbral', greatestUtc: '2027-07-18T16:03:00Z', catalogTd: '16:04:09 TD', visibility: 'Eastern Africa, Asia, Australia, Pacific', source: 'NASA GSFC Eclipses During 2027 (UT rounded to nearest minute)' },
+  { id: '2027-08-02-solar-total', kind: 'Solar', type: 'Total', greatestUtc: '2027-08-02T10:07:00Z', catalogTd: '10:07:50 TD', visibility: 'Africa, Europe, Middle East, western and southern Asia; totality: Morocco, Spain, Algeria, Libya, Egypt, Saudi Arabia, Yemen, Somalia', source: 'NASA GSFC Eclipses During 2027 (UT rounded to nearest minute)' },
+  { id: '2027-08-17-lunar-penumbral', kind: 'Lunar', type: 'Penumbral', greatestUtc: '2027-08-17T07:14:00Z', catalogTd: '07:14:59 TD', visibility: 'Pacific, Americas', source: 'NASA GSFC Eclipses During 2027 (UT rounded to nearest minute)' },
+  { id: '2028-01-12-lunar-partial', kind: 'Lunar', type: 'Partial', greatestUtc: '2028-01-12T04:13:00Z', catalogTd: '04:14:13 TD', visibility: 'Americas, Europe, Africa', source: 'NASA GSFC Eclipses During 2028 (UT rounded to nearest minute)' },
+  { id: '2028-01-26-solar-annular', kind: 'Solar', type: 'Annular', greatestUtc: '2028-01-26T15:08:00Z', catalogTd: '15:08:59 TD', visibility: 'Eastern North America, Central and South America, western Europe, northwestern Africa', source: 'NASA GSFC Eclipses During 2028 (UT rounded to nearest minute)' },
+  { id: '2028-07-06-lunar-partial', kind: 'Lunar', type: 'Partial', greatestUtc: '2028-07-06T18:20:00Z', catalogTd: '18:20:57 TD', visibility: 'Europe, Africa, Asia, Australia', source: 'NASA GSFC Eclipses During 2028 (UT rounded to nearest minute)' },
+  { id: '2028-07-22-solar-total', kind: 'Solar', type: 'Total', greatestUtc: '2028-07-22T02:55:00Z', catalogTd: '02:56:40 TD', visibility: 'Southeast Asia, East Indies, Australia, New Zealand', source: 'NASA GSFC Eclipses During 2028 (UT rounded to nearest minute)' },
+  { id: '2028-12-31-lunar-total', kind: 'Lunar', type: 'Total', greatestUtc: '2028-12-31T16:52:00Z', catalogTd: '16:53:15 TD', visibility: 'Europe, Africa, Asia, Australia, Pacific', source: 'NASA GSFC Eclipses During 2028 (UT rounded to nearest minute)' },
 ]
 
 const TEST_AREAS = [
@@ -55,7 +55,7 @@ function renderCountdown() {
   setText('count-minutes', pad(minutes))
   setText('count-seconds', pad(seconds))
   setText('count-title', `${event.type} ${event.kind.toLowerCase()} eclipse`)
-  setText('count-time', `${event.greatestUtc.replace('T', ' ').replace('Z', ' UTC')} · countdown to greatest eclipse`)
+  setText('count-time', `${event.greatestUtc.replace('T', ' ').replace('Z', ' UT')} · countdown to greatest eclipse · catalog ${event.catalogTd}`)
   setText('count-visibility', event.visibility)
   setText('count-source', event.source)
 }
@@ -68,7 +68,7 @@ function renderEventCards() {
   host.replaceChildren(...upcoming.map((event, index) => {
     const article = document.createElement('article')
     article.className = `event-card${index === 0 ? ' active' : ''}`
-    article.innerHTML = `<small>${event.kind.toUpperCase()} · ${event.type.toUpperCase()}</small><h3>${new Date(event.greatestUtc).toISOString().slice(0, 10)}</h3><b>${event.greatestUtc.slice(11, 19)} UTC · greatest eclipse</b><p>${event.visibility}</p>`
+    article.innerHTML = `<small>${event.kind.toUpperCase()} · ${event.type.toUpperCase()}</small><h3>${new Date(event.greatestUtc).toISOString().slice(0, 10)}</h3><b>${event.greatestUtc.slice(11, 16)} UT · greatest eclipse</b><p>Catalog time: ${event.catalogTd}. ${event.visibility}</p>`
     return article
   }))
 
