@@ -62,6 +62,10 @@ export function saveResearchCloudMode(mode: ResearchCloudMode) {
   return mode
 }
 
+function setText(element: HTMLElement | null | undefined, value: string) {
+  if (element && element.textContent !== value) element.textContent = value
+}
+
 function requestUrl(input: RequestInfo | URL) {
   if (typeof input === 'string') return input
   if (input instanceof URL) return input.toString()
@@ -140,7 +144,7 @@ function updateProgress(runId: number, message?: string) {
   const section = createProgressiveSection(runId)
   const progress = section?.querySelector<HTMLElement>('.research-year-progress')
   if (!progress) return
-  progress.textContent = message ?? `Pobrano roczniki: ${progressiveLoaded} / ${progressiveTotal} · ${progressiveMode === 'clear' ? 'najmniej chmur' : 'chmury dozwolone'}`
+  setText(progress, message ?? `Pobrano roczniki: ${progressiveLoaded} / ${progressiveTotal} · ${progressiveMode === 'clear' ? 'najmniej chmur' : 'chmury dozwolone'}`)
 }
 
 function makeSlotFigure(slot: GallerySlot) {
@@ -431,7 +435,7 @@ async function downloadGalleryZip(parent: HTMLElement, button: HTMLButtonElement
 
   for (let index = 0; index < records.length; index += 1) {
     const record = records[index]
-    button.textContent = `ZIP ${index + 1}/${records.length}…`
+    setText(button, `ZIP ${index + 1}/${records.length}…`)
     try {
       const response = await fetch(record.url, { cache: 'no-store' })
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
@@ -450,7 +454,7 @@ async function downloadGalleryZip(parent: HTMLElement, button: HTMLButtonElement
   const zip = buildStoredZip(files)
   const blobPart = zip.buffer.slice(zip.byteOffset, zip.byteOffset + zip.byteLength)
   triggerDownload(new Blob([blobPart], { type: 'application/zip' }), `terra-observation-${new Date().toISOString().slice(0, 10)}.zip`)
-  button.textContent = oldLabel
+  setText(button, oldLabel)
   button.disabled = false
 }
 
@@ -482,11 +486,14 @@ function enhanceOneGallery(parent: HTMLElement) {
     zipButton?.addEventListener('click', () => { if (zipButton) void downloadGalleryZip(parent, zipButton) })
   }
   const count = toolbar?.querySelector<HTMLElement>('.research-gallery-count')
-  if (count) count.textContent = expanded || figures.length <= INITIAL_VISIBLE_IMAGES ? `Wyświetlono ${figures.length} z ${progressiveTotal || figures.length}` : `Wyświetlono pierwsze ${INITIAL_VISIBLE_IMAGES} z ${progressiveTotal || figures.length}`
+  const countLabel = expanded || figures.length <= INITIAL_VISIBLE_IMAGES
+    ? `Wyświetlono ${figures.length} z ${progressiveTotal || figures.length}`
+    : `Wyświetlono pierwsze ${INITIAL_VISIBLE_IMAGES} z ${progressiveTotal || figures.length}`
+  setText(count, countLabel)
   const expand = toolbar?.querySelector<HTMLButtonElement>('.research-gallery-expand')
   if (expand) {
     expand.hidden = figures.length <= INITIAL_VISIBLE_IMAGES
-    expand.textContent = expanded ? 'Pokaż tylko pierwsze 10' : `Pokaż kolejne ${Math.max(0, figures.length - INITIAL_VISIBLE_IMAGES)}`
+    setText(expand, expanded ? 'Pokaż tylko pierwsze 10' : `Pokaż kolejne ${Math.max(0, figures.length - INITIAL_VISIBLE_IMAGES)}`)
   }
 
   figures.forEach(figure => {
