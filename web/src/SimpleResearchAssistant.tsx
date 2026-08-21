@@ -1,13 +1,20 @@
-import { useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react'
 
 import './simple-research.css'
 import {
   analyzeResearchArea,
   searchResearchPlace,
+  sendResearchChat,
   type AreaAnalysisResponse,
   type GeocodeResult,
+  type ResearchChatMessage,
 } from './lib/evidenceApi'
-import { buildResearchFindingRecord, saveResearchFindingLocally } from './researchArchive'
+import {
+  buildAssistantAnswerRecord,
+  buildResearchFindingRecord,
+  saveAssistantAnswerLocally,
+  saveResearchFindingLocally,
+} from './researchArchive'
 import { parseResearchLocation } from './researchLocation'
 import { RealisticEarthGlobe } from './RealisticEarthGlobe'
 import { ResearchChatNotebook } from './ResearchChatNotebook'
@@ -19,9 +26,26 @@ type Place = {
   longitude: number
 }
 
-type PeriodPreset = 'long' | 'five-years' | 'one-year'
+type PeriodPreset = 'long' | 'five-years' | 'one-year' | 'year'
+type Season = 'all' | 'spring' | 'summer' | 'autumn' | 'winter'
 type ConsoleMode = 'simple' | 'advanced'
 type ModePolicy = 'switchable' | ConsoleMode
+
+type ContextImage = {
+  date: string
+  source: string
+  url: string
+  label: string
+  radiusKm: number | null
+  note: string
+}
+
+const LEGACY_CHAT_KEYS = [
+  'terra-research-chat/v1',
+  'terra-research-chat',
+  'terra-ai-research-chat-v1',
+  'terra-ai-chat-v1',
+]
 
 function today() {
   return new Date().toISOString().slice(0, 10)
@@ -31,12 +55,27 @@ function yearStart(year: number) {
   return `${year}-01-01`
 }
 
-function periodForPreset(preset: PeriodPreset) {
+function clampToToday(value: string) {
+  return value > today() ? today() : value
+}
+
+function periodForPreset(preset: PeriodPreset, selectedYear: number, season: Season) {
   const endDate = today()
   const year = Number(endDate.slice(0, 4))
   if (preset === 'one-year') return { startDate: yearStart(year - 1), endDate }
   if (preset === 'five-years') return { startDate: yearStart(year - 5), endDate }
-  return { startDate: '1990-01-01', endDate }
+  if (preset === 'long') return { startDate: '1990-01-01', endDate }
+
+  const seasonRange: Record<Season, [string, string]> = {
+    all: [`${selectedYear}-01-01`, `${selectedYear}-12-31`],
+    spring: [`${selectedYear}-03-01`, `${selectedYear}-05-31`],
+    summer: [`${selectedYear}-06-01`, `${selectedYear}-08-31`],
+    autumn: [`${selectedYear}-09-01`, `${selectedYear}-11-30`],
+    winter: [`${selectedYear}-01-01`, `${selectedYear}-02-28`],
+  }
+  const [startDate, requestedEnd] = seasonRange[season]
+  const clampedEnd = clampToToday(requestedEnd)
+  return startDate <= clampedEnd ? { startDate, endDate: clampedEnd } : { startDate: yearStart(selectedYear), endDate: clampToToday(`${selectedYear}-12-31`) }
 }
 
 function riverHelperEmbedUrl(place: Place) {
@@ -48,10 +87,71 @@ function riverHelperEmbedUrl(place: Place) {
   return `${import.meta.env.BASE_URL}river-helper-map/index.html?${params.toString()}`
 }
 
+function researchBounds(latitude: number, longitude: number, radiusKm: number) {
+  const latDelta = radiusKm / 111.32
+  const lonScale = Math.max(0.15, Math.cos(latitude * Math.PI / 180))
+  const lonDelta = radiusKm / (111.32 * lonScale)
+  return {
+    west: Math.max(-180, longitude - lonDelta),
+    south: Math.max(-90, latitude - latDelta),
+    east: Math.min(180, longitude + lonDelta),
+    north: Math.min(90, latitude + latDelta),
+  }
+}
+
+function nasaContextUrl(date: string, place: Place, radiusKm: number) {
+  const bounds = researchBounds(place.latitude, place.longitude, radiusKm)
+  const layer = date >= '2012-01-19'
+    ? 'VIIRS_SNPP_CorrectedReflectance_TrueColor'
+    : 'MODIS_Terra_CorrectedReflectance_TrueColor'
+  const params = new URLSearchParams({
+    SERVICE: 'WMS',
+    REQUEST: 'GetMap',
+    VERSION: '1.1.1',
+    LAYERS: layer,
+    STYLES: '',
+    FORMAT: 'image/jpeg',
+    TRANSPARENT: 'FALSE',
+    SRS: 'EPSG:4326',
+    BBOX: `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`,
+    WIDTH: '1600',
+    HEIGHT: '1600',
+    TIME: date,
+  })
+  return `https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?${params.toString()}`
+}
+
+function buildContextImages(place: Place | null, analysis: AreaAnalysisResponse | null): ContextImage[] {
+  if (!place || !analysis) return []
+  const nasa = [...analysis.preview_images].reverse().find(item => item.source.includes('NASA GIBS'))
+  if (!nasa) {
+    return analysis.preview_images.slice(-4).map((item, index) => ({
+      ...item,
+      label: `Rzeczywista obserwacja ${index + 1}`,
+      radiusKm: null,
+      note: 'Oficjalny obraz zwrócony przez analizę. Nie przypisujemy mu sztucznej skali ani dodatkowej rozdzielczości.',
+    }))
+  }
+  const scales = [
+    { label: '01 · Z bliska', radiusKm: 5 },
+    { label: '02 · Otoczenie lokalne', radiusKm: 25 },
+    { label: '03 · Widok regionalny', radiusKm: 100 },
+    { label: '04 · Bardzo wysoki widok', radiusKm: 350 },
+  ]
+  return scales.map(scale => ({
+    date: nasa.date,
+    source: nasa.source,
+    url: nasaContextUrl(nasa.date, place, scale.radiusKm),
+    label: scale.label,
+    radiusKm: scale.radiusKm,
+    note: `Ten sam prawdziwy dzień i warstwa NASA GIBS, inny zasięg AOI: promień około ${scale.radiusKm} km.`,
+  }))
+}
+
 function confidenceLabel(level: 'low' | 'medium' | 'high') {
-  if (level === 'high') return 'high'
-  if (level === 'medium') return 'medium'
-  return 'low'
+  if (level === 'high') return 'wysoka'
+  if (level === 'medium') return 'średnia'
+  return 'niska'
 }
 
 export function SimpleResearchAssistant({
@@ -63,6 +163,7 @@ export function SimpleResearchAssistant({
   advanced: ReactNode
   modePolicy?: ModePolicy
 }) {
+  const currentYear = Number(today().slice(0, 4))
   const [consoleMode, setConsoleMode] = useState<ConsoleMode>('simple')
   const effectiveMode: ConsoleMode = modePolicy === 'switchable' ? consoleMode : modePolicy
   const canSwitchMode = modePolicy === 'switchable'
@@ -70,15 +171,33 @@ export function SimpleResearchAssistant({
   const [place, setPlace] = useState<Place | null>(null)
   const [alternatives, setAlternatives] = useState<GeocodeResult[]>([])
   const [periodPreset, setPeriodPreset] = useState<PeriodPreset>('long')
+  const [selectedYear, setSelectedYear] = useState(currentYear)
+  const [season, setSeason] = useState<Season>('all')
   const [status, setStatus] = useState<'idle' | 'searching' | 'analyzing' | 'ready' | 'error'>('idle')
   const [analysis, setAnalysis] = useState<AreaAnalysisResponse | null>(null)
   const [error, setError] = useState('')
   const [archiveNotice, setArchiveNotice] = useState('')
+  const [question, setQuestion] = useState('')
+  const [assistantAnswer, setAssistantAnswer] = useState('')
+  const [assistantBusy, setAssistantBusy] = useState(false)
+  const [assistantError, setAssistantError] = useState('')
+  const [sessionMessages, setSessionMessages] = useState<ResearchChatMessage[]>([])
   const analysisController = useRef<AbortController | null>(null)
-  const period = useMemo(() => periodForPreset(periodPreset), [periodPreset])
+  const assistantController = useRef<AbortController | null>(null)
+  const period = useMemo(() => periodForPreset(periodPreset, selectedYear, season), [periodPreset, selectedYear, season])
   const previewUtc = useMemo(() => new Date().toISOString(), [])
+  const contextImages = useMemo(() => buildContextImages(place, analysis), [place, analysis])
+  const years = useMemo(() => Array.from({ length: currentYear - 1990 + 1 }, (_, index) => currentYear - index), [currentYear])
 
-  const runAnalysis = async (target: Place, depth: 'quick' | 'deep' = 'quick') => {
+  useEffect(() => {
+    for (const key of LEGACY_CHAT_KEYS) window.localStorage.removeItem(key)
+    return () => {
+      analysisController.current?.abort()
+      assistantController.current?.abort()
+    }
+  }, [])
+
+  const runAnalysis = async (target: Place, depth: 'quick' | 'deep' = 'quick', selectedPeriod = period) => {
     analysisController.current?.abort()
     const controller = new AbortController()
     analysisController.current = controller
@@ -90,8 +209,8 @@ export function SimpleResearchAssistant({
         latitude: target.latitude,
         longitude: target.longitude,
         radiusKm: 25,
-        startDate: period.startDate,
-        endDate: period.endDate,
+        startDate: selectedPeriod.startDate,
+        endDate: selectedPeriod.endDate,
         placeName: target.label,
         depth,
       }, controller.signal)
@@ -107,6 +226,7 @@ export function SimpleResearchAssistant({
   const choosePlace = (target: Place, depth: 'quick' | 'deep' = 'quick') => {
     setPlace(target)
     setAnalysis(null)
+    setAssistantAnswer('')
     setArchiveNotice('')
     void runAnalysis(target, depth)
   }
@@ -119,7 +239,7 @@ export function SimpleResearchAssistant({
     if (direct) {
       setAlternatives([])
       choosePlace({
-        label: `Selected point ${direct.latitude.toFixed(4)}, ${direct.longitude.toFixed(4)}`,
+        label: `Wybrany punkt ${direct.latitude.toFixed(4)}, ${direct.longitude.toFixed(4)}`,
         latitude: direct.latitude,
         longitude: direct.longitude,
       })
@@ -134,7 +254,7 @@ export function SimpleResearchAssistant({
       const first = result.results[0]
       if (!first) {
         setStatus('error')
-        setError('Place not found. Try a city, lake, river, region or WGS84 coordinates.')
+        setError('Nie znaleziono miejsca. Wpisz miasto, jezioro, rzekę, region lub współrzędne WGS84.')
         return
       }
       choosePlace({ label: first.display_name, latitude: first.latitude, longitude: first.longitude })
@@ -144,195 +264,136 @@ export function SimpleResearchAssistant({
     }
   }
 
-  const rerunForPeriod = (preset: PeriodPreset) => {
+  const applyPeriod = (preset = periodPreset) => {
     setPeriodPreset(preset)
     if (!place) return
-    const selectedPeriod = periodForPreset(preset)
-    analysisController.current?.abort()
+    void runAnalysis(place, 'quick', periodForPreset(preset, selectedYear, season))
+  }
+
+  const sendQuestion = async (event: FormEvent) => {
+    event.preventDefault()
+    const text = question.trim()
+    if (!text || !apiUrl || assistantBusy) return
+    assistantController.current?.abort()
     const controller = new AbortController()
-    analysisController.current = controller
-    setStatus('analyzing')
-    setError('')
-    setArchiveNotice('')
-    analyzeResearchArea(apiUrl, {
-      latitude: place.latitude,
-      longitude: place.longitude,
-      radiusKm: 25,
-      startDate: selectedPeriod.startDate,
-      endDate: selectedPeriod.endDate,
-      placeName: place.label,
-      depth: 'quick',
-    }, controller.signal).then(result => {
-      setAnalysis(result)
-      setStatus('ready')
-    }).catch(reason => {
+    assistantController.current = controller
+    const nextMessages: ResearchChatMessage[] = [...sessionMessages, { role: 'user', text }]
+    setAssistantBusy(true)
+    setAssistantError('')
+    try {
+      const result = await sendResearchChat(apiUrl, {
+        model: 'gpt-5.6-terra',
+        messages: nextMessages,
+        context: {
+          selected_place: place,
+          area_analysis: analysis ? {
+            generated_at_utc: analysis.generated_at_utc,
+            area: analysis.area,
+            period: analysis.period,
+            evidence_policy: analysis.evidence_policy,
+            preview_sources: analysis.preview_images.map(item => ({ date: item.date, source: item.source })),
+            landsat_catalog: {
+              matched: analysis.landsat_catalog.matched,
+              scenes: analysis.landsat_catalog.scenes,
+            },
+            analysis: analysis.analysis,
+          } : null,
+        },
+      }, controller.signal)
+      const updatedMessages: ResearchChatMessage[] = [...nextMessages, { role: 'assistant', text: result.answer }]
+      setSessionMessages(updatedMessages)
+      setAssistantAnswer(result.answer)
+      setQuestion('')
+      saveAssistantAnswerLocally(buildAssistantAnswerRecord({ answer: result.answer, model: result.model, place }))
+    } catch (reason) {
       if (reason instanceof DOMException && reason.name === 'AbortError') return
-      setError(reason instanceof Error ? reason.message : String(reason))
-      setStatus('error')
-    })
+      setAssistantError(reason instanceof Error ? reason.message : String(reason))
+    } finally {
+      setAssistantBusy(false)
+    }
   }
 
   const saveCurrentFinding = () => {
     if (!analysis) return
     const finding = buildResearchFindingRecord(analysis)
     saveResearchFindingLocally(finding)
-    setArchiveNotice(`Saved “${finding.title}”: ${finding.source_images.length} source-image links plus AI findings. No user question or raw chat was stored.`)
+    setArchiveNotice(`Zapisano „${finding.title}”: obrazy źródłowe i wnioski AI. Treść prywatnego pytania nie została zapisana.`)
   }
 
-  const globeMarkers = place ? [{
-    longitude: place.longitude,
-    latitude: place.latitude,
-    color: 0x35cfff,
-    radius: 1.35,
-  }] : []
+  const globeMarkers = place ? [{ longitude: place.longitude, latitude: place.latitude, color: 0x35cfff, radius: 1.35 }] : []
 
   return <section className="simple-research" aria-label="AI terrain research">
     {canSwitchMode && <div className="simple-console-mode panel" role="group" aria-label="Research interface level">
-      <button type="button" className={effectiveMode === 'simple' ? 'active' : ''} onClick={() => setConsoleMode('simple')}>
-        <b>Simple</b><span>search a place → ask the assistant → inspect Earth</span>
-      </button>
-      <button type="button" className={effectiveMode === 'advanced' ? 'active' : ''} onClick={() => setConsoleMode('advanced')}>
-        <b>Advanced</b><span>HQ imagery · files · models · flags · DEM · profiles · reports</span>
-      </button>
+      <button type="button" className={effectiveMode === 'simple' ? 'active' : ''} onClick={() => setConsoleMode('simple')}><b>Prosty</b><span>miejsce → pytanie → obrazy → Ziemia 3D → wynik</span></button>
+      <button type="button" className={effectiveMode === 'advanced' ? 'active' : ''} onClick={() => setConsoleMode('advanced')}><b>Zaawansowany</b><span>obrazy HQ · pliki · modele · flagi · DEM · profile · raporty</span></button>
     </div>}
 
-    <div className="simple-research-hero panel">
+    <section className="simple-research-hero panel simple-workflow-card">
       <div className="simple-research-copy">
-        <small>{effectiveMode === 'simple' ? 'SIMPLE CONSOLE · PLACE · ASSISTANT · 3D EARTH' : 'LABORATORY · SATELLITES · DEM · OPENAI'}</small>
-        <h2>{effectiveMode === 'simple' ? 'Search any area and investigate it immediately' : 'Advanced terrain research'}</h2>
-        <p>{effectiveMode === 'simple'
-          ? 'Enter a lake, river, city or region. Ask the assistant immediately; then inspect the marked place on the high-resolution 3D Earth view and review available official evidence.'
-          : 'Use the full laboratory: GPT model selection, attachments, high-quality Copernicus/NASA imagery, numbered flags, DEM samples, colored paths, elevation profiles and reports.'}</p>
+        <small>MAPA · SATELITY · OPENAI</small>
+        <h2>Wpisz miejsce. Resztę przygotuje system.</h2>
+        <p>Po wyszukaniu obszaru pokazujemy prawdziwe obrazy z oficjalnych źródeł, cztery skale widoku, globus 3D i podsumowanie. Prywatne pytanie służy tylko do rozmowy z asystentem i nie jest zapisywane w archiwum.</p>
       </div>
       <form className="simple-search" onSubmit={submitSearch}>
-        <input
-          value={query}
-          onChange={event => setQuery(event.target.value)}
-          placeholder="e.g. Nile, Lake Tana, Vistula near Gniew, Sahara…"
-          aria-label="Search for a place to investigate"
-        />
-        <button type="submit" className="primary" disabled={!apiUrl || status === 'searching' || status === 'analyzing'}>
-          {status === 'searching' ? 'Searching…' : status === 'analyzing' ? 'AI is analyzing…' : 'Research area'}
-        </button>
+        <input value={query} onChange={event => setQuery(event.target.value)} placeholder="np. Nil, Jezioro Tana, Wisła pod Gniewem, Sahara…" aria-label="Wyszukaj miejsce do badania" />
+        <button type="submit" className="primary" disabled={!apiUrl || status === 'searching' || status === 'analyzing'}>{status === 'searching' ? 'Szukam…' : status === 'analyzing' ? 'Analizuję…' : 'Zbadaj teren'}</button>
       </form>
 
-      <div className="simple-periods" role="group" aria-label="Research time range">
-        <button type="button" className={periodPreset === 'long' ? 'active' : ''} onClick={() => rerunForPeriod('long')}>1990–today</button>
-        <button type="button" className={periodPreset === 'five-years' ? 'active' : ''} onClick={() => rerunForPeriod('five-years')}>last 5 years</button>
-        <button type="button" className={periodPreset === 'one-year' ? 'active' : ''} onClick={() => rerunForPeriod('one-year')}>last year</button>
+      <div className="simple-periods" role="group" aria-label="Zakres czasu badania">
+        <button type="button" className={periodPreset === 'long' ? 'active' : ''} onClick={() => applyPeriod('long')}>1990–dziś</button>
+        <button type="button" className={periodPreset === 'five-years' ? 'active' : ''} onClick={() => applyPeriod('five-years')}>ostatnie 5 lat</button>
+        <button type="button" className={periodPreset === 'one-year' ? 'active' : ''} onClick={() => applyPeriod('one-year')}>ostatni rok</button>
       </div>
-
-      {alternatives.length > 1 && <details className="simple-search-alternatives">
-        <summary>Other matching places</summary>
-        <div>{alternatives.slice(1).map(item => <button type="button" key={`${item.latitude}-${item.longitude}`} onClick={() => choosePlace({ label: item.display_name, latitude: item.latitude, longitude: item.longitude })}>{item.display_name}</button>)}</div>
-      </details>}
+      <div className="simple-history-controls">
+        <label>Rok<select value={selectedYear} onChange={event => { setSelectedYear(Number(event.target.value)); setPeriodPreset('year') }}>{years.map(value => <option key={value} value={value}>{value}</option>)}</select></label>
+        <label>Pora<select value={season} onChange={event => { setSeason(event.target.value as Season); setPeriodPreset('year') }}><option value="all">cały rok</option><option value="spring">wiosna</option><option value="summer">lato</option><option value="autumn">jesień</option><option value="winter">zima</option></select></label>
+        <button type="button" className="secondary" onClick={() => applyPeriod('year')} disabled={!place}>Pokaż prawdziwe dane</button>
+      </div>
+      {alternatives.length > 1 && <details className="simple-search-alternatives"><summary>Inne znalezione miejsca</summary><div>{alternatives.slice(1).map(item => <button type="button" key={`${item.latitude}-${item.longitude}`} onClick={() => choosePlace({ label: item.display_name, latitude: item.latitude, longitude: item.longitude })}>{item.display_name}</button>)}</div></details>}
       {error && <p className="research-error" role="alert">{error}</p>}
-    </div>
+    </section>
+
+    {effectiveMode === 'simple' && <section className="simple-question panel" aria-label="Prywatne pytanie do asystenta">
+      <div><small>OPENAI · PYTANIE PRYWATNE · TYLKO SESJA</small><h3>Zapytaj asystenta</h3><p>Czat jest polem do zadawania pytań. Odpowiedź pojawi się niżej w podsumowaniu; treść pytania nie trafia do archiwum ani localStorage.</p></div>
+      <form onSubmit={sendQuestion}><textarea value={question} onChange={event => setQuestion(event.target.value)} placeholder="Zapytaj o wybrane miejsce, zdjęcia, rzeki, teren lub zmiany w czasie…" rows={3} /><div className="simple-question-actions"><button type="submit" className="primary" disabled={!apiUrl || assistantBusy || !question.trim()}>{assistantBusy ? 'Asystent analizuje…' : 'Wyślij prywatnie'}</button><button type="button" className="secondary" onClick={() => { setSessionMessages([]); setAssistantAnswer(''); setQuestion(''); setAssistantError('') }}>Nowe pytanie</button></div></form>
+      {assistantError && <p className="research-error" role="alert">{assistantError}</p>}
+    </section>}
+
+    {(status === 'analyzing' || status === 'searching') && <div className="simple-ai-loading panel" role="status"><span className="simple-ai-spinner" /><div><b>Przygotowuję prawdziwe dane</b><p>Pobieram oficjalny katalog Landsat oraz reprezentatywne obrazy NASA/Copernicus. Brak danych będzie pokazany jako brak danych, nie jako wygenerowany obraz.</p></div></div>}
+
+    {analysis && <section className="simple-context-gallery panel" aria-label="Cztery prawdziwe skale obrazu">
+      <div className="simple-section-head"><div><small>MINIMUM 4 PRAWDZIWE WIDOKI · NASA GIBS</small><h2>{place?.label}</h2><p>Ten sam obszar i dzień oglądany w czterech skalach. To są żądania do oficjalnej warstwy NASA GIBS — bez generative fill i bez sztucznego zwiększania szczegółowości.</p></div></div>
+      <div className="simple-context-grid">{contextImages.map(image => <figure key={`${image.label}-${image.date}`}><a href={image.url} target="_blank" rel="noreferrer"><img src={image.url} alt={`${image.label}: ${place?.label ?? 'wybrany obszar'}`} loading="lazy" /></a><figcaption><b>{image.label}</b><span>{image.date} · {image.source}</span><small>{image.note}</small></figcaption></figure>)}</div>
+    </section>}
 
     <div className="simple-console-grid" style={effectiveMode === 'simple' ? { gridTemplateColumns: '1fr' } : undefined}>
-      {effectiveMode === 'simple' && <ResearchChatNotebook apiUrl={apiUrl} place={place} analysis={analysis} advancedControls={false} />}
-
       <div className="simple-map panel simple-earth-preview">
-        <div className="simple-map-head">
-          <div><small>3D EARTH · HIGH-RESOLUTION REFERENCE VIEW</small><h3>{place ? place.label : 'Rotate Earth or search for a place'}</h3></div>
-          <span>{place ? `${place.latitude.toFixed(5)}, ${place.longitude.toFixed(5)}` : 'Cesium · WGS84 · high-resolution basemap'}</span>
-        </div>
+        <div className="simple-map-head"><div><small>ZIEMIA 3D · KAFELKOWA MAPA REFERENCYJNA</small><h3>{place ? place.label : 'Obróć Ziemię lub najpierw wyszukaj miejsce'}</h3></div><span>{place ? `${place.latitude.toFixed(5)}, ${place.longitude.toFixed(5)}` : 'Cesium · WGS84 · high-resolution basemap'}</span></div>
         <RealisticEarthGlobe selectedTime={previewUtc} markers={globeMarkers} />
-        <p className="simple-map-source">The high-resolution reference basemap is the default visual layer because it is useful for tracing riverbeds and terrain. Dated scientific conclusions must still be checked against official Copernicus, NASA and USGS observations.</p>
+        <p className="simple-map-source">Warstwa wysokiej rozdzielczości służy do orientacji w terenie i śledzenia koryt. Datowane wnioski naukowe muszą pochodzić z oficjalnych obserwacji Copernicus/NASA/USGS.</p>
       </div>
-
       {effectiveMode === 'advanced' && <ResearchChatNotebook apiUrl={apiUrl} place={place} analysis={analysis} advancedControls />}
     </div>
 
-    {!place && <div className="simple-guidance panel">
-      <b>How to start:</b><span>1. Enter a place.</span><span>2. Ask the private assistant.</span><span>3. Inspect the marker and evidence on the 3D Earth view.</span>{canSwitchMode && effectiveMode === 'simple' && <button type="button" className="secondary" onClick={() => setConsoleMode('advanced')}>I need measurements and files → Advanced</button>}
+    {place && <div className="simple-map panel simple-river-helper">
+      <div className="simple-map-head"><div><small>MAPA POMOCNICZA · PAŃSTWA + RZEKI</small><h3>{place.label}</h3></div><a href={`https://www.openstreetmap.org/?mlat=${place.latitude}&mlon=${place.longitude}#map=10/${place.latitude}/${place.longitude}`} target="_blank" rel="noreferrer">Otwórz pełną mapę</a></div>
+      <iframe title={`Mapa rzek dla ${place.label}`} src={riverHelperEmbedUrl(place)} loading="lazy" />
+      <p className="simple-map-source">Natural Earth: państwa, główne rzeki i jeziora. Granice prowincji/admin-1 oraz gęste etykiety lokalne są celowo ukryte, aby mapa pomagała badać przebieg koryt.</p>
     </div>}
 
-    {(status === 'analyzing' || status === 'searching') && <div className="simple-ai-loading panel" role="status">
-      <span className="simple-ai-spinner" />
-      <div><b>Analyzing the area</b><p>Retrieving the official Landsat catalogue and representative NASA/Copernicus imagery. The result appears below; the assistant remains available.</p></div>
-    </div>}
-
-    {analysis && <section className="simple-basic-result panel" aria-label="Quick analysis result">
-      <div className="simple-result-head">
-        <div><small>QUICK RESULT · OFFICIAL/PUBLIC EVIDENCE</small><h2>{analysis.analysis.headline}</h2></div>
-        <span className={`simple-confidence ${analysis.analysis.confidence.level}`}>confidence: {confidenceLabel(analysis.analysis.confidence.level)}</span>
-      </div>
-      <div className="simple-basic-result-grid">
-        <article><b>What is visible</b><p>{analysis.analysis.what_is_visible}</p></article>
-        <article><b>Water / terrain</b><p>{analysis.analysis.water_assessment}</p></article>
-      </div>
-      <div className="simple-result-actions">
-        <button type="button" className="secondary" onClick={saveCurrentFinding}>Save imagery + findings</button>
-        {canSwitchMode && effectiveMode === 'simple' && <button type="button" className="secondary" onClick={() => setConsoleMode('advanced')}>Show imagery, measurements and details</button>}
-      </div>
-      {archiveNotice && <p className="simple-archive-notice" role="status">{archiveNotice}</p>}
+    {(analysis || assistantAnswer) && <section className="simple-basic-result panel" aria-label="Podsumowanie badania">
+      <div className="simple-result-head"><div><small>OPENAI · OFICJALNE/PUBLICZNE DOWODY</small><h2>{analysis?.analysis.headline ?? 'Odpowiedź asystenta'}</h2></div>{analysis && <span className={`simple-confidence ${analysis.analysis.confidence.level}`}>pewność: {confidenceLabel(analysis.analysis.confidence.level)}</span>}</div>
+      {assistantAnswer && <article className="simple-question-answer"><small>ODPOWIEDŹ NA PYTANIE</small><p>{assistantAnswer}</p></article>}
+      {analysis && <><div className="simple-basic-result-grid"><article><b>Co widać</b><p>{analysis.analysis.what_is_visible}</p></article><article><b>Zmiany w czasie</b><p>{analysis.analysis.change_over_time}</p></article><article><b>Woda / teren</b><p>{analysis.analysis.water_assessment}</p></article><article><b>Ograniczenia i pewność</b><p>{analysis.analysis.confidence.reason}</p></article></div>{analysis.analysis.notable_features.length > 0 && <div className="simple-notable"><b>Na co zwrócił uwagę AI</b><ul>{analysis.analysis.notable_features.map(item => <li key={item}>{item}</li>)}</ul></div>}<div className="simple-result-actions"><button type="button" className="secondary" onClick={saveCurrentFinding}>Zapisz obrazy + wnioski</button>{canSwitchMode && effectiveMode === 'simple' && <button type="button" className="secondary" onClick={() => setConsoleMode('advanced')}>Otwórz narzędzia zaawansowane</button>}</div>{archiveNotice && <p className="simple-archive-notice" role="status">{archiveNotice}</p>}</>}
     </section>}
 
-    {effectiveMode === 'advanced' && <>
-      {place && <div className="simple-map panel">
-        <div className="simple-map-head">
-          <div><small>RIVER HELPER MAP · COUNTRIES + HYDROGRAPHY</small><h3>{place.label}</h3></div>
-          <a href={`https://www.openstreetmap.org/?mlat=${place.latitude}&mlon=${place.longitude}#map=10/${place.latitude}/${place.longitude}`} target="_blank" rel="noreferrer">Open general map</a>
-        </div>
-        <iframe title={`River helper map of ${place.label}`} src={riverHelperEmbedUrl(place)} loading="lazy" />
-        <p className="simple-map-source">Hydrology helper view: a light no-label basemap plus Natural Earth country names, country outlines, major lakes and river centerlines. Province/admin-1 borders and local-place clutter are intentionally omitted. Use it for orientation when tracing riverbeds; scientific measurements keep their own provenance.</p>
-      </div>}
+    {analysis && <details className="simple-history panel" open={effectiveMode === 'advanced'}>
+      <summary><span><small>ARCHIWUM OBRAZÓW · 1990–DZIŚ</small><b>Rzeczywiste próbki czasowe i katalog Landsat</b></span><em>Rozwiń</em></summary>
+      <div className="simple-history-body"><p>NASA GIBS zapewnia wizualne próbki od 2000 r. Wcześniejszy okres jest weryfikowany przez katalog USGS Landsat; jeśli nie mamy renderowalnej sceny, nie udajemy obrazu.</p><div className="simple-evidence-summary"><span><b>{analysis.preview_images.length}</b> obrazów pokazanych</span><span><b>{analysis.ai_visual_image_count}</b> obrazów obejrzanych przez AI</span><span><b>{analysis.landsat_catalog.matched}</b> scen w katalogu USGS</span></div>{analysis.preview_images.length > 0 && <div className="simple-image-grid">{analysis.preview_images.map((image, index) => <figure key={`${image.date}-${index}`}><a href={image.url} target="_blank" rel="noreferrer"><img src={image.url} alt={`${image.source} ${image.date}`} loading="lazy" /></a><figcaption><b>{image.date}</b><span>{image.source}</span><small>prawdziwy obraz źródłowy</small></figcaption></figure>)}</div>}{analysis.landsat_catalog.full_catalog_url && <p className="simple-full-catalog-note"><a href={analysis.landsat_catalog.full_catalog_url} target="_blank" rel="noreferrer">Otwórz pełny oficjalny katalog USGS Landsat →</a></p>}</div>
+    </details>}
 
-      {place && <ResearchTerrainLab
-        apiUrl={apiUrl}
-        place={place}
-        satelliteDate={analysis?.preview_images.at(-1)?.date}
-      />}
+    {effectiveMode === 'advanced' && <>{place && <ResearchTerrainLab apiUrl={apiUrl} place={place} satelliteDate={analysis?.preview_images.at(-1)?.date} />}{analysis && <section className="simple-ai-result panel" aria-label="Detailed AI analysis result"><div className="simple-result-head"><div><small>TRYB ZAAWANSOWANY · DOWODY</small><h2>Szczegółowa analiza</h2></div><span className={`simple-confidence ${analysis.analysis.confidence.level}`}>pewność: {confidenceLabel(analysis.analysis.confidence.level)}</span></div><div className="simple-result-grid"><article><small>CO WIDAĆ</small><p>{analysis.analysis.what_is_visible}</p></article><article><small>ZMIANY W CZASIE</small><p>{analysis.analysis.change_over_time}</p></article><article className="water"><small>WODA</small><p>{analysis.analysis.water_assessment}</p></article><article><small>PEWNOŚĆ</small><p>{analysis.analysis.confidence.reason}</p></article></div><div className="simple-limitations"><b>Ograniczenia</b><ul>{analysis.analysis.limitations.map(item => <li key={item}>{item}</li>)}</ul><p><b>Następny krok:</b> {analysis.analysis.recommended_next_step}</p></div></section>}<details className="simple-advanced panel"><summary><span><b>Zaawansowany obszar badawczy</b><small>kształt, dokładne daty, manifest i zapis projektu</small></span><strong>ROZWIŃ</strong></summary><div className="simple-advanced-body">{advanced}</div></details></>}
 
-      {analysis && <section className="simple-ai-result panel" aria-label="Detailed AI analysis result">
-        <div className="simple-result-head">
-          <div><small>OPENAI · OFFICIAL/PUBLIC SATELLITE EVIDENCE</small><h2>Detailed analysis</h2></div>
-          <span className={`simple-confidence ${analysis.analysis.confidence.level}`}>confidence: {confidenceLabel(analysis.analysis.confidence.level)}</span>
-        </div>
-        <div className="simple-result-grid">
-          <article><small>WHAT IS VISIBLE</small><p>{analysis.analysis.what_is_visible}</p></article>
-          <article><small>CHANGE OVER TIME</small><p>{analysis.analysis.change_over_time}</p></article>
-          <article className="water"><small>WATER</small><p>{analysis.analysis.water_assessment}</p></article>
-          <article><small>CONFIDENCE</small><p>{analysis.analysis.confidence.reason}</p></article>
-        </div>
-
-        {analysis.analysis.notable_features.length > 0 && <div className="simple-notable">
-          <b>Features highlighted by AI</b>
-          <ul>{analysis.analysis.notable_features.map(item => <li key={item}>{item}</li>)}</ul>
-        </div>}
-
-        <div className="simple-evidence-summary">
-          <span><b>{analysis.preview_images.length}</b> images shown on the page</span>
-          <span><b>{analysis.ai_visual_image_count}</b> images inspected by AI</span>
-          <span><b>{analysis.landsat_catalog.matched}</b> scenes matched in USGS catalogue</span>
-        </div>
-
-        {analysis.preview_images.length > 0 && <div className="simple-image-grid">
-          {analysis.preview_images.slice(0, 10).map(image => <figure key={`${image.date}-${image.source}`}>
-            <a href={image.url} target="_blank" rel="noreferrer"><img src={image.url} alt={`Satellite observation ${image.date}`} loading="lazy" /></a>
-            <figcaption><b>{image.date}</b><span>{image.source}</span><small>Tap the image to open it separately.</small></figcaption>
-          </figure>)}
-        </div>}
-
-        <div className="simple-result-actions">
-          <button type="button" className="secondary" onClick={saveCurrentFinding}>Save imagery + findings only</button>
-          {analysis.landsat_catalog.full_catalog_url && <a className="button-link" href={analysis.landsat_catalog.full_catalog_url} target="_blank" rel="noreferrer">Open full USGS satellite catalogue</a>}
-          {analysis.depth === 'quick' && place && <button type="button" className="secondary" onClick={() => void runAnalysis(place, 'deep')} disabled={status === 'analyzing'}>Analyze the full time series in more detail</button>}
-        </div>
-        {archiveNotice && <p className="simple-archive-notice" role="status">{archiveNotice}</p>}
-        <p className="simple-full-catalog-note">A preview does not replace an original product. For research work, open full-resolution imagery and record the date/sensor. Result archives exclude user question text and raw chat history.</p>
-        <div className="simple-limitations">
-          <b>Limitations</b>
-          <ul>{analysis.analysis.limitations.map(item => <li key={item}>{item}</li>)}</ul>
-          <p><b>Next step:</b> {analysis.analysis.recommended_next_step}</p>
-        </div>
-      </section>}
-
-      <details className="simple-advanced panel" open>
-        <summary><span><b>Technical research settings</b><small>coordinates, AOI shape, radius, seasons, decades, manifest</small></span><strong>Advanced</strong></summary>
-        <div className="simple-advanced-body">{advanced}</div>
-      </details>
-    </>}
+    {!place && <div className="simple-guidance panel"><b>Jak zacząć:</b><span>1. Wpisz miejsce.</span><span>2. Zadaj prywatne pytanie.</span><span>3. Po analizie zobacz 4 obrazy i globus 3D.</span></div>}
   </section>
 }
