@@ -52,13 +52,13 @@ export function AIResearchPanel({ simpleOnly = false }: { simpleOnly?: boolean }
         <div>
           <small>OPENAI · COPERNICUS · NASA · USGS · 3D EARTH</small>
           <h1>Research any place on Earth</h1>
-          <p>Search a place, ask the private research assistant, then inspect the high-resolution 3D Earth reference view and official satellite evidence. Your question text stays only in the current browser-tab session.</p>
+          <p>Search a place, ask the private research assistant, then inspect the high-resolution 3D Earth reference view and official satellite evidence. Switch to Advanced whenever you need flags, DEM elevation, profiles, HQ imagery, files and reports.</p>
         </div>
-        <span className="evidence-badge observation">SIMPLE VIEW</span>
+        <span className="evidence-badge observation">SIMPLE + ADVANCED</span>
       </div>
       <SimpleContestQuickAccess />
       {!endpoint && <p className="notice">The public AI Worker is not configured in this build.</p>}
-      <SimpleResearchAssistant apiUrl={endpoint} advanced={advancedBuilder} modePolicy="simple" />
+      <SimpleResearchAssistant apiUrl={endpoint} advanced={advancedBuilder} />
     </section>
   }
 
