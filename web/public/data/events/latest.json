@@ -1,10 +1,10 @@
 {
   "schema_version": "7.0",
   "project": "Terraforming Planet",
-  "generated_at": "2026-08-21T15:22:42.319603Z",
-  "event_count": 1039,
+  "generated_at": "2026-08-21T15:58:35.617290Z",
+  "event_count": 1045,
   "summary": {
-    "earthquake": 297,
+    "earthquake": 303,
     "fire": 610,
     "storm": 25,
     "ice": 3,
@@ -19,7 +19,7 @@
     {
       "source": "USGS",
       "status": "ok",
-      "count": 289
+      "count": 295
     },
     {
       "source": "NASA EONET",
@@ -39,11 +39,107 @@
   ],
   "events": [
     {
+      "id": "usgs-aka2026qnsyet",
+      "type": "earthquake",
+      "title": "M 1.0 - 11 km ENE of Fox, Alaska",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 64.985,
+      "longitude": -147.383,
+      "observed_at": "2026-08-21T15:55:20.283000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qnsyet",
+      "metadata": {
+        "magnitude": 1,
+        "depth_km": 5
+      }
+    },
+    {
+      "id": "usgs-ci41532136",
+      "type": "earthquake",
+      "title": "M 0.5 - 13 km ESE of Anza, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 33.5073333333333,
+      "longitude": -116.545833333333,
+      "observed_at": "2026-08-21T15:53:48.280000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41532136",
+      "metadata": {
+        "magnitude": 0.48,
+        "depth_km": 6.4
+      }
+    },
+    {
+      "id": "usgs-ci41532128",
+      "type": "earthquake",
+      "title": "M 1.1 - 10 km ENE of Coso Junction, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 36.0641666666667,
+      "longitude": -117.841333333333,
+      "observed_at": "2026-08-21T15:51:49.600000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41532128",
+      "metadata": {
+        "magnitude": 1.14,
+        "depth_km": 2.49
+      }
+    },
+    {
+      "id": "usgs-ci41532120",
+      "type": "earthquake",
+      "title": "M 0.8 - 10 km ENE of Coso Junction, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 36.0655,
+      "longitude": -117.842833333333,
+      "observed_at": "2026-08-21T15:48:33.680000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41532120",
+      "metadata": {
+        "magnitude": 0.77,
+        "depth_km": 2.72
+      }
+    },
+    {
+      "id": "usgs-ci41532112",
+      "type": "earthquake",
+      "title": "M 0.6 - 10 km ENE of Coso Junction, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 36.0641666666667,
+      "longitude": -117.838666666667,
+      "observed_at": "2026-08-21T15:44:42.890000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41532112",
+      "metadata": {
+        "magnitude": 0.63,
+        "depth_km": 2.76
+      }
+    },
+    {
+      "id": "usgs-pr71529223",
+      "type": "earthquake",
+      "title": "M 2.0 - 2 km W of Indios, Puerto Rico",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 17.9976666666667,
+      "longitude": -66.8453333333333,
+      "observed_at": "2026-08-21T15:22:51.280000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/pr71529223",
+      "metadata": {
+        "magnitude": 2.02,
+        "depth_km": 10.26
+      }
+    },
+    {
       "id": "usgs-ci41532104",
       "type": "earthquake",
       "title": "M 3.0 - 10 km ENE of Coso Junction, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 36.0661659240723,
       "longitude": -117.839668273926,
       "observed_at": "2026-08-21T15:16:58.210000Z",
@@ -52,6 +148,22 @@
       "metadata": {
         "magnitude": 2.9882431401068,
         "depth_km": 2.41000008583069
+      }
+    },
+    {
+      "id": "usgs-us6000tmiz",
+      "type": "earthquake",
+      "title": "M 4.5 - Bonin Islands, Japan region",
+      "severity": "moderate",
+      "status": "reviewed",
+      "latitude": 28.4731,
+      "longitude": 142.636,
+      "observed_at": "2026-08-21T15:08:30.808000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tmiz",
+      "metadata": {
+        "magnitude": 4.5,
+        "depth_km": 10
       }
     },
     {
@@ -2411,7 +2523,7 @@
       "type": "earthquake",
       "title": "M 0.7 - 10 km ENE of Coso Junction, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 36.0641666666667,
       "longitude": -117.8375,
       "observed_at": "2026-08-21T02:27:51.480000Z",
@@ -2443,7 +2555,7 @@
       "type": "earthquake",
       "title": "M 0.9 - 10 km ENE of Coso Junction, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 36.064,
       "longitude": -117.837166666667,
       "observed_at": "2026-08-21T02:18:01.560000Z",
@@ -2507,7 +2619,7 @@
       "type": "earthquake",
       "title": "M 1.5 - 9 km NNE of Ocotillo Wells, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 33.2158333333333,
       "longitude": -116.085666666667,
       "observed_at": "2026-08-21T02:01:53.760000Z",
@@ -2745,17 +2857,17 @@
     {
       "id": "usgs-ci41531656",
       "type": "earthquake",
-      "title": "M 0.3 - 9 km NNE of Warner Springs, CA",
+      "title": "M 0.3 - 15 km N of Warner Springs, CA",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 33.3505,
-      "longitude": -116.584666666667,
-      "observed_at": "2026-08-21T01:07:29.230000Z",
+      "status": "reviewed",
+      "latitude": 33.4148333333333,
+      "longitude": -116.6415,
+      "observed_at": "2026-08-21T01:07:30.530000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41531656",
       "metadata": {
-        "magnitude": 0.27,
-        "depth_km": 11.2
+        "magnitude": 0.26,
+        "depth_km": 6.48
       }
     },
     {
@@ -2765,13 +2877,13 @@
       "severity": "low",
       "status": "reviewed",
       "latitude": 31.655,
-      "longitude": -104.222,
-      "observed_at": "2026-08-21T01:04:41.822000Z",
+      "longitude": -104.223,
+      "observed_at": "2026-08-21T01:04:41.821000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026qjynzf",
       "metadata": {
         "magnitude": 2.5,
-        "depth_km": 6.4716
+        "depth_km": 6.5485
       }
     },
     {
@@ -4644,22 +4756,6 @@
       "metadata": {
         "magnitude": 3.1,
         "depth_km": 1.8
-      }
-    },
-    {
-      "id": "usgs-tx2026qjfmty",
-      "type": "earthquake",
-      "title": "M 1.6 - 58 km S of Whites City, New Mexico",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 31.651,
-      "longitude": -104.366,
-      "observed_at": "2026-08-20T15:30:25.239000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026qjfmty",
-      "metadata": {
-        "magnitude": 1.6,
-        "depth_km": 6.0999
       }
     },
     {
