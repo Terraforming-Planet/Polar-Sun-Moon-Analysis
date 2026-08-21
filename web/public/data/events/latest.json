@@ -1,10 +1,10 @@
 {
   "schema_version": "7.0",
   "project": "Terraforming Planet",
-  "generated_at": "2026-08-21T09:49:59.260947Z",
-  "event_count": 1021,
+  "generated_at": "2026-08-21T10:18:56.024312Z",
+  "event_count": 1016,
   "summary": {
-    "earthquake": 279,
+    "earthquake": 274,
     "fire": 610,
     "storm": 25,
     "ice": 3,
@@ -19,7 +19,7 @@
     {
       "source": "USGS",
       "status": "ok",
-      "count": 271
+      "count": 266
     },
     {
       "source": "NASA EONET",
@@ -39,19 +39,67 @@
   ],
   "events": [
     {
+      "id": "usgs-ci41531904",
+      "type": "earthquake",
+      "title": "M 0.6 - 16 km ESE of Anza, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 33.5105,
+      "longitude": -116.507833333333,
+      "observed_at": "2026-08-21T10:03:09.760000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41531904",
+      "metadata": {
+        "magnitude": 0.62,
+        "depth_km": 12.4
+      }
+    },
+    {
+      "id": "usgs-ci41531896",
+      "type": "earthquake",
+      "title": "M 1.2 - 3 km NNW of La Verne, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 34.1245,
+      "longitude": -117.777333333333,
+      "observed_at": "2026-08-21T09:54:44.870000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41531896",
+      "metadata": {
+        "magnitude": 1.21,
+        "depth_km": 5.55
+      }
+    },
+    {
+      "id": "usgs-nc75422322",
+      "type": "earthquake",
+      "title": "M 0.8 - 5 km WNW of The Geysers, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 38.7966651916504,
+      "longitude": -122.805335998535,
+      "observed_at": "2026-08-21T09:51:59.530000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75422322",
+      "metadata": {
+        "magnitude": 0.76,
+        "depth_km": 3.5699999332428
+      }
+    },
+    {
       "id": "usgs-tx2026qkpxsy",
       "type": "earthquake",
       "title": "M 1.6 - 60 km S of Whites City, New Mexico",
       "severity": "low",
       "status": "automatic",
-      "latitude": 31.631,
+      "latitude": 31.632,
       "longitude": -104.452,
-      "observed_at": "2026-08-21T09:46:39.820000Z",
+      "observed_at": "2026-08-21T09:46:39.818000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026qkpxsy",
       "metadata": {
         "magnitude": 1.6,
-        "depth_km": 3.2233
+        "depth_km": 3.2282
       }
     },
     {
@@ -71,19 +119,19 @@
       }
     },
     {
-      "id": "usgs-us6000tmet",
+      "id": "usgs-tx2026qkpsfm",
       "type": "earthquake",
-      "title": "M 3.2 - 60 km S of Whites City, New Mexico",
+      "title": "M 3.0 - 58 km S of Whites City, New Mexico",
       "severity": "low",
       "status": "reviewed",
-      "latitude": 31.6336,
-      "longitude": -104.4582,
-      "observed_at": "2026-08-21T09:40:15.520000Z",
+      "latitude": 31.649,
+      "longitude": -104.435,
+      "observed_at": "2026-08-21T09:40:15.575000Z",
       "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tmet",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026qkpsfm",
       "metadata": {
-        "magnitude": 3.2,
-        "depth_km": 8.275
+        "magnitude": 3,
+        "depth_km": 6.9202
       }
     },
     {
@@ -2697,17 +2745,17 @@
     {
       "id": "usgs-tx2026qjnqhh",
       "type": "earthquake",
-      "title": "M 2.1 - 12 km E of Falls City, Texas",
+      "title": "M 2.0 - 11 km ENE of Falls City, Texas",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 29.002,
-      "longitude": -97.892,
-      "observed_at": "2026-08-20T19:33:13.234000Z",
+      "status": "reviewed",
+      "latitude": 29.016,
+      "longitude": -97.907,
+      "observed_at": "2026-08-20T19:33:11.560000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026qjnqhh",
       "metadata": {
-        "magnitude": 2.1,
-        "depth_km": 4.4896
+        "magnitude": 2,
+        "depth_km": 8.5637
       }
     },
     {
@@ -4244,134 +4292,6 @@
       "metadata": {
         "magnitude": 1.27,
         "depth_km": 5.89
-      }
-    },
-    {
-      "id": "usgs-us6000tm31",
-      "type": "earthquake",
-      "title": "M 4.6 - 86 km NNE of Ruteng, Indonesia",
-      "severity": "moderate",
-      "status": "reviewed",
-      "latitude": -7.9402,
-      "longitude": 120.8686,
-      "observed_at": "2026-08-20T10:08:26.207000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tm31",
-      "metadata": {
-        "magnitude": 4.6,
-        "depth_km": 10
-      }
-    },
-    {
-      "id": "usgs-ci41531048",
-      "type": "earthquake",
-      "title": "M 0.3 - 16 km N of Warner Springs, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 33.4218333333333,
-      "longitude": -116.618833333333,
-      "observed_at": "2026-08-20T10:04:44.570000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41531048",
-      "metadata": {
-        "magnitude": 0.3,
-        "depth_km": 7.7
-      }
-    },
-    {
-      "id": "usgs-uu80149551",
-      "type": "earthquake",
-      "title": "M 0.9 - 16 km NE of Milford, Utah",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 38.5123333333333,
-      "longitude": -112.887666666667,
-      "observed_at": "2026-08-20T10:03:26.820000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80149551",
-      "metadata": {
-        "magnitude": 0.86,
-        "depth_km": 2.23
-      }
-    },
-    {
-      "id": "usgs-aka2026qlldoe",
-      "type": "earthquake",
-      "title": "M 2.3 - 107 km S of False Pass, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 53.907,
-      "longitude": -163.715,
-      "observed_at": "2026-08-20T10:02:21.882000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qlldoe",
-      "metadata": {
-        "magnitude": 2.3,
-        "depth_km": 30.9
-      }
-    },
-    {
-      "id": "usgs-nc75421712",
-      "type": "earthquake",
-      "title": "M 0.8 - 1 km NNE of The Geysers, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 38.7888336181641,
-      "longitude": -122.749336242676,
-      "observed_at": "2026-08-20T10:01:15.560000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75421712",
-      "metadata": {
-        "magnitude": 0.76,
-        "depth_km": 4.05999994277954
-      }
-    },
-    {
-      "id": "usgs-aka2026qllcju",
-      "type": "earthquake",
-      "title": "M 2.1 - 95 km W of Akhiok, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 56.831,
-      "longitude": -155.719,
-      "observed_at": "2026-08-20T10:01:00.020000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qllcju",
-      "metadata": {
-        "magnitude": 2.1,
-        "depth_km": 76.7
-      }
-    },
-    {
-      "id": "usgs-uu80149546",
-      "type": "earthquake",
-      "title": "M 1.4 - 17 km NE of Milford, Utah",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 38.5186666666667,
-      "longitude": -112.876833333333,
-      "observed_at": "2026-08-20T09:52:40.170000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80149546",
-      "metadata": {
-        "magnitude": 1.44,
-        "depth_km": 6.44
-      }
-    },
-    {
-      "id": "usgs-us6000tm2y",
-      "type": "earthquake",
-      "title": "M 5.2 - 270 km SSE of Dunhuang, China",
-      "severity": "moderate",
-      "status": "reviewed",
-      "latitude": 37.8058,
-      "longitude": 95.4454,
-      "observed_at": "2026-08-20T09:49:47.975000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tm2y",
-      "metadata": {
-        "magnitude": 5.2,
-        "depth_km": 10
       }
     },
     {
@@ -15762,7 +15682,7 @@
       "severity": "moderate",
       "status": "closed",
       "latitude": 36.260994941859906,
-      "longitude": 8.484220889267771,
+      "longitude": 8.484220889267773,
       "observed_at": "2026-07-24T14:15:00",
       "source": "Copernicus EMS",
       "source_url": "https://mapping.emergency.copernicus.eu/activations/EMSR903",
