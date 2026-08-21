@@ -1,0 +1,17 @@
+{
+  "$schema": "https://raw.githubusercontent.com/cloudflare/workers-sdk/main/packages/wrangler/config-schema.json",
+  "name": "terra-observation-planet",
+  "compatibility_date": "2026-08-21",
+  "workers_dev": true,
+  "routes": [
+    {
+      "pattern": "planet.terra-observation.dev",
+      "custom_domain": true
+    }
+  ],
+  "assets": {
+    "directory": "../../web/dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "single-page-application"
+  }
+}
