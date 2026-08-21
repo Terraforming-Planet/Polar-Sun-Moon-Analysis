@@ -37,7 +37,7 @@ def test_observatory_uses_official_space_sources_and_mobile_safe_modules() -> No
     assert "cdn.jsdelivr.net/npm/three" not in javascript
     assert "/space/comet-candidates" in comet_client
     assert "No verified candidate asserted" in comet_client
-    assert "confirmed discovery" in html
+    assert "confirmed comet or discovery" in html
 
 
 def test_512_grid_is_exact_and_is_the_final_research_section() -> None:
