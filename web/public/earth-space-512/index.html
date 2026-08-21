@@ -4,75 +4,114 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#030812" />
+  <meta name="description" content="Terraforming Planet Earth–Space 512: interactive Solar System model, experimental Sun/comet, Moon and planet observations, and a deterministic 8×8×8 navigation grid." />
   <title>Earth–Space 512 Research Station</title>
-  <style>
-    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#02060d;color:#e9f8ff;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}body{overflow-x:hidden}a{color:#8de6ff}.top{position:sticky;top:0;z-index:20;display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 12px;background:#06101bee;border-bottom:1px solid #21445c;backdrop-filter:blur(12px)}.top strong{margin-right:auto;color:#9ce9ff}.top a{text-decoration:none;padding:8px 10px;border:1px solid #2a5875;border-radius:8px;background:#0a2135;color:#effaff}main{width:min(1280px,calc(100% - 20px));margin:auto;padding:18px 0 60px}.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;align-items:stretch}.panel{border:1px solid #1f4863;border-radius:16px;background:linear-gradient(145deg,#081d2ddd,#040b14ee);box-shadow:0 20px 60px #0008}.copy{padding:24px}.kicker{color:#8ee7ff;font-size:.78rem;letter-spacing:.16em;font-weight:900}.copy h1{font-size:clamp(2rem,5vw,4rem);line-height:1;margin:.45rem 0 1rem}.copy p{color:#b9d3e1;max-width:760px}.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.badge{padding:6px 8px;border:1px solid #2f6685;border-radius:999px;background:#0a263a;font-size:.75rem;font-weight:800}.viewport{position:relative;min-height:560px;overflow:hidden}.viewport canvas{position:absolute;inset:0;width:100%;height:100%;display:block}.hud{position:absolute;z-index:5;left:12px;right:12px;top:12px;display:flex;gap:8px;flex-wrap:wrap;pointer-events:none}.hud button,.hud label,.hud .status{pointer-events:auto;border:1px solid #357394;border-radius:9px;background:#071c2ddd;color:#effaff;padding:8px 10px;font-weight:700}.hud label{display:flex;align-items:center;gap:7px}.hud input{width:auto}.status{margin-left:auto}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}.metric{padding:14px}.metric b{display:block;font-size:1.5rem}.metric span{font-size:.78rem;color:#9dbccc}.note{margin-top:14px;padding:14px;border-left:4px solid #67ddff;background:#092135;color:#cdeeff;border-radius:8px}.inspector{margin-top:14px;padding:18px}.inspector h2{margin-top:0}.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.fact{padding:12px;border:1px solid #173a50;border-radius:10px;background:#061522}.fact span{display:block;font-size:.74rem;color:#8fb0c3}.fact b{font-size:1rem}.footer{margin-top:18px;color:#779daf;text-align:center;font-size:.78rem}@media(max-width:900px){.hero{grid-template-columns:1fr}.viewport{min-height:620px}.grid{grid-template-columns:1fr 1fr}.facts{grid-template-columns:1fr 1fr}}@media(max-width:560px){main{width:min(100% - 12px,1280px)}.copy{padding:18px}.viewport{min-height:680px}.hud{display:grid;grid-template-columns:1fr 1fr}.status{margin-left:0;grid-column:1/-1}.grid{grid-template-columns:1fr 1fr}.facts{grid-template-columns:1fr}.top strong{width:100%}}
-  </style>
+  <link rel="stylesheet" href="./earth-space-512.css" />
 </head>
 <body>
-<nav class="top"><strong>Terraforming Planet · Earth–Space 512</strong><a href="../">← Main system</a><a href="../research/">Methods & Sources</a></nav>
+<nav class="top">
+  <strong>Terraforming Planet · Earth–Space 512</strong>
+  <a href="../">← Main system</a>
+  <a href="../research/">Methods &amp; Sources</a>
+</nav>
+
 <main>
   <div class="hero">
     <section class="panel copy">
-      <div class="kicker">RESEARCH STATION · 8 × 8 × 8</div>
+      <div class="kicker">RESEARCH STATION · SOLAR SYSTEM · 8 × 8 × 8</div>
       <h1>Earth–Space 512</h1>
-      <p>A scientific 512-cell spatial address model for Earth–Moon–Sun geometry, near-Earth context and observer-direction experiments. The base grid contains exactly 512 top-level cells; it is a reasoning and indexing model, not a claim of 512 physical sensors.</p>
-      <div class="badges"><span class="badge">512 stable cells</span><span class="badge">WebGL instancing</span><span class="badge">UTC-driven lighting</span><span class="badge">Evidence-first</span></div>
-      <div class="note"><strong>Real-time rule:</strong> the Earth sphere is illuminated from a UTC-derived solar direction. Local day/night therefore differs across longitudes at the same instant. Scientific trajectories and attached observations must keep their original source time and provenance.</div>
+      <p>A scientific spatial-address and observation laboratory for Sun–planet–Moon geometry. The 3D scene uses the project’s NASA/JPL Horizons snapshot and deliberately compresses interplanetary distances so all bodies remain visible on one screen.</p>
+      <div class="badges">
+        <span class="badge">NASA/JPL Horizons</span><span class="badge">SOHO / ESA–NASA</span><span class="badge">Experimental AI comet lab</span><span class="badge">Moon + planets</span><span class="badge">512 deterministic cells</span>
+      </div>
+      <div class="note"><strong>Evidence-first rule:</strong> model geometry, live images and AI interpretation are separate evidence classes. A visual or AI candidate is never presented as a confirmed comet, physical event or scientific discovery without source frames, time, provenance and independent verification.</div>
     </section>
-    <section class="panel viewport" id="viewport" aria-label="Interactive Earth Space 512 WebGL model">
+
+    <section class="panel viewport" id="viewport" aria-label="Interactive Solar System WebGL model">
       <div class="hud">
-        <button id="reset">Reset view</button>
-        <button id="rotate">Auto rotate: ON</button>
-        <label>Layer <select id="layer"><option value="all">All 8 layers</option><option value="0">Layer 1</option><option value="1">Layer 2</option><option value="2">Layer 3</option><option value="3">Layer 4</option><option value="4">Layer 5</option><option value="5">Layer 6</option><option value="6">Layer 7</option><option value="7">Layer 8</option></select></label>
+        <button id="reset" type="button">Reset view</button>
+        <button id="rotate" type="button">Auto rotate: ON</button>
+        <button id="orbits" type="button">Orbits: ON</button>
+        <button id="labels" type="button">Labels: ON</button>
+        <label>Focus <select id="focus"><option value="overview">Overview</option><option value="Sun">Sun</option><option value="Mercury">Mercury</option><option value="Venus">Venus</option><option value="Earth">Earth</option><option value="Moon">Moon</option><option value="Mars">Mars</option><option value="Jupiter">Jupiter</option><option value="Saturn">Saturn</option><option value="Uranus">Uranus</option><option value="Neptune">Neptune</option></select></label>
         <div class="status" id="utc">UTC</div>
       </div>
+      <div class="model-readout" id="model-readout">Loading NASA/JPL snapshot…</div>
     </section>
   </div>
 
-  <div class="grid">
-    <section class="panel metric"><b>512</b><span>top-level addressable cells</span></section>
-    <section class="panel metric"><b>8</b><span>selectable spatial layers</span></section>
-    <section class="panel metric"><b>UTC</b><span>single time reference for illumination</span></section>
-    <section class="panel metric"><b>WGS84 context</b><span>Earth-oriented research interpretation</span></section>
+  <div class="metrics">
+    <section class="panel metric"><b id="body-count">10</b><span>Sun, Moon and planets in the scene</span></section>
+    <section class="panel metric"><b id="epoch">JPL</b><span>source epoch for geometry</span></section>
+    <section class="panel metric"><b>SOHO</b><span>official solar / coronagraph observations</span></section>
+    <section class="panel metric"><b>512</b><span>top-level addressable research cells</span></section>
   </div>
 
-  <section class="panel inspector">
-    <h2>Cell inspector</h2>
-    <div class="facts"><div class="fact"><span>Selected cell</span><b id="cell-id">Click a cell</b></div><div class="fact"><span>Grid coordinate</span><b id="cell-xyz">—</b></div><div class="fact"><span>Numeric index</span><b id="cell-index">—</b></div></div>
-    <p class="note">Future satellite, orbit, eclipse or observer data attached to a cell must include source, timestamp, evidence class and uncertainty. Synthetic geometry must remain explicitly identified as model output.</p>
+  <section class="section">
+    <div class="section-head"><div><div class="kicker">SPACE WEATHER · COMET SEARCH</div><h2>Experimental Sun + AI comet observation lab</h2></div><span class="evidence-tag">OBSERVATION + EXPERIMENTAL AI</span></div>
+    <div class="observation-grid">
+      <article class="panel observation-card">
+        <div class="card-head"><div><small>SOHO / LASCO C2</small><h3>Inner corona</h3></div><a href="https://soho.nascom.nasa.gov/data/realtime-images.html" target="_blank" rel="noreferrer">Official source ↗</a></div>
+        <div class="image-frame"><img id="soho-c2" src="https://soho.nascom.nasa.gov/data/realtime/c2/1024/latest.jpg" alt="Latest SOHO LASCO C2 solar coronagraph image" loading="lazy" referrerpolicy="no-referrer" /><div class="image-fallback">SOHO C2 preview unavailable in this browser. Open the official source.</div></div>
+        <p>LASCO blocks the bright solar disk so the corona and objects passing close to the Sun can be observed.</p>
+      </article>
+      <article class="panel observation-card">
+        <div class="card-head"><div><small>SOHO / LASCO C3</small><h3>Wide coronagraph field</h3></div><a href="https://soho.nascom.nasa.gov/data/realtime-images.html" target="_blank" rel="noreferrer">Official source ↗</a></div>
+        <div class="image-frame"><img id="soho-c3" src="https://soho.nascom.nasa.gov/data/realtime/c3/1024/latest.jpg" alt="Latest SOHO LASCO C3 solar coronagraph image" loading="lazy" referrerpolicy="no-referrer" /><div class="image-fallback">SOHO C3 preview unavailable in this browser. Open the official source.</div></div>
+        <p>The wider C3 field is useful for tracking motion over a larger angular region and comparing candidate trajectories.</p>
+      </article>
+      <article class="panel ai-card">
+        <div class="card-head"><div><small>OPENAI-READY RESEARCH MODULE</small><h3>AI comet candidate detector</h3></div><span class="status-pill experimental">EXPERIMENTAL</span></div>
+        <p>This panel prepares an evidence bundle from official C2/C3 frames. It does not invent detections. A candidate is shown only after a vision worker returns a result tied to source frames and UTC.</p>
+        <div class="ai-status"><span>Frame readiness</span><b id="frame-readiness">Checking feeds…</b></div>
+        <div class="ai-status"><span>Candidate state</span><b id="candidate-state">No verified candidate asserted</b></div>
+        <button class="primary" id="comet-scan" type="button">Run experimental readiness scan</button>
+        <div class="ai-output" id="ai-output">The browser first checks whether both official SOHO frames are available. Full visual classification stays evidence-gated until the project’s server-side OpenAI worker is connected to this module.</div>
+      </article>
+    </div>
   </section>
-  <div class="footer">Terraforming Planet · Earth–Space 512 Research Station · public scientific visualization</div>
+
+  <section class="section">
+    <div class="section-head"><div><div class="kicker">LUNAR + PLANETARY EXPERIMENTS</div><h2>Experimental Moon and planet observations</h2></div><span class="evidence-tag">NASA/JPL EPHEMERIS SNAPSHOT</span></div>
+    <div class="lunar-grid">
+      <article class="panel moon-card">
+        <div class="card-head"><div><small>EARTH–MOON GEOMETRY</small><h3>Moon distance experiment</h3></div><a href="https://ssd.jpl.nasa.gov/horizons/" target="_blank" rel="noreferrer">JPL Horizons ↗</a></div>
+        <div class="big-number" id="moon-distance">—</div>
+        <p id="moon-distance-note">Loading Earth–Moon vector difference from the project JPL snapshot…</p>
+        <button class="secondary focus-body" data-body="Moon" type="button">Focus Moon in 3D</button>
+      </article>
+      <article class="panel planet-card">
+        <div class="card-head"><div><small>PLANET POSITION LAB</small><h3>Heliocentric vector inspector</h3></div><span id="planet-epoch" class="status-pill">loading</span></div>
+        <div class="target-buttons" id="target-buttons"></div>
+        <div class="planet-readout" id="planet-readout">Choose a body to inspect its NASA/JPL vector.</div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><div class="kicker">SCIENTIFIC CURIOSITIES</div><h2>What this station helps explain</h2></div></div>
+    <div class="facts-grid">
+      <article class="panel fact-card"><b>≈25 days</b><h3>Solar equator</h3><p>The Sun is plasma, so it rotates differentially. Equatorial regions rotate faster than high solar latitudes.</p></article>
+      <article class="panel fact-card"><b>≈35 days</b><h3>High solar latitudes</h3><p>Near the polar regions the apparent rotation period is substantially longer than at the equator.</p></article>
+      <article class="panel fact-card"><b>Artificial eclipse</b><h3>LASCO coronagraph</h3><p>Blocking the bright photosphere reveals the faint corona and helps observers notice comets approaching the Sun.</p></article>
+      <article class="panel fact-card"><b>Dynamic distance</b><h3>Earth–Moon scale</h3><p>The Moon’s distance changes continuously. This station calculates the distance from the timestamped JPL vectors stored by the project rather than using one permanent value.</p></article>
+    </div>
+  </section>
+
+  <section class="section grid512-section" id="grid512">
+    <div class="section-head"><div><div class="kicker">PLANETARY NAVIGATION GRID</div><h2>8 × 8 × 8 = 512 addressable cells</h2><p class="section-copy">This is the deterministic research index. Every cell keeps a stable <code>CELL-001…CELL-512</code> identifier and <code>X/Y/Z = 0…7</code>. It can later point to a data tile, LOD sector, point-cloud block, atmosphere sector, orbital observation or planetary analysis region.</p></div><span class="evidence-tag">DETERMINISTIC INDEX</span></div>
+    <div class="navigator">
+      <div class="cube-wrap"><div id="cube-stage" class="cube-stage" aria-label="Three dimensional 512 cell navigation grid"></div></div>
+      <aside class="panel nav-panel">
+        <h3>Layer navigation</h3><div id="layer-controls" class="layer-controls"></div><div id="legend" class="legend"></div>
+        <div class="cell-readout"><span>SELECTED CELL</span><strong id="cell-address">CELL-001</strong><small id="cell-index">index 0 · X0 Y0 Z0</small><div class="coords"><div><span>X</span><b id="coord-x">0</b></div><div><span>Y</span><b id="coord-y">0</b></div><div><span>Z</span><b id="coord-z">0</b></div></div><p>Deterministic address: <code>index = Z×64 + Y×8 + X</code>.</p></div>
+        <h3>512-address registry</h3><div id="cell-list" class="cell-list" aria-label="Registry of all 512 cells"></div>
+      </aside>
+    </div>
+  </section>
+
+  <div class="footer">Terraforming Planet · Earth–Space 512 Research Station · official/public-data-first scientific visualization</div>
 </main>
-<script type="module">
-  import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js';
-  import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js';
-
-  const host=document.getElementById('viewport');
-  const scene=new THREE.Scene();
-  const camera=new THREE.PerspectiveCamera(45,1,.1,200);
-  camera.position.set(12,9,14);
-  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
-  renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.outputColorSpace=THREE.SRGBColorSpace; host.appendChild(renderer.domElement);
-  const controls=new OrbitControls(camera,renderer.domElement); controls.enableDamping=true; controls.minDistance=7; controls.maxDistance=34;
-  scene.add(new THREE.AmbientLight(0x447799,.55));
-  const sun=new THREE.DirectionalLight(0xffffff,3.0); scene.add(sun);
-  const earth=new THREE.Mesh(new THREE.SphereGeometry(2.15,64,64),new THREE.MeshStandardMaterial({color:0x17688f,roughness:.82,metalness:.03})); scene.add(earth);
-  const atmosphere=new THREE.Mesh(new THREE.SphereGeometry(2.24,64,64),new THREE.MeshBasicMaterial({color:0x5bd7ff,transparent:true,opacity:.08,side:THREE.BackSide})); scene.add(atmosphere);
-
-  const count=512, box=new THREE.BoxGeometry(.72,.72,.72), material=new THREE.MeshBasicMaterial({color:0x63ddff,transparent:true,opacity:.10,wireframe:true});
-  const cells=new THREE.InstancedMesh(box,material,count); const dummy=new THREE.Object3D(); const gap=.88; let n=0;
-  for(let z=0;z<8;z++)for(let y=0;y<8;y++)for(let x=0;x<8;x++){dummy.position.set((x-3.5)*gap,(y-3.5)*gap,(z-3.5)*gap);dummy.updateMatrix();cells.setMatrixAt(n++,dummy.matrix)} scene.add(cells);
-  const selected=new THREE.Mesh(box,new THREE.MeshBasicMaterial({color:0xffdf75,transparent:true,opacity:.42,wireframe:true})); selected.visible=false; scene.add(selected);
-  const raycaster=new THREE.Raycaster(), pointer=new THREE.Vector2();
-  function pick(event){const rect=renderer.domElement.getBoundingClientRect();pointer.x=((event.clientX-rect.left)/rect.width)*2-1;pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;raycaster.setFromCamera(pointer,camera);const hit=raycaster.intersectObject(cells)[0];if(!hit||hit.instanceId==null)return;const i=hit.instanceId;const x=i%8,y=Math.floor(i/8)%8,z=Math.floor(i/64);selected.position.set((x-3.5)*gap,(y-3.5)*gap,(z-3.5)*gap);selected.visible=true;document.getElementById('cell-id').textContent=`ES512-${String(i).padStart(3,'0')}`;document.getElementById('cell-xyz').textContent=`x=${x}, y=${y}, z=${z}`;document.getElementById('cell-index').textContent=String(i)}
-  renderer.domElement.addEventListener('pointerdown',pick);
-  let auto=true; document.getElementById('rotate').onclick=()=>{auto=!auto;document.getElementById('rotate').textContent=`Auto rotate: ${auto?'ON':'OFF'}`};
-  document.getElementById('reset').onclick=()=>{camera.position.set(12,9,14);controls.target.set(0,0,0);controls.update()};
-  document.getElementById('layer').onchange=e=>{const value=e.target.value;for(let i=0;i<count;i++){const matrix=new THREE.Matrix4();cells.getMatrixAt(i,matrix);const p=new THREE.Vector3().setFromMatrixPosition(matrix);const z=Math.floor(i/64);dummy.position.copy(p);dummy.scale.setScalar(value==='all'||Number(value)===z?1:0.001);dummy.updateMatrix();cells.setMatrixAt(i,dummy.matrix)}cells.instanceMatrix.needsUpdate=true};
-  function solarDirection(date){const day=(date-Date.UTC(date.getUTCFullYear(),0,0))/86400000;const g=2*Math.PI/365.25*(day-1+(date.getUTCHours()-12)/24);const dec=.006918-.399912*Math.cos(g)+.070257*Math.sin(g)-.006758*Math.cos(2*g)+.000907*Math.sin(2*g)-.002697*Math.cos(3*g)+.00148*Math.sin(3*g);const subsolarLon=(12-(date.getUTCHours()+date.getUTCMinutes()/60+date.getUTCSeconds()/3600))*15*Math.PI/180;return new THREE.Vector3(Math.cos(dec)*Math.cos(subsolarLon),Math.sin(dec),Math.cos(dec)*Math.sin(subsolarLon)).normalize()}
-  function resize(){const w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/Math.max(1,h);camera.updateProjectionMatrix()}; new ResizeObserver(resize).observe(host); resize();
-  function frame(){requestAnimationFrame(frame);const now=new Date();const dir=solarDirection(now);sun.position.copy(dir.multiplyScalar(20));earth.rotation.y=0;document.getElementById('utc').textContent=now.toISOString().replace('T',' ').slice(0,19)+' UTC';if(auto)cells.rotation.y+=.0008;controls.update();renderer.render(scene,camera)}frame();
-</script>
+<script type="module" src="./earth-space-512.js"></script>
 </body>
 </html>
