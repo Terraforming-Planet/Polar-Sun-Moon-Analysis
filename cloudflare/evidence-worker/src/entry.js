@@ -6,6 +6,7 @@ import { ELEVATION_PATH, handleElevationProxy } from './elevationProxy.js'
 import { GEOCODE_PATH, handleGeocodeProxy } from './geocodeProxy.js'
 import { IMAGE_PROXY_PATH, handleSatelliteImageProxy } from './imageProxy.js'
 import { LANDSAT_PROXY_PATH, handleLandsatProxy } from './landsatProxy.js'
+import { handleObservationView, OBSERVATION_VIEW_PATH } from './observationView.js'
 import { RESEARCH_CHAT_PATH, handleResearchChat } from './researchChat.js'
 
 export async function handleWorkerRequest(request, env = {}, context) {
@@ -13,6 +14,7 @@ export async function handleWorkerRequest(request, env = {}, context) {
   if (url.pathname === GEOCODE_PATH) return handleGeocodeProxy(request, env)
   if (url.pathname === AREA_ANALYSIS_V2_PATH) return handleAreaAnalysisWithLandsatBrowse(request, env)
   if (url.pathname === YEARLY_GALLERY_PATH) return handleYearlyGallery(request, env)
+  if (url.pathname === OBSERVATION_VIEW_PATH) return handleObservationView(request, env)
   if (url.pathname === IMAGE_PROXY_PATH) return handleSatelliteImageProxy(request, env)
   if (url.pathname === LANDSAT_PROXY_PATH) return handleLandsatProxy(request, env)
   if (url.pathname === ELEVATION_PATH) return handleElevationProxy(request, env)
