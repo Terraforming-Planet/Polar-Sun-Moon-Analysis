@@ -3,26 +3,38 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 LIVE = ROOT / "web" / "public" / "eclipse-live" / "index.html"
 CLOSE = ROOT / "web" / "public" / "eclipse-live" / "close.html"
+REPLAY = ROOT / "web" / "public" / "eclipse-live" / "replay-2026.html"
 GALLERY = ROOT / "web" / "public" / "eclipse-live" / "gallery.html"
 PAGES = ROOT / ".github" / "workflows" / "force-pages-deploy.yml"
 
 
-def test_main_observer_exposes_night_ir_and_gallery() -> None:
+def test_main_observatory_exposes_historical_archive_and_gallery() -> None:
     source = LIVE.read_text(encoding="utf-8")
 
-    assert "🌙 Noktowizor + IR10.5 · CLOSE" in source
+    assert "Historyczny model CLOSE" in source
     assert 'href="./close.html"' in source
     assert 'href="./gallery.html"' in source
+    assert "Zamknięta kampania obserwacyjna 2026" in source
 
 
-def test_close_night_mode_switches_to_official_eumetsat_ir() -> None:
-    source = CLOSE.read_text(encoding="utf-8")
+def test_legacy_close_is_archive_redirect_and_replay_has_no_live_timer() -> None:
+    close = CLOSE.read_text(encoding="utf-8")
+    replay = REPLAY.read_text(encoding="utf-8")
 
-    assert "mtg_fd:ir105_hrfi" in source
+    assert "./replay-2026.html" in close
+    assert "To nie jest LIVE." in replay
+    assert "new Date(frame.observed_utc)" in replay
+    assert "setInterval" not in replay
+    assert "Kampania 12.08.2026 jest zamknięta" in replay
+
+
+def test_current_eumetsat_noaa_context_is_separate_from_2026_replay() -> None:
+    source = LIVE.read_text(encoding="utf-8")
+
     assert "mtg_fd:vis06_hrfi" in source
-    assert "nightVision?'mtg_fd:ir105_hrfi':'mtg_fd:vis06_hrfi'" in source
-    assert "EUMETSAT Meteosat-12 · IR 10.5 HRFI · NOC" in source
-    assert "Nie jest lokalną kamerą IR" in source
+    assert "Aktualny kontekst atmosferyczny — EUMETSAT + NOAA" in source
+    assert "nie jest prognozą pogody na 2027" in source
+    assert "GOES19/ABI/FD/02/1808x1808.jpg" in source
 
 
 def test_gallery_uses_only_archived_manifest_frames_for_animation() -> None:
