@@ -19,6 +19,15 @@ describe('satellite time selection', () => {
     expect(selectionForPreset('from-2015').startDate).toBe('2015-01-01')
   })
 
+  it('makes the five-year preset exactly five calendar years and one-year exactly one calendar year', () => {
+    const five = selectionForPreset('five-years')
+    const one = selectionForPreset('one-year')
+    expect(five.endYear - five.startYear + 1).toBe(5)
+    expect(five.startDate).toBe(`${five.startYear}-01-01`)
+    expect(one.endYear - one.startYear + 1).toBe(1)
+    expect(one.startDate).toBe(`${one.startYear}-01-01`)
+  })
+
   it('clamps custom ranges to the supported archive and today', () => {
     const selection = selectionForPreset('custom', {
       preset: 'custom',
