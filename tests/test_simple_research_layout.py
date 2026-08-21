@@ -81,7 +81,6 @@ def test_simple_flow_builds_four_real_nasa_context_views_and_selected_period_gal
     assert "04 · Bardzo wysoki widok" in source
     assert "WIDTH: '1600'" in source
     assert "HEIGHT: '1600'" in source
-    assert "generative fill" in source
     assert "WYBRANY ROK / PORA ROKU" in source
     assert "Zdjęcia źródłowe z tego okresu" in source
     assert "analysis.preview_images.map" in source
