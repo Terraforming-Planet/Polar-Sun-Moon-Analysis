@@ -7,6 +7,7 @@ import { AdvancedLegacyPanel } from './AdvancedLegacyPanel'
 import { EvidenceExplainer } from './EvidenceExplainer'
 import { ResearchArchivePanel } from './ResearchArchivePanel'
 import { ResearchAreaBuilder } from './ResearchAreaBuilder'
+import { SatelliteTimeSelector } from './SatelliteTimeSelector'
 import { SimpleContestQuickAccess } from './SimpleContestQuickAccess'
 import { SimpleResearchAssistant } from './SimpleResearchAssistant'
 import {
@@ -62,6 +63,7 @@ export function AIResearchPanel({ simpleOnly = false }: { simpleOnly?: boolean }
       </div>
       <SimpleContestQuickAccess />
       {!endpoint && <p className="notice">The public AI Worker is not configured in this build.</p>}
+      <SatelliteTimeSelector />
       <SimpleResearchAssistant apiUrl={endpoint} advanced={advancedBuilder} />
     </section>
   }
@@ -94,10 +96,13 @@ export function AIResearchPanel({ simpleOnly = false }: { simpleOnly?: boolean }
     {!endpoint && <p className="notice">The public AI Worker is not configured in this build.</p>}
     {error && <p className="notice" role="alert">Could not retrieve the OpenAI evidence registry: {error}</p>}
 
-    {activeView === 'new' && <SimpleResearchAssistant
-      apiUrl={endpoint}
-      advanced={advancedBuilder}
-    />}
+    {activeView === 'new' && <>
+      <SatelliteTimeSelector />
+      <SimpleResearchAssistant
+        apiUrl={endpoint}
+        advanced={advancedBuilder}
+      />
+    </>}
 
     {(activeView === 'archive' || activeView === 'explain') && <>
       <div className="research-policy-strip">
