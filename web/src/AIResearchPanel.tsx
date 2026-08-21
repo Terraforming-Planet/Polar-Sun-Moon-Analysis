@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import './ai-research.css'
 import './research-findings.css'
 import './simple-mode-resources.css'
+import { AdvancedLegacyPanel } from './AdvancedLegacyPanel'
 import { EvidenceExplainer } from './EvidenceExplainer'
 import { ResearchArchivePanel } from './ResearchArchivePanel'
 import { ResearchAreaBuilder } from './ResearchAreaBuilder'
@@ -15,7 +16,7 @@ import {
   type TrainingContextSummary,
 } from './lib/evidenceApi'
 
-type ResearchView = 'new' | 'archive' | 'explain'
+type ResearchView = 'new' | 'archive' | 'explain' | 'legacy'
 
 export function AIResearchPanel({ simpleOnly = false }: { simpleOnly?: boolean }) {
   const endpoint = useMemo(() => normalizeEvidenceApiUrl(import.meta.env.VITE_EVIDENCE_API_URL), [])
@@ -44,7 +45,10 @@ export function AIResearchPanel({ simpleOnly = false }: { simpleOnly?: boolean }
 
   const selected = cases.find(item => item.case_id === selectedId)
   const aiCaseIds = useMemo(() => new Set(cases.map(item => item.case_id)), [cases])
-  const advancedBuilder = <ResearchAreaBuilder onOpenArchive={() => setActiveView('archive')} />
+  const advancedBuilder = <>
+    <ResearchAreaBuilder onOpenArchive={() => setActiveView('archive')} />
+    <AdvancedLegacyPanel />
+  </>
 
   if (simpleOnly) {
     return <section className="workspace ai-research-workspace simple-only-research">
@@ -52,7 +56,7 @@ export function AIResearchPanel({ simpleOnly = false }: { simpleOnly?: boolean }
         <div>
           <small>OPENAI · COPERNICUS · NASA · USGS · 3D EARTH</small>
           <h1>Research any place on Earth</h1>
-          <p>Search a place, ask the private research assistant, then inspect the high-resolution 3D Earth reference view and official satellite evidence. Switch to Advanced whenever you need flags, DEM elevation, profiles, HQ imagery, files and reports.</p>
+          <p>Search a place, ask the private research assistant, then inspect the high-resolution 3D Earth reference view and official satellite evidence. Switch to Advanced whenever you need flags, DEM elevation, profiles, HQ imagery, files, reports and the preserved modules from the previous site.</p>
         </div>
         <span className="evidence-badge observation">SIMPLE + ADVANCED</span>
       </div>
@@ -67,7 +71,7 @@ export function AIResearchPanel({ simpleOnly = false }: { simpleOnly?: boolean }
       <div>
         <small>OPENAI · NASA · USGS · COPERNICUS · OPENSTREETMAP · NVIDIA L4</small>
         <h1>Research any place on Earth</h1>
-        <p>Simple mode is designed for fast area searches. Advanced mode adds HQ imagery, files, model selection, flags, DEM profiles and reports. User question text remains private session context and is excluded from research archives.</p>
+        <p>Simple mode is designed for fast area searches. Advanced mode adds HQ imagery, files, model selection, flags, DEM profiles, reports and a complete launcher for the preserved modules from the previous site. User question text remains private session context and is excluded from research archives.</p>
       </div>
       <span className="evidence-badge observation">AI RESEARCH</span>
     </div>
@@ -82,6 +86,9 @@ export function AIResearchPanel({ simpleOnly = false }: { simpleOnly?: boolean }
       <button type="button" className={activeView === 'explain' ? 'active' : ''} onClick={() => setActiveView('explain')}>
         <b>03</b><span>Approved AI tests<small>published evidence packages</small></span>
       </button>
+      <button type="button" className={activeView === 'legacy' ? 'active' : ''} onClick={() => setActiveView('legacy')}>
+        <b>04</b><span>Stare moduły<small>wszystkie zachowane zakładki i laboratoria</small></span>
+      </button>
     </div>
 
     {!endpoint && <p className="notice">The public AI Worker is not configured in this build.</p>}
@@ -92,7 +99,7 @@ export function AIResearchPanel({ simpleOnly = false }: { simpleOnly?: boolean }
       advanced={advancedBuilder}
     />}
 
-    {activeView !== 'new' && <>
+    {(activeView === 'archive' || activeView === 'explain') && <>
       <div className="research-policy-strip">
         <span><b>Published tests:</b> 16</span>
         <span><b>OpenAI evidence:</b> {cases.length || 'loading…'}</span>
@@ -140,5 +147,7 @@ export function AIResearchPanel({ simpleOnly = false }: { simpleOnly?: boolean }
       </div>
       {selected ? <EvidenceExplainer apiUrl={endpoint} caseId={selected.case_id} caseLabel={selected.title} /> : <div className="empty"><span>NO ACTIVE EVIDENCE PACKAGE</span><p>Select a test from the archive that has an active AI analysis package.</p></div>}
     </section>}
+
+    {activeView === 'legacy' && <AdvancedLegacyPanel />}
   </section>
 }

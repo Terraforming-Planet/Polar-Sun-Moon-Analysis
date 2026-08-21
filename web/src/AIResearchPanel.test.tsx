@@ -11,6 +11,8 @@ describe('AIResearchPanel', () => {
     expect(html).toContain('Research area')
     expect(html).toContain('Research archive')
     expect(html).toContain('Approved AI tests')
+    expect(html).toContain('Stare moduły')
+    expect(html).toContain('wszystkie zachowane zakładki i laboratoria')
     expect(html).toContain('Prosty')
     expect(html).toContain('Zaawansowany')
     expect(html).toContain('obrazy HQ · pliki · modele · flagi · DEM · profile · raporty')

@@ -5,6 +5,10 @@ import { handleWorkerRequest } from '../src/entry.js'
 
 const allowedOrigin = 'https://terraforming-planet.github.io'
 const env = { OPENAI_API_KEY: 'test-secret-not-real' }
+const imageResponse = () => new Response(new Uint8Array([0xff, 0xd8, 0xff, 0xd9]), {
+  status: 200,
+  headers: { 'Content-Type': 'image/jpeg' },
+})
 
 function validAnalysis() {
   return {
@@ -19,7 +23,7 @@ function validAnalysis() {
   }
 }
 
-test('production research analyze route supplies square NASA imagery plus high-detail Sentinel context', async () => {
+test('production research analyze route preflights official imagery and sends validated image bytes to OpenAI', async () => {
   const originalFetch = globalThis.fetch
   const upstreams = []
   globalThis.fetch = async (url, options = {}) => {
@@ -34,6 +38,9 @@ test('production research analyze route supplies square NASA imagery plus high-d
         }],
       }), { status: 200, headers: { 'Content-Type': 'application/geo+json' } })
     }
+    if (target.startsWith('https://gibs.earthdata.nasa.gov/') || target.startsWith('https://sh.dataspace.copernicus.eu/')) {
+      return imageResponse()
+    }
     if (target === 'https://api.openai.com/v1/responses') {
       const body = JSON.parse(options.body)
       assert.equal(body.model, 'gpt-5.6-terra')
@@ -41,20 +48,8 @@ test('production research analyze route supplies square NASA imagery plus high-d
       assert.match(body.instructions, /three evidence classes/i)
       const images = body.input[0].content.filter(item => item.type === 'input_image')
       assert.ok(images.length >= 2)
-      assert.ok(images.some(item => item.image_url.startsWith('https://sh.dataspace.copernicus.eu/ogc/wms/')))
-      const nasa = images.filter(item => item.image_url.startsWith('https://gibs.earthdata.nasa.gov/'))
-      assert.ok(nasa.length > 0)
-      for (const item of nasa) {
-        const parsed = new URL(item.image_url)
-        assert.equal(parsed.searchParams.get('WIDTH'), '1400')
-        assert.equal(parsed.searchParams.get('HEIGHT'), '1400')
-        assert.equal(item.detail, 'auto')
-      }
-      const sentinel = images.find(item => item.image_url.startsWith('https://sh.dataspace.copernicus.eu/ogc/wms/'))
-      const sentinelUrl = new URL(sentinel.image_url)
-      assert.equal(sentinelUrl.searchParams.get('WIDTH'), '1600')
-      assert.equal(sentinelUrl.searchParams.get('HEIGHT'), '1600')
-      assert.match(sentinelUrl.searchParams.get('TIME'), /^2026-08-06\/2026-08-20$/)
+      assert.ok(images.every(item => item.image_url.startsWith('data:image/jpeg;base64,')))
+      assert.ok(images.every(item => item.detail === 'auto'))
       return new Response(JSON.stringify({ output_text: JSON.stringify(validAnalysis()) }), { status: 200, headers: { 'Content-Type': 'application/json' } })
     }
     throw new Error(`unexpected upstream ${target}`)
@@ -80,30 +75,44 @@ test('production research analyze route supplies square NASA imagery plus high-d
     assert.equal(payload.landsat_catalog.matched, 777)
     assert.ok(payload.ai_visual_image_count >= 2)
     assert.ok(payload.preview_images.some(item => item.source.includes('Copernicus Data Space')))
-    assert.match(payload.evidence_policy, /Sentinel-2/)
+    assert.match(payload.evidence_policy, /Worker-verified image responses/)
     assert.equal(JSON.stringify(payload).includes('test-secret-not-real'), false)
     assert.equal(upstreams.filter(item => item === 'https://api.openai.com/v1/responses').length, 1)
+
+    const nasaRequests = upstreams.filter(item => item.startsWith('https://gibs.earthdata.nasa.gov/'))
+    assert.ok(nasaRequests.length > 0)
+    for (const item of nasaRequests) {
+      const parsed = new URL(item)
+      assert.equal(parsed.searchParams.get('WIDTH'), '1400')
+      assert.equal(parsed.searchParams.get('HEIGHT'), '1400')
+    }
+    const sentinelRequest = upstreams.find(item => item.startsWith('https://sh.dataspace.copernicus.eu/ogc/wms/'))
+    assert.ok(sentinelRequest)
+    const sentinelUrl = new URL(sentinelRequest)
+    assert.equal(sentinelUrl.searchParams.get('WIDTH'), '1600')
+    assert.equal(sentinelUrl.searchParams.get('HEIGHT'), '1600')
+    assert.match(sentinelUrl.searchParams.get('TIME'), /^2026-08-06\/2026-08-20$/)
   } finally {
     globalThis.fetch = originalFetch
   }
 })
 
-test('deep analysis asks OpenAI for high-detail imagery and a larger output budget', async () => {
+test('deep analysis keeps a bounded high-detail validated image set and larger output budget', async () => {
   const originalFetch = globalThis.fetch
+  const upstreams = []
   globalThis.fetch = async (url, options = {}) => {
     const target = String(url)
+    upstreams.push(target)
     if (target.startsWith('https://landsatlook.usgs.gov/')) return new Response(JSON.stringify({ numberMatched: 0, features: [] }), { status: 200 })
+    if (target.startsWith('https://gibs.earthdata.nasa.gov/') || target.startsWith('https://sh.dataspace.copernicus.eu/')) return imageResponse()
     if (target === 'https://api.openai.com/v1/responses') {
       const body = JSON.parse(options.body)
       assert.equal(body.max_output_tokens, 7000)
       const images = body.input[0].content.filter(item => item.type === 'input_image')
       assert.ok(images.length > 7)
+      assert.ok(images.length <= 10)
       assert.ok(images.every(item => item.detail === 'high'))
-      const sentinel = images.find(item => item.image_url.startsWith('https://sh.dataspace.copernicus.eu/ogc/wms/'))
-      assert.ok(sentinel)
-      const parsed = new URL(sentinel.image_url)
-      assert.equal(parsed.searchParams.get('WIDTH'), '2048')
-      assert.equal(parsed.searchParams.get('HEIGHT'), '2048')
+      assert.ok(images.every(item => item.image_url.startsWith('data:image/jpeg;base64,')))
       return new Response(JSON.stringify({ output_text: JSON.stringify(validAnalysis()) }), { status: 200, headers: { 'Content-Type': 'application/json' } })
     }
     throw new Error(`unexpected upstream ${target}`)
@@ -115,6 +124,46 @@ test('deep analysis asks OpenAI for high-detail imagery and a larger output budg
       body: JSON.stringify({ latitude: 53.59, longitude: 19.01, radius_km: 25, start_date: '2000-01-01', end_date: '2026-08-20', depth: 'deep', place_name: 'test' }),
     }), env)
     assert.equal(response.status, 200)
+    const sentinelRequest = upstreams.find(item => item.startsWith('https://sh.dataspace.copernicus.eu/ogc/wms/'))
+    assert.ok(sentinelRequest)
+    const parsed = new URL(sentinelRequest)
+    assert.equal(parsed.searchParams.get('WIDTH'), '2048')
+    assert.equal(parsed.searchParams.get('HEIGHT'), '2048')
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('invalid Copernicus WMS content is skipped without breaking NASA-backed area analysis', async () => {
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = async (url, options = {}) => {
+    const target = String(url)
+    if (target.startsWith('https://landsatlook.usgs.gov/')) return new Response(JSON.stringify({ numberMatched: 0, features: [] }), { status: 200 })
+    if (target.startsWith('https://gibs.earthdata.nasa.gov/')) return imageResponse()
+    if (target.startsWith('https://sh.dataspace.copernicus.eu/')) {
+      return new Response('<ServiceException>Invalid instance</ServiceException>', { status: 200, headers: { 'Content-Type': 'text/xml' } })
+    }
+    if (target === 'https://api.openai.com/v1/responses') {
+      const body = JSON.parse(options.body)
+      const images = body.input[0].content.filter(item => item.type === 'input_image')
+      assert.ok(images.length > 0)
+      assert.ok(images.every(item => item.image_url.startsWith('data:image/jpeg;base64,')))
+      return new Response(JSON.stringify({ output_text: JSON.stringify(validAnalysis()) }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+    }
+    throw new Error(`unexpected upstream ${target}`)
+  }
+
+  try {
+    const response = await handleWorkerRequest(new Request('https://worker.example/research/analyze', {
+      method: 'POST',
+      headers: { Origin: allowedOrigin, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ latitude: 22.72438, longitude: 32.10533, radius_km: 25, start_date: '2025-01-01', end_date: '2026-08-20', depth: 'quick', place_name: 'Nil, Egipt' }),
+    }), env)
+    const payload = await response.json()
+    assert.equal(response.status, 200)
+    assert.ok(payload.ai_visual_image_count > 0)
+    assert.ok(payload.visual_preflight_warnings.some(item => item.includes('Copernicus Data Space')))
+    assert.equal(payload.preview_images.some(item => item.source.includes('Copernicus Data Space')), false)
   } finally {
     globalThis.fetch = originalFetch
   }
