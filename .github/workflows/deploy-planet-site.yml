@@ -94,6 +94,9 @@ jobs:
           cache: npm
           cache-dependency-path: web/package-lock.json
 
+      - name: Validate Cloudflare planet configuration
+        run: node --test cloudflare/planet-site/test/*.test.mjs
+
       - name: Install web dependencies
         working-directory: web
         run: npm ci
@@ -127,8 +130,9 @@ jobs:
           fi
           echo 'Root-path Cloudflare frontend bundle verified.'
 
-      - name: Check whether terra-observation.dev is an active Cloudflare zone
+      - name: Check whether terra-observation.dev is visible as an active Cloudflare zone
         id: zone
+        continue-on-error: true
         shell: bash
         env:
           CLOUDFLARE_API_TOKEN: ${{ steps.credentials.outputs.cloudflare_api_token }}
@@ -164,9 +168,9 @@ jobs:
           fi
           echo "available=$available" >> "$GITHUB_OUTPUT"
           if [ "$available" = 'true' ]; then
-            echo 'Active terra-observation.dev zone found; custom-domain deployment will be attempted.'
+            echo 'Active terra-observation.dev zone found.'
           else
-            echo 'terra-observation.dev is not visible as an active zone to this token. workers.dev deployment will continue safely.'
+            echo 'The token could not confirm an active terra-observation.dev zone. The custom-domain step will still make one safe attempt after the fallback deployment.'
           fi
 
       - name: Deploy planet site to workers.dev
@@ -197,9 +201,8 @@ jobs:
           grep -Fq 'AI Research' /tmp/planet-app.js
           echo "Planet frontend is live at ${SITE_URL%/}/"
 
-      - name: Attach planet.terra-observation.dev when zone is available
+      - name: Attempt to attach planet.terra-observation.dev
         id: custom_domain_deploy
-        if: steps.zone.outputs.available == 'true'
         continue-on-error: true
         uses: cloudflare/wrangler-action@v4
         with:
@@ -212,6 +215,7 @@ jobs:
       - name: Verify custom planet domain
         id: verify_custom_domain
         if: steps.custom_domain_deploy.outcome == 'success'
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
@@ -228,7 +232,7 @@ jobs:
             echo "Custom domain certificate/DNS not ready yet (attempt $attempt/18; HTTP $status)."
             sleep 10
           done
-          echo 'Custom-domain deployment succeeded but the public hostname did not become ready in the verification window.'
+          echo 'Custom-domain attachment completed but the public hostname did not become ready in the verification window.'
           exit 1
 
       - name: Deployment summary
@@ -238,14 +242,16 @@ jobs:
           WORKERS_DEV_URL: ${{ steps.deploy.outputs.deployment-url }}
           ZONE_AVAILABLE: ${{ steps.zone.outputs.available }}
           CUSTOM_OUTCOME: ${{ steps.custom_domain_deploy.outcome }}
+          CUSTOM_VERIFY_OUTCOME: ${{ steps.verify_custom_domain.outcome }}
         run: |
           {
             echo '## Terra Observation Planet'
             echo
             echo "- workers.dev: ${WORKERS_DEV_URL:-not-returned}"
             echo "- requested custom domain: https://${PLANET_CUSTOM_DOMAIN}/"
-            echo "- terra-observation.dev active zone visible: ${ZONE_AVAILABLE:-false}"
+            echo "- terra-observation.dev active zone visible: ${ZONE_AVAILABLE:-unknown}"
             echo "- custom-domain deployment outcome: ${CUSTOM_OUTCOME:-not-attempted}"
+            echo "- custom-domain live verification: ${CUSTOM_VERIFY_OUTCOME:-not-attempted}"
             echo '- frontend: production Vite build served from Cloudflare Workers Static Assets'
             echo '- Evidence/OpenAI backend: existing restricted Cloudflare Evidence Worker'
             echo '- GitHub Pages remains available as the independent fallback publication'
