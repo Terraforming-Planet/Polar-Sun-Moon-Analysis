@@ -57,7 +57,7 @@ export function SimpleContestQuickAccess() {
 
     <LinkGrid links={FEATURE_LINKS} className="contest-feature-grid" />
 
-    <div className="contest-section-label"><b>Published tests</b><span>16 documented research cases</span></div>
+    <div className="contest-section-label"><b>Tests 1–16</b><span>16 documented research cases</span></div>
     <div className="contest-link-grid contest-test-grid">
       {PUBLIC_RESEARCH_TESTS.map(test => {
         const icon = ['010', '013', '014'].includes(test.testId) ? '🌊' : test.testId === '015' ? '🏔' : test.testId === '016' ? '🧭' : '💧'
