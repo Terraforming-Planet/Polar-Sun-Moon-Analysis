@@ -1,6 +1,7 @@
 import { PUBLIC_RESEARCH_TESTS } from './researchCatalog'
 
 import './simple-contest-quick-access.css'
+import './contest-research-flow.css'
 
 type QuickLink = {
   label: string
