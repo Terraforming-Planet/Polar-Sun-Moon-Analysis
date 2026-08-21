@@ -18,8 +18,16 @@ function selection(overrides: Partial<SatelliteTimeSelection> = {}): SatelliteTi
 }
 
 describe('terrain study selection', () => {
-  it('creates one study slot for every selected year', () => {
+  it('creates one study slot for every selected seasonal year', () => {
     expect(yearsForTerrainStudy(selection())).toEqual([2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019])
+  })
+
+  it('maps the five-year preset to exactly five calendar-year image slots', () => {
+    expect(yearsForTerrainStudy(selection({ preset: 'five-years', startYear: 2021, endYear: 2026 }))).toEqual([2022, 2023, 2024, 2025, 2026])
+  })
+
+  it('maps the one-year preset to exactly one image slot', () => {
+    expect(yearsForTerrainStudy(selection({ preset: 'one-year', startYear: 2025, endYear: 2026 }))).toEqual([2026])
   })
 
   it('does not create cloud-filtered yearly study slots in exact UTC mode', () => {
