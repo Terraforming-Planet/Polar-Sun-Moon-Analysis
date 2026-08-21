@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 
 import './ai-research.css'
 import './research-findings.css'
+import './simple-mode-resources.css'
 import { EvidenceExplainer } from './EvidenceExplainer'
 import { ResearchArchivePanel } from './ResearchArchivePanel'
 import { ResearchAreaBuilder } from './ResearchAreaBuilder'
