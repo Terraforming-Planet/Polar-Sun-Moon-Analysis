@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import './satellite-time-selector.css'
+import { installResearchGalleryEnhancements } from './researchGalleryEnhancements'
 import {
   SATELLITE_ARCHIVE_START,
   SATELLITE_TIME_MATCH_EVENT,
@@ -65,6 +66,8 @@ export function SatelliteTimeSelector() {
     window.addEventListener(SATELLITE_TIME_MATCH_EVENT, receive)
     return () => window.removeEventListener(SATELLITE_TIME_MATCH_EVENT, receive)
   }, [])
+
+  useEffect(() => installResearchGalleryEnhancements(), [])
 
   const requestedUtc = requestedSatelliteDateTimeUtc(selection)
 
