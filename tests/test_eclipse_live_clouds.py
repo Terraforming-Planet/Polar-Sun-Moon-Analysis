@@ -40,7 +40,10 @@ def test_eclipse_observatory_exposes_3d_research_areas_without_faking_path_limit
     assert 'id="future-cesium"' in source
     assert "OpenStreetMapImageryProvider" in source
     assert "PUNKT TESTOWY" in source
-    assert "marker „obszar testowy” jest punktem badawczym do ustawienia kamery, a nie granicą pasa zaćmienia" in source
+    assert (
+        "marker „obszar testowy” jest punktem badawczym do ustawienia kamery, "
+        "a nie granicą pasa zaćmienia"
+    ) in source
     assert "SEsearchmap.php?Ecl=20270206" in calendar
     assert '"evidence": "official-greatest-point"' in calendar
     assert '"evidence": "regional-test-point"' in calendar
