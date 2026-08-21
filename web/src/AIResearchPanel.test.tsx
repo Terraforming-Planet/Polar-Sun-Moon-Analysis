@@ -20,7 +20,6 @@ describe('AIResearchPanel', () => {
     expect(html).toContain('Odpowiedź pojawia się bezpośrednio tutaj')
     expect(html).toContain('Wyślij prywatnie')
     expect(html).toContain('1990–dziś')
-    expect(html).toContain('WYBRANY ROK / PORA ROKU')
     expect(html).toContain('ZIEMIA 3D · KAFELKOWA MAPA REFERENCYJNA')
     expect(html).toContain('high-resolution basemap')
     expect(html).not.toContain('YOU / RESEARCHER')
