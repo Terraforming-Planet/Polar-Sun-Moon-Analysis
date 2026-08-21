@@ -33,6 +33,12 @@ describe('AdvancedLegacyPanel', () => {
       'arctic-90n/risk-simulation.html',
       'arctic-90n/lesson-hidden-water.html',
       'arctic-90n/mini-experiments-lab.html',
+      'reports/copernicus-analysis.html',
+      'charts/copernicus/observation_timeline.png',
+      'data/copernicus/latest_results.json',
+      'published/l4-training-2026-08-19/',
+      'published/training-runs/site_20260819T223835Z/',
+      'published/training-runs/stream_gibs_20260820T013036Z/',
     ]
 
     for (const path of required) {
