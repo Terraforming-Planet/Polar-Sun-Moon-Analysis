@@ -61,6 +61,18 @@ const groups: LegacyGroup[] = [
     ],
   },
   {
+    title: 'Raporty, dane i treningi L4',
+    description: 'Starsze publiczne wyniki, dane pomocnicze i trzy opublikowane przebiegi treningowe.',
+    modules: [
+      { title: 'Copernicus analysis report', path: 'reports/copernicus-analysis.html', description: 'Opublikowany raport analizy Copernicus.' },
+      { title: 'Observation timeline', path: 'charts/copernicus/observation_timeline.png', description: 'Opublikowana oś czasu obserwacji Copernicus.' },
+      { title: 'Copernicus JSON data', path: 'data/copernicus/latest_results.json', description: 'Publiczne dane wynikowe używane przez starszy panel.' },
+      { title: 'L4 Training #1', path: 'published/l4-training-2026-08-19/', description: 'Pierwszy opublikowany raport treningu NVIDIA L4.' },
+      { title: 'L4 Training #2 · Site Corpus', path: 'published/training-runs/site_20260819T223835Z/', description: 'Opublikowany trening korpusu strony.' },
+      { title: 'L4 Training #3 · Streaming NASA GIBS', path: 'published/training-runs/stream_gibs_20260820T013036Z/', description: 'Opublikowany trening strumieniowych danych NASA GIBS.' },
+    ],
+  },
+  {
     title: 'Archiwum eksperymentów 001–016',
     description: 'Wszystkie opublikowane stare strony eksperymentów pozostają dostępne z jednego miejsca.',
     modules: experiments,
@@ -96,5 +108,4 @@ export function AdvancedLegacyPanel() {
   </section>
 }
 
-export const ADVANCED_LEGACY_PATHS = groups.flatMap(group => group.modules.map(module => module.path)
-)
+export const ADVANCED_LEGACY_PATHS = groups.flatMap(group => group.modules.map(module => module.path))
