@@ -15,6 +15,8 @@ MANIFEST = (
     / "manifest.json"
 )
 ARCHIVE = ROOT / "web" / "public" / "eclipse" / "2026-08-12" / "archive.json"
+LIVE_MANIFEST = ROOT / "web" / "public" / "eclipse" / "live" / "goes19-band02" / "manifest.json"
+CAPTURE_WORKFLOW = ROOT / ".github" / "workflows" / "capture-goes19-band02-eclipse-2026.yml"
 
 
 def load(path: Path) -> dict:
@@ -83,15 +85,38 @@ def test_planetary_archive_uses_only_official_nasa_or_jpl_sources() -> None:
         assert event.get("pia")
 
 
-def test_closed_2026_archive_matches_retained_noaa_manifest() -> None:
+def test_closed_2026_archive_matches_only_event_date_noaa_frames() -> None:
     archive = load(ARCHIVE)
     manifest = load(MANIFEST)
 
     assert archive["status"] == "closed-historical-archive"
+    assert archive["campaign_date"] == manifest["event_date"] == "2026-08-12"
     assert archive["frame_count"] == len(manifest["frames"]) == 5
     assert archive["source"] == manifest["source"]
     assert archive["product"] == manifest["product"]
     assert archive["satellite_observation"] is True
     assert archive["synthetic"] is False
     assert archive["model_overlay"] is False
+    assert all(frame["observed_utc"].startswith("2026-08-12T") for frame in manifest["frames"])
     assert all(len(frame["sha256"]) == 64 for frame in manifest["frames"])
+
+
+def test_post_event_noaa_frame_is_preserved_outside_historical_campaign() -> None:
+    live = load(LIVE_MANIFEST)
+    assert live["purpose"].startswith("post-event atmospheric context")
+    assert len(live["frames"]) == 1
+    frame = live["frames"][0]
+    assert frame["observed_utc"] == "2026-08-21T15:50:00Z"
+    assert frame["file"] == "20260821T155000Z_GOES19_BAND02_1808.jpg"
+    assert len(frame["sha256"]) == 64
+
+
+def test_closed_capture_workflow_is_read_only_and_cannot_append_frames() -> None:
+    workflow = CAPTURE_WORKFLOW.read_text(encoding="utf-8")
+    assert "permissions:\n  contents: read" in workflow
+    assert "verify-closed-archive" in workflow
+    assert "This workflow no longer captures or writes new frames." in workflow
+    assert "scripts/capture_goes19_band02_eclipse.py" not in workflow
+    assert "git push" not in workflow
+    assert "schedule:" not in workflow
+    assert "branches: [main]" not in workflow
