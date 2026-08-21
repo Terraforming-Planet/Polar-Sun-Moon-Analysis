@@ -6,21 +6,26 @@
   <title>Terra Observation — River helper map</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous" />
   <style>
-    html,body,#map{height:100%;margin:0;background:#f7fafc}body{font-family:Inter,system-ui,sans-serif;color:#172736}.leaflet-container{background:#f7fafc}.country-label{background:transparent;border:0;box-shadow:none;color:#243747;font-size:11px;font-weight:800;text-shadow:0 1px 0 #fff,1px 0 0 #fff,0 -1px 0 #fff,-1px 0 0 #fff;white-space:nowrap}.country-label:before{display:none}.target-label{background:#08324a;color:#fff;border:1px solid #45d7ff;border-radius:8px;padding:4px 7px;font-size:10px;font-weight:700;box-shadow:0 2px 12px rgba(0,0,0,.18)}.target-label:before{border-top-color:#08324a}.helper-status{position:absolute;z-index:900;left:10px;top:10px;max-width:min(390px,calc(100% - 70px));padding:8px 10px;border:1px solid #c8d8e4;border-radius:9px;background:rgba(255,255,255,.94);box-shadow:0 2px 14px rgba(22,48,70,.12);font-size:10px;line-height:1.45;color:#4c6171}.helper-status b{display:block;color:#17384b;font-size:11px}.helper-status.error{border-color:#d88;color:#842c2c}.leaflet-control-attribution{font-size:8px!important}
+    html,body,#map{height:100%;margin:0;background:#eef7fb}body{font-family:Inter,system-ui,sans-serif;color:#172736}.leaflet-container{background:#eef7fb}.country-label{background:transparent;border:0;box-shadow:none;color:#536874;font-size:10px;font-weight:800;text-shadow:0 1px 0 #fff,1px 0 0 #fff,0 -1px 0 #fff,-1px 0 0 #fff;white-space:nowrap}.country-label:before{display:none}.target-label{background:#08324a;color:#fff;border:1px solid #45d7ff;border-radius:8px;padding:4px 7px;font-size:10px;font-weight:700;box-shadow:0 2px 12px rgba(0,0,0,.18)}.target-label:before{border-top-color:#08324a}.helper-status{position:absolute;z-index:900;left:10px;top:10px;max-width:min(430px,calc(100% - 70px));padding:8px 10px;border:1px solid #b9d7e5;border-radius:9px;background:rgba(255,255,255,.94);box-shadow:0 2px 14px rgba(22,48,70,.12);font-size:10px;line-height:1.45;color:#4c6171}.helper-status b{display:block;color:#0d4663;font-size:11px}.helper-status.error{border-color:#d88;color:#842c2c}.helper-status .ok{color:#0879a5;font-weight:800}.leaflet-control-attribution{font-size:8px!important}
   </style>
 </head>
 <body>
-  <div id="map" aria-label="River helper map showing countries and rivers"></div>
-  <div id="status" class="helper-status"><b>River helper map</b>Country names + major rivers. Province and district borders are intentionally hidden.</div>
+  <div id="map" aria-label="Hydrology map showing rivers, streams, canals and lakes"></div>
+  <div id="status" class="helper-status"><b>Hydrology map</b>Loading rivers and water bodies… Province and district borders are intentionally hidden.</div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
   <script>
     (() => {
       const query = new URLSearchParams(location.search)
       const lat = Number(query.get('lat'))
       const lon = Number(query.get('lon'))
+      const radiusKm = Math.min(500, Math.max(1, Number(query.get('radius')) || 25))
+      const shape = ['circle','square','triangle'].includes(query.get('shape')) ? query.get('shape') : 'circle'
       const label = query.get('label') || 'Selected research area'
-      const center = Number.isFinite(lat) && Number.isFinite(lon) ? [lat, lon] : [20, 10]
-      const map = L.map('map', { zoomControl: true, preferCanvas: true }).setView(center, Number.isFinite(lat) ? 6 : 3)
+      const hydrologyMode = query.get('mode') === 'hydrology'
+      const editable = query.get('editable') === '1'
+      const hasCenter = Number.isFinite(lat) && Number.isFinite(lon)
+      const center = hasCenter ? [lat, lon] : [20, 10]
+      const map = L.map('map', { zoomControl: true, preferCanvas: true }).setView(center, hasCenter ? 7 : 3)
       const status = document.getElementById('status')
 
       L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
@@ -28,7 +33,24 @@
         attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
       }).addTo(map)
 
-      if (Number.isFinite(lat) && Number.isFinite(lon)) {
+      let aoiLayer = null
+      const drawAoi = () => {
+        if (!hasCenter) return
+        const latDelta = radiusKm / 111.32
+        const lonScale = Math.max(.15, Math.cos(lat * Math.PI / 180))
+        const lonDelta = radiusKm / (111.32 * lonScale)
+        if (shape === 'square') {
+          aoiLayer = L.rectangle([[lat-latDelta,lon-lonDelta],[lat+latDelta,lon+lonDelta]], {color:'#04b9e8',weight:2,fillColor:'#45d7ff',fillOpacity:.07}).addTo(map)
+        } else if (shape === 'triangle') {
+          aoiLayer = L.polygon([[lat+latDelta,lon],[lat-latDelta,lon-lonDelta],[lat-latDelta,lon+lonDelta]], {color:'#04b9e8',weight:2,fillColor:'#45d7ff',fillOpacity:.07}).addTo(map)
+        } else {
+          aoiLayer = L.circle(center, {radius:radiusKm*1000,color:'#04b9e8',weight:2,fillColor:'#45d7ff',fillOpacity:.06}).addTo(map)
+        }
+        if (aoiLayer?.getBounds) map.fitBounds(aoiLayer.getBounds(), {padding:[22,22],maxZoom:11})
+      }
+
+      if (hasCenter) {
+        drawAoi()
         L.circleMarker(center, {
           radius: 6,
           color: '#073b56',
@@ -36,6 +58,17 @@
           fillColor: '#45d7ff',
           fillOpacity: 1
         }).addTo(map).bindTooltip(label, { permanent: false, direction: 'top', className: 'target-label' })
+      }
+
+      if (editable) {
+        map.getContainer().style.cursor = 'crosshair'
+        map.on('click', event => {
+          const latitude = Number(event.latlng.lat.toFixed(6))
+          const longitude = Number(event.latlng.lng.toFixed(6))
+          if (window.parent !== window) {
+            window.parent.postMessage({ type:'terra-river-map-point', latitude, longitude }, location.origin)
+          }
+        })
       }
 
       const sources = {
@@ -50,11 +83,39 @@
         return response.json()
       }
 
+      const loadLocalWaterways = async () => {
+        if (!hasCenter) return 0
+        const localRadiusKm = Math.min(100, Math.max(8, radiusKm))
+        const latDelta = localRadiusKm / 111.32
+        const lonScale = Math.max(.15, Math.cos(lat * Math.PI / 180))
+        const lonDelta = localRadiusKm / (111.32 * lonScale)
+        const bbox = `${lat-latDelta},${lon-lonDelta},${lat+latDelta},${lon+lonDelta}`
+        const overpass = `[out:json][timeout:15];(way["waterway"~"river|stream|canal|drain|ditch"](${bbox}););out geom;`
+        const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(overpass)}`
+        const response = await fetch(url, { headers: { Accept: 'application/json' } })
+        if (!response.ok) throw new Error(`Overpass HTTP ${response.status}`)
+        const payload = await response.json()
+        let count = 0
+        for (const element of Array.isArray(payload?.elements) ? payload.elements : []) {
+          if (!Array.isArray(element?.geometry) || element.geometry.length < 2) continue
+          const points = element.geometry.map(point => [Number(point.lat), Number(point.lon)]).filter(point => Number.isFinite(point[0]) && Number.isFinite(point[1]))
+          if (points.length < 2) continue
+          const kind = element?.tags?.waterway || 'waterway'
+          const weight = kind === 'river' ? 2.7 : kind === 'canal' ? 2.1 : kind === 'stream' ? 1.55 : 1.15
+          L.polyline(points, { color:'#007fbd', weight, opacity:.94, interactive:false }).addTo(map)
+          count += 1
+        }
+        return count
+      }
+
       Promise.all([loadJson(sources.countries), loadJson(sources.rivers), loadJson(sources.lakes)])
-        .then(([countries, rivers, lakes]) => {
-          const countryLayer = L.geoJSON(countries, {
-            style: { color: '#9fb2bf', weight: .65, opacity: .8, fillColor: '#ffffff', fillOpacity: .06 },
+        .then(async ([countries, rivers, lakes]) => {
+          L.geoJSON(countries, {
+            style: hydrologyMode
+              ? { color: '#b9c7cf', weight: .45, opacity: .45, fillOpacity: 0 }
+              : { color: '#9fb2bf', weight: .65, opacity: .75, fillColor: '#ffffff', fillOpacity: .04 },
             onEachFeature: (feature, layer) => {
+              if (hydrologyMode) return
               const name = feature?.properties?.ADMIN || feature?.properties?.NAME_EN || feature?.properties?.NAME
               if (!name || !layer.getBounds) return
               L.marker(layer.getBounds().getCenter(), {
@@ -65,26 +126,29 @@
           }).addTo(map)
 
           L.geoJSON(lakes, {
-            style: { color: '#56a9d6', weight: .7, fillColor: '#d8eff9', fillOpacity: .72 }
+            style: { color: '#35a5d4', weight: 1, fillColor: '#bfe8f6', fillOpacity: .82 }
           }).addTo(map)
 
           L.geoJSON(rivers, {
             style: feature => {
               const scale = Number(feature?.properties?.scalerank ?? 7)
-              const weight = scale <= 3 ? 2.2 : scale <= 6 ? 1.45 : .9
-              return { color: '#168bc2', weight, opacity: .92 }
+              const weight = scale <= 3 ? 3 : scale <= 6 ? 2 : 1.2
+              return { color: '#0087c4', weight, opacity: .98 }
             }
           }).addTo(map)
 
-          if (countryLayer && status) {
-            status.innerHTML = '<b>River helper map</b>Natural Earth country names, country outlines, major lakes and river centerlines. No province/admin-1 borders or local-place label layer.'
+          let localCount = 0
+          try { localCount = await loadLocalWaterways() } catch (error) { console.warn('Local OSM waterways unavailable', error) }
+          if (status) {
+            status.classList.remove('error')
+            status.innerHTML = `<b>Hydrology map</b><span class="ok">Rivers loaded.</span> Natural Earth major rivers/lakes${localCount ? ` + ${localCount} local OpenStreetMap waterways` : ''}. Province and district borders are intentionally hidden.`
           }
         })
         .catch(error => {
           console.error(error)
           if (status) {
             status.classList.add('error')
-            status.innerHTML = '<b>Hydrology overlays unavailable</b>The clean base map is still available, but Natural Earth country/river layers could not be loaded. Retry when network access is restored.'
+            status.innerHTML = '<b>Hydrology overlays unavailable</b>The clean base map and selected AOI are still available. Province and district borders are intentionally hidden. Retry when public river sources are reachable.'
           }
         })
     })()

@@ -1,4 +1,4 @@
-import { useMemo, useState, type MouseEvent as ReactMouseEvent } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import './ai-research-map.css'
 import { ResearchDataPreview } from './ResearchDataPreview'
@@ -52,10 +52,43 @@ function formatCoordinate(value: number) {
   return Number.isFinite(value) ? value.toFixed(5) : '0.00000'
 }
 
+type SyncedPlace = { label: string; latitude: number; longitude: number }
+
+function selectedPlaceFromSimpleMap(): SyncedPlace | null {
+  if (typeof document === 'undefined') return null
+  const frame = document.querySelector<HTMLIFrameElement>('.simple-river-helper iframe')
+  if (!frame?.src) return null
+  try {
+    const url = new URL(frame.src, window.location.href)
+    const latitude = Number(url.searchParams.get('lat'))
+    const longitude = Number(url.searchParams.get('lon'))
+    const label = url.searchParams.get('label')?.trim() || 'Selected research area'
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return null
+    return { label, latitude, longitude }
+  } catch {
+    return null
+  }
+}
+
+function hydrologyMapUrl(latitude: number, longitude: number, label: string, radiusKm: number, shape: ResearchAreaShape) {
+  const params = new URLSearchParams({
+    lat: String(latitude),
+    lon: String(longitude),
+    label,
+    radius: String(radiusKm),
+    shape,
+    mode: 'hydrology',
+    editable: '1',
+  })
+  return `${import.meta.env.BASE_URL}river-helper-map/index.html?${params.toString()}`
+}
+
 export function ResearchAreaBuilder({ onOpenArchive }: { onOpenArchive: () => void }) {
+  const initialPlace = selectedPlaceFromSimpleMap()
   const [title, setTitle] = useState('New area research')
-  const [latitude, setLatitude] = useState(53.5914)
-  const [longitude, setLongitude] = useState(19.010717)
+  const [latitude, setLatitude] = useState(initialPlace?.latitude ?? 53.5914)
+  const [longitude, setLongitude] = useState(initialPlace?.longitude ?? 19.010717)
+  const [mapLabel, setMapLabel] = useState(initialPlace?.label ?? 'Kuchnia / Olszówka')
   const [radiusKm, setRadiusKm] = useState(25)
   const [shape, setShape] = useState<ResearchAreaShape>('circle')
   const [startDate, setStartDate] = useState('1990-01-01')
@@ -63,33 +96,53 @@ export function ResearchAreaBuilder({ onOpenArchive }: { onOpenArchive: () => vo
   const [temporalPreset, setTemporalPreset] = useState<ResearchTemporalPreset>('custom')
   const [periodYear, setPeriodYear] = useState(2026)
   const [exactDate, setExactDate] = useState('2026-08-20')
-  const [googleQuery, setGoogleQuery] = useState('Kuchnia Olszówka')
+  const [googleQuery, setGoogleQuery] = useState(initialPlace?.label ?? 'Kuchnia Olszówka')
   const [googleLocation, setGoogleLocation] = useState('')
   const [analyses, setAnalyses] = useState<ResearchAnalysisKind[]>(['water-change', 'hydrology', 'terrain'])
   const [notes, setNotes] = useState('')
   const [saved, setSaved] = useState<ResearchManifest | null>(null)
   const [error, setError] = useState('')
 
-  const markerStyle = useMemo(() => ({
-    left: `${((longitude + 180) / 360) * 100}%`,
-    top: `${((90 - latitude) / 180) * 100}%`,
-  }), [latitude, longitude])
+  const riverMapUrl = useMemo(
+    () => hydrologyMapUrl(latitude, longitude, mapLabel, radiusKm, shape),
+    [latitude, longitude, mapLabel, radiusKm, shape],
+  )
 
-  const areaOutlineStyle = useMemo(() => {
-    const size = clamp(28 + Math.log10(Math.max(1, radiusKm)) * 24, 30, 105)
-    return { ...markerStyle, width: `${size}px`, height: `${size}px` }
-  }, [markerStyle, radiusKm])
+  useEffect(() => {
+    const syncFromSimpleResearch = () => {
+      const selected = selectedPlaceFromSimpleMap()
+      if (!selected) return
+      setLatitude(current => Math.abs(current - selected.latitude) < 1e-7 ? current : selected.latitude)
+      setLongitude(current => Math.abs(current - selected.longitude) < 1e-7 ? current : selected.longitude)
+      setMapLabel(current => current === selected.label ? current : selected.label)
+      setGoogleQuery(current => current === selected.label ? current : selected.label)
+    }
+
+    syncFromSimpleResearch()
+    const observer = new MutationObserver(syncFromSimpleResearch)
+    observer.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['src'] })
+
+    const receiveMapPoint = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return
+      const payload = event.data as { type?: unknown; latitude?: unknown; longitude?: unknown }
+      if (payload?.type !== 'terra-river-map-point') return
+      const nextLatitude = Number(payload.latitude)
+      const nextLongitude = Number(payload.longitude)
+      if (!Number.isFinite(nextLatitude) || !Number.isFinite(nextLongitude)) return
+      setLatitude(Number(nextLatitude.toFixed(6)))
+      setLongitude(Number(nextLongitude.toFixed(6)))
+      setMapLabel(`Wybrany punkt ${nextLatitude.toFixed(4)}, ${nextLongitude.toFixed(4)}`)
+    }
+    window.addEventListener('message', receiveMapPoint)
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('message', receiveMapPoint)
+    }
+  }, [])
 
   const toggleAnalysis = (kind: ResearchAnalysisKind) => {
     setAnalyses(current => current.includes(kind) ? current.filter(item => item !== kind) : [...current, kind])
-  }
-
-  const chooseFromMap = (event: ReactMouseEvent<HTMLDivElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect()
-    const x = clamp((event.clientX - rect.left) / rect.width, 0, 1)
-    const y = clamp((event.clientY - rect.top) / rect.height, 0, 1)
-    setLongitude(Number((x * 360 - 180).toFixed(5)))
-    setLatitude(Number((90 - y * 180).toFixed(5)))
   }
 
   const applyTemporalPreset = (preset: ResearchTemporalPreset, year = periodYear, date = exactDate) => {
@@ -123,9 +176,20 @@ export function ResearchAreaBuilder({ onOpenArchive }: { onOpenArchive: () => vo
       setError('Could not read the coordinates. Paste a Google Maps link containing coordinates or enter a pair such as 53.5914, 19.010717.')
       return
     }
-    setLatitude(Number(parsed.latitude.toFixed(6)))
-    setLongitude(Number(parsed.longitude.toFixed(6)))
+    const nextLatitude = Number(parsed.latitude.toFixed(6))
+    const nextLongitude = Number(parsed.longitude.toFixed(6))
+    setLatitude(nextLatitude)
+    setLongitude(nextLongitude)
+    setMapLabel(`Wybrany punkt ${nextLatitude.toFixed(4)}, ${nextLongitude.toFixed(4)}`)
     setError('')
+  }
+
+  const applyPreset = (label: string, nextLatitude: number, nextLongitude: number, nextRadius: number) => {
+    setLatitude(nextLatitude)
+    setLongitude(nextLongitude)
+    setRadiusKm(nextRadius)
+    setMapLabel(label)
+    setGoogleQuery(label)
   }
 
   const prepareManifest = () => {
@@ -217,8 +281,8 @@ export function ResearchAreaBuilder({ onOpenArchive }: { onOpenArchive: () => vo
       </div>
 
       <aside className="research-map-card panel">
-        <div className="research-section-head"><div><small>GOOGLE MAPS + GLOBAL AREA PICKER</small><h2>Find a place and mark the area</h2></div></div>
-        <p className="muted">You can search a place in Google Maps, then paste coordinates or a link. On the project map, tap to set the AOI center.</p>
+        <div className="research-section-head"><div><small>MAPA HYDROLOGICZNA · RZEKI + WODY</small><h2>Znajdź miejsce i zaznacz obszar</h2></div><span className="evidence-badge observation">ZSYNCHRONIZOWANA Z „ZBADAJ TEREN”</span></div>
+        <p className="muted">Po wyszukaniu miejsca wyżej ta mapa automatycznie przechodzi do tego samego punktu. Pokazuje przede wszystkim rzeki, cieki i jeziora. Kliknij mapę, aby zmienić środek AOI.</p>
 
         <div className="research-google-tools">
           <label className="research-field">Search Google Maps<input value={googleQuery} onChange={event => setGoogleQuery(event.target.value)} placeholder="e.g. Gniew, Vistula, Poland" /></label>
@@ -227,23 +291,22 @@ export function ResearchAreaBuilder({ onOpenArchive }: { onOpenArchive: () => vo
           <button type="button" className="secondary" onClick={importGoogleLocation}>Set point from Google Maps</button>
         </div>
 
-        <div className="research-world-picker" role="application" aria-label="Choose coordinates on the world map" onClick={chooseFromMap}>
-          <div className="research-world-grid" />
-          <span className="world-label north">90°N</span><span className="world-label south">90°S</span>
-          <span className="world-label west">180°W</span><span className="world-label east">180°E</span>
-          <span className="world-label equator">0°</span>
-          <span className={`research-area-outline ${shape}`} style={areaOutlineStyle} aria-hidden="true" />
-          <span className="research-map-marker" style={markerStyle} aria-hidden="true"><i /></span>
-        </div>
+        <iframe
+          className="research-hydrology-map"
+          title={`Mapa hydrologiczna dla ${mapLabel}`}
+          src={riverMapUrl}
+          loading="lazy"
+        />
         <div className="research-map-readout">
           <b>{formatCoordinate(latitude)}°, {formatCoordinate(longitude)}°</b>
           <span>{researchShapeLabel(shape)} · {radiusKm} km</span>
         </div>
+        <p className="research-hydrology-note">Natural Earth + OpenStreetMap: główne rzeki i jeziora globalnie, a dla lokalnego AOI dodatkowo szczegółowe cieki OSM. Granice administracyjne są ograniczone, żeby nie zasłaniały hydrologii.</p>
         <a className="research-current-google-link" href={googleMapsCoordinateUrl(latitude, longitude)} target="_blank" rel="noreferrer">Show selected center in Google Maps ↗</a>
         <div className="research-map-presets">
-          <button type="button" onClick={() => { setLatitude(53.5914); setLongitude(19.010717); setRadiusKm(25) }}>Kuchnia / Olszówka</button>
-          <button type="button" onClick={() => { setLatitude(53.66); setLongitude(18.79); setRadiusKm(80) }}>Vistula Gniew–Grudziądz</button>
-          <button type="button" onClick={() => { setLatitude(30.234961); setLongitude(83.056124); setRadiusKm(150) }}>Himalayas / Tibet</button>
+          <button type="button" onClick={() => applyPreset('Kuchnia / Olszówka', 53.5914, 19.010717, 25)}>Kuchnia / Olszówka</button>
+          <button type="button" onClick={() => applyPreset('Vistula Gniew–Grudziądz', 53.66, 18.79, 80)}>Vistula Gniew–Grudziądz</button>
+          <button type="button" onClick={() => applyPreset('Himalayas / Tibet', 30.234961, 83.056124, 150)}>Himalayas / Tibet</button>
         </div>
       </aside>
     </div>
