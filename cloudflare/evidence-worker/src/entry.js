@@ -6,6 +6,7 @@ import { GEOCODE_PATH, handleGeocodeProxy } from './geocodeProxy.js'
 import { LANDSAT_PROXY_PATH, handleLandsatProxy } from './landsatProxy.js'
 import { RESEARCH_CHAT_PATH, handleResearchChat } from './researchChat.js'
 
+// This entrypoint change intentionally triggers one production deploy so the live /research/analyze smoke result is persisted and auditable.
 export async function handleWorkerRequest(request, env = {}, context) {
   const url = new URL(request.url)
   if (url.pathname === GEOCODE_PATH) return handleGeocodeProxy(request, env)
