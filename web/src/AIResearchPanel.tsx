@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 
 import './ai-research.css'
 import './research-findings.css'
+import './simple-mode-resources.css'
 import { EvidenceExplainer } from './EvidenceExplainer'
 import { ResearchArchivePanel } from './ResearchArchivePanel'
 import { ResearchAreaBuilder } from './ResearchAreaBuilder'
@@ -12,8 +13,111 @@ import {
   type EvidenceCaseSummary,
   type TrainingContextSummary,
 } from './lib/evidenceApi'
+import { PUBLIC_RESEARCH_TESTS } from './researchCatalog'
 
 type ResearchView = 'new' | 'archive' | 'explain'
+type SimpleResource = 'tests' | 'training-1' | 'training-2' | 'training-3'
+
+const SIMPLE_TRAININGS = {
+  'training-1': {
+    label: 'Training 1',
+    title: 'NVIDIA L4 baseline',
+    description: 'First published GPU baseline and CUDA research path.',
+    path: 'published/l4-training-2026-08-19/',
+  },
+  'training-2': {
+    label: 'Training 2',
+    title: 'NVIDIA L4 site corpus',
+    description: 'Expanded research corpus and published training/evaluation report.',
+    path: 'published/training-runs/site_20260819T223835Z/',
+  },
+  'training-3': {
+    label: 'Training 3',
+    title: 'Streaming NASA GIBS',
+    description: 'Large streaming NASA GIBS training/evaluation run across global research regions.',
+    path: 'published/training-runs/stream_gibs_20260820T013036Z/',
+  },
+} as const
+
+const SIMPLE_STATIONS = [
+  {
+    label: '90°N · ARCTIC',
+    title: 'Arctic Research Station',
+    description: 'Ice, sea, polar geometry and Arctic observations.',
+    path: 'arctic-90n/',
+  },
+  {
+    label: 'SAHARA',
+    title: 'Sahara Research Station',
+    description: 'DEM, paleochannels, terrain and dryland hydrology.',
+    path: 'sahara-station/',
+  },
+  {
+    label: 'OCEANS',
+    title: 'Ocean Research Station',
+    description: 'Bathymetry, coastlines, temperature and ocean observations.',
+    path: 'ocean-station/',
+  },
+  {
+    label: '8 × 8 × 8',
+    title: 'Earth–Space 512 Station',
+    description: '512-cell Earth–Moon–Sun research and navigation workspace.',
+    path: 'earth-space-512/',
+  },
+] as const
+
+function publicPath(path: string) {
+  return `${import.meta.env.BASE_URL}${path.replace(/^\/+/, '')}`
+}
+
+function SimpleResourceTabs() {
+  const [resource, setResource] = useState<SimpleResource | null>(null)
+
+  const toggle = (next: SimpleResource) => setResource(current => current === next ? null : next)
+  const training = resource && resource !== 'tests' ? SIMPLE_TRAININGS[resource] : null
+
+  return <section className="simple-resource-strip" aria-label="Published tests and NVIDIA L4 training">
+    <div className="simple-resource-tabs" role="tablist" aria-label="Simple research references">
+      <button type="button" role="tab" aria-selected={resource === 'tests'} className={resource === 'tests' ? 'active' : ''} onClick={() => toggle('tests')}>
+        <b>Tests 1–16</b><span>one published test set</span>
+      </button>
+      {(Object.keys(SIMPLE_TRAININGS) as Array<keyof typeof SIMPLE_TRAININGS>).map(key => {
+        const item = SIMPLE_TRAININGS[key]
+        return <button type="button" role="tab" aria-selected={resource === key} className={resource === key ? 'active' : ''} key={key} onClick={() => toggle(key)}>
+          <b>{item.label}</b><span>NVIDIA L4</span>
+        </button>
+      })}
+    </div>
+
+    {resource === 'tests' && <div className="simple-resource-panel" role="tabpanel" id="simple-tests-1-16">
+      <div className="simple-resource-panel-head">
+        <div><small>PUBLISHED RESEARCH</small><h2>Tests 1–16</h2></div>
+        <span>One collection · sixteen documented studies</span>
+      </div>
+      <div className="simple-test-grid">
+        {PUBLIC_RESEARCH_TESTS.map(test => <a key={test.testId} href={publicPath(test.publicPath)}>
+          <b>{test.label}</b><span>{test.title}</span>
+        </a>)}
+      </div>
+    </div>}
+
+    {training && <div className="simple-resource-panel simple-training-card" role="tabpanel">
+      <div><small>NVIDIA L4 · PUBLISHED TRAINING / EVALUATION</small><h2>{training.title}</h2><p>{training.description}</p></div>
+      <a className="button-link" href={publicPath(training.path)}>Open {training.label} report</a>
+    </div>}
+  </section>
+}
+
+function SimpleStationLinks() {
+  return <section className="simple-stations" aria-label="Research stations">
+    <div className="simple-stations-head"><small>RESEARCH STATIONS · QUICK ACCESS</small><h2>Continue with a specialist station</h2><p>The simple workflow stays focused on area search. Specialist stations are kept together at the bottom when you need a dedicated research environment.</p></div>
+    <div className="simple-station-grid">
+      {SIMPLE_STATIONS.map(station => <a key={station.path} href={publicPath(station.path)}>
+        <small>{station.label}</small><b>{station.title}</b><span>{station.description}</span><em>Open station →</em>
+      </a>)}
+    </div>
+  </section>
+}
 
 export function AIResearchPanel({ simpleOnly = false }: { simpleOnly?: boolean }) {
   const endpoint = useMemo(() => normalizeEvidenceApiUrl(import.meta.env.VITE_EVIDENCE_API_URL), [])
@@ -50,12 +154,14 @@ export function AIResearchPanel({ simpleOnly = false }: { simpleOnly?: boolean }
         <div>
           <small>OPENAI · COPERNICUS · NASA · USGS · 3D EARTH</small>
           <h1>Research any place on Earth</h1>
-          <p>Search a place, inspect the high-resolution 3D Earth reference view, review official satellite evidence and ask the assistant. Your question text is private session context and is not written to the archive.</p>
+          <p>Search a place, ask the private research assistant, then inspect the high-resolution 3D Earth reference view and official satellite evidence. Your question text stays only in the current browser-tab session.</p>
         </div>
         <span className="evidence-badge observation">SIMPLE VIEW</span>
       </div>
+      <SimpleResourceTabs />
       {!endpoint && <p className="notice">The public AI Worker is not configured in this build.</p>}
       <SimpleResearchAssistant apiUrl={endpoint} advanced={advancedBuilder} modePolicy="simple" />
+      <SimpleStationLinks />
     </section>
   }
 
