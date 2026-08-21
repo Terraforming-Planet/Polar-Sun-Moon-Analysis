@@ -84,7 +84,7 @@ export function SatelliteTimeSelector() {
       <div><small>CZAS OBSERWACJI · OFICJALNE ARCHIWA SATELITARNE</small><h2>Wybierz datę zdjęć</h2></div>
       <span className="evidence-badge observation">1972 → DZIŚ</span>
     </div>
-    <p className="satellite-time-note">Najwcześniejsza data tego porównywalnego archiwum lądowego to <b>23.07.1972</b> — start Landsat 1. W badaniach wieloletnich system szuka dla każdego rocznika obrazu z minimalnym zachmurzeniem do analizy terenu i zachowuje osobno oryginalną scenę. Tryb <b>dokładna data + godzina</b> zawsze pozostawia oryginalną obserwację, nawet z chmurami.</p>
+    <p className="satellite-time-note">Najwcześniejsza data tego porównywalnego archiwum lądowego to <b>23.07.1972</b> — start Landsat 1. Tryb <b>Pory roku</b> porównuje kolejne roczniki w tym samym sezonie. W badaniach wieloletnich system szuka dla każdego rocznika obrazu z minimalnym zachmurzeniem do analizy terenu i zachowuje osobno oryginalną scenę. Tryb <b>dokładna data + godzina</b> zawsze pozostawia oryginalną obserwację, nawet z chmurami.</p>
 
     <div className="satellite-time-presets" role="group" aria-label="Szybki zakres czasu">
       {PRESETS.map(item => <button key={item.id} type="button" className={selection.preset === item.id ? 'active' : ''} onClick={() => applyPreset(item.id)}>{item.label}</button>)}
