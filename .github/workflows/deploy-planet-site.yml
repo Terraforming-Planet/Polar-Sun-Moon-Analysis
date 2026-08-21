@@ -1,0 +1,258 @@
+name: Deploy Terra Observation Planet Site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'web/**'
+      - 'published/**'
+      - 'config/evidence-worker-url.txt'
+      - 'cloudflare/planet-site/**'
+      - '.github/workflows/deploy-planet-site.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: terra-observation-planet-production
+  cancel-in-progress: false
+
+env:
+  PLANET_CUSTOM_DOMAIN: planet.terra-observation.dev
+  PLANET_ZONE: terra-observation.dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify required deployment secrets exist
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo 'Missing CLOUDFLARE_API_TOKEN repository secret.'; exit 1; }
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo 'Missing CLOUDFLARE_ACCOUNT_ID repository secret.'; exit 1; }
+          echo 'Cloudflare deployment secret names are configured. Values are not printed.'
+
+      - name: Normalize Cloudflare credentials
+        id: credentials
+        shell: bash
+        env:
+          RAW_CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          RAW_CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os
+          from pathlib import Path
+
+          pairs = (
+              ('RAW_CLOUDFLARE_API_TOKEN', 'cloudflare_api_token'),
+              ('RAW_CLOUDFLARE_ACCOUNT_ID', 'cloudflare_account_id'),
+          )
+          output = Path(os.environ['GITHUB_OUTPUT'])
+          values = []
+          for source, target in pairs:
+              raw = os.environ.get(source, '')
+              clean = raw.replace('\r', '').replace('\n', '').strip(' \t')
+              if not clean:
+                  raise SystemExit(f'{source} is empty after normalization.')
+              print(f'::add-mask::{clean}')
+              values.append((target, clean))
+          with output.open('a', encoding='utf-8') as handle:
+              for target, clean in values:
+                  handle.write(f'{target}={clean}\n')
+          print('Cloudflare credentials normalized and masked.')
+          PY
+
+      - name: Resolve existing Evidence API URL
+        id: evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s config/evidence-worker-url.txt || { echo 'Missing config/evidence-worker-url.txt.'; exit 1; }
+          worker_url=$(tr -d '\r\n' < config/evidence-worker-url.txt)
+          worker_url="${worker_url%/}"
+          [[ "$worker_url" == https://*.workers.dev ]] || {
+            echo 'Persisted Evidence API URL must be an HTTPS workers.dev URL.'
+            exit 1
+          }
+          echo "url=$worker_url" >> "$GITHUB_OUTPUT"
+          echo 'Evidence API URL resolved from the existing public Worker configuration.'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Validate Cloudflare planet configuration
+        run: node --test cloudflare/planet-site/test/*.test.mjs
+
+      - name: Install web dependencies
+        working-directory: web
+        run: npm ci
+
+      - name: Run web tests
+        working-directory: web
+        run: npm test
+
+      - name: Build root-path Cloudflare frontend
+        working-directory: web
+        env:
+          TERRA_PUBLIC_BASE: /
+          VITE_EVIDENCE_API_URL: ${{ steps.evidence.outputs.url }}
+        run: npm run build
+
+      - name: Add published public research artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s web/dist/index.html
+          test -d web/dist/assets
+          if [ -d published ]; then
+            mkdir -p web/dist/published
+            cp -R published/. web/dist/published/
+            find web/dist/published -type f \( -iname '*.tif' -o -iname '*.tiff' -o -iname '*.zip' \) -delete
+          fi
+          grep -q 'src="/assets/' web/dist/index.html
+          if grep -q 'src="/Polar-Sun-Moon-Analysis/assets/' web/dist/index.html; then
+            echo 'Cloudflare build still contains the GitHub Pages asset prefix.'
+            exit 1
+          fi
+          echo 'Root-path Cloudflare frontend bundle verified.'
+
+      - name: Check whether terra-observation.dev is visible as an active Cloudflare zone
+        id: zone
+        continue-on-error: true
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ steps.credentials.outputs.cloudflare_api_token }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ steps.credentials.outputs.cloudflare_account_id }}
+        run: |
+          set -euo pipefail
+          status=$(curl --silent --show-error \
+            --output /tmp/terra-zone.json \
+            --write-out '%{http_code}' \
+            --get 'https://api.cloudflare.com/client/v4/zones' \
+            --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            --header 'Content-Type: application/json' \
+            --data-urlencode "name=$PLANET_ZONE" \
+            --data-urlencode "account.id=$CLOUDFLARE_ACCOUNT_ID" \
+            --data-urlencode 'status=active' || true)
+
+          available=false
+          if [ "$status" = '200' ]; then
+            available=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          try:
+              payload = json.loads(Path('/tmp/terra-zone.json').read_text(encoding='utf-8'))
+              ok = payload.get('success') is True and any(
+                  item.get('name') == 'terra-observation.dev' and item.get('status') == 'active'
+                  for item in payload.get('result', []) if isinstance(item, dict)
+              )
+              print('true' if ok else 'false')
+          except Exception:
+              print('false')
+          PY
+            )
+          fi
+          echo "available=$available" >> "$GITHUB_OUTPUT"
+          if [ "$available" = 'true' ]; then
+            echo 'Active terra-observation.dev zone found.'
+          else
+            echo 'The token could not confirm an active terra-observation.dev zone. The custom-domain step will still make one safe attempt after the fallback deployment.'
+          fi
+
+      - name: Deploy planet site to workers.dev
+        id: deploy
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ steps.credentials.outputs.cloudflare_api_token }}
+          accountId: ${{ steps.credentials.outputs.cloudflare_account_id }}
+          workingDirectory: cloudflare/planet-site
+          wranglerVersion: '4'
+
+      - name: Verify workers.dev planet site
+        id: verify_workers_dev
+        shell: bash
+        env:
+          SITE_URL: ${{ steps.deploy.outputs.deployment-url }}
+        run: |
+          set -euo pipefail
+          test -n "$SITE_URL" || { echo 'Cloudflare did not return a planet-site deployment URL.'; exit 1; }
+          [[ "$SITE_URL" == https://* ]] || { echo 'Planet-site deployment URL must use HTTPS.'; exit 1; }
+          curl --fail --silent --show-error --retry 8 --retry-delay 3 --retry-all-errors \
+            "${SITE_URL%/}/" > /tmp/planet-index.html
+          grep -qi '<!doctype html' /tmp/planet-index.html
+          asset_path=$(grep -oE 'src="/assets/[^"]+\.js"' /tmp/planet-index.html | head -1 | cut -d'"' -f2)
+          test -n "$asset_path" || { echo 'Root-path Vite asset was not found in deployed HTML.'; exit 1; }
+          curl --fail --silent --show-error --retry 5 --retry-delay 2 --retry-all-errors \
+            "${SITE_URL%/}${asset_path}" > /tmp/planet-app.js
+          grep -Fq 'AI Research' /tmp/planet-app.js
+          echo "Planet frontend is live at ${SITE_URL%/}/"
+
+      - name: Attempt to attach planet.terra-observation.dev
+        id: custom_domain_deploy
+        continue-on-error: true
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ steps.credentials.outputs.cloudflare_api_token }}
+          accountId: ${{ steps.credentials.outputs.cloudflare_account_id }}
+          workingDirectory: cloudflare/planet-site
+          wranglerVersion: '4'
+          command: deploy --config wrangler.custom-domain.jsonc
+
+      - name: Verify custom planet domain
+        id: verify_custom_domain
+        if: steps.custom_domain_deploy.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 18); do
+            status=$(curl --connect-timeout 15 --max-time 30 -L -sS \
+              -H 'Cache-Control: no-cache' \
+              -o /tmp/custom-planet.html \
+              -w '%{http_code}' \
+              "https://${PLANET_CUSTOM_DOMAIN}/?deploy=${GITHUB_SHA}-${attempt}" || true)
+            if [ "$status" = '200' ] && grep -qi '<!doctype html' /tmp/custom-planet.html; then
+              echo "Custom domain is live: https://${PLANET_CUSTOM_DOMAIN}/"
+              exit 0
+            fi
+            echo "Custom domain certificate/DNS not ready yet (attempt $attempt/18; HTTP $status)."
+            sleep 10
+          done
+          echo 'Custom-domain attachment completed but the public hostname did not become ready in the verification window.'
+          exit 1
+
+      - name: Deployment summary
+        if: always()
+        shell: bash
+        env:
+          WORKERS_DEV_URL: ${{ steps.deploy.outputs.deployment-url }}
+          ZONE_AVAILABLE: ${{ steps.zone.outputs.available }}
+          CUSTOM_OUTCOME: ${{ steps.custom_domain_deploy.outcome }}
+          CUSTOM_VERIFY_OUTCOME: ${{ steps.verify_custom_domain.outcome }}
+        run: |
+          {
+            echo '## Terra Observation Planet'
+            echo
+            echo "- workers.dev: ${WORKERS_DEV_URL:-not-returned}"
+            echo "- requested custom domain: https://${PLANET_CUSTOM_DOMAIN}/"
+            echo "- terra-observation.dev active zone visible: ${ZONE_AVAILABLE:-unknown}"
+            echo "- custom-domain deployment outcome: ${CUSTOM_OUTCOME:-not-attempted}"
+            echo "- custom-domain live verification: ${CUSTOM_VERIFY_OUTCOME:-not-attempted}"
+            echo '- frontend: production Vite build served from Cloudflare Workers Static Assets'
+            echo '- Evidence/OpenAI backend: existing restricted Cloudflare Evidence Worker'
+            echo '- GitHub Pages remains available as the independent fallback publication'
+          } >> "$GITHUB_STEP_SUMMARY"

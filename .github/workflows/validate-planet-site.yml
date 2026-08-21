@@ -1,0 +1,65 @@
+name: Validate Terra Observation Planet Site
+
+on:
+  pull_request:
+    paths:
+      - 'web/**'
+      - 'cloudflare/planet-site/**'
+      - '.github/workflows/deploy-planet-site.yml'
+      - '.github/workflows/validate-planet-site.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'web/**'
+      - 'cloudflare/planet-site/**'
+      - '.github/workflows/deploy-planet-site.yml'
+      - '.github/workflows/validate-planet-site.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Validate Cloudflare planet configuration
+        run: node --test cloudflare/planet-site/test/*.test.mjs
+
+      - name: Install web dependencies
+        working-directory: web
+        run: npm ci
+
+      - name: Run web tests
+        working-directory: web
+        run: npm test
+
+      - name: Build Cloudflare root-path frontend
+        working-directory: web
+        env:
+          TERRA_PUBLIC_BASE: /
+          VITE_EVIDENCE_API_URL: https://terra-observation-evidence-explainer.xodobrox.workers.dev
+        run: npm run build
+
+      - name: Verify Cloudflare asset paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s web/dist/index.html
+          test -d web/dist/assets
+          grep -q 'src="/assets/' web/dist/index.html
+          if grep -q 'src="/Polar-Sun-Moon-Analysis/assets/' web/dist/index.html; then
+            echo 'Cloudflare root build contains a GitHub Pages asset prefix.'
+            exit 1
+          fi
+          echo 'Cloudflare planet-site configuration and root-path frontend are valid.'
