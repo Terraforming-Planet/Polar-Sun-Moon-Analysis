@@ -1,0 +1,55 @@
+.research-chat-satellite-image {
+  margin-top: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.research-chat-satellite-toggle {
+  width: fit-content;
+  max-width: 100%;
+}
+
+.research-chat-satellite-panel {
+  border: 1px solid rgba(74, 205, 255, 0.28);
+  border-radius: 14px;
+  background: rgba(4, 18, 31, 0.82);
+  overflow: hidden;
+}
+
+.research-chat-satellite-panel[hidden] {
+  display: none;
+}
+
+.research-chat-satellite-head {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+}
+
+.research-chat-satellite-head b {
+  color: #dff8ff;
+}
+
+.research-chat-satellite-head small,
+.research-chat-satellite-meta {
+  color: #9fb9c8;
+  line-height: 1.45;
+}
+
+.research-chat-satellite-panel a {
+  display: block;
+  background: #02080f;
+}
+
+.research-chat-satellite-panel img {
+  display: block;
+  width: 100%;
+  max-height: min(62vh, 720px);
+  object-fit: contain;
+  background: #02080f;
+}
+
+.research-chat-satellite-meta {
+  display: block;
+  padding: 10px 12px 12px;
+}

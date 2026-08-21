@@ -89,6 +89,77 @@ test('research chat allows only the named GPT-5.6 family and returns an exact at
   }
 })
 
+test('second and later research-chat turns serialize prior assistant history without input_text assistant content', async () => {
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = async (url, options = {}) => {
+    assert.equal(String(url), 'https://api.openai.com/v1/responses')
+    const body = JSON.parse(options.body)
+    assert.equal(body.input.length, 3)
+    assert.equal(body.input[0].role, 'user')
+    assert.equal(typeof body.input[0].content, 'string')
+    assert.equal(body.input[1].role, 'assistant')
+    assert.equal(typeof body.input[1].content, 'string')
+    assert.equal(body.input[1].content, 'Pierwsza odpowiedź.')
+    assert.equal(body.input[2].role, 'user')
+    assert.ok(Array.isArray(body.input[2].content))
+    assert.ok(body.input[2].content.some(item => item.type === 'input_text' && item.text === 'A co z wodą?'))
+    return new Response(JSON.stringify({ output_text: 'Druga odpowiedź działa.' }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+  }
+  try {
+    const response = await handleResearchChat(new Request(`https://worker.example${RESEARCH_CHAT_PATH}`, {
+      method: 'POST',
+      headers: { Origin: allowedOrigin, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'gpt-5.6-terra',
+        messages: [
+          { role: 'user', text: 'Co widać?' },
+          { role: 'assistant', text: 'Pierwsza odpowiedź.' },
+          { role: 'user', text: 'A co z wodą?' },
+        ],
+        context: { area: { latitude: 47, longitude: 101 } },
+      }),
+    }), env)
+    const payload = await response.json()
+    assert.equal(response.status, 200)
+    assert.equal(payload.answer, 'Druga odpowiedź działa.')
+    assert.equal(payload.conversation_messages_received, 3)
+    assert.equal(payload.conversation_messages_used, 3)
+    assert.match(payload.conversation_policy, /Unlimited session questions/i)
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('research chat uses a rolling 40-message context instead of imposing a one-question session limit', async () => {
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = async (_url, options = {}) => {
+    const body = JSON.parse(options.body)
+    assert.equal(body.input.length, 40)
+    assert.equal(body.input.at(-1).role, 'user')
+    return new Response(JSON.stringify({ output_text: 'Kolejna odpowiedź.' }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+  }
+  try {
+    const messages = []
+    for (let index = 0; index < 30; index += 1) {
+      messages.push({ role: 'user', text: `Pytanie ${index + 1}` })
+      messages.push({ role: 'assistant', text: `Odpowiedź ${index + 1}` })
+    }
+    messages.push({ role: 'user', text: 'Pytanie 31' })
+    const response = await handleResearchChat(new Request(`https://worker.example${RESEARCH_CHAT_PATH}`, {
+      method: 'POST',
+      headers: { Origin: allowedOrigin, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'gpt-5.6-luna', messages, context: {} }),
+    }), env)
+    const payload = await response.json()
+    assert.equal(response.status, 200)
+    assert.equal(payload.conversation_messages_received, 61)
+    assert.equal(payload.conversation_messages_used, 40)
+    assert.equal(payload.answer, 'Kolejna odpowiedź.')
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})
+
 test('research chat rejects more than five images and router exposes both new endpoints', async () => {
   const images = Array.from({ length: 6 }, (_, index) => ({
     kind: 'image',
