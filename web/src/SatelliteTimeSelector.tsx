@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 
 import './satellite-time-selector.css'
 import { installObservationHeightEnhancement } from './observationHeightEnhancement'
+import { installResearchChatImageEnhancement } from './researchChatImageEnhancement'
 import { installScaleLockEnhancement } from './scaleLockEnhancement'
 import { installTerrainStudyEnhancement } from './terrainStudyEnhancement'
 import {
@@ -73,7 +74,9 @@ export function SatelliteTimeSelector() {
     const cleanupObservationHeight = installObservationHeightEnhancement()
     const cleanupScaleLock = installScaleLockEnhancement()
     const cleanupTerrainStudy = installTerrainStudyEnhancement()
+    const cleanupResearchChatImages = installResearchChatImageEnhancement()
     return () => {
+      cleanupResearchChatImages()
       cleanupTerrainStudy()
       cleanupScaleLock()
       cleanupObservationHeight()
