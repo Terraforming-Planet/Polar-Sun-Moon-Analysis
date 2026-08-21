@@ -1,0 +1,85 @@
+/* Terra Observation hero artwork override.
+   The source artwork is committed in web/public/terra-observation-hero.png
+   so GitHub Pages serves it as a first-party project asset. */
+
+/* Simple/home view: replace the old CSS-drawn twin globes with the supplied artwork. */
+.simple-only-research .ai-research-head {
+  position: relative !important;
+  min-height: 0 !important;
+  aspect-ratio: 16 / 9;
+  display: block !important;
+  overflow: hidden !important;
+  margin: 4px 0 16px !important;
+  padding: 0 !important;
+  border: 1px solid rgba(80, 213, 255, .38) !important;
+  border-radius: 18px !important;
+  background: #020711 url('./terra-observation-hero.png') center / contain no-repeat !important;
+  box-shadow: 0 22px 70px rgba(0, 0, 0, .42), 0 0 34px rgba(54, 210, 255, .08) !important;
+}
+
+.simple-only-research .ai-research-head::before,
+.simple-only-research .ai-research-head::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Keep the existing heading copy accessible to assistive technology, but do not
+   place it over artwork that already contains the product name and tagline. */
+.simple-only-research .ai-research-head > div {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.simple-only-research .ai-research-head > .evidence-badge {
+  display: none !important;
+}
+
+/* Start/chooser view: place the same artwork at the very top of the card. */
+.entry-gate-card {
+  --terra-start-banner-height: clamp(220px, 52vw, 520px);
+  padding-top: calc(var(--terra-start-banner-height) + 38px) !important;
+}
+
+.entry-gate-card::before {
+  content: '' !important;
+  position: absolute !important;
+  z-index: 1 !important;
+  inset: 18px 18px auto 18px !important;
+  height: var(--terra-start-banner-height) !important;
+  border: 1px solid rgba(80, 213, 255, .34) !important;
+  border-radius: 16px !important;
+  background: #020711 url('./terra-observation-hero.png') center / contain no-repeat !important;
+  box-shadow: 0 12px 38px rgba(0, 0, 0, .34), 0 0 24px rgba(73, 216, 255, .08) !important;
+  pointer-events: none !important;
+}
+
+.entry-gate-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 700px) {
+  .simple-only-research .ai-research-head {
+    aspect-ratio: 16 / 9 !important;
+    min-height: 0 !important;
+    border-radius: 13px !important;
+  }
+
+  .entry-gate-card {
+    --terra-start-banner-height: clamp(190px, 53vw, 300px);
+    padding-top: calc(var(--terra-start-banner-height) + 32px) !important;
+  }
+
+  .entry-gate-card::before {
+    inset: 10px 10px auto 10px !important;
+    border-radius: 12px !important;
+  }
+}
