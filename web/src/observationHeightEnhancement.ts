@@ -2,7 +2,7 @@ import './observation-height.css'
 
 export const MIN_OBSERVATION_HEIGHT_KM = 1
 export const MAX_OBSERVATION_HEIGHT_KM = 25_000
-export const DEFAULT_OBSERVATION_HEIGHT_KM = 25
+export const DEFAULT_OBSERVATION_HEIGHT_KM = 50
 export const OBSERVATION_SLIDER_STEPS = 1000
 
 const EARTH_RADIUS_KM = 6371.0088
@@ -218,6 +218,7 @@ function scheduleObservationRender(result: ObservationResponse | null, loading =
 async function loadObservationView(request: ObservationRequest) {
   if (!previousFetch) return
   latestObservationRequest = request
+  latestObservationResult = null
   observationRunId += 1
   const runId = observationRunId
   observationController?.abort()
@@ -292,7 +293,7 @@ function installFetchPolicy() {
 
 function enhanceAll() {
   ensureHeightControl()
-  if (latestObservationResult) renderObservationResult(latestObservationResult)
+  if (latestObservationResult && !observationCard()) renderObservationResult(latestObservationResult)
 }
 
 function scheduleEnhance() {
@@ -322,7 +323,7 @@ export function installObservationHeightEnhancement() {
     latestObservationResult = null
     observationCard()?.remove()
     document.querySelector('.research-observation-height')?.remove()
-    if (wrappedFetch && window.fetch === wrappedFetch && previousFetch) window.fetch = previousFetch
+    if (previousFetch) window.fetch = previousFetch
     wrappedFetch = null
     previousFetch = null
     installed = false
