@@ -1,0 +1,49 @@
+{
+  "schema": "terra-eclipse-archive-v1",
+  "status": "archived",
+  "event": {
+    "name": "Total Solar Eclipse — 12 August 2026",
+    "type": "total_solar_eclipse",
+    "greatest_eclipse_utc": "2026-08-12T17:47:05Z",
+    "source": "NASA GSFC Five Millennium Catalog of Solar Eclipses",
+    "source_url": "https://eclipse.gsfc.nasa.gov/SEdecade/SEdecade2021.html"
+  },
+  "project_test_site": {
+    "name": "Olszówka · gmina Gardeja · Poland",
+    "latitude": 53.61586,
+    "longitude": 18.99546,
+    "role": "reproducible project observation/test point"
+  },
+  "evidence_classes": [
+    {
+      "source": "EUMETSAT Meteosat-12 FCI VIS 0.6 HRFI",
+      "class": "OFFICIAL_SATELLITE_OBSERVATION",
+      "note": "Visible-channel satellite imagery used by the live experiment."
+    },
+    {
+      "source": "EUMETSAT Meteosat-12 FCI IR10.5 HRFI",
+      "class": "OFFICIAL_SATELLITE_OBSERVATION",
+      "note": "Thermal infrared channel used by the CLOSE/night experiment."
+    },
+    {
+      "source": "NOAA GOES-19 ABI Band 2",
+      "class": "OFFICIAL_SATELLITE_OBSERVATION",
+      "note": "Visible imagery used for Atlantic/Americas context and archived-frame work."
+    },
+    {
+      "source": "NASA GSFC Besselian Elements",
+      "class": "OFFICIAL_GEOMETRIC_MODEL",
+      "note": "Used to compute local eclipse geometry; not a camera observation."
+    },
+    {
+      "source": "Cesium",
+      "class": "VISUALIZATION",
+      "note": "3D display only; not observational evidence."
+    }
+  ],
+  "preserved_pages": [
+    { "label": "CLOSE / night IR experiment", "path": "../close.html" },
+    { "label": "Gallery / animation", "path": "../gallery.html" }
+  ],
+  "scientific_policy": "Observation, model output and visualization remain separate. The archive does not convert model geometry into measured satellite evidence."
+}
