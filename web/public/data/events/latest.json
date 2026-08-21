@@ -1,16 +1,16 @@
 {
   "schema_version": "7.0",
   "project": "Terraforming Planet",
-  "generated_at": "2026-08-21T20:09:54.469311Z",
-  "event_count": 1067,
+  "generated_at": "2026-08-21T20:45:19.305664Z",
+  "event_count": 1069,
   "summary": {
-    "earthquake": 325,
-    "fire": 610,
+    "earthquake": 327,
+    "fire": 611,
     "storm": 25,
     "ice": 3,
     "volcano": 10,
     "other": 7,
-    "flood": 82,
+    "flood": 81,
     "landslide": 3,
     "transport_accident": 1,
     "industrial_accident": 1
@@ -19,7 +19,7 @@
     {
       "source": "USGS",
       "status": "ok",
-      "count": 317
+      "count": 319
     },
     {
       "source": "NASA EONET",
@@ -38,6 +38,86 @@
     }
   ],
   "events": [
+    {
+      "id": "usgs-uu80149696",
+      "type": "earthquake",
+      "title": "M 2.2 - 16 km NE of Milford, Utah",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 38.5108333333333,
+      "longitude": -112.889333333333,
+      "observed_at": "2026-08-21T20:34:02.960000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80149696",
+      "metadata": {
+        "magnitude": 2.24,
+        "depth_km": 2.34
+      }
+    },
+    {
+      "id": "usgs-ci41532544",
+      "type": "earthquake",
+      "title": "M 0.6 - 12 km W of Anza, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 33.5711666666667,
+      "longitude": -116.8025,
+      "observed_at": "2026-08-21T20:29:46.570000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41532544",
+      "metadata": {
+        "magnitude": 0.57,
+        "depth_km": 5.74
+      }
+    },
+    {
+      "id": "usgs-aka2026qobxgd",
+      "type": "earthquake",
+      "title": "M 0.6 - 89 km WNW of Karluk, Alaska",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 57.876,
+      "longitude": -155.835,
+      "observed_at": "2026-08-21T20:24:06.265000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qobxgd",
+      "metadata": {
+        "magnitude": 0.6,
+        "depth_km": 25.6
+      }
+    },
+    {
+      "id": "usgs-hv75022117",
+      "type": "earthquake",
+      "title": "M 2.0 - 13 km ESE of Pāhala, Hawaii",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 19.1766662597656,
+      "longitude": -155.357666015625,
+      "observed_at": "2026-08-21T20:21:20.330000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75022117",
+      "metadata": {
+        "magnitude": 2.03,
+        "depth_km": 26.3700008392334
+      }
+    },
+    {
+      "id": "usgs-ci41532512",
+      "type": "earthquake",
+      "title": "M 0.7 - 11 km ENE of Coso Junction, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 36.0681666666667,
+      "longitude": -117.833333333333,
+      "observed_at": "2026-08-21T20:17:40.050000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41532512",
+      "metadata": {
+        "magnitude": 0.65,
+        "depth_km": 2.67
+      }
+    },
     {
       "id": "usgs-aka2026qobiia",
       "type": "earthquake",
@@ -84,6 +164,22 @@
       "metadata": {
         "magnitude": 1.12,
         "depth_km": 6.53
+      }
+    },
+    {
+      "id": "usgs-us6000tmms",
+      "type": "earthquake",
+      "title": "M 3.4 - 7 km NNW of Edgefield, Louisiana",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 32.1138,
+      "longitude": -93.358,
+      "observed_at": "2026-08-21T20:00:37.001000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tmms",
+      "metadata": {
+        "magnitude": 3.4,
+        "depth_km": 5
       }
     },
     {
@@ -247,6 +343,22 @@
       }
     },
     {
+      "id": "usgs-ci41532384",
+      "type": "earthquake",
+      "title": "M 1.1 Quarry Blast - 4 km NNW of Azusa, CA",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 34.1678333333333,
+      "longitude": -117.93,
+      "observed_at": "2026-08-21T18:37:56.300000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41532384",
+      "metadata": {
+        "magnitude": 1.14,
+        "depth_km": 2.31
+      }
+    },
+    {
       "id": "usgs-ci41532376",
       "type": "earthquake",
       "title": "M 0.8 - 10 km ENE of Coso Junction, CA",
@@ -315,15 +427,15 @@
       "type": "earthquake",
       "title": "M 1.0 - 10 km ENE of Coso Junction, CA",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 36.0655,
-      "longitude": -117.840333333333,
-      "observed_at": "2026-08-21T18:26:54.130000Z",
+      "status": "reviewed",
+      "latitude": 36.0666666666667,
+      "longitude": -117.841,
+      "observed_at": "2026-08-21T18:26:54.080000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41532352",
       "metadata": {
-        "magnitude": 1.03,
-        "depth_km": 2.67
+        "magnitude": 1.01,
+        "depth_km": 4.02
       }
     },
     {
@@ -523,15 +635,31 @@
       "type": "earthquake",
       "title": "M 0.7 - 10 km ENE of Coso Junction, CA",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 36.065,
-      "longitude": -117.840333333333,
-      "observed_at": "2026-08-21T17:36:26.400000Z",
+      "status": "reviewed",
+      "latitude": 36.0661666666667,
+      "longitude": -117.839333333333,
+      "observed_at": "2026-08-21T17:36:26.360000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41532272",
       "metadata": {
-        "magnitude": 0.65,
-        "depth_km": 2.63
+        "magnitude": 0.73,
+        "depth_km": 3.55
+      }
+    },
+    {
+      "id": "usgs-ci10249126",
+      "type": "earthquake",
+      "title": "M 0.6 - 10 km ENE of Coso Junction, CA",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 36.0661666666667,
+      "longitude": -117.8415,
+      "observed_at": "2026-08-21T17:35:57.080000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci10249126",
+      "metadata": {
+        "magnitude": 0.58,
+        "depth_km": 4.03
       }
     },
     {
@@ -652,14 +780,14 @@
       "title": "M 1.0 - 10 km ENE of Coso Junction, CA",
       "severity": "low",
       "status": "reviewed",
-      "latitude": 36.065,
-      "longitude": -117.838833333333,
-      "observed_at": "2026-08-21T17:14:06.480000Z",
+      "latitude": 36.0656666666667,
+      "longitude": -117.838166666667,
+      "observed_at": "2026-08-21T17:14:06.460000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41532232",
       "metadata": {
-        "magnitude": 1,
-        "depth_km": 2.74
+        "magnitude": 1.01,
+        "depth_km": 3.24
       }
     },
     {
@@ -1321,33 +1449,33 @@
     {
       "id": "usgs-aka2026qnnkqb",
       "type": "earthquake",
-      "title": "M 1.7 - 10 km WSW of Fox River, Alaska",
+      "title": "M 2.0 - 11 km NE of Fritz Creek, Alaska",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 59.824,
-      "longitude": -151.127,
-      "observed_at": "2026-08-21T13:09:46.430000Z",
+      "status": "reviewed",
+      "latitude": 59.806,
+      "longitude": -151.145,
+      "observed_at": "2026-08-21T13:09:46.772000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qnnkqb",
       "metadata": {
-        "magnitude": 1.7,
-        "depth_km": 44.9
+        "magnitude": 2,
+        "depth_km": 42.6
       }
     },
     {
       "id": "usgs-aka2026qnnjqe",
       "type": "earthquake",
-      "title": "M 1.3 - 62 km N of Chickaloon, Alaska",
+      "title": "M 1.5 - 60 km N of Chickaloon, Alaska",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 62.354,
-      "longitude": -148.558,
-      "observed_at": "2026-08-21T13:08:36.427000Z",
+      "status": "reviewed",
+      "latitude": 62.335,
+      "longitude": -148.569,
+      "observed_at": "2026-08-21T13:08:36.689000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qnnjqe",
       "metadata": {
-        "magnitude": 1.3,
-        "depth_km": 30.7
+        "magnitude": 1.5,
+        "depth_km": 43
       }
     },
     {
@@ -1399,6 +1527,22 @@
       }
     },
     {
+      "id": "usgs-aka2026qnmybe",
+      "type": "earthquake",
+      "title": "M 1.7 - 115 km N of Yakutat, Alaska",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 60.58,
+      "longitude": -139.965,
+      "observed_at": "2026-08-21T12:55:15.278000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qnmybe",
+      "metadata": {
+        "magnitude": 1.7,
+        "depth_km": 12.1
+      }
+    },
+    {
       "id": "usgs-ci41532000",
       "type": "earthquake",
       "title": "M 2.1 - 10 km NE of Niland, CA",
@@ -1431,19 +1575,51 @@
       }
     },
     {
+      "id": "usgs-uu80007878",
+      "type": "earthquake",
+      "title": "M 1.2 - 10 km ENE of Fairview, Utah",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 39.6541666666667,
+      "longitude": -111.3245,
+      "observed_at": "2026-08-21T12:44:37.910000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80007878",
+      "metadata": {
+        "magnitude": 1.23,
+        "depth_km": 1.14
+      }
+    },
+    {
+      "id": "usgs-aka2026qnmnxf",
+      "type": "earthquake",
+      "title": "M 2.7 - 81 km SE of Unalaska, Alaska",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 53.286,
+      "longitude": -165.793,
+      "observed_at": "2026-08-21T12:43:35.012000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qnmnxf",
+      "metadata": {
+        "magnitude": 2.7,
+        "depth_km": 16.8
+      }
+    },
+    {
       "id": "usgs-aka2026qnmkxu",
       "type": "earthquake",
-      "title": "M 1.5 - 28 km NE of Igiugig, Alaska",
+      "title": "M 1.6 - 28 km NE of Igiugig, Alaska",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 59.471,
-      "longitude": -155.484,
-      "observed_at": "2026-08-21T12:40:06.907000Z",
+      "status": "reviewed",
+      "latitude": 59.481,
+      "longitude": -155.499,
+      "observed_at": "2026-08-21T12:40:06.491000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qnmkxu",
       "metadata": {
-        "magnitude": 1.5,
-        "depth_km": 8.5
+        "magnitude": 1.6,
+        "depth_km": 8
       }
     },
     {
@@ -1508,22 +1684,6 @@
       "metadata": {
         "magnitude": 4.9,
         "depth_km": 10
-      }
-    },
-    {
-      "id": "usgs-aka2026qnmeon",
-      "type": "earthquake",
-      "title": "M 0.6 - 63 km WNW of Tyonek, Alaska",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 61.273,
-      "longitude": -152.24,
-      "observed_at": "2026-08-21T12:32:47.184000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qnmeon",
-      "metadata": {
-        "magnitude": 0.6,
-        "depth_km": 5
       }
     },
     {
@@ -1620,38 +1780,6 @@
       "metadata": {
         "magnitude": 0.82,
         "depth_km": 2.85
-      }
-    },
-    {
-      "id": "usgs-aka2026qnlhrk",
-      "type": "earthquake",
-      "title": "M 1.1 - 74 km WNW of Beluga, Alaska",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 61.443,
-      "longitude": -152.329,
-      "observed_at": "2026-08-21T12:06:24.340000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qnlhrk",
-      "metadata": {
-        "magnitude": 1.1,
-        "depth_km": 15.6
-      }
-    },
-    {
-      "id": "usgs-aka2026qnlgrz",
-      "type": "earthquake",
-      "title": "M 0.5 - 86 km NNW of Karluk, Alaska",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 58.297,
-      "longitude": -154.986,
-      "observed_at": "2026-08-21T12:05:15.612000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qnlgrz",
-      "metadata": {
-        "magnitude": 0.5,
-        "depth_km": 5
       }
     },
     {
@@ -1785,17 +1913,17 @@
     {
       "id": "usgs-aka2026qnkpgp",
       "type": "earthquake",
-      "title": "M 1.7 - 28 km NE of Igiugig, Alaska",
+      "title": "M 1.8 - 29 km NE of Igiugig, Alaska",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 59.49,
-      "longitude": -155.507,
-      "observed_at": "2026-08-21T11:45:08.898000Z",
+      "status": "reviewed",
+      "latitude": 59.498,
+      "longitude": -155.486,
+      "observed_at": "2026-08-21T11:45:08.757000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qnkpgp",
       "metadata": {
-        "magnitude": 1.7,
-        "depth_km": 9.2
+        "magnitude": 1.8,
+        "depth_km": 9.9
       }
     },
     {
@@ -1897,33 +2025,49 @@
     {
       "id": "usgs-aka2026qnkcit",
       "type": "earthquake",
-      "title": "M 2.2 - 20 km W of Anchorage, Alaska",
+      "title": "M 2.2 - 19 km W of Anchorage, Alaska",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 61.217,
-      "longitude": -150.28,
-      "observed_at": "2026-08-21T11:30:15.983000Z",
+      "status": "reviewed",
+      "latitude": 61.222,
+      "longitude": -150.263,
+      "observed_at": "2026-08-21T11:30:15.998000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qnkcit",
       "metadata": {
         "magnitude": 2.2,
-        "depth_km": 34.3
+        "depth_km": 45.4
+      }
+    },
+    {
+      "id": "usgs-aka2026qnjvsi",
+      "type": "earthquake",
+      "title": "M 3.1 - 261 km WSW of Adak, Alaska",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 51.3,
+      "longitude": 179.707,
+      "observed_at": "2026-08-21T11:22:36.073000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qnjvsi",
+      "metadata": {
+        "magnitude": 3.1,
+        "depth_km": 22.3
       }
     },
     {
       "id": "usgs-aka2026qnjtdf",
       "type": "earthquake",
-      "title": "M 1.2 - 55 km W of Cohoe, Alaska",
+      "title": "M 1.6 - 55 km W of Cohoe, Alaska",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 60.453,
-      "longitude": -152.291,
-      "observed_at": "2026-08-21T11:19:37.394000Z",
+      "status": "reviewed",
+      "latitude": 60.451,
+      "longitude": -152.295,
+      "observed_at": "2026-08-21T11:19:37.427000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qnjtdf",
       "metadata": {
-        "magnitude": 1.2,
-        "depth_km": 99.5
+        "magnitude": 1.6,
+        "depth_km": 99.4
       }
     },
     {
@@ -2023,6 +2167,22 @@
       }
     },
     {
+      "id": "usgs-aka2026qnilok",
+      "type": "earthquake",
+      "title": "M 1.3 - 86 km ENE of Ugashik, Alaska",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 57.77,
+      "longitude": -156.031,
+      "observed_at": "2026-08-21T10:40:54.501000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qnilok",
+      "metadata": {
+        "magnitude": 1.3,
+        "depth_km": 102.8
+      }
+    },
+    {
       "id": "usgs-ci41531928",
       "type": "earthquake",
       "title": "M 1.3 - 20 km NNE of Indio, CA",
@@ -2105,17 +2265,33 @@
     {
       "id": "usgs-aka2026qnhvii",
       "type": "earthquake",
-      "title": "M 1.8 - 11 km SW of Karluk, Alaska",
+      "title": "M 1.7 - 10 km SW of Karluk, Alaska",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 57.504,
-      "longitude": -154.61,
-      "observed_at": "2026-08-21T10:22:11.973000Z",
+      "status": "reviewed",
+      "latitude": 57.512,
+      "longitude": -154.588,
+      "observed_at": "2026-08-21T10:22:11.920000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qnhvii",
       "metadata": {
-        "magnitude": 1.8,
-        "depth_km": 48.8
+        "magnitude": 1.7,
+        "depth_km": 49.3
+      }
+    },
+    {
+      "id": "usgs-aka2026qnhrbo",
+      "type": "earthquake",
+      "title": "M 1.6 - 9 km SW of Anchor Point, Alaska",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 59.727,
+      "longitude": -151.975,
+      "observed_at": "2026-08-21T10:17:17.185000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qnhrbo",
+      "metadata": {
+        "magnitude": 1.6,
+        "depth_km": 67.8
       }
     },
     {
@@ -2788,6 +2964,38 @@
       "metadata": {
         "magnitude": 1.8,
         "depth_km": 14.1
+      }
+    },
+    {
+      "id": "usgs-uu80007883",
+      "type": "earthquake",
+      "title": "M 0.9 - 10 km ESE of Fairview, Utah",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 39.608,
+      "longitude": -111.323,
+      "observed_at": "2026-08-21T07:26:32.060000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80007883",
+      "metadata": {
+        "magnitude": 0.86,
+        "depth_km": 10.08
+      }
+    },
+    {
+      "id": "usgs-uu80007888",
+      "type": "earthquake",
+      "title": "M 1.5 - 11 km SW of Clear Creek, Utah",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 39.5836666666667,
+      "longitude": -111.259166666667,
+      "observed_at": "2026-08-21T07:26:15.230000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80007888",
+      "metadata": {
+        "magnitude": 1.46,
+        "depth_km": 5.66
       }
     },
     {
@@ -4932,182 +5140,6 @@
       "metadata": {
         "magnitude": 0.76,
         "depth_km": 2.27999997138977
-      }
-    },
-    {
-      "id": "usgs-ci41531416",
-      "type": "earthquake",
-      "title": "M 0.9 - 9 km SE of Julian, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 33.0283333333333,
-      "longitude": -116.523333333333,
-      "observed_at": "2026-08-20T20:41:45.240000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41531416",
-      "metadata": {
-        "magnitude": 0.85,
-        "depth_km": 13.38
-      }
-    },
-    {
-      "id": "usgs-av94395748",
-      "type": "earthquake",
-      "title": "M -0.1 - 149 km W of Adak, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 51.7968333333333,
-      "longitude": -178.7925,
-      "observed_at": "2026-08-20T20:40:47.790000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94395748",
-      "metadata": {
-        "magnitude": -0.06,
-        "depth_km": 9.69
-      }
-    },
-    {
-      "id": "usgs-nc75422007",
-      "type": "earthquake",
-      "title": "M 1.1 - 6 km NW of The Geysers, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 38.8191680908203,
-      "longitude": -122.806831359863,
-      "observed_at": "2026-08-20T20:36:58.640000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75422007",
-      "metadata": {
-        "magnitude": 1.08,
-        "depth_km": 2.64000010490417
-      }
-    },
-    {
-      "id": "usgs-nc75422002",
-      "type": "earthquake",
-      "title": "M 0.8 - 8 km NW of The Geysers, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 38.8293342590332,
-      "longitude": -122.818168640137,
-      "observed_at": "2026-08-20T20:32:05.340000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75422002",
-      "metadata": {
-        "magnitude": 0.75,
-        "depth_km": 2.20000004768372
-      }
-    },
-    {
-      "id": "usgs-nn00923595",
-      "type": "earthquake",
-      "title": "M 1.8 - 19 km ESE of Silver Springs, Nevada",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 39.3458,
-      "longitude": -119.0215,
-      "observed_at": "2026-08-20T20:31:31.395000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nn00923595",
-      "metadata": {
-        "magnitude": 1.79,
-        "depth_km": 6.3444
-      }
-    },
-    {
-      "id": "usgs-aka2026qmfzqh",
-      "type": "earthquake",
-      "title": "M 0.8 - 91 km WNW of Karluk, Alaska",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 57.894,
-      "longitude": -155.866,
-      "observed_at": "2026-08-20T20:27:31.447000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qmfzqh",
-      "metadata": {
-        "magnitude": 0.8,
-        "depth_km": 18.7
-      }
-    },
-    {
-      "id": "usgs-nc75421987",
-      "type": "earthquake",
-      "title": "M 0.6 - 2 km NNW of The Geysers, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 38.7929992675781,
-      "longitude": -122.761497497559,
-      "observed_at": "2026-08-20T20:26:44.070000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75421987",
-      "metadata": {
-        "magnitude": 0.62,
-        "depth_km": 3.51999998092651
-      }
-    },
-    {
-      "id": "usgs-uu80149616",
-      "type": "earthquake",
-      "title": "M 1.2 - 16 km NE of Milford, Utah",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 38.509,
-      "longitude": -112.884333333333,
-      "observed_at": "2026-08-20T20:24:13.160000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80149616",
-      "metadata": {
-        "magnitude": 1.15,
-        "depth_km": 2.38
-      }
-    },
-    {
-      "id": "usgs-aka2026qmfram",
-      "type": "earthquake",
-      "title": "M 1.6 - 89 km WNW of Karluk, Alaska",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 57.88,
-      "longitude": -155.834,
-      "observed_at": "2026-08-20T20:17:36.849000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qmfram",
-      "metadata": {
-        "magnitude": 1.6,
-        "depth_km": 6.5
-      }
-    },
-    {
-      "id": "usgs-nc75421977",
-      "type": "earthquake",
-      "title": "M 1.0 - 8 km NW of The Geysers, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 38.8288345336914,
-      "longitude": -122.817001342773,
-      "observed_at": "2026-08-20T20:16:46.380000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75421977",
-      "metadata": {
-        "magnitude": 0.99,
-        "depth_km": 1.78999996185303
-      }
-    },
-    {
-      "id": "usgs-ci41531376",
-      "type": "earthquake",
-      "title": "M 1.7 - 12 km SSW of Lompoc, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 34.5323333333333,
-      "longitude": -120.485333333333,
-      "observed_at": "2026-08-20T20:12:11.390000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41531376",
-      "metadata": {
-        "magnitude": 1.7,
-        "depth_km": 6.35
       }
     },
     {
@@ -16111,6 +16143,26 @@
       }
     },
     {
+      "id": "cems-EMSR925",
+      "type": "fire",
+      "title": "Wildfire in Segorbe, Spain",
+      "severity": "high",
+      "status": "active",
+      "latitude": 39.77763469360275,
+      "longitude": -0.501254009851049,
+      "observed_at": "2026-08-20T10:08:00",
+      "source": "Copernicus EMS",
+      "source_url": "https://mapping.emergency.copernicus.eu/activations/EMSR925",
+      "metadata": {
+        "code": "EMSR925",
+        "products": 0,
+        "countries": [
+          "Spain"
+        ],
+        "gdacs_id": null
+      }
+    },
+    {
       "id": "cems-EMSR924",
       "type": "fire",
       "title": "Wildfire in Friuli, Italy",
@@ -21105,26 +21157,6 @@
           "Bosnia and Herzegovina"
         ],
         "gdacs_id": null
-      }
-    },
-    {
-      "id": "cems-EMSR664",
-      "type": "flood",
-      "title": "Flood in Italy",
-      "severity": "moderate",
-      "status": "closed",
-      "latitude": 44.251702,
-      "longitude": 12.046509,
-      "observed_at": "2023-05-16T11:00:00",
-      "source": "Copernicus EMS",
-      "source_url": "https://mapping.emergency.copernicus.eu/activations/EMSR664",
-      "metadata": {
-        "code": "EMSR664",
-        "products": 12,
-        "countries": [
-          "Italy"
-        ],
-        "gdacs_id": "FL1101976"
       }
     }
   ],
