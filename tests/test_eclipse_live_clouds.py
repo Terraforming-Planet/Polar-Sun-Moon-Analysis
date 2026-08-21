@@ -7,19 +7,26 @@ SCRIPT = ROOT / "web" / "public" / "eclipse-live" / "eclipse-live.js"
 ARCHIVE = ROOT / "web" / "public" / "eclipse-live" / "archive" / "2026-08-12.json"
 
 
-def test_eclipse_live_counts_down_to_next_nasa_catalog_event() -> None:
+def test_eclipse_live_has_separate_solar_and_lunar_countdowns() -> None:
     html = LIVE.read_text(encoding="utf-8")
     script = SCRIPT.read_text(encoding="utf-8")
 
-    assert "NAJBLIŻSZE ZAĆMIENIE" in html
-    assert "count-seconds" in html
-    assert "countdown to greatest eclipse" in script
+    assert "NAJBLIŻSZE ZAĆMIENIE SŁOŃCA" in html
+    assert "NAJBLIŻSZE ZAĆMIENIE KSIĘŻYCA" in html
+    assert 'id="solar-count-seconds"' in html
+    assert 'id="lunar-count-seconds"' in html
+    assert 'id="solar-next-total"' in html
+    assert 'id="lunar-next-after"' in html
+    assert "function nextSolar" in script
+    assert "function nextLunar" in script
+    assert "renderCountdownFor(solar, 'solar')" in script
+    assert "renderCountdownFor(lunar, 'lunar')" in script
     assert "2026-08-28T04:13:00Z" in script
     assert "04:14:04 TD" in script
     assert "2027-02-06T16:00:00Z" in script
     assert "2027-08-02T10:07:00Z" in script
     assert "UT rounded to nearest minute" in script
-    assert "dokładny czas katalogowy TD" in html
+    assert "główny licznik tej zakładki" in html
 
 
 def test_eclipse_live_keeps_olszowka_and_representative_test_areas() -> None:

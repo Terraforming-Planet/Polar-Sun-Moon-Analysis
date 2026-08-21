@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#020711" />
-  <meta name="description" content="Terraforming Planet eclipse observatory: live countdowns, NASA eclipse catalogs, selectable observation test areas, archived 12 Aug 2026 experiment and planetary eclipse examples." />
+  <meta name="description" content="Terraforming Planet eclipse observatory: separate solar and lunar countdowns, NASA eclipse catalogs, selectable observation test areas, archived 12 Aug 2026 experiment and planetary eclipse examples." />
   <title>Terraforming Planet · Eclipse Observatory</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cesium@1.126/Build/Cesium/Widgets/widgets.css" />
   <link rel="stylesheet" href="./eclipse-live.css" />
@@ -21,37 +21,59 @@
   <section class="hero">
     <div class="kicker">REAL DATA FIRST · NASA GSFC · OPEN SCIENCE</div>
     <h1>Zaćmienia<br/>LIVE + archiwum</h1>
-    <div class="badges"><span class="badge">licznik UT</span><span class="badge">NASA eclipse catalogs</span><span class="badge">obszary testowe</span><span class="badge">archiwum 12.08.2026</span><span class="badge">Mars + Jowisz</span></div>
-    <p>Po zakończeniu eksperymentu z 12 sierpnia 2026 ta zakładka nie udaje już transmisji „LIVE” z minionego wydarzenia. Zachowuje wyniki i źródła w archiwum, a główny panel automatycznie przełącza się na najbliższe przyszłe zaćmienie z katalogów NASA GSFC.</p>
+    <div class="badges"><span class="badge">☀️ licznik Słońca</span><span class="badge">🌕 licznik Księżyca</span><span class="badge">NASA eclipse catalogs</span><span class="badge">obszary testowe</span><span class="badge">archiwum 12.08.2026</span><span class="badge">Mars + Jowisz</span></div>
+    <p>Obserwatorium prowadzi teraz dwa niezależne odliczania: główny licznik do najbliższego <b>zaćmienia Słońca</b> oraz osobny licznik do najbliższego <b>zaćmienia Księżyca</b>. Dzięki temu wydarzenia nie są ze sobą mylone. Dane pochodzą z katalogów NASA GSFC, a zakończony eksperyment z 12 sierpnia 2026 pozostaje w archiwum.</p>
     <div class="notice"><b>Ważne:</b> „obszar obserwacji” oznacza zgodność z szerokim regionem widoczności z katalogu NASA. Nie jest to prognoza pogody ani gwarancja dobrej wysokości Księżyca/Słońca nad horyzontem. Przed obserwacją trzeba sprawdzić lokalną geometrię i zachmurzenie.</div>
   </section>
 
-  <section class="panel countdown-panel" aria-label="Odliczanie do najbliższego zaćmienia">
+  <section class="panel countdown-panel" aria-label="Odliczanie do najbliższego zaćmienia Słońca">
     <div class="countdown-grid">
       <div>
-        <div class="kicker">NAJBLIŻSZE ZAĆMIENIE</div>
-        <h2 id="count-title">Ładowanie katalogu…</h2>
+        <div class="kicker">☀️ NAJBLIŻSZE ZAĆMIENIE SŁOŃCA</div>
+        <h2 id="solar-count-title">Ładowanie katalogu…</h2>
         <div class="countdown">
-          <div class="count-box"><b id="count-days">—</b><span>dni</span></div>
-          <div class="count-box"><b id="count-hours">—</b><span>godziny</span></div>
-          <div class="count-box"><b id="count-minutes">—</b><span>minuty</span></div>
-          <div class="count-box"><b id="count-seconds">—</b><span>sekundy</span></div>
+          <div class="count-box"><b id="solar-count-days">—</b><span>dni</span></div>
+          <div class="count-box"><b id="solar-count-hours">—</b><span>godziny</span></div>
+          <div class="count-box"><b id="solar-count-minutes">—</b><span>minuty</span></div>
+          <div class="count-box"><b id="solar-count-seconds">—</b><span>sekundy</span></div>
         </div>
-        <div class="status-line" id="count-time">—</div>
-        <p>Licznik odmierza czas do <b>maksimum / greatest eclipse</b>, a nie do pierwszego kontaktu. NASA publikuje na rocznych stronach czas UT do najbliższej minuty; dokładny czas katalogowy TD pokazujemy osobno, zamiast błędnie nazywać go UTC.</p>
+        <div class="status-line" id="solar-count-time">—</div>
+        <p>To jest <b>główny licznik tej zakładki</b>. Po 21.08.2026 odlicza do obrączkowego zaćmienia Słońca 06.02.2027. Liczymy do maksimum / greatest eclipse, nie do pierwszego kontaktu.</p>
       </div>
       <div class="event-summary">
-        <div class="fact"><span>Widoczność wg NASA</span><b id="count-visibility">—</b></div>
-        <div class="fact"><span>Źródło</span><b id="count-source">—</b></div>
-        <div class="fact"><span>Następne słoneczne</span><b id="next-solar">—</b></div>
-        <div class="fact"><span>Następne całkowite słoneczne</span><b id="next-total">—</b></div>
-        <p class="tiny">Stan startowy po 21.08.2026: najbliższe wydarzenie to częściowe zaćmienie Księżyca 28.08.2026. NASA podaje maksimum <b>04:13 UT</b> na stronie rocznej oraz <b>04:14:04 TD</b> w katalogu. Następne słoneczne jest obrączkowe 06.02.2027; następne całkowite słoneczne 02.08.2027.</p>
+        <div class="fact"><span>Widoczność wg NASA</span><b id="solar-count-visibility">—</b></div>
+        <div class="fact"><span>Źródło</span><b id="solar-count-source">—</b></div>
+        <div class="fact"><span>Następne całkowite Słońca</span><b id="solar-next-total">—</b></div>
+        <p class="tiny">Najbliższe słoneczne: <b>06.02.2027 · obrączkowe</b>. Następne całkowite słoneczne: <b>02.08.2027</b>. Czas UT z rocznych tabel NASA jest zaokrąglony do najbliższej minuty; dokładny czas katalogowy TD pokazujemy osobno.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel countdown-panel" aria-label="Odliczanie do najbliższego zaćmienia Księżyca">
+    <div class="countdown-grid">
+      <div>
+        <div class="kicker">🌕 NAJBLIŻSZE ZAĆMIENIE KSIĘŻYCA</div>
+        <h2 id="lunar-count-title">Ładowanie katalogu…</h2>
+        <div class="countdown">
+          <div class="count-box"><b id="lunar-count-days">—</b><span>dni</span></div>
+          <div class="count-box"><b id="lunar-count-hours">—</b><span>godziny</span></div>
+          <div class="count-box"><b id="lunar-count-minutes">—</b><span>minuty</span></div>
+          <div class="count-box"><b id="lunar-count-seconds">—</b><span>sekundy</span></div>
+        </div>
+        <div class="status-line" id="lunar-count-time">—</div>
+        <p>Ten licznik pozostaje jako osobna informacja. Najbliższe wydarzenie to <b>częściowe zaćmienie Księżyca 28.08.2026</b>. NASA podaje maksimum <b>04:13 UT</b> na stronie rocznej oraz <b>04:14:04 TD</b> w katalogu.</p>
+      </div>
+      <div class="event-summary">
+        <div class="fact"><span>Widoczność wg NASA</span><b id="lunar-count-visibility">—</b></div>
+        <div class="fact"><span>Źródło</span><b id="lunar-count-source">—</b></div>
+        <div class="fact"><span>Kolejne księżycowe</span><b id="lunar-next-after">—</b></div>
+        <p class="tiny">Oddzielny licznik Księżyca zapobiega myleniu tego wydarzenia z następnym zaćmieniem Słońca. Lokalna widoczność nadal zależy od wysokości Księżyca, horyzontu i pogody.</p>
       </div>
     </div>
   </section>
 
   <section class="section panel">
-    <div class="section-head"><div><div class="kicker">KALENDARZ NASA</div><h2>Nadchodzące wydarzenia</h2></div><span class="tag good">AUTO-SELECT NEXT EVENT</span></div>
+    <div class="section-head"><div><div class="kicker">KALENDARZ NASA</div><h2>Nadchodzące wydarzenia</h2></div><span class="tag good">SOLAR + LUNAR</span></div>
     <div id="event-list" class="grid3"></div>
   </section>
 
@@ -79,7 +101,7 @@
       <article class="event-card">
         <small>PROJECT TEST · OLSZÓWKA / GARDEJA</small>
         <h3>Zachowane dane i klasy dowodowe</h3>
-        <p>Archiwum rozdziela: EUMETSAT / NOAA jako obserwacje satelitarne, NASA GSFC Besselian Elements jako model geometrii oraz Cesium jako wizualizację. Dzięki temu stary eksperyment nie jest mieszany z nowym licznikiem.</p>
+        <p>Archiwum rozdziela: EUMETSAT / NOAA jako obserwacje satelitarne, NASA GSFC Besselian Elements jako model geometrii oraz Cesium jako wizualizację. Dzięki temu stary eksperyment nie jest mieszany z nowymi licznikami.</p>
         <div class="archive-links"><a href="./archive/2026-08-12.json">JSON archiwum</a><a href="./gallery.html">Galeria / animacja</a><a href="./close.html">CLOSE · IR10.5</a></div>
       </article>
       <article class="event-card">

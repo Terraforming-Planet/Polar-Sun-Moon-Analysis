@@ -29,6 +29,16 @@ function nextSolar(now = new Date(), type = null) {
   return ECLIPSE_EVENTS.find(event => event.kind === 'Solar' && (!type || event.type === type) && new Date(event.greatestUtc) > now) || null
 }
 
+function nextLunar(now = new Date()) {
+  return ECLIPSE_EVENTS.find(event => event.kind === 'Lunar' && new Date(event.greatestUtc) > now) || null
+}
+
+function nextSameKindAfter(event) {
+  if (!event) return null
+  const eventTime = new Date(event.greatestUtc).getTime()
+  return ECLIPSE_EVENTS.find(item => item.kind === event.kind && new Date(item.greatestUtc).getTime() > eventTime) || null
+}
+
 function pad(value) {
   return String(Math.max(0, Math.floor(value))).padStart(2, '0')
 }
@@ -38,26 +48,38 @@ function setText(id, text) {
   if (node) node.textContent = text
 }
 
-function renderCountdown() {
-  const now = new Date()
-  const event = nextEvent(now)
+function renderCountdownFor(event, prefix) {
   if (!event) {
-    setText('count-title', 'No future event in local catalog')
+    setText(`${prefix}-count-title`, 'Brak przyszłego wydarzenia w lokalnym katalogu')
     return
   }
+  const now = new Date()
   const delta = Math.max(0, new Date(event.greatestUtc).getTime() - now.getTime())
   const days = Math.floor(delta / 86_400_000)
   const hours = Math.floor((delta % 86_400_000) / 3_600_000)
   const minutes = Math.floor((delta % 3_600_000) / 60_000)
   const seconds = Math.floor((delta % 60_000) / 1000)
-  setText('count-days', String(days))
-  setText('count-hours', pad(hours))
-  setText('count-minutes', pad(minutes))
-  setText('count-seconds', pad(seconds))
-  setText('count-title', `${event.type} ${event.kind.toLowerCase()} eclipse`)
-  setText('count-time', `${event.greatestUtc.replace('T', ' ').replace('Z', ' UT')} · countdown to greatest eclipse · catalog ${event.catalogTd}`)
-  setText('count-visibility', event.visibility)
-  setText('count-source', event.source)
+  setText(`${prefix}-count-days`, String(days))
+  setText(`${prefix}-count-hours`, pad(hours))
+  setText(`${prefix}-count-minutes`, pad(minutes))
+  setText(`${prefix}-count-seconds`, pad(seconds))
+  setText(`${prefix}-count-title`, `${event.type} ${event.kind.toLowerCase()} eclipse`)
+  setText(`${prefix}-count-time`, `${event.greatestUtc.replace('T', ' ').replace('Z', ' UT')} · countdown to greatest eclipse · catalog ${event.catalogTd}`)
+  setText(`${prefix}-count-visibility`, event.visibility)
+  setText(`${prefix}-count-source`, event.source)
+}
+
+function renderCountdowns() {
+  const now = new Date()
+  const solar = nextSolar(now)
+  const lunar = nextLunar(now)
+  renderCountdownFor(solar, 'solar')
+  renderCountdownFor(lunar, 'lunar')
+
+  const total = nextSolar(now, 'Total')
+  const nextLunarEvent = nextSameKindAfter(lunar)
+  setText('solar-next-total', total ? `${total.greatestUtc.slice(0, 10)} · ${total.type}` : '—')
+  setText('lunar-next-after', nextLunarEvent ? `${nextLunarEvent.greatestUtc.slice(0, 10)} · ${nextLunarEvent.type}` : '—')
 }
 
 function renderEventCards() {
@@ -71,11 +93,6 @@ function renderEventCards() {
     article.innerHTML = `<small>${event.kind.toUpperCase()} · ${event.type.toUpperCase()}</small><h3>${new Date(event.greatestUtc).toISOString().slice(0, 10)}</h3><b>${event.greatestUtc.slice(11, 16)} UT · greatest eclipse</b><p>Catalog time: ${event.catalogTd}. ${event.visibility}</p>`
     return article
   }))
-
-  const solar = nextSolar(now)
-  const total = nextSolar(now, 'Total')
-  setText('next-solar', solar ? `${solar.greatestUtc.slice(0, 10)} · ${solar.type}` : '—')
-  setText('next-total', total ? `${total.greatestUtc.slice(0, 10)} · ${total.type}` : '—')
 }
 
 let viewer = null
@@ -144,11 +161,11 @@ function installImageFallbacks() {
   })
 }
 
-renderCountdown()
+renderCountdowns()
 renderEventCards()
 renderAreas()
 installImageFallbacks()
-window.setInterval(renderCountdown, 1000)
+window.setInterval(renderCountdowns, 1000)
 window.addEventListener('load', initMap)
 
-export { ECLIPSE_EVENTS, TEST_AREAS, nextEvent }
+export { ECLIPSE_EVENTS, TEST_AREAS, nextEvent, nextSolar, nextLunar }
