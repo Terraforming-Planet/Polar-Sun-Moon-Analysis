@@ -1,6 +1,7 @@
 import { handleAreaAnalysisV2 } from './areaAnalysisV2.js'
 import { buildUsGsLandsatUrl } from './landsatProxy.js'
 
+// Keep this module in the Worker deployment path so the production smoke test verifies the same historical-imagery build served by GitHub Pages.
 const MAX_BROWSE_IMAGES = 6
 const MAX_QUERY_FEATURES = 40
 
