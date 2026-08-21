@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import './satellite-time-selector.css'
+import { installObservationHeightEnhancement } from './observationHeightEnhancement'
 import { installResearchGalleryEnhancements } from './researchGalleryEnhancements'
 import {
   SATELLITE_ARCHIVE_START,
@@ -67,7 +68,14 @@ export function SatelliteTimeSelector() {
     return () => window.removeEventListener(SATELLITE_TIME_MATCH_EVENT, receive)
   }, [])
 
-  useEffect(() => installResearchGalleryEnhancements(), [])
+  useEffect(() => {
+    const cleanupObservationHeight = installObservationHeightEnhancement()
+    const cleanupGallery = installResearchGalleryEnhancements()
+    return () => {
+      cleanupGallery()
+      cleanupObservationHeight()
+    }
+  }, [])
 
   const requestedUtc = requestedSatelliteDateTimeUtc(selection)
 
