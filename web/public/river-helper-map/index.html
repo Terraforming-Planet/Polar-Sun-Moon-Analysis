@@ -11,7 +11,7 @@
 </head>
 <body>
   <div id="map" aria-label="Hydrology map showing rivers, streams, canals and lakes"></div>
-  <div id="status" class="helper-status"><b>Hydrology map</b>Loading rivers and water bodies…</div>
+  <div id="status" class="helper-status"><b>Hydrology map</b>Loading rivers and water bodies… Province and district borders are intentionally hidden.</div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
   <script>
     (() => {
@@ -141,14 +141,14 @@
           try { localCount = await loadLocalWaterways() } catch (error) { console.warn('Local OSM waterways unavailable', error) }
           if (status) {
             status.classList.remove('error')
-            status.innerHTML = `<b>Hydrology map</b><span class="ok">Rivers loaded.</span> Natural Earth major rivers/lakes${localCount ? ` + ${localCount} local OpenStreetMap waterways` : ''}. Administrative detail is intentionally reduced.`
+            status.innerHTML = `<b>Hydrology map</b><span class="ok">Rivers loaded.</span> Natural Earth major rivers/lakes${localCount ? ` + ${localCount} local OpenStreetMap waterways` : ''}. Province and district borders are intentionally hidden.`
           }
         })
         .catch(error => {
           console.error(error)
           if (status) {
             status.classList.add('error')
-            status.innerHTML = '<b>Hydrology overlays unavailable</b>The clean base map and selected AOI are still available. Retry when public river sources are reachable.'
+            status.innerHTML = '<b>Hydrology overlays unavailable</b>The clean base map and selected AOI are still available. Province and district borders are intentionally hidden. Retry when public river sources are reachable.'
           }
         })
     })()
