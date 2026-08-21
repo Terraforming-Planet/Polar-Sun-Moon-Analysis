@@ -71,7 +71,7 @@ export function SimpleContestQuickAccess() {
     <div className="contest-section-label"><b>Results & tools</b><span>Maps, reports, data and investigation views</span></div>
     <LinkGrid links={TOOL_LINKS} />
 
-    <div className="contest-section-label"><b>NVIDIA L4 training</b><span>Published training and evaluation runs</span></div>
+    <div className="contest-section-label"><b>NVIDIA L4 training</b><span>Training 1 · Training 2 · Training 3 · published evaluation runs</span></div>
     <LinkGrid links={TRAINING_LINKS} className="contest-training-grid" />
   </section>
 }
