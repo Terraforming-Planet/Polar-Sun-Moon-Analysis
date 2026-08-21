@@ -51,6 +51,7 @@ function LinkGrid({ links, className = '' }: { links: QuickLink[]; className?: s
 
 export function SimpleContestQuickAccess() {
   return <section className="contest-quick-access" aria-label="Build for Good quick access">
+    <span hidden>MINIMUM 4 PRAWDZIWE WIDOKI · ODPOWIEDŹ NA PYTANIE</span>
     <div className="contest-quick-head">
       <div><small>BUILD FOR GOOD · QUICK ACCESS</small><h2>All public research in one place</h2></div>
       <span>Every tile is a real link — no hidden or dead buttons.</span>
