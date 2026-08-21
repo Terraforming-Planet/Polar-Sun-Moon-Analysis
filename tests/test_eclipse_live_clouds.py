@@ -4,16 +4,24 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 LIVE = ROOT / "web" / "public" / "eclipse-live" / "index.html"
 SCRIPT = ROOT / "web" / "public" / "eclipse-live" / "eclipse-live.js"
+STYLE = ROOT / "web" / "public" / "eclipse-live" / "eclipse-live.css"
 ARCHIVE = ROOT / "web" / "public" / "eclipse-live" / "archive" / "2026-08-12.json"
 
 
 def test_eclipse_live_has_separate_solar_and_lunar_countdowns() -> None:
     html = LIVE.read_text(encoding="utf-8")
     script = SCRIPT.read_text(encoding="utf-8")
+    style = STYLE.read_text(encoding="utf-8")
 
     assert "NAJBLIŻSZE ZAĆMIENIE SŁOŃCA" in html
     assert "NAJBLIŻSZE ZAĆMIENIE KSIĘŻYCA" in html
+    assert 'id="solar-count-days"' in html
+    assert 'id="solar-count-hours"' in html
+    assert 'id="solar-count-minutes"' in html
     assert 'id="solar-count-seconds"' in html
+    assert 'id="lunar-count-days"' in html
+    assert 'id="lunar-count-hours"' in html
+    assert 'id="lunar-count-minutes"' in html
     assert 'id="lunar-count-seconds"' in html
     assert 'id="solar-next-total"' in html
     assert 'id="lunar-next-after"' in html
@@ -21,6 +29,9 @@ def test_eclipse_live_has_separate_solar_and_lunar_countdowns() -> None:
     assert "function nextLunar" in script
     assert "renderCountdownFor(solar, 'solar')" in script
     assert "renderCountdownFor(lunar, 'lunar')" in script
+    assert 'countdown-panel[aria-label*="Słońca"]' in style
+    assert 'countdown-panel[aria-label*="Księżyca"]' in style
+    assert "display:block!important" in style
     assert "2026-08-28T04:13:00Z" in script
     assert "04:14:04 TD" in script
     assert "2027-02-06T16:00:00Z" in script
