@@ -1,3 +1,11 @@
+import {
+  SATELLITE_TIME_MATCH_EVENT,
+  readSatelliteTimeSelection,
+  requestedSatelliteDateTimeUtc,
+  type SatelliteTimeMatch,
+  type SatelliteTimeSelection,
+} from '../satelliteTimeSelection'
+
 export type EvidenceExplanation = {
   summary: string
   why_it_matters: string
@@ -156,6 +164,76 @@ async function readJson<T>(response: Response): Promise<T> {
   return payload
 }
 
+function dispatchTimeMatch(detail: SatelliteTimeMatch | null) {
+  if (typeof window === 'undefined') return
+  window.dispatchEvent(new CustomEvent<SatelliteTimeMatch | null>(SATELLITE_TIME_MATCH_EVENT, { detail }))
+}
+
+function sceneTimestamp(feature: unknown) {
+  const item = feature as { id?: unknown; properties?: { datetime?: unknown; start_datetime?: unknown; platform?: unknown } }
+  const raw = typeof item?.properties?.datetime === 'string'
+    ? item.properties.datetime
+    : typeof item?.properties?.start_datetime === 'string'
+      ? item.properties.start_datetime
+      : ''
+  const timestamp = Date.parse(raw)
+  if (!raw || !Number.isFinite(timestamp)) return null
+  return {
+    id: typeof item.id === 'string' ? item.id : '',
+    datetime: new Date(timestamp).toISOString(),
+    timestamp,
+    platform: typeof item.properties?.platform === 'string' ? item.properties.platform : '',
+  }
+}
+
+async function resolveNearestLandsatTime(result: AreaAnalysisResponse, selection: SatelliteTimeSelection) {
+  const requestedUtc = requestedSatelliteDateTimeUtc(selection)
+  if (!requestedUtc) {
+    dispatchTimeMatch(null)
+    return
+  }
+  const requestedMs = Date.parse(requestedUtc)
+  const catalogUrl = result.landsat_catalog.full_catalog_url
+  if (!catalogUrl || !Number.isFinite(requestedMs)) {
+    dispatchTimeMatch({ status: 'unavailable', requestedUtc, reason: 'Brak adresu katalogu Landsat dla tego zapytania.' })
+    return
+  }
+
+  try {
+    const url = new URL(catalogUrl)
+    url.searchParams.set('datetime', `${selection.exactDate}T00:00:00Z/${selection.exactDate}T23:59:59Z`)
+    url.searchParams.set('limit', '100')
+    const response = await fetch(url.toString(), {
+      headers: { Accept: 'application/geo+json,application/json' },
+      cache: 'no-store',
+    })
+    if (!response.ok) throw new Error(`USGS Landsat STAC HTTP ${response.status}`)
+    const payload = await response.json() as { features?: unknown[] }
+    const scenes = (Array.isArray(payload.features) ? payload.features : [])
+      .map(sceneTimestamp)
+      .filter((item): item is NonNullable<typeof item> => item !== null)
+    if (!scenes.length) {
+      dispatchTimeMatch({ status: 'unavailable', requestedUtc, reason: 'Tego dnia katalog nie zwrócił sceny z dokładnym timestampem.' })
+      return
+    }
+    const nearest = scenes.reduce((best, item) => Math.abs(item.timestamp - requestedMs) < Math.abs(best.timestamp - requestedMs) ? item : best)
+    dispatchTimeMatch({
+      status: 'matched',
+      requestedUtc,
+      nearestUtc: nearest.datetime,
+      differenceMinutes: Math.abs(nearest.timestamp - requestedMs) / 60_000,
+      sceneId: nearest.id || undefined,
+      platform: nearest.platform || undefined,
+    })
+  } catch (reason) {
+    dispatchTimeMatch({
+      status: 'unavailable',
+      requestedUtc,
+      reason: reason instanceof Error ? reason.message : 'Nie udało się sprawdzić dokładnego czasu sceny.',
+    })
+  }
+}
+
 export async function checkEvidenceApiHealth(apiUrl: string, signal?: AbortSignal) {
   const url = normalizeEvidenceApiUrl(apiUrl)
   if (!url) throw new Error('Evidence API URL is not configured.')
@@ -203,6 +281,7 @@ export async function analyzeResearchArea(apiUrl: string, input: {
 }, signal?: AbortSignal) {
   const url = normalizeEvidenceApiUrl(apiUrl)
   if (!url) throw new Error('Evidence API URL is not configured.')
+  const timeSelection = readSatelliteTimeSelection()
   const response = await fetch(`${url}/research/analyze`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -210,14 +289,16 @@ export async function analyzeResearchArea(apiUrl: string, input: {
       latitude: input.latitude,
       longitude: input.longitude,
       radius_km: input.radiusKm ?? 25,
-      start_date: input.startDate,
-      end_date: input.endDate,
+      start_date: timeSelection.startDate || input.startDate,
+      end_date: timeSelection.endDate || input.endDate,
       place_name: input.placeName ?? '',
       depth: input.depth ?? 'quick',
     }),
     signal,
   })
-  return readJson<AreaAnalysisResponse>(response)
+  const result = await readJson<AreaAnalysisResponse>(response)
+  void resolveNearestLandsatTime(result, timeSelection)
+  return result
 }
 
 export async function fetchResearchElevations(apiUrl: string, points: Array<{ latitude: number; longitude: number; label?: string }>, signal?: AbortSignal) {
