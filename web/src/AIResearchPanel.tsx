@@ -45,7 +45,10 @@ export function AIResearchPanel({ simpleOnly = false }: { simpleOnly?: boolean }
 
   const selected = cases.find(item => item.case_id === selectedId)
   const aiCaseIds = useMemo(() => new Set(cases.map(item => item.case_id)), [cases])
-  const advancedBuilder = <ResearchAreaBuilder onOpenArchive={() => setActiveView('archive')} />
+  const advancedBuilder = <>
+    <ResearchAreaBuilder onOpenArchive={() => setActiveView('archive')} />
+    <AdvancedLegacyPanel />
+  </>
 
   if (simpleOnly) {
     return <section className="workspace ai-research-workspace simple-only-research">
