@@ -1,3 +1,5 @@
+<img width="1672" height="941" alt="37964" src="https://github.com/user-attachments/assets/c44d0a5e-2424-456a-aae1-515b0ecb9102" />
+
 # Terra Observation System
 
 **BUILD FOR GOOD — open Earth observation for protecting water, land, agriculture and communities with real public satellite data.**
