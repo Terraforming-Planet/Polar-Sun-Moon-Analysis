@@ -1,38 +1,38 @@
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGE = ROOT / "web" / "public" / "eclipse-live" / "index.html"
+LIVE = ROOT / "web" / "public" / "eclipse-live" / "index.html"
+ARCHIVE = ROOT / "web" / "public" / "eclipse-live" / "archive" / "2026-08-12.json"
 
 
-def test_eclipse_live_uses_raw_visible_satellite_evidence() -> None:
-    source = PAGE.read_text(encoding="utf-8")
+def test_eclipse_live_moves_expired_2026_shadow_experiment_to_archive() -> None:
+    live = LIVE.read_text(encoding="utf-8")
+    archive = ARCHIVE.read_text(encoding="utf-8")
 
-    assert "GOES19/ABI/FD/02/1808x1808.jpg" in source
-    assert "mtg_fd:vis06_hrfi" in source
-    assert "Meteosat-12 FCI VIS 0.6 HRFI" in source
-    assert "nie render Cesium" in source
-
-
-def test_eclipse_live_separates_cesium_from_lunar_geometry() -> None:
-    source = PAGE.read_text(encoding="utf-8")
-
-    assert "viewer.scene.globe.enableLighting=false" in source
-    assert "viewer.scene.sun.show=false" in source
-    assert "viewer.scene.moon.show=false" in source
-    assert 'id="moon-disc"' in source
-    assert "function phaseGraphic(s)" in source
-    assert "PENUMBRA · NASA BESSEL · MODEL" in source
-    assert "UMBRA · NASA GSFC · MODEL" in source
-    assert "deltaT:75.4" in source
-    assert "tanF1:0.0046141" in source
-    assert "tanF2:0.0045911" in source
+    assert "ARCHIWUM EKSPERYMENTU" in live
+    assert 'href="./archive/2026-08-12.json"' in live
+    assert "EUMETSAT Meteosat-12 FCI VIS 0.6 HRFI" in archive
+    assert "EUMETSAT Meteosat-12 FCI IR10.5 HRFI" in archive
+    assert "NOAA GOES-19 ABI Band 2" in archive
+    assert "NASA GSFC Besselian Elements" in archive
+    assert '"class": "VISUALIZATION"' in archive
 
 
-def test_eclipse_live_can_follow_shadow_from_orbit() -> None:
-    source = PAGE.read_text(encoding="utf-8")
+def test_eclipse_live_exposes_official_planetary_eclipse_examples() -> None:
+    source = LIVE.read_text(encoding="utf-8")
 
-    assert "Śledź oś cienia · 700 km" in source
-    assert "700000" in source
-    assert "53.61586" in source
-    assert "18.99546" in source
-    assert "goes19-band02/manifest.json" in source
+    assert "PIA23133" in source
+    assert "Phobos przed Słońcem" in source
+    assert "PIA26758" in source
+    assert "Ziemia znika za Phobosem" in source
+    assert "PIA23437" in source
+    assert "Cień Io na Jowiszu" in source
+    assert "NASA/JPL" in source
+
+
+def test_eclipse_live_separates_visibility_regions_from_weather_guarantees() -> None:
+    source = LIVE.read_text(encoding="utf-8")
+
+    assert "Nie jest to prognoza pogody" in source
+    assert "Przed realną obserwacją" in source
+    assert "szerokich regionach widoczności NASA" in source
