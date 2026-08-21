@@ -1,5 +1,5 @@
 {
-  "generatedUtc": "2026-08-21T05:25:33.327256Z",
+  "generatedUtc": "2026-08-21T05:56:16.577976Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
@@ -91,13 +91,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 40.0,
+        "magnitudeValue": 45.0,
         "magnitudeUnit": "kts",
-        "date": "2026-08-20T18:00:00Z",
+        "date": "2026-08-21T00:00:00Z",
         "type": "Point",
         "coordinates": [
-          149.6,
-          13.7
+          149,
+          14.7
         ]
       },
       "sources": [
@@ -408,37 +408,6 @@
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
     {
-      "id": "EONET_22562",
-      "title": "Cyclone Hernan",
-      "categories": [
-        "Severe Storms"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 25.0,
-        "magnitudeUnit": "kts",
-        "date": "2026-08-15T18:00:00Z",
-        "type": "Point",
-        "coordinates": [
-          -135.4,
-          15.8
-        ]
-      },
-      "sources": [
-        {
-          "id": "JTWC",
-          "url": "https://www.metoc.navy.mil/jtwc/products/ep0826.tcw"
-        },
-        {
-          "id": "NOAA_NHC",
-          "url": "https://www.nhc.noaa.gov/archive/2026/HERNAN.shtml"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22562",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
       "id": "EONET_22563",
       "title": "Tropical Storm Lala",
       "categories": [
@@ -448,11 +417,11 @@
       "latestGeometry": {
         "magnitudeValue": 80.0,
         "magnitudeUnit": "kts",
-        "date": "2026-08-20T18:00:00Z",
+        "date": "2026-08-21T00:00:00Z",
         "type": "Point",
         "coordinates": [
-          -172.3,
-          24.6
+          -172.4,
+          25.2
         ]
       },
       "sources": [
@@ -5405,6 +5374,33 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21378",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_21395",
+      "title": "Wildfire Charger 2, Collier, Florida",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 974.0,
+        "magnitudeUnit": "acres",
+        "date": "2026-07-15T11:57:00Z",
+        "type": "Point",
+        "coordinates": [
+          -81.0615,
+          25.973667
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-FLBCP-002227"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21395",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -5501,8 +5497,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          149.6,
-          13.7
+          149,
+          14.7
         ]
       },
       "properties": {
@@ -5512,8 +5508,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-08-20T18:00:00Z",
-        "observation_time": "2026-08-20T18:00:00Z",
+        "observationUtc": "2026-08-21T00:00:00Z",
+        "observation_time": "2026-08-21T00:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22926",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22926",
         "sources": [
@@ -5845,45 +5841,12 @@
     },
     {
       "type": "Feature",
-      "id": "EONET_22562",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -135.4,
-          15.8
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Cyclone Hernan",
-        "categories": [
-          "Severe Storms"
-        ],
-        "observationUtc": "2026-08-15T18:00:00Z",
-        "observation_time": "2026-08-15T18:00:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22562",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22562",
-        "sources": [
-          {
-            "id": "JTWC",
-            "url": "https://www.metoc.navy.mil/jtwc/products/ep0826.tcw"
-          },
-          {
-            "id": "NOAA_NHC",
-            "url": "https://www.nhc.noaa.gov/archive/2026/HERNAN.shtml"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
       "id": "EONET_22563",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -172.3,
-          24.6
+          -172.4,
+          25.2
         ]
       },
       "properties": {
@@ -5893,8 +5856,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-08-20T18:00:00Z",
-        "observation_time": "2026-08-20T18:00:00Z",
+        "observationUtc": "2026-08-21T00:00:00Z",
+        "observation_time": "2026-08-21T00:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22563",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22563",
         "sources": [
@@ -11208,6 +11171,35 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-CASDU-016203"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_21395",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -81.0615,
+          25.973667
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Wildfire Charger 2, Collier, Florida",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-07-15T11:57:00Z",
+        "observation_time": "2026-07-15T11:57:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21395",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21395",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-FLBCP-002227"
           }
         ]
       }
