@@ -45,7 +45,7 @@ def test_contest_view_keeps_simple_and_restores_old_advanced_laboratory() -> Non
 
     assert 'modePolicy="simple"' not in panel
     assert "SIMPLE + ADVANCED" in panel
-    assert "stary pełny panel" in assistant
+    assert "Otwórz pełny stary widok zaawansowany" in assistant
     assert "ResearchTerrainLab" in assistant
     assert "flag" in assistant.lower()
     assert "DEM" in assistant
@@ -71,19 +71,29 @@ def test_simple_flow_places_answer_directly_under_question_and_summary_before_im
     assert "saveAssistantAnswerLocally" in source
 
 
-def test_simple_flow_builds_four_real_nasa_context_views_and_selected_period_gallery() -> None:
+def test_simple_flow_defaults_to_four_clear_images_and_exposes_cloudy_opt_in() -> None:
     source = SIMPLE_ASSISTANT.read_text(encoding="utf-8")
 
-    assert "gibs.earthdata.nasa.gov" in source
-    assert "01 · Z bliska" in source
-    assert "02 · Otoczenie lokalne" in source
-    assert "03 · Widok regionalny" in source
-    assert "04 · Bardzo wysoki widok" in source
-    assert "WIDTH: '1600'" in source
-    assert "HEIGHT: '1600'" in source
-    assert "WYBRANY ROK / PORA ROKU" in source
-    assert "Zdjęcia źródłowe z tego okresu" in source
-    assert "analysis.preview_images.map" in source
+    assert "Czyste do badania rzek" in source
+    assert "Pochmurne / wszystkie" in source
+    assert "imageMode" in source
+    assert "maxCloudCover: selectedImageMode === 'clear' ? 10 : 100" in source
+    assert "previewLimit: 4" in source
+    assert "analysis?.preview_images.slice(0, 4)" in source
+    assert "Nie podstawiamy pochmurnego obrazu jako „czystego”" in source
+    assert "Pełny katalog Landsat 1972–dziś" in source
+
+
+def test_simple_flow_exposes_radius_slider_and_manual_radius_up_to_100_km() -> None:
+    source = SIMPLE_ASSISTANT.read_text(encoding="utf-8")
+
+    assert 'type="range"' in source
+    assert 'max="100"' in source
+    assert 'type="number"' in source
+    assert "Promień badanego obszaru" in source
+    assert "Zastosuj {radiusKm} km" in source
+    assert "radiusKm: selectedRadius" in source
+    assert "Zakres prostego widoku: 1–100 km" in source
 
 
 def test_simple_flow_exposes_1990_today_year_and_season_controls_with_auto_refresh() -> None:
