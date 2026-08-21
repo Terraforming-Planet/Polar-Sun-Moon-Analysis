@@ -2,27 +2,39 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 AI_PANEL = ROOT / "web" / "src" / "AIResearchPanel.tsx"
+QUICK_ACCESS = ROOT / "web" / "src" / "SimpleContestQuickAccess.tsx"
 SIMPLE_ASSISTANT = ROOT / "web" / "src" / "SimpleResearchAssistant.tsx"
 RIVER_MAP = ROOT / "web" / "public" / "river-helper-map" / "index.html"
 WEB_INDEX = ROOT / "web" / "index.html"
 
 
-def test_simple_view_exposes_one_test_set_and_three_training_tabs() -> None:
-    source = AI_PANEL.read_text(encoding="utf-8")
+def test_simple_view_exposes_all_tests_tools_and_three_training_links() -> None:
+    source = QUICK_ACCESS.read_text(encoding="utf-8")
 
     assert "Tests 1–16" in source
-    assert "Training 1" in source
-    assert "Training 2" in source
-    assert "Training 3" in source
     assert "PUBLIC_RESEARCH_TESTS.map" in source
+    assert "Results Dashboard" in source
+    assert "Sentinel-1 Map" in source
+    assert "Analysis Report" in source
+    assert "Observation Timeline" in source
+    assert "JSON Data" in source
+    assert "TP-26 Constellation" in source
+    assert "Multi-angle Observation" in source
+    assert "Investigation Support" in source
+    assert "Forum" in source
+    assert "L4 Training #1" in source
+    assert "L4 Training #2 · Site Corpus" in source
+    assert "L4 Training #3 · Streaming NASA GIBS" in source
 
 
-def test_simple_view_keeps_four_specialist_stations_at_bottom() -> None:
-    source = AI_PANEL.read_text(encoding="utf-8")
+def test_simple_view_restores_four_specialist_station_links_without_legacy_shell() -> None:
+    quick_access = QUICK_ACCESS.read_text(encoding="utf-8")
+    panel = AI_PANEL.read_text(encoding="utf-8")
 
     for path in ("arctic-90n/", "sahara-station/", "ocean-station/", "earth-space-512/"):
-        assert path in source
-    assert source.index("<SimpleResearchAssistant") < source.index("<SimpleStationLinks />")
+        assert path in quick_access
+    assert "<SimpleContestQuickAccess />" in panel
+    assert panel.index("<SimpleContestQuickAccess />") < panel.index("<SimpleResearchAssistant")
 
 
 def test_simple_flow_uses_private_question_before_globe_and_answer_summary_after() -> None:
