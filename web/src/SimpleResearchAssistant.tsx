@@ -30,14 +30,11 @@ type PeriodPreset = 'long' | 'five-years' | 'one-year' | 'year'
 type Season = 'all' | 'spring' | 'summer' | 'autumn' | 'winter'
 type ConsoleMode = 'simple' | 'advanced'
 type ModePolicy = 'switchable' | ConsoleMode
+type ImageMode = 'clear' | 'all'
 
-type ContextImage = {
-  date: string
-  source: string
-  url: string
-  label: string
-  radiusKm: number | null
-  note: string
+type AnalysisOptions = {
+  radiusKm?: number
+  imageMode?: ImageMode
 }
 
 const LEGACY_CHAT_KEYS = [
@@ -57,6 +54,11 @@ function yearStart(year: number) {
 
 function clampToToday(value: string) {
   return value > today() ? today() : value
+}
+
+function clampRadius(value: number) {
+  if (!Number.isFinite(value)) return 25
+  return Math.min(100, Math.max(1, Math.round(value)))
 }
 
 function periodForPreset(preset: PeriodPreset, selectedYear: number, season: Season) {
@@ -89,71 +91,15 @@ function riverHelperEmbedUrl(place: Place) {
   return `${import.meta.env.BASE_URL}river-helper-map/index.html?${params.toString()}`
 }
 
-function researchBounds(latitude: number, longitude: number, radiusKm: number) {
-  const latDelta = radiusKm / 111.32
-  const lonScale = Math.max(0.15, Math.cos(latitude * Math.PI / 180))
-  const lonDelta = radiusKm / (111.32 * lonScale)
-  return {
-    west: Math.max(-180, longitude - lonDelta),
-    south: Math.max(-90, latitude - latDelta),
-    east: Math.min(180, longitude + lonDelta),
-    north: Math.min(90, latitude + latDelta),
-  }
-}
-
-function nasaContextUrl(date: string, place: Place, radiusKm: number) {
-  const bounds = researchBounds(place.latitude, place.longitude, radiusKm)
-  const layer = date >= '2012-01-19'
-    ? 'VIIRS_SNPP_CorrectedReflectance_TrueColor'
-    : 'MODIS_Terra_CorrectedReflectance_TrueColor'
-  const params = new URLSearchParams({
-    SERVICE: 'WMS',
-    REQUEST: 'GetMap',
-    VERSION: '1.1.1',
-    LAYERS: layer,
-    STYLES: '',
-    FORMAT: 'image/jpeg',
-    TRANSPARENT: 'FALSE',
-    SRS: 'EPSG:4326',
-    BBOX: `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`,
-    WIDTH: '1600',
-    HEIGHT: '1600',
-    TIME: date,
-  })
-  return `https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?${params.toString()}`
-}
-
-function buildContextImages(place: Place | null, analysis: AreaAnalysisResponse | null): ContextImage[] {
-  if (!place || !analysis) return []
-  const nasa = [...analysis.preview_images].reverse().find(item => item.source.includes('NASA GIBS'))
-  if (!nasa) {
-    return analysis.preview_images.slice(-4).map((item, index) => ({
-      ...item,
-      label: `Rzeczywista obserwacja ${index + 1}`,
-      radiusKm: null,
-      note: 'Oficjalny obraz zwrócony przez analizę. Nie przypisujemy mu sztucznej skali ani dodatkowej rozdzielczości.',
-    }))
-  }
-  const scales = [
-    { label: '01 · Z bliska', radiusKm: 5 },
-    { label: '02 · Otoczenie lokalne', radiusKm: 25 },
-    { label: '03 · Widok regionalny', radiusKm: 100 },
-    { label: '04 · Bardzo wysoki widok', radiusKm: 350 },
-  ]
-  return scales.map(scale => ({
-    date: nasa.date,
-    source: nasa.source,
-    url: nasaContextUrl(nasa.date, place, scale.radiusKm),
-    label: scale.label,
-    radiusKm: scale.radiusKm,
-    note: `Ten sam prawdziwy dzień i warstwa NASA GIBS, inny zasięg AOI: promień około ${scale.radiusKm} km.`,
-  }))
-}
-
 function confidenceLabel(level: 'low' | 'medium' | 'high') {
   if (level === 'high') return 'wysoka'
   if (level === 'medium') return 'średnia'
   return 'niska'
+}
+
+function cloudLabel(value: number | null | undefined) {
+  if (!Number.isFinite(value)) return 'brak dokładnej wartości zachmurzenia'
+  return `zachmurzenie sceny: ${Number(value).toFixed(1)}%`
 }
 
 export function SimpleResearchAssistant({
@@ -175,6 +121,8 @@ export function SimpleResearchAssistant({
   const [periodPreset, setPeriodPreset] = useState<PeriodPreset>('long')
   const [selectedYear, setSelectedYear] = useState(currentYear)
   const [season, setSeason] = useState<Season>('all')
+  const [radiusKm, setRadiusKm] = useState(25)
+  const [imageMode, setImageMode] = useState<ImageMode>('clear')
   const [status, setStatus] = useState<'idle' | 'searching' | 'analyzing' | 'ready' | 'error'>('idle')
   const [analysis, setAnalysis] = useState<AreaAnalysisResponse | null>(null)
   const [error, setError] = useState('')
@@ -189,8 +137,8 @@ export function SimpleResearchAssistant({
   const assistantController = useRef<AbortController | null>(null)
   const period = useMemo(() => periodForPreset(periodPreset, selectedYear, season), [periodPreset, selectedYear, season])
   const previewUtc = useMemo(() => new Date().toISOString(), [])
-  const contextImages = useMemo(() => buildContextImages(place, analysis), [place, analysis])
   const years = useMemo(() => Array.from({ length: currentYear - 1990 + 1 }, (_, index) => currentYear - index), [currentYear])
+  const visibleImages = useMemo(() => analysis?.preview_images.slice(0, 4) ?? [], [analysis])
 
   useEffect(() => {
     for (const key of LEGACY_CHAT_KEYS) window.localStorage.removeItem(key)
@@ -200,22 +148,32 @@ export function SimpleResearchAssistant({
     }
   }, [])
 
-  const runAnalysis = async (target: Place, depth: 'quick' | 'deep' = 'quick', selectedPeriod = period) => {
+  const runAnalysis = async (
+    target: Place,
+    depth: 'quick' | 'deep' = 'quick',
+    selectedPeriod = period,
+    options: AnalysisOptions = {},
+  ) => {
     analysisController.current?.abort()
     const controller = new AbortController()
     analysisController.current = controller
     setStatus('analyzing')
     setError('')
     setArchiveNotice('')
+    const selectedRadius = clampRadius(options.radiusKm ?? radiusKm)
+    const selectedImageMode = options.imageMode ?? imageMode
     try {
       const result = await analyzeResearchArea(apiUrl, {
         latitude: target.latitude,
         longitude: target.longitude,
-        radiusKm: 25,
+        radiusKm: selectedRadius,
         startDate: selectedPeriod.startDate,
         endDate: selectedPeriod.endDate,
         placeName: target.label,
         depth,
+        imageMode: selectedImageMode,
+        maxCloudCover: selectedImageMode === 'clear' ? 10 : 100,
+        previewLimit: 4,
       }, controller.signal)
       setAnalysis(result)
       setStatus('ready')
@@ -287,6 +245,17 @@ export function SimpleResearchAssistant({
     if (place) void runAnalysis(place, 'quick', periodForPreset('year', selectedYear, value))
   }
 
+  const applyRadius = () => {
+    const selected = clampRadius(radiusKm)
+    setRadiusKm(selected)
+    if (place) void runAnalysis(place, 'quick', period, { radiusKm: selected })
+  }
+
+  const applyImageMode = (mode: ImageMode) => {
+    setImageMode(mode)
+    if (place) void runAnalysis(place, 'quick', period, { imageMode: mode })
+  }
+
   const sendQuestion = async (event: FormEvent) => {
     event.preventDefault()
     const text = question.trim()
@@ -305,12 +274,20 @@ export function SimpleResearchAssistant({
         messages: nextMessages,
         context: {
           selected_place: place,
+          selected_radius_km: radiusKm,
+          selected_image_mode: imageMode,
           area_analysis: analysis ? {
             generated_at_utc: analysis.generated_at_utc,
             area: analysis.area,
             period: analysis.period,
+            image_policy: analysis.image_policy,
             evidence_policy: analysis.evidence_policy,
-            preview_sources: analysis.preview_images.map(item => ({ date: item.date, source: item.source })),
+            preview_sources: analysis.preview_images.slice(0, 4).map(item => ({
+              date: item.date,
+              source: item.source,
+              cloud_cover: item.cloud_cover ?? null,
+              scene_id: item.scene_id ?? null,
+            })),
             landsat_catalog: {
               matched: analysis.landsat_catalog.matched,
               scenes: analysis.landsat_catalog.scenes,
@@ -340,18 +317,19 @@ export function SimpleResearchAssistant({
   }
 
   const globeMarkers = place ? [{ longitude: place.longitude, latitude: place.latitude, color: 0x35cfff, radius: 1.35 }] : []
+  const catalogAllYears = analysis?.landsat_catalog.all_years_catalog_url ?? analysis?.landsat_catalog.full_catalog_url ?? null
 
   return <section className="simple-research" aria-label="AI terrain research">
     {canSwitchMode && <div className="simple-console-mode panel" role="group" aria-label="Research interface level">
-      <button type="button" className={effectiveMode === 'simple' ? 'active' : ''} onClick={() => setConsoleMode('simple')}><b>Prosty</b><span>miejsce → pytanie → obrazy → Ziemia 3D → wynik</span></button>
-      <button type="button" className={effectiveMode === 'advanced' ? 'active' : ''} onClick={() => setConsoleMode('advanced')}><b>Zaawansowany</b><span>stary pełny panel · obrazy HQ · pliki · modele · flagi · DEM · profile · raporty</span></button>
+      <button type="button" className={effectiveMode === 'simple' ? 'active' : ''} onClick={() => setConsoleMode('simple')}><b>Prosty</b><span>miejsce → czyste obrazy → pytanie → Ziemia 3D → wynik</span></button>
+      <button type="button" className={effectiveMode === 'advanced' ? 'active' : ''} onClick={() => setConsoleMode('advanced')}><b>Zaawansowany</b><span>obrazy HQ · pliki · modele · flagi · DEM · profile · raporty</span></button>
     </div>}
 
     <section className="simple-research-hero panel simple-workflow-card">
       <div className="simple-research-copy">
         <small>MAPA · SATELITY · OPENAI</small>
         <h2>Wpisz miejsce. Resztę przygotuje system.</h2>
-        <p>Po wyszukaniu obszaru pokazujemy prawdziwe obrazy z oficjalnych źródeł, obrazy z wybranego roku i pory roku, globus 3D oraz opis miejsca. Zmiana roku lub pory automatycznie odświeża analizę.</p>
+        <p>Domyślnie wybieramy możliwie czyste obrazy do badania rzek i terenu: Landsat z raportowanym zachmurzeniem do 10% oraz Copernicus Sentinel-2 z filtrem MAXCC. Na stronie pokazujemy najwyżej 4 obrazy; cały katalog pozostaje dostępny osobno.</p>
       </div>
       <form className="simple-search" onSubmit={submitSearch}>
         <input value={query} onChange={event => setQuery(event.target.value)} placeholder="np. Olszówka gmina Gardeja, Jezioro Kuchnia, Wisła pod Gniewem…" aria-label="Wyszukaj miejsce do badania" />
@@ -363,17 +341,36 @@ export function SimpleResearchAssistant({
         <button type="button" className={periodPreset === 'five-years' ? 'active' : ''} onClick={() => applyPeriod('five-years')}>ostatnie 5 lat</button>
         <button type="button" className={periodPreset === 'one-year' ? 'active' : ''} onClick={() => applyPeriod('one-year')}>ostatni rok</button>
       </div>
+
       <div className="simple-history-controls">
         <label>Rok<select value={selectedYear} onChange={event => applySelectedYear(Number(event.target.value))}>{years.map(value => <option key={value} value={value}>{value}</option>)}</select></label>
         <label>Pora<select value={season} onChange={event => applySelectedSeason(event.target.value as Season)}><option value="all">cały rok</option><option value="spring">wiosna</option><option value="summer">lato</option><option value="autumn">jesień</option><option value="winter">zima</option></select></label>
         <button type="button" className="secondary" onClick={() => applyPeriod('year')} disabled={!place}>Odśwież wybrany okres</button>
       </div>
+
+      <div className="simple-imagery-controls" aria-label="Ustawienia obszaru i zachmurzenia">
+        <div className="simple-radius-control">
+          <div className="simple-control-title"><b>Promień badanego obszaru</b><span>{radiusKm} km</span></div>
+          <input type="range" min="1" max="100" step="1" value={radiusKm} onChange={event => setRadiusKm(clampRadius(Number(event.target.value)))} aria-label="Promień obszaru w kilometrach" />
+          <div className="simple-radius-manual"><label>Wpisz ręcznie<input type="number" min="1" max="100" step="1" value={radiusKm} onChange={event => setRadiusKm(clampRadius(Number(event.target.value)))} /></label><button type="button" className="secondary" onClick={applyRadius} disabled={!place}>Zastosuj {radiusKm} km</button></div>
+          <small>Zakres prostego widoku: 1–100 km od środka wyszukanego miejsca.</small>
+        </div>
+        <div className="simple-cloud-control">
+          <div className="simple-control-title"><b>Zdjęcia do analizy</b><span>{imageMode === 'clear' ? 'czyste ≤10%' : 'wszystkie'}</span></div>
+          <div className="simple-image-mode-buttons">
+            <button type="button" className={imageMode === 'clear' ? 'active' : ''} onClick={() => applyImageMode('clear')}><b>Czyste do badania rzek</b><span>priorytet ≤10% chmur</span></button>
+            <button type="button" className={imageMode === 'all' ? 'active' : ''} onClick={() => applyImageMode('all')}><b>Pochmurne / wszystkie</b><span>opcjonalnie, gdy są potrzebne</span></button>
+          </div>
+          <small>Tryb czysty odrzuca Landsat bez potwierdzonej wartości zachmurzenia lub powyżej progu. Jeśli nie ma dobrych scen, system pokaże mniej niż 4 zamiast podstawiać gorsze zdjęcia.</small>
+        </div>
+      </div>
+
       {alternatives.length > 1 && <details className="simple-search-alternatives" open><summary>Znalezione miejsca — wybierz właściwe, jeśli pierwszy wynik nie jest dokładny</summary><div>{alternatives.slice(0, 10).map(item => <button type="button" key={`${item.latitude}-${item.longitude}`} onClick={() => choosePlace({ label: item.display_name, latitude: item.latitude, longitude: item.longitude })}>{item.display_name}</button>)}</div></details>}
       {error && <p className="research-error" role="alert">{error}</p>}
     </section>
 
     {effectiveMode === 'simple' && <section className="simple-question panel" aria-label="Prywatne pytanie do asystenta">
-      <div><small>OPENAI · PYTANIE PRYWATNE · TYLKO SESJA</small><h3>Zapytaj asystenta</h3><p>Odpowiedź pojawia się bezpośrednio tutaj, pod Twoim wpisem. Asystent dostaje kontekst wybranego miejsca, okresu i oficjalnych obrazów.</p></div>
+      <div><small>OPENAI · PYTANIE PRYWATNE · TYLKO SESJA</small><h3>Zapytaj asystenta</h3><p>Asystent dostaje wybrane miejsce, promień, okres oraz dokładnie te oficjalne obrazy, które przeszły filtr i kontrolę Workera.</p></div>
       <div>
         <form onSubmit={sendQuestion}><textarea value={question} onChange={event => setQuestion(event.target.value)} placeholder="Zapytaj o wybrane miejsce, zdjęcia, rzeki, teren lub zmiany w czasie…" rows={3} /><div className="simple-question-actions"><button type="submit" className="primary" disabled={!apiUrl || assistantBusy || !question.trim()}>{assistantBusy ? 'Asystent analizuje…' : 'Wyślij prywatnie'}</button><button type="button" className="secondary" onClick={() => { setSessionMessages([]); setAssistantAnswer(''); setLastQuestion(''); setQuestion(''); setAssistantError('') }}>Nowe pytanie</button></div></form>
         {lastQuestion && <article className="simple-question-answer"><small>TWOJE PYTANIE</small><p>{lastQuestion}</p></article>}
@@ -383,13 +380,16 @@ export function SimpleResearchAssistant({
       </div>
     </section>}
 
-    {(status === 'analyzing' || status === 'searching') && <div className="simple-ai-loading panel" role="status"><span className="simple-ai-spinner" /><div><b>Przygotowuję prawdziwe dane</b><p>Pobieram oficjalny katalog Landsat oraz reprezentatywne obrazy NASA/Copernicus dla wybranego okresu. Brak danych będzie pokazany jako brak danych, nie jako wygenerowany obraz.</p></div></div>}
+    {(status === 'analyzing' || status === 'searching') && <div className="simple-ai-loading panel" role="status"><span className="simple-ai-spinner" /><div><b>Przygotowuję prawdziwe dane</b><p>{imageMode === 'clear' ? 'Szukam scen o małym zachmurzeniu i przygotowuję maksymalnie 4 obrazy do analizy.' : 'Tryb rozszerzony: dopuszczam także obrazy pochmurne i NASA GIBS.'}</p></div></div>}
 
     {analysis && <section className="simple-context-gallery panel" aria-label="Prawdziwe obrazy satelitarne wybranego okresu">
-      <div className="simple-section-head"><div><small>PRAWDZIWE OBRAZY · NASA GIBS · COPERNICUS</small><h2>{place?.label}</h2><p>Wybrany okres: <b>{analysis.period.start_date} → {analysis.period.end_date}</b>. Najpierw cztery skale ostatniej dostępnej obserwacji NASA, niżej wszystkie zwrócone prawdziwe obrazy z wybranego okresu.</p></div></div>
-      <div className="simple-context-grid">{contextImages.map(image => <figure key={`${image.label}-${image.date}`}><a href={image.url} target="_blank" rel="noreferrer"><img src={image.url} alt={`${image.label}: ${place?.label ?? 'wybrany obszar'}`} loading="lazy" /></a><figcaption><b>{image.label}</b><span>{image.date} · {image.source}</span><small>{image.note}</small></figcaption></figure>)}</div>
-      {analysis.preview_images.length > 0 && <div className="simple-selected-period-images"><div className="simple-section-head"><div><small>WYBRANY ROK / PORA ROKU</small><h2>Zdjęcia źródłowe z tego okresu</h2><p>Każda karta ma datę i nazwę oficjalnego źródła. Kliknięcie otwiera obraz źródłowy w pełnym widoku.</p></div></div><div className="simple-image-grid">{analysis.preview_images.map((image, index) => <figure key={`${image.date}-${image.source}-${index}`}><a href={image.url} target="_blank" rel="noreferrer"><img src={image.url} alt={`${image.source} ${image.date}`} loading="lazy" /></a><figcaption><b>{image.date}</b><span>{image.source}</span><small>prawdziwy obraz źródłowy · okres {analysis.period.start_date}–{analysis.period.end_date}</small></figcaption></figure>)}</div></div>}
-      {analysis.preview_images.length === 0 && <p className="research-error">Dla tego okresu nie zwrócono renderowalnego obrazu. Sprawdź katalog Landsat niżej lub wybierz inny rok/pora roku.</p>}
+      <div className="simple-section-head"><div><small>{analysis.image_policy?.mode === 'all' ? 'OFICJALNE OBRAZY · TRYB WSZYSTKIE' : 'OFICJALNE OBRAZY · TRYB CZYSTY'}</small><h2>{place?.label}</h2><p>Obszar: promień <b>{analysis.area.radius_km} km</b>. Okres: <b>{analysis.period.start_date} → {analysis.period.end_date}</b>. Na tej stronie pokazujemy maksymalnie cztery obrazy; pozostałe sceny zostają w katalogu satelity.</p></div></div>
+      {visibleImages.length > 0 && <div className="simple-context-grid">{visibleImages.map((image, index) => <figure key={`${image.date}-${image.source}-${index}`}><a href={image.url} target="_blank" rel="noreferrer"><img src={image.url} alt={`${image.source} ${image.date}`} loading="lazy" /></a><figcaption><b>{String(index + 1).padStart(2, '0')} · {image.date}</b><span>{image.source}</span><small>{cloudLabel(image.cloud_cover)}{image.scene_id ? ` · scena ${image.scene_id}` : ''}</small></figcaption></figure>)}</div>}
+      {visibleImages.length === 0 && <div className="simple-no-clean-images"><p>W tym okresie Worker nie znalazł renderowalnej sceny spełniającej aktualny filtr. Nie podstawiamy pochmurnego obrazu jako „czystego”.</p>{imageMode === 'clear' && <button type="button" className="secondary" onClick={() => applyImageMode('all')}>Pokaż także pochmurne / wszystkie</button>}</div>}
+      <div className="simple-catalog-actions">
+        {analysis.landsat_catalog.full_catalog_url && <a href={analysis.landsat_catalog.full_catalog_url} target="_blank" rel="noreferrer">Katalog Landsat dla wybranego okresu</a>}
+        {catalogAllYears && <a href={catalogAllYears} target="_blank" rel="noreferrer">Pełny katalog Landsat 1972–dziś dla tego obszaru</a>}
+      </div>
     </section>}
 
     <div className="simple-console-grid" style={effectiveMode === 'simple' ? { gridTemplateColumns: '1fr' } : undefined}>
@@ -413,12 +413,12 @@ export function SimpleResearchAssistant({
     </section>}
 
     {analysis && <details className="simple-history panel" open={effectiveMode === 'advanced' || periodPreset === 'year'}>
-      <summary><span><small>ARCHIWUM OBRAZÓW · 1990–DZIŚ</small><b>Rzeczywiste próbki czasowe i katalog Landsat</b></span><em>Rozwiń</em></summary>
-      <div className="simple-history-body"><p>NASA GIBS zapewnia wizualne próbki od 2000 r. Wcześniejszy okres jest weryfikowany przez katalog USGS Landsat; jeśli nie mamy renderowalnej sceny, pokazujemy to wprost zamiast udawać obraz.</p><div className="simple-evidence-summary"><span><b>{analysis.preview_images.length}</b> obrazów pokazanych</span><span><b>{analysis.ai_visual_image_count}</b> obrazów obejrzanych przez AI</span><span><b>{analysis.landsat_catalog.matched}</b> scen w katalogu USGS</span></div>{analysis.preview_images.length > 0 && <div className="simple-image-grid">{analysis.preview_images.map((image, index) => <figure key={`${image.date}-${index}`}><a href={image.url} target="_blank" rel="noreferrer"><img src={image.url} alt={`${image.source} ${image.date}`} loading="lazy" /></a><figcaption><b>{image.date}</b><span>{image.source}</span><small>prawdziwy obraz źródłowy</small></figcaption></figure>)}</div>}{analysis.landsat_catalog.full_catalog_url && <p className="simple-full-catalog-note"><a href={analysis.landsat_catalog.full_catalog_url} target="_blank" rel="noreferrer">Otwórz pełny oficjalny katalog USGS Landsat →</a></p>}</div>
+      <summary><span><small>ARCHIWUM OBRAZÓW · PEŁNY KATALOG</small><b>Sceny satelitarne bez ładowania setek miniaturek</b></span><em>Rozwiń</em></summary>
+      <div className="simple-history-body"><p>Interfejs celowo ładuje tylko do 4 obrazów. Pełna lista scen pozostaje po stronie oficjalnego katalogu USGS Landsat, dzięki czemu telefon nie pobiera dziesiątek lub setek zdjęć naraz.</p><div className="simple-evidence-summary"><span><b>{visibleImages.length}</b> obrazów na stronie</span><span><b>{analysis.ai_visual_image_count}</b> obrazów obejrzanych przez AI</span><span><b>{analysis.landsat_catalog.matched}</b> scen dopasowanych w katalogu</span></div><div className="simple-catalog-actions">{analysis.landsat_catalog.full_catalog_url && <a href={analysis.landsat_catalog.full_catalog_url} target="_blank" rel="noreferrer">Otwórz katalog dla wybranego okresu</a>}{catalogAllYears && <a href={catalogAllYears} target="_blank" rel="noreferrer">Otwórz cały katalog 1972–dziś</a>}</div></div>
     </details>}
 
     {effectiveMode === 'advanced' && <>{place && <ResearchTerrainLab apiUrl={apiUrl} place={place} satelliteDate={analysis?.period.end_date} />}{analysis && <section className="simple-ai-result panel" aria-label="Detailed AI analysis result"><div className="simple-result-head"><div><small>TRYB ZAAWANSOWANY · DOWODY</small><h2>Szczegółowa analiza</h2></div><span className={`simple-confidence ${analysis.analysis.confidence.level}`}>pewność: {confidenceLabel(analysis.analysis.confidence.level)}</span></div><div className="simple-result-grid"><article><small>CO WIDAĆ</small><p>{analysis.analysis.what_is_visible}</p></article><article><small>ZMIANY W CZASIE</small><p>{analysis.analysis.change_over_time}</p></article><article className="water"><small>WODA</small><p>{analysis.analysis.water_assessment}</p></article><article><small>PEWNOŚĆ</small><p>{analysis.analysis.confidence.reason}</p></article></div><div className="simple-limitations"><b>Ograniczenia</b><ul>{analysis.analysis.limitations.map(item => <li key={item}>{item}</li>)}</ul><p><b>Następny krok:</b> {analysis.analysis.recommended_next_step}</p></div></section>}<details className="simple-advanced panel" open><summary><span><b>Zaawansowany obszar badawczy</b><small>kształt, dokładne daty, manifest i zapis projektu</small></span><strong>ROZWIŃ</strong></summary><div className="simple-advanced-body">{advanced}</div></details></>}
 
-    {!place && <div className="simple-guidance panel"><b>Jak zacząć:</b><span>1. Wpisz miejscowość lub współrzędne.</span><span>2. Wybierz rok i porę roku.</span><span>3. Zobacz prawdziwe obrazy i zapytaj asystenta.</span></div>}
+    {!place && <div className="simple-guidance panel"><b>Jak zacząć:</b><span>1. Ustaw promień 1–100 km.</span><span>2. Zostaw „Czyste do badania rzek”.</span><span>3. Wpisz miejsce i wybierz rok/pora roku.</span></div>}
   </section>
 }
