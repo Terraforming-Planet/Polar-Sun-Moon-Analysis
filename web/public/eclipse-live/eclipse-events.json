@@ -1,0 +1,84 @@
+{
+  "schema": "terra-eclipse-calendar/v1",
+  "updated_utc": "2026-08-21T16:02:00Z",
+  "evidence_policy": "official-public-only",
+  "next_event_id": "solar-2027-02-06-annular",
+  "events": [
+    {
+      "id": "solar-2027-02-06-annular",
+      "kind": "solar",
+      "type": "annular",
+      "title": "Zaćmienie obrączkowe Słońca · 6 lutego 2027",
+      "greatest_utc": "2027-02-06T15:59:32Z",
+      "magnitude": 0.9281,
+      "central_duration": "07m51s",
+      "path_width_km": 281.6,
+      "greatest_point": {"latitude": -31.3, "longitude": -48.5},
+      "visibility_summary_pl": "Faza obrączkowa przebiega przez południowe Chile, południową Argentynę i Atlantyk. Faza częściowa obejmuje duże obszary Ameryki Południowej, Antarktydy oraz zachodniej i południowej Afryki.",
+      "official_source": "https://eclipse.gsfc.nasa.gov/SEsearch/SEdata.php?Ecl=20270206",
+      "official_path_map": "https://eclipse.gsfc.nasa.gov/SEsearch/SEsearchmap.php?Ecl=20270206",
+      "test_areas": [
+        {"id": "greatest", "label": "NASA · punkt największego zaćmienia", "latitude": -31.3, "longitude": -48.5, "zoom_height_m": 5200000, "evidence": "official-greatest-point"},
+        {"id": "patagonia-chile", "label": "Patagonia · południowe Chile · test widoczności", "latitude": -45.5, "longitude": -72.5, "zoom_height_m": 2800000, "evidence": "regional-test-point"},
+        {"id": "patagonia-argentina", "label": "Patagonia · południowa Argentyna · test widoczności", "latitude": -44.0, "longitude": -68.5, "zoom_height_m": 2800000, "evidence": "regional-test-point"},
+        {"id": "south-atlantic", "label": "Południowy Atlantyk · test osi ścieżki", "latitude": -34.0, "longitude": -35.0, "zoom_height_m": 4200000, "evidence": "regional-test-point"},
+        {"id": "west-africa", "label": "Afryka Zachodnia · strefa widoczności częściowej", "latitude": 6.5, "longitude": 1.0, "zoom_height_m": 4200000, "evidence": "regional-visibility-test"}
+      ]
+    },
+    {
+      "id": "lunar-2027-02-20-penumbral",
+      "kind": "lunar",
+      "type": "penumbral",
+      "title": "Półcieniowe zaćmienie Księżyca · 20 lutego 2027",
+      "greatest_utc": "2027-02-20T23:13:00Z",
+      "visibility_summary_pl": "Wydarzenie księżycowe z katalogu NASA GSFC. Dokładna lokalna widoczność zależy od położenia obserwatora i wysokości Księżyca.",
+      "official_source": "https://eclipse.gsfc.nasa.gov/OH/OH2027.html",
+      "test_areas": []
+    },
+    {
+      "id": "lunar-2027-07-18-penumbral",
+      "kind": "lunar",
+      "type": "penumbral",
+      "title": "Półcieniowe zaćmienie Księżyca · 18 lipca 2027",
+      "greatest_utc": "2027-07-18T16:03:00Z",
+      "visibility_summary_pl": "Wydarzenie księżycowe z katalogu NASA GSFC. Dokładna lokalna widoczność zależy od położenia obserwatora i wysokości Księżyca.",
+      "official_source": "https://eclipse.gsfc.nasa.gov/OH/OH2027.html",
+      "test_areas": []
+    },
+    {
+      "id": "solar-2027-08-02-total",
+      "kind": "solar",
+      "type": "total",
+      "title": "Całkowite zaćmienie Słońca · 2 sierpnia 2027",
+      "greatest_utc": "2027-08-02T10:07:49Z",
+      "magnitude": 1.079,
+      "central_duration": "06m23s",
+      "path_width_km": 258,
+      "greatest_point": {"latitude": 25.5, "longitude": 33.2},
+      "visibility_summary_pl": "Pas całkowitości przecina południową Hiszpanię, Afrykę Północną, Egipt, Półwysep Arabski i Jemen; zaćmienie częściowe będzie widoczne na znacznie większym obszarze.",
+      "official_source": "https://eclipse.gsfc.nasa.gov/OH/OH2027.html",
+      "official_path_map": "https://eclipse.gsfc.nasa.gov/SEsearch/SEsearchmap.php?Ecl=20270802",
+      "test_areas": [
+        {"id": "greatest", "label": "NASA · okolice punktu największego zaćmienia", "latitude": 25.5, "longitude": 33.2, "zoom_height_m": 4200000, "evidence": "official-greatest-point"},
+        {"id": "south-spain", "label": "Południowa Hiszpania · test pasa całkowitości", "latitude": 36.0, "longitude": -5.5, "zoom_height_m": 2200000, "evidence": "regional-test-point"},
+        {"id": "egypt", "label": "Egipt · test pasa całkowitości", "latitude": 25.7, "longitude": 32.6, "zoom_height_m": 2200000, "evidence": "regional-test-point"},
+        {"id": "saudi", "label": "Arabia Saudyjska · test pasa całkowitości", "latitude": 18.5, "longitude": 42.5, "zoom_height_m": 2800000, "evidence": "regional-test-point"}
+      ]
+    },
+    {
+      "id": "lunar-2027-08-17-penumbral",
+      "kind": "lunar",
+      "type": "penumbral",
+      "title": "Półcieniowe zaćmienie Księżyca · 17 sierpnia 2027",
+      "greatest_utc": "2027-08-17T07:14:00Z",
+      "visibility_summary_pl": "Wydarzenie księżycowe z katalogu NASA GSFC. Dokładna lokalna widoczność zależy od położenia obserwatora i wysokości Księżyca.",
+      "official_source": "https://eclipse.gsfc.nasa.gov/OH/OH2027.html",
+      "test_areas": []
+    }
+  ],
+  "sources": [
+    "https://eclipse.gsfc.nasa.gov/OH/OH2027.html",
+    "https://eclipse.gsfc.nasa.gov/SEdecade/SEdecade2021.html",
+    "https://science.nasa.gov/eclipses/future-eclipses/"
+  ]
+}
