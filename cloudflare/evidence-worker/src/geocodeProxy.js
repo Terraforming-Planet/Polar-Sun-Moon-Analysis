@@ -58,6 +58,10 @@ function searchKey(value) {
   return accentFold(value).toLocaleLowerCase('en').replace(/[^\p{L}\p{N}]+/gu, ' ').trim()
 }
 
+function exactVariantKey(value) {
+  return normalizeSearchText(value).toLocaleLowerCase('en')
+}
+
 function queryParts(query) {
   return normalizeSearchText(query).split(',').map(part => part.trim()).filter(Boolean)
 }
@@ -76,7 +80,7 @@ export function geocodeQueryVariants(query) {
   const variants = [original]
   const push = value => {
     const normalized = normalizeSearchText(value)
-    if (normalized && !variants.some(item => searchKey(item) === searchKey(normalized))) variants.push(normalized)
+    if (normalized && !variants.some(item => exactVariantKey(item) === exactVariantKey(normalized))) variants.push(normalized)
   }
 
   const withoutAdministrativeWords = normalizeSearchText(original
