@@ -4,6 +4,7 @@ ROOT = Path(__file__).resolve().parents[1]
 AI_PANEL = ROOT / "web" / "src" / "AIResearchPanel.tsx"
 QUICK_ACCESS = ROOT / "web" / "src" / "SimpleContestQuickAccess.tsx"
 SIMPLE_ASSISTANT = ROOT / "web" / "src" / "SimpleResearchAssistant.tsx"
+FLOW_CSS = ROOT / "web" / "src" / "contest-research-flow.css"
 RIVER_MAP = ROOT / "web" / "public" / "river-helper-map" / "index.html"
 WEB_INDEX = ROOT / "web" / "index.html"
 
@@ -25,6 +26,7 @@ def test_simple_view_exposes_all_tests_tools_and_three_training_links() -> None:
     assert "L4 Training #1" in source
     assert "L4 Training #2 · Site Corpus" in source
     assert "L4 Training #3 · Streaming NASA GIBS" in source
+    assert "contest-research-flow.css" in source
 
 
 def test_simple_view_restores_four_specialist_station_links_without_legacy_shell() -> None:
@@ -37,24 +39,39 @@ def test_simple_view_restores_four_specialist_station_links_without_legacy_shell
     assert panel.index("<SimpleContestQuickAccess />") < panel.index("<SimpleResearchAssistant")
 
 
-def test_simple_flow_uses_private_question_before_globe_and_answer_summary_after() -> None:
+def test_contest_view_keeps_simple_and_restores_old_advanced_laboratory() -> None:
+    panel = AI_PANEL.read_text(encoding="utf-8")
+    assistant = SIMPLE_ASSISTANT.read_text(encoding="utf-8")
+
+    assert 'modePolicy="simple"' not in panel
+    assert "SIMPLE + ADVANCED" in panel
+    assert "stary pełny panel" in assistant
+    assert "ResearchTerrainLab" in assistant
+    assert "flag" in assistant.lower()
+    assert "DEM" in assistant
+    assert "profile" in assistant.lower()
+    assert "advancedControls" in assistant
+
+
+def test_simple_flow_places_answer_directly_under_question_and_summary_before_imagery() -> None:
     source = SIMPLE_ASSISTANT.read_text(encoding="utf-8")
+    css = FLOW_CSS.read_text(encoding="utf-8")
 
     private_question = 'className="simple-question panel"'
+    inline_answer = 'ODPOWIEDŹ ASYSTENTA'
     gallery = 'className="simple-context-gallery panel"'
-    globe = "<RealisticEarthGlobe"
-    answer = 'className="simple-question-answer"'
-    advanced_chat = "effectiveMode === 'advanced' && <ResearchChatNotebook"
+    summary = 'className="simple-basic-result panel"'
 
-    assert source.index(private_question) < source.index(gallery) < source.index(globe)
-    assert source.index(globe) < source.index(answer)
-    assert source.index(globe) < source.index(advanced_chat)
-    assert "user-prompt-not-stored" not in source
-    assert "LEGACY_CHAT_KEYS" in source
+    assert source.index(private_question) < source.index(inline_answer) < source.index(gallery)
+    assert "TWOJE PYTANIE" in source
+    assert ".simple-research>.simple-question{order:20}" in css
+    assert ".simple-research>.simple-basic-result{order:21}" in css
+    assert ".simple-research>.simple-context-gallery{order:30}" in css
+    assert summary in source
     assert "saveAssistantAnswerLocally" in source
 
 
-def test_simple_flow_builds_four_real_nasa_context_views() -> None:
+def test_simple_flow_builds_four_real_nasa_context_views_and_selected_period_gallery() -> None:
     source = SIMPLE_ASSISTANT.read_text(encoding="utf-8")
 
     assert "gibs.earthdata.nasa.gov" in source
@@ -65,9 +82,12 @@ def test_simple_flow_builds_four_real_nasa_context_views() -> None:
     assert "WIDTH: '1600'" in source
     assert "HEIGHT: '1600'" in source
     assert "generative fill" in source
+    assert "WYBRANY ROK / PORA ROKU" in source
+    assert "Zdjęcia źródłowe z tego okresu" in source
+    assert "analysis.preview_images.map" in source
 
 
-def test_simple_flow_exposes_1990_today_year_and_season_controls() -> None:
+def test_simple_flow_exposes_1990_today_year_and_season_controls_with_auto_refresh() -> None:
     source = SIMPLE_ASSISTANT.read_text(encoding="utf-8")
 
     assert "1990–dziś" in source
@@ -77,6 +97,9 @@ def test_simple_flow_exposes_1990_today_year_and_season_controls() -> None:
     assert "jesień" in source
     assert "zima" in source
     assert "USGS Landsat" in source
+    assert "applySelectedYear" in source
+    assert "applySelectedSeason" in source
+    assert "runAnalysis(place, 'quick', periodForPreset('year'" in source
 
 
 def test_simple_context_uses_dedicated_river_helper_map() -> None:
