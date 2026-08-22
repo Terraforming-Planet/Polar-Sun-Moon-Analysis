@@ -440,9 +440,10 @@ export async function handleAreaAnalysisV2(request, env = {}) {
       landsat = { matched: 0, returned: 0, scenes: [], query_url: null, full_catalog_url: null, warning: error instanceof Error ? error.message : 'USGS catalogue unavailable.' }
     }
 
-    const visualPreflight = await prepareVisualInputs(requestedVisuals, parsed.depth)
-    const analysis = await analyzeWithOpenAI(parsed, visualPreflight.prepared, landsat, env, visualPreflight.warnings)
-    const previews = [...requestedVisuals].sort((a, b) => a.date.localeCompare(b.date)).slice(-MAX_GALLERY_IMAGES)
+    const galleryPreflight = await prepareVisualInputs(requestedVisuals, 'deep')
+    const analysisVisuals = selectVisualCandidates(galleryPreflight.prepared, parsed.depth)
+    const analysis = await analyzeWithOpenAI(parsed, analysisVisuals, landsat, env, galleryPreflight.warnings)
+    const previews = [...galleryPreflight.prepared].sort((a, b) => a.date.localeCompare(b.date)).slice(-MAX_GALLERY_IMAGES)
     return jsonResponse({
       service: 'terra-observation-area-analysis-v2',
       generated_at_utc: new Date().toISOString(),
@@ -450,17 +451,18 @@ export async function handleAreaAnalysisV2(request, env = {}) {
       period: { start_date: parsed.startDate, end_date: parsed.endDate },
       depth: parsed.depth,
       preview_images: previews.map(item => ({ date: item.date, source: item.source, url: item.url })),
-      ai_visual_image_count: visualPreflight.prepared.length,
-      visual_preflight_warnings: visualPreflight.warnings,
+      ai_visual_image_count: analysisVisuals.length,
+      visual_preflight_warnings: galleryPreflight.warnings,
       landsat_catalog: landsat,
       analysis,
       gallery_policy: {
         simple_display_limit: 4,
         advanced_display_limit: 8,
         delivery: 'official allowlisted imagery via /research/image streaming proxy with direct-source fallback',
+        verified_gallery_images: previews.length,
         ai_preflight_limit: parsed.depth === 'deep' ? DEEP_OPENAI_IMAGE_LIMIT : QUICK_OPENAI_IMAGE_LIMIT,
       },
-      evidence_policy: 'official-public-only; OpenAI receives only Worker-preflighted image bytes; browser gallery uses allowlisted NASA/Copernicus candidates delivered through the provenance-preserving image stream',
+      evidence_policy: 'official-public-only; gallery and OpenAI imagery pass Worker image preflight; browser delivery uses the allowlisted provenance-preserving image stream',
     }, 200, origin, env)
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Area analysis failed safely.'
