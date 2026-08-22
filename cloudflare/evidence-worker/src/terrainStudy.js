@@ -77,6 +77,10 @@ function shiftDate(date, days) {
   return value.toISOString().slice(0, 10)
 }
 
+function todayUtc() {
+  return new Date().toISOString().slice(0, 10)
+}
+
 function parsePayload(value, allowAnalyze = false) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Request body must be one object.')
   const allowed = new Set(['latitude', 'longitude', 'radius_km', 'years', 'season', 'mode', 'exact_utc', 'place_name'])
@@ -187,9 +191,19 @@ function dateDistanceMs(datetime, reference) {
   return Math.abs(Date.parse(datetime) - Date.parse(reference))
 }
 
+function dedupeScenes(scenes) {
+  return [...new Map(scenes.map(scene => [scene.id, scene])).values()]
+}
+
 function bestClearScene(scenes, threshold = CLEAR_CLOUD_THRESHOLD) {
   return [...scenes]
     .filter(scene => Number.isFinite(scene.cloud_cover) && scene.cloud_cover <= threshold)
+    .sort((a, b) => a.cloud_cover - b.cloud_cover || a.datetime.localeCompare(b.datetime))[0] ?? null
+}
+
+function bestLeastCloudScene(scenes) {
+  return [...scenes]
+    .filter(scene => Number.isFinite(scene.cloud_cover))
     .sort((a, b) => a.cloud_cover - b.cloud_cover || a.datetime.localeCompare(b.datetime))[0] ?? null
 }
 
@@ -218,11 +232,12 @@ function publicScene(request, scene) {
   }
 }
 
-function sentinelCloudMinimized(parsed, year, season, env) {
-  const [startSuffix, endSuffix] = SEASON_WINDOWS[season]
-  const start = `${year}-${startSuffix}`
-  const end = `${year}-${endSuffix}`
-  if (end < SENTINEL2_START) return null
+function sentinelCloudMinimized(parsed, year, env, searchWindow) {
+  let start = searchWindow.start
+  let end = searchWindow.end
+  if (end < SENTINEL2_START || start > todayUtc()) return null
+  if (start < SENTINEL2_START) start = SENTINEL2_START
+  if (end > todayUtc()) end = todayUtc()
   const bounds = researchBounds(parsed.latitude, parsed.longitude, parsed.radiusKm)
   const instance = typeof env.CDSE_INSTANCE_ID === 'string' && env.CDSE_INSTANCE_ID.trim() ? env.CDSE_INSTANCE_ID.trim() : DEFAULT_CDSE_INSTANCE
   const layer = typeof env.CDSE_TRUE_COLOR_LAYER === 'string' && env.CDSE_TRUE_COLOR_LAYER.trim() ? env.CDSE_TRUE_COLOR_LAYER.trim() : 'NATURAL-COLOR'
@@ -244,47 +259,46 @@ function sentinelCloudMinimized(parsed, year, season, env) {
     threshold: CLEAR_CLOUD_THRESHOLD,
     thumbnail_url: build(420),
     full_url: build(1800),
-    note: `Official Sentinel-2 L2A WMS request for ${start}..${end} with MAXCC=${CLEAR_CLOUD_THRESHOLD}. This can be a mosaic and is not claimed to be one exact acquisition.`,
+    note: `Official Sentinel-2 L2A WMS request for ${start}..${end} with MAXCC=${CLEAR_CLOUD_THRESHOLD}. This is the preferred primary terrain-study source where available; it can be a mosaic and is not claimed to be one exact acquisition.`,
   }
 }
 
 async function studySlot(request, parsed, year, env) {
   const [startSuffix, endSuffix] = SEASON_WINDOWS[parsed.season]
-  const start = `${year}-${startSuffix}`
-  const end = `${year}-${endSuffix}`
+  const selectedStart = `${year}-${startSuffix}`
+  const selectedEnd = `${year}-${endSuffix}`
   const referenceUtc = `${year}-${SEASON_REFERENCE[parsed.season]}T12:00:00Z`
-  let scenes = await queryLandsat(parsed, start, end)
+  let scenes = await queryLandsat(parsed, selectedStart, selectedEnd)
   let clear = bestClearScene(scenes)
-  let searchWindow = { start, end, expanded: false }
+  let searchWindow = { start: selectedStart, end: selectedEnd, stage: 'selected-seasonal-window' }
 
   if (!clear && parsed.season !== 'all') {
-    const expandedStart = shiftDate(start, -30)
-    const expandedEnd = shiftDate(end, 30)
-    const expanded = await queryLandsat(parsed, expandedStart, expandedEnd)
-    scenes = [...scenes, ...expanded]
+    const expandedStart = shiftDate(selectedStart, -30)
+    const expandedEnd = shiftDate(selectedEnd, 30)
+    scenes = dedupeScenes([...scenes, ...await queryLandsat(parsed, expandedStart, expandedEnd)])
     clear = bestClearScene(scenes)
-    searchWindow = { start: expandedStart, end: expandedEnd, expanded: true }
+    searchWindow = { start: expandedStart, end: expandedEnd, stage: 'seasonal-window-plus-minus-30-days' }
+  }
+
+  if (!clear) {
+    const wholeYearStart = `${year}-01-01`
+    const wholeYearEnd = `${year}-12-31`
+    if (searchWindow.start !== wholeYearStart || searchWindow.end !== wholeYearEnd) {
+      scenes = dedupeScenes([...scenes, ...await queryLandsat(parsed, wholeYearStart, wholeYearEnd)])
+      clear = bestClearScene(scenes)
+    }
+    searchWindow = { start: wholeYearStart, end: wholeYearEnd, stage: 'whole-year' }
   }
 
   const original = nearestOriginalScene(scenes, referenceUtc)
-  const clearPublic = publicScene(request, clear)
-  if (clearPublic) {
-    return {
-      year,
-      status: 'ready',
-      standard: `scene cloud cover <= ${CLEAR_CLOUD_THRESHOLD}%`,
-      analysis_image: { ...clearPublic, source: `USGS Landsat Collection 2 · ${clear.platform} · terrain-study scene`, kind: 'single-scene' },
-      original_image: original ? { ...publicScene(request, original), source: `USGS Landsat Collection 2 · ${original.platform} · original nearest seasonal reference` } : null,
-      search_window: searchWindow,
-    }
-  }
+  const originalPublic = original ? { ...publicScene(request, original), source: `USGS Landsat Collection 2 Surface Reflectance · ${original.platform} · original nearest reference; clouds preserved` } : null
 
-  const sentinel = sentinelCloudMinimized(parsed, year, parsed.season, env)
+  const sentinel = sentinelCloudMinimized(parsed, year, env, searchWindow)
   if (sentinel) {
     return {
       year,
       status: 'ready',
-      standard: `Sentinel-2 request MAXCC <= ${CLEAR_CLOUD_THRESHOLD}%`,
+      standard: `Sentinel-2 L2A preferred · MAXCC <= ${CLEAR_CLOUD_THRESHOLD}%`,
       analysis_image: {
         source: sentinel.source,
         kind: 'cloud-minimized-mosaic',
@@ -299,20 +313,47 @@ async function studySlot(request, parsed, year, env) {
         original_full_url: sentinel.full_url,
         note: sentinel.note,
       },
-      original_image: original ? { ...publicScene(request, original), source: `USGS Landsat Collection 2 · ${original.platform} · original nearest seasonal reference` } : null,
+      original_image: originalPublic,
       search_window: searchWindow,
-      warning: 'No Landsat scene met the <=10% scene-cloud standard; Sentinel-2 cloud-minimized WMS was used for the study image.',
+      warning: searchWindow.stage === 'selected-seasonal-window' ? null : `Search expanded to ${searchWindow.stage} before selecting the preferred Sentinel-2 study image.`,
+    }
+  }
+
+  if (clear) {
+    const clearPublic = publicScene(request, clear)
+    return {
+      year,
+      status: 'ready',
+      standard: `Landsat Collection 2 Surface Reflectance · scene cloud cover <= ${CLEAR_CLOUD_THRESHOLD}%`,
+      analysis_image: { ...clearPublic, source: `USGS Landsat Collection 2 Surface Reflectance · ${clear.platform} · terrain-study scene`, kind: 'single-scene' },
+      original_image: originalPublic,
+      search_window: searchWindow,
+      warning: searchWindow.stage === 'selected-seasonal-window' ? null : `No <=${CLEAR_CLOUD_THRESHOLD}% Landsat scene was found earlier; search expanded to ${searchWindow.stage}.`,
+    }
+  }
+
+  const leastCloud = bestLeastCloudScene(scenes)
+  if (leastCloud) {
+    const fallback = publicScene(request, leastCloud)
+    return {
+      year,
+      status: 'ready',
+      standard: `best available least-cloud Landsat scene · ${leastCloud.cloud_cover.toFixed(1)}% cloud cover · NOT clean`,
+      analysis_image: { ...fallback, source: `USGS Landsat Collection 2 Surface Reflectance · ${leastCloud.platform} · least-cloud fallback`, kind: 'single-scene-cloudy-fallback' },
+      original_image: originalPublic,
+      search_window: searchWindow,
+      warning: `No official Sentinel-2/Landsat image meeting the <=${CLEAR_CLOUD_THRESHOLD}% clean-scene target was found. Using the least-cloud Landsat scene available for the year at ${leastCloud.cloud_cover.toFixed(1)}% cloud cover; it is explicitly not labelled clean.`,
     }
   }
 
   return {
     year,
     status: 'no-clear-study-image',
-    standard: `scene cloud cover <= ${CLEAR_CLOUD_THRESHOLD}%`,
+    standard: `Sentinel-2 L2A preferred, then Landsat Collection 2 Surface Reflectance`,
     analysis_image: null,
-    original_image: original ? { ...publicScene(request, original), source: `USGS Landsat Collection 2 · ${original.platform} · original evidence; clouds preserved` } : null,
+    original_image: originalPublic,
     search_window: searchWindow,
-    reason: 'No official image met the terrain-study cloud standard in the checked seasonal/expanded window. The original evidence is preserved instead of substituting a cloudy image as analysis-ready.',
+    reason: 'No usable official Sentinel-2 or Landsat terrain-study image was found after the selected window, +/-30 days and whole-year search.',
   }
 }
 
@@ -325,7 +366,7 @@ async function exactSlot(request, parsed) {
     requested_utc: parsed.exactUtc,
     cloud_filter_applied: false,
     status: original ? 'ready' : 'missing',
-    original_image: original ? { ...publicScene(request, original), source: `USGS Landsat Collection 2 · ${original.platform} · nearest original acquisition; clouds preserved` } : null,
+    original_image: original ? { ...publicScene(request, original), source: `USGS Landsat Collection 2 Surface Reflectance · ${original.platform} · nearest original acquisition; clouds preserved` } : null,
     reason: original ? null : 'No Landsat scene was returned for the requested UTC day.',
   }
 }
@@ -373,8 +414,8 @@ async function analyzeSlots(parsed, slots, env) {
       // Keep missing preflight explicit via metadata count below.
     }
   }
-  if (!inputs.length) return { text: 'Brak obrazów spełniających standard jakości, które przeszły kontrolę przed analizą AI.', inspected: 0 }
-  const instructions = `You are Terra Observation terrain-study AI. Respond in Polish. Analyze only the supplied official satellite study images. Each image was selected by a cloud-minimization policy; never claim it is absolutely cloud-free unless the metadata proves that. Compare terrain, water bodies/channels, exposed sediment, vegetation patterns and visible land-cover changes across the supplied years. Distinguish observation from causal hypotheses. Mention years/sources actually inspected. Never invent measurements or hydrological causes.`
+  if (!inputs.length) return { text: 'Brak obrazów, które przeszły kontrolę przed analizą AI.', inspected: 0 }
+  const instructions = `You are Terra Observation terrain-study AI. Respond in Polish. Analyze only the supplied official satellite study images. Prefer Sentinel-2 L2A, then Landsat Collection 2 Surface Reflectance. Never call a scene clean unless metadata or the declared source filter supports <=10% cloud. If a least-cloud fallback exceeds 10%, explicitly treat it as cloudy evidence. Compare terrain, water bodies/channels, exposed sediment, vegetation patterns and visible land-cover changes across the supplied years. Distinguish observation from causal hypotheses. Mention years/sources actually inspected. Never invent measurements or hydrological causes.`
   const response = await fetch(OPENAI_RESPONSES_URL, {
     method: 'POST',
     headers: { Authorization: `Bearer ${env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
@@ -415,9 +456,11 @@ async function handleStudy(request, env, analyze = false) {
       requested_years: parsed.years,
       season: parsed.season,
       cloud_standard_percent: CLEAR_CLOUD_THRESHOLD,
+      source_priority: ['Sentinel-2 L2A', 'Landsat Collection 2 Surface Reflectance', 'NASA GIBS/VIIRS/MODIS context fallback only'],
+      search_progression: ['selected seasonal window', '+/-30 days', 'whole year'],
       slots,
       ai_analysis: ai,
-      policy: 'Terrain-study images must satisfy <=10% scene cloud metadata or use a clearly labelled Sentinel-2 MAXCC<=10 cloud-minimized mosaic. Original observations are preserved separately with clouds unchanged.',
+      policy: 'Primary yearly terrain-study imagery prefers Sentinel-2 L2A, then Landsat Collection 2 Surface Reflectance. The search expands from the selected seasonal window to +/-30 days and then the whole year. If no <=10% clean option exists, the least-cloud official Landsat scene may be used only with its cloud percentage and a NOT-clean warning. Original observations remain separate evidence; NASA GIBS/VIIRS/MODIS are context fallbacks, not preferred primary study imagery.',
     }, 200, origin, env, analyze ? 'no-store' : 'public, max-age=300')
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Terrain study failed safely.'

@@ -7,9 +7,8 @@ import {
 } from './satelliteTimeSelection'
 import { buildStoredZip, type ZipInputFile } from './researchGalleryEnhancements'
 
-const INITIAL_VISIBLE = 10
-const MAX_CONCURRENT_YEAR_REQUESTS = 4
-const YEAR_REQUEST_TIMEOUT_MS = 28_000
+export const MAX_CONCURRENT_YEAR_REQUESTS = 4
+export const YEAR_REQUEST_TIMEOUT_MS = 28_000
 const AI_REQUEST_TIMEOUT_MS = 65_000
 const AI_BATCH_SIZE = 5
 const ZIP_LIMIT_BYTES = 150 * 1024 * 1024
@@ -77,8 +76,9 @@ let controller: AbortController | null = null
 let latestRequest: ResearchRequest | null = null
 let slots = new Map<number, TerrainStudySlot>()
 let reports: AiReport[] = []
+let aiHandledYears = new Set<number>()
+let aiBusy = false
 let totalYears = 0
-let expanded = false
 let studyActive = false
 
 function requestUrl(input: RequestInfo | URL) {
@@ -97,6 +97,7 @@ export function yearsForTerrainStudy(selection: SatelliteTimeSelection) {
   if (selection.preset === 'exact') return []
   const end = Number(selection.endYear)
   if (!Number.isInteger(end)) return []
+  if (selection.preset === 'twenty-years') return Array.from({ length: 20 }, (_, index) => end - 19 + index).filter(year => year >= 1972)
   if (selection.preset === 'five-years') return Array.from({ length: 5 }, (_, index) => end - 4 + index).filter(year => year >= 1972)
   if (selection.preset === 'one-year') return end >= 1972 ? [end] : []
   const start = Number(selection.startYear)
@@ -106,12 +107,6 @@ export function yearsForTerrainStudy(selection: SatelliteTimeSelection) {
 
 function seasonForSelection(selection: SatelliteTimeSelection) {
   return selection.preset === 'seasonal' ? selection.season : 'all'
-}
-
-function chunk<T>(values: T[], size: number) {
-  const result: T[][] = []
-  for (let index = 0; index < values.length; index += size) result.push(values.slice(index, index + size))
-  return result
 }
 
 function resolvedCount() {
@@ -124,6 +119,10 @@ function readyCount() {
 
 function loadingCount() {
   return [...slots.values()].filter(slot => slot.status === 'loading').length
+}
+
+function orderedSlots() {
+  return [...slots.values()].sort((a, b) => a.year - b.year)
 }
 
 function studySection() {
@@ -171,7 +170,11 @@ function ensureSection() {
 function cloudLabel(image: TerrainStudyImage) {
   if (typeof image.cloud_cover === 'number') return `${image.cloud_cover.toFixed(1)}% zachmurzenia sceny`
   if (image.threshold != null) return `filtr chmur ≤ ${image.threshold}%`
-  return 'zachmurzenie wg dostępnych metadanych źródła'
+  return 'brak dokładnej wartości zachmurzenia w metadanych źródła'
+}
+
+function scaleLabel(value: number | null | undefined) {
+  return typeof value === 'number' && Number.isFinite(value) ? `${value.toLocaleString('pl-PL')} km` : 'n/d'
 }
 
 function openImageModal(image: TerrainStudyImage, title: string) {
@@ -202,7 +205,7 @@ function openImageModal(image: TerrainStudyImage, title: string) {
   img.addEventListener('error', () => { loading.textContent = 'Pełny obraz nie załadował się. Otwórz oficjalne źródło.' })
   const meta = document.createElement('div')
   meta.className = 'terrain-modal-meta'
-  meta.textContent = `${image.date} · ${image.source} · ${cloudLabel(image)}`
+  meta.textContent = `${image.date} · ${image.source} · ${cloudLabel(image)} · requested_scale_km ${scaleLabel(image.requested_scale_km)} · actual_scale_km ${scaleLabel(image.actual_scale_km)}`
   const sourceLink = document.createElement('a')
   sourceLink.href = image.original_full_url ?? image.full_url
   sourceLink.target = '_blank'
@@ -220,6 +223,7 @@ function makeStudyCard(slot: TerrainStudySlot) {
   const card = document.createElement('article')
   card.className = 'terrain-study-card'
   card.dataset.year = String(slot.year)
+  card.dataset.status = slot.status
   const title = document.createElement('h3')
   title.textContent = String(slot.year)
   card.appendChild(title)
@@ -227,21 +231,23 @@ function makeStudyCard(slot: TerrainStudySlot) {
   if (slot.status === 'loading') {
     card.classList.add('loading')
     const pending = document.createElement('p')
-    pending.textContent = '⏳ Szukam najmniej zachmurzonej oficjalnej sceny dla tego rocznika…'
+    pending.textContent = '⏳ loading · szukam najlepszej oficjalnej sceny dla tego rocznika…'
     card.appendChild(pending)
     return card
   }
 
   if (slot.status !== 'ready' || !slot.analysis_image) {
     card.classList.add('missing')
+    const state = document.createElement('b')
+    state.textContent = slot.status === 'error' ? 'timeout / fetch error' : 'no usable scene found'
     const warning = document.createElement('p')
     warning.textContent = slot.reason ?? 'Nie znaleziono używalnej oficjalnej sceny dla tego rocznika.'
-    card.appendChild(warning)
+    card.append(state, warning)
     if (slot.original_image) {
       const original = document.createElement('button')
       original.type = 'button'
       original.className = 'secondary'
-      original.textContent = 'Pokaż najlepszy dostępny oryginał'
+      original.textContent = 'Pokaż oryginalne źródło'
       original.addEventListener('click', () => openImageModal(slot.original_image!, `Oryginalna obserwacja ${slot.year}`))
       card.appendChild(original)
     }
@@ -255,7 +261,7 @@ function makeStudyCard(slot: TerrainStudySlot) {
   const img = document.createElement('img')
   img.src = image.thumbnail_url
   img.alt = `Obraz badawczy ${slot.year}: ${image.source}`
-  img.loading = slot.year === [...slots.keys()][0] ? 'eager' : 'lazy'
+  img.loading = slot.year === orderedSlots()[0]?.year ? 'eager' : 'lazy'
   img.decoding = 'async'
   img.width = 420
   img.height = 420
@@ -265,12 +271,16 @@ function makeStudyCard(slot: TerrainStudySlot) {
   const meta = document.createElement('div')
   meta.className = 'terrain-study-meta'
   const badge = document.createElement('b')
-  badge.textContent = 'OBRAZ DO ANALIZY TERENU'
+  badge.textContent = 'ready · OBRAZ DO ANALIZY TERENU'
   const source = document.createElement('span')
-  source.textContent = `${image.date} · ${image.source}`
+  source.textContent = `source: ${image.source}`
+  const date = document.createElement('small')
+  date.textContent = `date: ${image.date}`
   const cloud = document.createElement('small')
-  cloud.textContent = `${cloudLabel(image)} · ${slot.standard ?? 'najlepsza dostępna pogoda'}`
-  meta.append(badge, source, cloud)
+  cloud.textContent = `cloud cover: ${cloudLabel(image)} · ${slot.standard ?? 'najlepsza dostępna pogoda'}`
+  const scale = document.createElement('small')
+  scale.textContent = `requested_scale_km: ${scaleLabel(image.requested_scale_km)} · actual_scale_km: ${scaleLabel(image.actual_scale_km)}`
+  meta.append(badge, source, date, cloud, scale)
   if (slot.warning) {
     const note = document.createElement('small')
     note.className = 'terrain-study-warning'
@@ -348,9 +358,9 @@ function renderStudy() {
   const small = document.createElement('small')
   small.textContent = 'ROCZNIK PO ROCZNIKU · NAJLEPSZA DOSTĘPNA POGODA'
   const title = document.createElement('h2')
-  title.textContent = `${totalYears} wybranych lat = ${totalYears} kart rocznikowych`
+  title.textContent = `${totalYears} selected years = ${totalYears} yearly study images`
   const note = document.createElement('p')
-  note.textContent = 'Każdy rocznik jest pobierany niezależnie. System preferuje sceny z minimalnym zachmurzeniem i cloud-minimized Sentinel‑2 tam, gdzie jest dostępny. Brak lub błąd jednego roku nie zatrzymuje pozostałych.'
+  note.textContent = 'Wszystkie karty rocznikowe są tworzone od razu. Każdy rok ładuje się niezależnie; błąd albo timeout jednego roku nie zatrzymuje pozostałych.'
   copy.append(small, title, note)
   const status = document.createElement('span')
   status.className = 'terrain-study-status'
@@ -361,16 +371,8 @@ function renderStudy() {
   const toolbar = document.createElement('div')
   toolbar.className = 'terrain-study-toolbar'
   const count = document.createElement('span')
-  count.textContent = totalYears > INITIAL_VISIBLE && !expanded ? `Pierwszych ${INITIAL_VISIBLE} z ${totalYears}` : `${totalYears} roczników`
+  count.textContent = `${totalYears} roczników · wszystkie placeholdery widoczne`
   const actions = document.createElement('div')
-  if (totalYears > INITIAL_VISIBLE) {
-    const expand = document.createElement('button')
-    expand.type = 'button'
-    expand.className = 'secondary'
-    expand.textContent = expanded ? 'Pokaż tylko pierwsze 10' : `Pokaż pozostałe ${totalYears - INITIAL_VISIBLE}`
-    expand.addEventListener('click', () => { expanded = !expanded; renderStudy() })
-    actions.appendChild(expand)
-  }
   const manifest = document.createElement('button')
   manifest.type = 'button'
   manifest.className = 'secondary'
@@ -379,7 +381,7 @@ function renderStudy() {
   const zip = document.createElement('button')
   zip.type = 'button'
   zip.className = 'secondary'
-  zip.textContent = 'Pobierz ZIP · gotowe obrazy'
+  zip.textContent = 'Pobierz ZIP · pokazany zestaw'
   zip.addEventListener('click', () => { void downloadStudyZip(zip) })
   actions.append(manifest, zip)
   toolbar.append(count, actions)
@@ -387,22 +389,17 @@ function renderStudy() {
 
   const grid = document.createElement('div')
   grid.className = 'terrain-study-grid'
-  const ordered = [...slots.values()].sort((a, b) => a.year - b.year)
-  ordered.forEach((slot, index) => {
-    const card = makeStudyCard(slot)
-    card.hidden = !expanded && index >= INITIAL_VISIBLE
-    grid.appendChild(card)
-  })
+  for (const slot of orderedSlots()) grid.appendChild(makeStudyCard(slot))
   section.appendChild(grid)
 
   const ai = document.createElement('section')
   ai.className = 'terrain-ai-stream'
   const aiTitle = document.createElement('h3')
-  aiTitle.textContent = 'AI · analiza kolejnych roczników'
+  aiTitle.textContent = 'AI · analiza gotowych roczników w tle'
   ai.appendChild(aiTitle)
   if (!reports.length) {
     const pending = document.createElement('p')
-    pending.textContent = readyCount() ? 'Pierwsze miniatury są dostępne. AI analizuje gotowe paczki w tle…' : 'Najpierw pobieram pierwsze roczniki; AI nie będzie analizować chmur zamiast terenu.'
+    pending.textContent = readyCount() ? 'Galeria działa niezależnie. AI analizuje pierwsze dostępne obrazy bez blokowania pozostałych kart…' : 'AI wystartuje po pojawieniu się pierwszego gotowego obrazu.'
     ai.appendChild(pending)
   }
   for (const report of reports) {
@@ -431,7 +428,7 @@ async function fetchWithTimeout(url: string, init: RequestInit, timeoutMs: numbe
   try {
     return await previousFetch(url, { ...init, signal: timeoutController.signal })
   } catch (error) {
-    if (!parentSignal.aborted && timeoutController.signal.aborted) throw new Error(`Przekroczono ${Math.round(timeoutMs / 1000)} s oczekiwania na źródło.`)
+    if (!parentSignal.aborted && timeoutController.signal.aborted) throw new Error(`timeout: przekroczono ${Math.round(timeoutMs / 1000)} s oczekiwania na źródło.`)
     throw error
   } finally {
     window.clearTimeout(timer)
@@ -478,49 +475,69 @@ async function runExact(request: ResearchRequest, signal: AbortSignal) {
   setDailyContextVisibility(false)
 }
 
+function pumpAi(request: ResearchRequest, currentRun: number, signal: AbortSignal) {
+  if (aiBusy || signal.aborted || currentRun !== runId) return
+  const readyYears = orderedSlots()
+    .filter(slot => slot.status === 'ready' && slot.analysis_image && !aiHandledYears.has(slot.year))
+    .map(slot => slot.year)
+    .slice(0, AI_BATCH_SIZE)
+  if (!readyYears.length) return
+  readyYears.forEach(year => aiHandledYears.add(year))
+  aiBusy = true
+  void postStudy(request, readyYears, true, signal).then(payload => {
+    if (signal.aborted || currentRun !== runId || !payload.ai_analysis) return
+    reports.push({ years: readyYears, text: payload.ai_analysis.text, inspected: payload.ai_analysis.inspected })
+    scheduleRender()
+  }).catch(() => undefined).finally(() => {
+    aiBusy = false
+    if (!signal.aborted && currentRun === runId) pumpAi(request, currentRun, signal)
+  })
+}
+
 async function processYear(request: ResearchRequest, year: number, currentRun: number, signal: AbortSignal) {
   try {
     const payload = await postStudy(request, [year], false, signal)
     if (signal.aborted || currentRun !== runId) return
     const slot = payload.slots?.find(item => item.year === year)
-    slots.set(year, slot ?? { year, status: 'error', reason: 'Źródło nie zwróciło karty dla tego rocznika.' })
+    slots.set(year, slot ?? { year, status: 'error', reason: 'fetch error: źródło nie zwróciło karty dla tego rocznika.' })
   } catch (error) {
     if (signal.aborted || currentRun !== runId) return
-    slots.set(year, { year, status: 'error', reason: error instanceof Error ? error.message : 'Błąd pobierania rocznika.' })
+    slots.set(year, { year, status: 'error', reason: error instanceof Error ? error.message : 'fetch error: błąd pobierania rocznika.' })
   }
   scheduleRender()
+  pumpAi(request, currentRun, signal)
 }
 
-async function runConcurrentYears(request: ResearchRequest, years: number[], currentRun: number, signal: AbortSignal) {
+export async function runYearTasksWithConcurrency(
+  years: number[],
+  task: (year: number) => Promise<void>,
+  concurrency = MAX_CONCURRENT_YEAR_REQUESTS,
+) {
   let cursor = 0
+  const count = Math.min(Math.max(1, Math.trunc(concurrency)), years.length)
   const worker = async () => {
-    while (!signal.aborted && currentRun === runId) {
+    while (true) {
       const index = cursor
       cursor += 1
       if (index >= years.length) return
-      await processYear(request, years[index], currentRun, signal)
+      await task(years[index])
     }
   }
-  const count = Math.min(MAX_CONCURRENT_YEAR_REQUESTS, years.length)
   await Promise.all(Array.from({ length: count }, () => worker()))
 }
 
-function launchAiBatches(request: ResearchRequest, years: number[], currentRun: number, signal: AbortSignal) {
-  for (const yearsBatch of chunk(years, AI_BATCH_SIZE)) {
-    const readyYears = yearsBatch.filter(year => slots.get(year)?.status === 'ready')
-    if (!readyYears.length) continue
-    void postStudy(request, readyYears, true, signal).then(payload => {
-      if (signal.aborted || currentRun !== runId || !payload.ai_analysis) return
-      reports.push({ years: readyYears, text: payload.ai_analysis.text, inspected: payload.ai_analysis.inspected })
-      scheduleRender()
-    }).catch(() => undefined)
-  }
+async function runConcurrentYears(request: ResearchRequest, years: number[], currentRun: number, signal: AbortSignal) {
+  await runYearTasksWithConcurrency(years, async year => {
+    if (signal.aborted || currentRun !== runId) return
+    await processYear(request, year, currentRun, signal)
+  })
 }
 
 async function runStudy(request: ResearchRequest) {
   latestRequest = request
   reports = []
-  expanded = false
+  aiHandledYears = new Set()
+  aiBusy = false
   runId += 1
   const currentRun = runId
   controller?.abort()
@@ -535,7 +552,13 @@ async function runStudy(request: ResearchRequest) {
     try { await runExact(request, signal) }
     catch (error) {
       const section = ensureSection()
-      if (section) section.innerHTML = `<p class="research-error">${error instanceof Error ? error.message : 'Nie udało się pobrać oryginalnej obserwacji.'}</p>`
+      if (section) {
+        section.replaceChildren()
+        const message = document.createElement('p')
+        message.className = 'research-error'
+        message.textContent = error instanceof Error ? error.message : 'Nie udało się pobrać oryginalnej obserwacji.'
+        section.appendChild(message)
+      }
     }
     return
   }
@@ -545,13 +568,16 @@ async function runStudy(request: ResearchRequest) {
   slots = new Map(years.map(year => [year, { year, status: 'loading' as const }]))
   studyActive = true
   suppressSingleObservationCard(true)
-  scheduleRender()
+  setDailyContextVisibility(true)
+  renderStudy()
 
   await runConcurrentYears(request, years, currentRun, signal)
   if (signal.aborted || currentRun !== runId) return
-  for (const year of years) if (slots.get(year)?.status === 'loading') slots.set(year, { year, status: 'error', reason: 'Rocznik nie zakończył pobierania w limicie czasu.' })
+  for (const year of years) {
+    if (slots.get(year)?.status === 'loading') slots.set(year, { year, status: 'error', reason: 'timeout: rocznik nie zakończył pobierania w limicie czasu.' })
+  }
   scheduleRender()
-  launchAiBatches(request, years, currentRun, signal)
+  pumpAi(request, currentRun, signal)
 }
 
 function installFetchPolicy() {
@@ -596,49 +622,57 @@ function triggerDownload(blob: Blob, filename: string) {
   window.setTimeout(() => URL.revokeObjectURL(url), 15_000)
 }
 
-function manifestObject() {
+export function terrainStudyManifestSnapshot() {
+  const selectedYears = orderedSlots().map(slot => slot.year)
   return {
     generated_at_utc: new Date().toISOString(),
-    cloud_policy: 'minimal cloud / cloud-minimized official imagery where available',
+    cloud_policy: 'Sentinel-2 L2A preferred; Landsat Collection 2 Surface Reflectance next; cloudy least-cloud scene only when clearly labelled; context fallbacks stay separate',
     requested_year_count: totalYears,
+    selected_years: selectedYears,
     ready_image_count: readyCount(),
     selection: latestRequest?.selection ?? null,
+    requested_scale_km: readObservationHeightKm(),
     observation_height_km: readObservationHeightKm(),
     place: latestRequest ? { latitude: latestRequest.latitude, longitude: latestRequest.longitude, name: latestRequest.placeName } : null,
-    slots: [...slots.values()].sort((a, b) => a.year - b.year),
+    slots: orderedSlots(),
     ai_batches: reports.map(report => ({ years: report.years, inspected: report.inspected })),
   }
 }
 
 function downloadManifest() {
-  triggerDownload(new Blob([JSON.stringify(manifestObject(), null, 2)], { type: 'application/json' }), 'terra-observation-terrain-study.json')
+  triggerDownload(new Blob([JSON.stringify(terrainStudyManifestSnapshot(), null, 2)], { type: 'application/json' }), 'terra-observation-terrain-study.json')
 }
 
 async function downloadStudyZip(button: HTMLButtonElement) {
   const old = button.textContent ?? 'Pobierz ZIP'
   button.disabled = true
   button.textContent = 'Buduję ZIP…'
-  const files: ZipInputFile[] = [{ name: 'manifest.json', data: textBytes(JSON.stringify(manifestObject(), null, 2)) }]
+  const manifest = terrainStudyManifestSnapshot()
+  const files: ZipInputFile[] = [{ name: 'manifest.json', data: textBytes(JSON.stringify(manifest, null, 2)) }]
   let total = files[0].data.byteLength
-  const missing: string[] = []
   try {
-    for (const slot of [...slots.values()].sort((a, b) => a.year - b.year)) {
+    for (const slot of orderedSlots()) {
       const image = slot.analysis_image
-      if (!image || slot.status !== 'ready') { missing.push(`${slot.year}: brak gotowego obrazu`); continue }
+      if (!image || slot.status !== 'ready') {
+        files.push({ name: `years/${slot.year}/unavailable.txt`, data: textBytes(`${slot.status}: ${slot.reason ?? 'no usable scene found'}`) })
+        continue
+      }
       try {
         const response = await fetch(image.full_url)
         if (!response.ok) throw new Error(`HTTP ${response.status}`)
         const data = new Uint8Array(await response.arrayBuffer())
-        if (total + data.byteLength > ZIP_LIMIT_BYTES) { missing.push(`${slot.year}: pominięty — limit ZIP 150 MB`); continue }
+        if (total + data.byteLength > ZIP_LIMIT_BYTES) {
+          files.push({ name: `years/${slot.year}/unavailable.txt`, data: textBytes('ready in gallery but omitted from ZIP because the 150 MB export limit was reached') })
+          continue
+        }
         const type = response.headers.get('content-type') ?? ''
         const ext = type.includes('png') ? 'png' : type.includes('webp') ? 'webp' : 'jpg'
-        files.push({ name: `images/${slot.year}.${ext}`, data })
+        files.push({ name: `years/${slot.year}/study.${ext}`, data })
         total += data.byteLength
       } catch (error) {
-        missing.push(`${slot.year}: ${error instanceof Error ? error.message : 'błąd pobrania'}`)
+        files.push({ name: `years/${slot.year}/unavailable.txt`, data: textBytes(`export fetch error: ${error instanceof Error ? error.message : 'unknown error'}`) })
       }
     }
-    if (missing.length) files.push({ name: 'missing.txt', data: textBytes(missing.join('\n')) })
     const zip = buildStoredZip(files)
     triggerDownload(new Blob([zip], { type: 'application/zip' }), 'terra-observation-terrain-study.zip')
   } finally {
@@ -648,7 +682,10 @@ async function downloadStudyZip(button: HTMLButtonElement) {
 }
 
 function enhanceAll() {
-  if (studyActive) suppressSingleObservationCard(true)
+  if (studyActive) {
+    suppressSingleObservationCard(true)
+    setDailyContextVisibility(true)
+  }
 }
 
 function scheduleEnhance() {
@@ -676,6 +713,8 @@ export function installTerrainStudyEnhancement() {
     latestRequest = null
     slots = new Map()
     reports = []
+    aiHandledYears = new Set()
+    aiBusy = false
     totalYears = 0
     studyActive = false
     studySection()?.remove()

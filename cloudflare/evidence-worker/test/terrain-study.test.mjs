@@ -34,33 +34,68 @@ function installStac(features) {
   }
 }
 
+function installStacSequence(featureSets) {
+  let call = 0
+  globalThis.fetch = async url => {
+    if (String(url).includes('landsatlook.usgs.gov')) {
+      const features = featureSets[Math.min(call, featureSets.length - 1)]
+      call += 1
+      return new Response(JSON.stringify({ type: 'FeatureCollection', features }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+    }
+    throw new Error(`Unexpected fetch ${url}`)
+  }
+}
+
 test.afterEach(() => { globalThis.fetch = originalFetch })
 
-test('terrain study selects <=10% cloud scene while preserving the nearest original scene separately', async () => {
+test('recent yearly study prefers Sentinel-2 L2A over an available clean Landsat scene', async () => {
   installStac([
     feature({ id: 'CLOUDY-REFERENCE', datetime: '2020-07-15T10:00:00Z', cloud: 62 }),
-    feature({ id: 'CLEAR-STUDY', datetime: '2020-07-22T10:00:00Z', cloud: 4 }),
+    feature({ id: 'CLEAR-LANDSAT', datetime: '2020-07-22T10:00:00Z', cloud: 4 }),
   ])
   const response = await handleTerrainStudy(request({ latitude: 53.6, longitude: 19.0, radius_km: 25, years: [2020], season: 'summer', mode: 'study' }))
   const payload = await response.json()
   assert.equal(response.status, 200)
   assert.equal(payload.slots[0].status, 'ready')
-  assert.equal(payload.slots[0].analysis_image.scene_id, 'CLEAR-STUDY')
-  assert.equal(payload.slots[0].analysis_image.cloud_cover, 4)
+  assert.match(payload.slots[0].analysis_image.source, /Sentinel-2 L2A/i)
+  assert.equal(payload.slots[0].analysis_image.threshold, 10)
   assert.equal(payload.slots[0].original_image.scene_id, 'CLOUDY-REFERENCE')
   assert.equal(payload.slots[0].original_image.cloud_cover, 62)
+  assert.deepEqual(payload.source_priority, [
+    'Sentinel-2 L2A',
+    'Landsat Collection 2 Surface Reflectance',
+    'NASA GIBS/VIIRS/MODIS context fallback only',
+  ])
 })
 
-test('pre-Sentinel year refuses to call a cloudy scene analysis-ready and still preserves original evidence', async () => {
-  installStac([
-    feature({ id: 'ONLY-CLOUDY', datetime: '2010-07-15T10:00:00Z', cloud: 58 }),
+test('pre-Sentinel study expands selected season, +/-30 days, then whole year', async () => {
+  installStacSequence([
+    [feature({ id: 'SEASON-CLOUDY', datetime: '2010-07-15T10:00:00Z', cloud: 70 })],
+    [feature({ id: 'EXPANDED-CLOUDY', datetime: '2010-09-20T10:00:00Z', cloud: 45 })],
+    [feature({ id: 'WHOLE-YEAR-CLEAR', datetime: '2010-11-20T10:00:00Z', cloud: 5 })],
   ])
   const response = await handleTerrainStudy(request({ latitude: 7.9, longitude: 49.8, radius_km: 25, years: [2010], season: 'summer', mode: 'study' }))
   const payload = await response.json()
   assert.equal(response.status, 200)
-  assert.equal(payload.slots[0].status, 'no-clear-study-image')
-  assert.equal(payload.slots[0].analysis_image, null)
-  assert.equal(payload.slots[0].original_image.scene_id, 'ONLY-CLOUDY')
+  assert.equal(payload.slots[0].status, 'ready')
+  assert.equal(payload.slots[0].analysis_image.scene_id, 'WHOLE-YEAR-CLEAR')
+  assert.equal(payload.slots[0].analysis_image.cloud_cover, 5)
+  assert.equal(payload.slots[0].search_window.stage, 'whole-year')
+})
+
+test('pre-Sentinel study uses the least-cloud yearly scene with an explicit NOT-clean warning when nothing is <=10%', async () => {
+  installStac([
+    feature({ id: 'CLOUDY-58', datetime: '2010-07-15T10:00:00Z', cloud: 58 }),
+    feature({ id: 'CLOUDY-31', datetime: '2010-10-15T10:00:00Z', cloud: 31 }),
+  ])
+  const response = await handleTerrainStudy(request({ latitude: 7.9, longitude: 49.8, radius_km: 25, years: [2010], season: 'summer', mode: 'study' }))
+  const payload = await response.json()
+  assert.equal(response.status, 200)
+  assert.equal(payload.slots[0].status, 'ready')
+  assert.equal(payload.slots[0].analysis_image.scene_id, 'CLOUDY-31')
+  assert.equal(payload.slots[0].analysis_image.cloud_cover, 31)
+  assert.match(payload.slots[0].standard, /NOT clean/i)
+  assert.match(payload.slots[0].warning, /31\.0% cloud cover/i)
 })
 
 test('exact UTC mode never replaces a cloudy original with a clearer scene', async () => {

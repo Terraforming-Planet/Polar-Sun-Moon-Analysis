@@ -2,7 +2,7 @@ import './observation-height.css'
 
 export const MIN_OBSERVATION_HEIGHT_KM = 1
 export const MAX_OBSERVATION_HEIGHT_KM = 25_000
-export const DEFAULT_OBSERVATION_HEIGHT_KM = 50
+export const DEFAULT_OBSERVATION_HEIGHT_KM = 8
 export const OBSERVATION_SLIDER_STEPS = 1000
 
 const EARTH_RADIUS_KM = 6371.0088
