@@ -78,3 +78,164 @@ jobs:
           npm ci
           npm test
           npm run build
+
+  codex-esa-agentic-eo:
+    if: github.event_name == 'pull_request' && github.head_ref == 'agent/esa-agentic-eo-mvp'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-cdse.txt
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Normalize and mask OpenAI API key
+        shell: bash
+        env:
+          RAW_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os
+          from pathlib import Path
+
+          raw = os.environ.get("RAW_OPENAI_API_KEY", "")
+          clean = raw.replace("\r", "").replace("\n", "").strip(" \t")
+          if not clean:
+              raise SystemExit("Missing OPENAI_API_KEY repository secret.")
+          print(f"::add-mask::{clean}")
+          with Path(os.environ["GITHUB_ENV"]).open("a", encoding="utf-8") as handle:
+              handle.write(f"OPENAI_API_KEY={clean}\n")
+          print("OPENAI_API_KEY configured and masked; value was not printed.")
+          PY
+
+      - name: Install project dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt -r requirements-cdse.txt
+          python -m pip check
+
+      - name: Install and authenticate Codex CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install -g @openai/codex@latest
+          codex --version
+          printf '%s' "$OPENAI_API_KEY" | codex login --with-api-key
+          codex login status
+
+      - name: Execute Codex implementation brief
+        shell: bash
+        run: |
+          set -euo pipefail
+          env -u OPENAI_API_KEY codex exec --sandbox danger-full-access "$(cat CODEX_ESA_AGENTIC_EO_LIVE.md)"
+
+      - name: Protect workflow and brief from Codex edits
+        run: |
+          set -euo pipefail
+          git diff --exit-code -- CODEX_ESA_AGENTIC_EO_LIVE.md .github/workflows/ci.yml
+
+      - name: Verify required files
+        run: |
+          set -euo pipefail
+          test -f scripts/run_agentic_eo_live.py
+          test -f docs/ESA_AGENTIC_EO.md
+
+      - name: Validate Codex implementation offline
+        run: |
+          set -euo pipefail
+          python -m ruff check terra_research_node/agentic_eo.py scripts/run_agentic_eo_live.py tests
+          python -m pytest -q tests
+          python -m compileall terra_research_node scripts/run_agentic_eo_live.py tests
+
+      - name: Execute real OpenAI Agents SDK Vistula run
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/run_agentic_eo_live.py \
+            --case-id vistula-test-014 \
+            --question "Using the repository evidence for Vistula TEST 014, state what is actually established, select the most suitable official/public EO sources for investigating possible surface-water or river-channel change, and recommend the next scientific checks. Do not infer a physical cause that the evidence does not establish." \
+            --json-output docs/published/agentic-eo/vistula-test-014-live.json \
+            --markdown-output docs/published/agentic-eo/vistula-test-014-live.md
+
+      - name: Validate public multi-agent evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          json_path = Path('docs/published/agentic-eo/vistula-test-014-live.json')
+          md_path = Path('docs/published/agentic-eo/vistula-test-014-live.md')
+          if not json_path.is_file() or not json_path.stat().st_size:
+              raise SystemExit('Missing JSON live evidence.')
+          if not md_path.is_file() or not md_path.stat().st_size:
+              raise SystemExit('Missing Markdown live evidence.')
+          payload = json.loads(json_path.read_text(encoding='utf-8'))
+          text = json.dumps(payload, ensure_ascii=False).lower()
+          required = ('consult_eo_source_scout', 'consult_evidence_verifier')
+          missing = [name for name in required if name not in text]
+          if missing:
+              raise SystemExit(f'Missing actual specialist consultations: {missing}')
+          forbidden = ('authorization: bearer', 'openai_api_key', 'api_key=', 'sk-proj-', 'sk-')
+          leaked = [item for item in forbidden if item in text]
+          if leaked:
+              raise SystemExit(f'Potential secret material in public evidence: {leaked}')
+          print('Both specialist consultations are evidenced and the report has no obvious secret material.')
+          PY
+
+      - name: Scan generated worktree for tracked secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add -A
+          python scripts/ci/scan_tracked_secrets.py
+          git reset
+
+      - name: Package validated Codex worktree
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf codex-esa-artifact
+          mkdir -p codex-esa-artifact/worktree
+          {
+            git diff --name-only
+            git ls-files --others --exclude-standard
+          } | grep -v '^codex-esa-artifact/' | sort -u > codex-esa-artifact/changed-files.txt
+          if [ ! -s codex-esa-artifact/changed-files.txt ]; then
+            echo 'Codex produced no changed files.'
+            exit 1
+          fi
+          while IFS= read -r path; do
+            test -f "$path" || continue
+            mkdir -p "codex-esa-artifact/worktree/$(dirname "$path")"
+            cp "$path" "codex-esa-artifact/worktree/$path"
+          done < codex-esa-artifact/changed-files.txt
+          git diff --binary > codex-esa-artifact/codex.patch
+          git diff --stat > codex-esa-artifact/diff-stat.txt
+          printf '%s\n' "${{ github.event.pull_request.head.sha }}" > codex-esa-artifact/source-sha.txt
+
+      - name: Upload validated ESA Agentic EO artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: esa-agentic-eo-validated
+          path: codex-esa-artifact/
+          if-no-files-found: error
+          retention-days: 7

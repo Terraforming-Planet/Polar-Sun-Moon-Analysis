@@ -30,13 +30,39 @@
     "agency": "ESA / European Commission",
     "mission": "Copernicus Sentinel-1",
     "instrument": "C-band synthetic aperture radar",
-    "phenomena": ["flood", "surface_water", "ground_deformation"],
+    "phenomena": ["flood", "surface_water", "water_extent", "river_channel", "ground_deformation"],
     "temporal_coverage": "2014-present",
     "latency": "Product and acquisition dependent",
     "spatial_resolution": "Mode dependent; commonly about 10 m for IW products",
     "access": "Copernicus Data Space account/API",
     "url": "https://dataspace.copernicus.eu/",
-    "limitations": "Radar sees surface backscatter, not water depth or subsurface reservoirs."
+    "limitations": "Radar backscatter is not a direct water-depth measurement; wind, vegetation, roughness, geometry and processing choices can affect water classification."
+  },
+  {
+    "id": "esa-sentinel-2",
+    "agency": "ESA / European Commission",
+    "mission": "Copernicus Sentinel-2",
+    "instrument": "MSI (MultiSpectral Instrument)",
+    "phenomena": ["surface_water", "water_extent", "river_channel", "land_cover", "vegetation"],
+    "temporal_coverage": "2015-present (platform and product dependent)",
+    "latency": "Product and acquisition dependent",
+    "spatial_resolution": "MSI band dependent: 10 m, 20 m and 60 m",
+    "access": "Copernicus Data Space",
+    "url": "https://dataspace.copernicus.eu/explore-data/data-collections/sentinel-data/sentinel-2",
+    "limitations": "Opaque cloud and cloud shadow obscure optical observations. Optical imagery does not directly measure water depth or prove hydrological causation; seasonal and viewing-condition comparability must be checked."
+  },
+  {
+    "id": "usgs-landsat",
+    "agency": "USGS / NASA",
+    "mission": "Landsat program (Landsat 4-9 for long-term multispectral analysis; current Landsat 8/9 context)",
+    "instrument": "TM / ETM+ / OLI / OLI-2 (mission dependent)",
+    "phenomena": ["surface_water", "water_extent", "river_channel", "land_cover", "vegetation"],
+    "temporal_coverage": "1982-present for Landsat 4-9 (sensor, platform and product dependent)",
+    "latency": "Product and acquisition dependent",
+    "spatial_resolution": "Commonly 30 m multispectral; mission-dependent exceptions include 15 m panchromatic and 60-120 m thermal bands",
+    "access": "USGS EarthExplorer / Landsat data services",
+    "url": "https://www.usgs.gov/landsat-missions/landsat-data-access",
+    "limitations": "Cloud and cloud shadow obscure optical observations. Sensor and platform differences across decades and seasonal comparability require harmonization; optical morphology does not prove physical or hydrological cause."
   },
   {
     "id": "esa-sentinel-3-slstr",

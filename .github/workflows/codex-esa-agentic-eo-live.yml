@@ -1,0 +1,171 @@
+name: Codex ESA Agentic EO Live Evidence
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "CODEX_ESA_AGENTIC_EO_LIVE.md"
+      - ".github/workflows/codex-esa-agentic-eo-live.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: codex-esa-agentic-eo-live
+  cancel-in-progress: true
+
+jobs:
+  codex-live-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout Agentic EO branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/esa-agentic-eo-mvp
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-cdse.txt
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Linux sandbox dependency
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y bubblewrap
+          command -v bwrap
+          bwrap --version
+
+      - name: Normalize and mask OpenAI API key
+        shell: bash
+        env:
+          RAW_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os
+          from pathlib import Path
+
+          raw = os.environ.get("RAW_OPENAI_API_KEY", "")
+          clean = raw.replace("\r", "").replace("\n", "").strip(" \t")
+          if not clean:
+              raise SystemExit("Missing OPENAI_API_KEY repository secret.")
+          print(f"::add-mask::{clean}")
+          with Path(os.environ["GITHUB_ENV"]).open("a", encoding="utf-8") as handle:
+              handle.write(f"OPENAI_API_KEY={clean}\n")
+          print("OPENAI_API_KEY is configured and masked; value was not printed.")
+          PY
+
+      - name: Install project dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt -r requirements-cdse.txt
+          python -m pip check
+
+      - name: Install and authenticate Codex CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install -g @openai/codex@latest
+          codex --version
+          printf '%s' "$OPENAI_API_KEY" | codex login --with-api-key
+          codex login status
+
+      - name: Execute Codex implementation brief
+        shell: bash
+        run: |
+          set -euo pipefail
+          codex exec --sandbox workspace-write "$(cat CODEX_ESA_AGENTIC_EO_LIVE.md)"
+
+      - name: Protect workflow and brief from Codex edits
+        run: |
+          set -euo pipefail
+          git diff --exit-code -- CODEX_ESA_AGENTIC_EO_LIVE.md .github/workflows/codex-esa-agentic-eo-live.yml
+
+      - name: Verify required live-run script exists
+        run: |
+          set -euo pipefail
+          test -f scripts/run_agentic_eo_live.py || { echo 'Codex did not create scripts/run_agentic_eo_live.py'; exit 1; }
+          test -f docs/ESA_AGENTIC_EO.md || { echo 'Codex did not create docs/ESA_AGENTIC_EO.md'; exit 1; }
+
+      - name: Validate Codex changes offline
+        run: |
+          set -euo pipefail
+          python -m ruff check terra_research_node/agentic_eo.py scripts/run_agentic_eo_live.py tests
+          python -m pytest -q tests
+          python -m compileall terra_research_node scripts/run_agentic_eo_live.py tests
+
+      - name: Execute real multi-agent Vistula run
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/run_agentic_eo_live.py \
+            --case-id vistula-test-014 \
+            --question "Using the repository evidence for Vistula TEST 014, state what is actually established, select the most suitable official/public EO sources for investigating possible surface-water or river-channel change, and recommend the next scientific checks. Do not infer a physical cause that the evidence does not establish." \
+            --json-output docs/published/agentic-eo/vistula-test-014-live.json \
+            --markdown-output docs/published/agentic-eo/vistula-test-014-live.md
+
+      - name: Validate public live evidence files
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s docs/published/agentic-eo/vistula-test-014-live.json
+          test -s docs/published/agentic-eo/vistula-test-014-live.md
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path('docs/published/agentic-eo/vistula-test-014-live.json')
+          payload = json.loads(path.read_text(encoding='utf-8'))
+          text = json.dumps(payload, ensure_ascii=False).lower()
+          required = ('consult_eo_source_scout', 'consult_evidence_verifier')
+          missing = [name for name in required if name not in text]
+          if missing:
+              raise SystemExit(f'Live evidence is missing actual specialist consultation trace entries: {missing}')
+          forbidden = ('authorization: bearer', 'openai_api_key', 'api_key=', 'sk-proj-', 'sk-')
+          leaked = [item for item in forbidden if item in text]
+          if leaked:
+              raise SystemExit(f'Potential secret material found in public evidence: {leaked}')
+          print('Public multi-agent trace contains both required specialist consultations and no obvious secret material.')
+          PY
+
+      - name: Stage and scan all generated files for leaked tokens
+        run: |
+          set -euo pipefail
+          git add -A
+          python scripts/ci/scan_tracked_secrets.py
+
+      - name: Commit and push Codex + live evidence
+        if: github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --cached --quiet; then
+            echo 'No generated changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'feat: publish ESA Agentic EO live evidence'
+          git push origin HEAD:agent/esa-agentic-eo-mvp
+
+      - name: Summary
+        run: |
+          echo 'Codex task completed on agent/esa-agentic-eo-mvp.'
+          echo 'A real OpenAI Agents SDK Vistula run was required to pass before evidence was considered valid.'
+          echo 'PR-triggered validation never pushes generated changes; manual workflow_dispatch may publish them.'
+          echo 'PR #239 remains unmerged.'
