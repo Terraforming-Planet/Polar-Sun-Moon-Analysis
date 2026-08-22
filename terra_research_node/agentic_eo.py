@@ -140,7 +140,9 @@ def compare_surface_water_areas_data(before_km2: float, after_km2: float) -> dic
         "after_km2": after_km2,
         "difference_km2": round(difference, 6),
         "percent_change": round(percent, 6),
-        "volume_change": "UNKNOWN without bathymetry or a defensible area-elevation-volume relationship",
+        "volume_change": (
+            "UNKNOWN without bathymetry or a defensible area-elevation-volume relationship"
+        ),
         "cause": "UNKNOWN from area change alone",
     }
 
@@ -178,7 +180,9 @@ def verify_evidence_case(case_id: str) -> str:
 
 @tool
 def load_training_context(context_id: str) -> str:
-    """Load a compact published NVIDIA L4 training/evaluation context without treating it as ground truth.
+    """Load a compact published NVIDIA L4 training/evaluation context.
+
+    The tool preserves claim flags and never treats training as environmental ground truth.
 
     Args:
         context_id: Stable training context. Currently supported: stream-gibs-20260820.
@@ -209,10 +213,10 @@ def build_agentic_eo_system(model: str | None = None) -> Agent:
         name="EO Source Scout",
         model=resolved_model,
         instructions=(
-            "You are a conservative Earth-observation data-source specialist. Use search_eo_sources "
-            "to identify suitable official/public sources. Explain sensor limitations and access "
-            "requirements. Never claim that a documented catalogue entry means the project has "
-            "already downloaded or analysed that product."
+            "You are a conservative Earth-observation data-source specialist. "
+            "Use search_eo_sources to identify suitable official/public sources. "
+            "Explain sensor limitations and access requirements. Never claim that a documented "
+            "catalogue entry means the project has already downloaded or analysed that product."
         ),
         tools=[search_eo_sources],
     )
@@ -239,10 +243,10 @@ def build_agentic_eo_system(model: str | None = None) -> Agent:
             "the EO Evidence Verifier what the repository evidence actually supports when a known "
             "case is relevant. Use deterministic calculations for numeric mapped-area comparisons. "
             "Never invent observations, source IDs, dates, measurements, causes, confidence values "
-            "or alerts. Separate OBSERVATION, DERIVED_VALUE, MODEL_ESTIMATE, HYPOTHESIS and UNKNOWN. "
-            "Your final answer must contain: Research question; Tool/agent actions; Evidence; "
-            "Uncertainty; Recommended next checks. State explicitly when the available evidence "
-            "does not establish an environmental finding or causal mechanism."
+            "or alerts. Separate OBSERVATION, DERIVED_VALUE, MODEL_ESTIMATE, HYPOTHESIS and "
+            "UNKNOWN. Your final answer must contain: Research question; Tool/agent actions; "
+            "Evidence; Uncertainty; Recommended next checks. State explicitly when the available "
+            "evidence does not establish an environmental finding or causal mechanism."
         ),
         tools=[
             source_scout.as_tool(
