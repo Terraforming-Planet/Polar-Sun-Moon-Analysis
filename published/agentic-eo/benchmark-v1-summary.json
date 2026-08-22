@@ -1,0 +1,127 @@
+{
+  "schema": "terra-agentic-eo-benchmark-public-summary-v1",
+  "benchmark": "Agentic EO Benchmark v1",
+  "generated_utc": "2026-08-22T19:18:32Z",
+  "model": "gpt-5.6-luna",
+  "implementation": "OpenAI Agents SDK",
+  "case_count": 10,
+  "strict_case_pass_count": 6,
+  "assertions_passed": 120,
+  "assertions_total": 125,
+  "assertion_pass_rate_percent": 96.0,
+  "configured_gate_percent": 90.0,
+  "gate_passed": true,
+  "workflow": {
+    "run_id": 32593195743,
+    "head_sha": "44a42919cae2c2473afd993322382804ce0dc23d",
+    "artifact_id": 9480895195,
+    "artifact_name": "agentic-eo-benchmark-v1",
+    "artifact_zip_size_bytes": 17455,
+    "artifact_sha256": "22b046e40a797f20c716f530d9c21dc6e0eb1bd3f9f0ca9d08938f494d34e884",
+    "workflow_conclusion": "success",
+    "offline_tests": "success",
+    "live_ten_cases": "success",
+    "public_evidence_validation": "success",
+    "artifact_upload": "success"
+  },
+  "cases": [
+    {
+      "id": "B01-vistula-evidence-scope",
+      "category": "evidence_verification",
+      "assertions_passed": 15,
+      "assertions_total": 15,
+      "score_percent": 100.0,
+      "strict_pass": true
+    },
+    {
+      "id": "B02-causal-challenge",
+      "category": "scientific_claim_safety",
+      "assertions_passed": 12,
+      "assertions_total": 12,
+      "score_percent": 100.0,
+      "strict_pass": true
+    },
+    {
+      "id": "B03-flood-under-cloud",
+      "category": "source_selection",
+      "assertions_passed": 12,
+      "assertions_total": 12,
+      "score_percent": 100.0,
+      "strict_pass": true
+    },
+    {
+      "id": "B04-long-term-river-record",
+      "category": "source_selection",
+      "assertions_passed": 13,
+      "assertions_total": 13,
+      "score_percent": 100.0,
+      "strict_pass": true
+    },
+    {
+      "id": "B05-water-surface-elevation",
+      "category": "source_selection",
+      "assertions_passed": 10,
+      "assertions_total": 11,
+      "score_percent": 90.91,
+      "strict_pass": false,
+      "miss_note": "Answer correctly selected SWOT and explicitly said SWOT alone does not establish water-volume change. One literal string assertion missed because Markdown emphasis split the expected 'does not' substring; this is a grader-formatting miss, not a scientific contradiction."
+    },
+    {
+      "id": "B06-surface-soil-moisture",
+      "category": "source_selection",
+      "assertions_passed": 12,
+      "assertions_total": 12,
+      "score_percent": 100.0,
+      "strict_pass": true
+    },
+    {
+      "id": "B07-terrestrial-water-storage",
+      "category": "source_selection",
+      "assertions_passed": 10,
+      "assertions_total": 12,
+      "score_percent": 83.33,
+      "strict_pass": false,
+      "miss_note": "This is the main substantive benchmark finding. The Source Scout did not surface GRACE/GRACE-FO even though the mission exists in the controlled registry for terrestrial_water_storage and groundwater_anomaly. The answer remained scientifically conservative and correctly said small aquifers cannot be reliably located, but routing/source recall should be improved in a future v2."
+    },
+    {
+      "id": "B08-thermal-cloud-limit",
+      "category": "source_selection",
+      "assertions_passed": 12,
+      "assertions_total": 12,
+      "score_percent": 100.0,
+      "strict_pass": true
+    },
+    {
+      "id": "B09-area-change-calculation",
+      "category": "deterministic_calculation",
+      "assertions_passed": 12,
+      "assertions_total": 13,
+      "score_percent": 92.31,
+      "strict_pass": false,
+      "miss_note": "The deterministic tool returned the correct -2.5 km2 and -25.0% change and preserved UNKNOWN for volume and cause. One literal assertion missed because the answer used the Unicode minus sign rather than ASCII '-'."
+    },
+    {
+      "id": "B10-training-not-ground-truth",
+      "category": "evaluation_provenance",
+      "assertions_passed": 12,
+      "assertions_total": 13,
+      "score_percent": 92.31,
+      "strict_pass": false,
+      "miss_note": "The answer correctly stated that 200,016 windows demonstrate processing/training/evaluation activity, and explicitly answered 'Environmental ground truth: No'. One literal phrase matcher did not recognize that wording as one of its configured alternatives."
+    }
+  ],
+  "interpretation": {
+    "main_strengths": [
+      "Vistula evidence boundaries and causal-safety behavior passed strictly.",
+      "Sentinel-1 cloud-independent flood source selection passed strictly.",
+      "Landsat/Sentinel long-horizon river-record source selection passed strictly.",
+      "SMAP and Sentinel-3 source/limitation cases passed strictly.",
+      "Deterministic area calculation preserved the distinction between mapped area, volume and physical cause.",
+      "Training/evaluation statistics were not promoted to environmental ground truth."
+    ],
+    "main_improvement": "Improve Source Scout routing/recall so a terrestrial-water-storage or groundwater-anomaly request reliably returns the registry-backed GRACE/GRACE-FO entry.",
+    "do_not_overfit_v1": true
+  },
+  "scientific_boundary": "This is an observable agent-system behavior benchmark, not an environmental ground-truth benchmark. A 96% score demonstrates the tested routing, provenance, uncertainty and claim-safety behaviors on these ten prompts. It does not establish the correctness of environmental conclusions and does not replace independent measurements, domain validation or peer review.",
+  "privacy_and_trace_boundary": "Public validation passed. The benchmark artifact contains allow-listed agent/tool lifecycle trace events and answers, and intentionally excludes credentials, tool arguments, private tool payloads and chain-of-thought."
+}
