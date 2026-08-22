@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 from typing import Any
 
-from agents import Agent, Runner
+from agents import Agent, RunHooks, Runner
 from agents.decorators import tool
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -50,6 +50,28 @@ def search_eo_sources_data(phenomenon: str) -> list[dict[str, Any]]:
         if needle in normalized or any(needle in item or item in needle for item in normalized):
             matches.append(source)
     return matches
+
+
+def select_vistula_sources_data() -> list[dict[str, Any]]:
+    """Select controlled-registry sources relevant to Vistula water/channel checks."""
+    selected: dict[str, dict[str, Any]] = {}
+    for phenomenon in ("surface_water", "water_extent", "river_channel"):
+        for source in search_eo_sources_data(phenomenon):
+            source_id = source.get("id")
+            if isinstance(source_id, str):
+                selected[source_id] = source
+    return list(selected.values())
+
+
+def validate_registry_provenance(matches: list[dict[str, Any]]) -> None:
+    """Reject selections that cannot prove identity and official/public provenance."""
+    required = {"id", "agency", "mission", "access", "url"}
+    for source in matches:
+        missing = sorted(field for field in required if not source.get(field))
+        if missing:
+            raise ValueError(
+                f"Registry source {source.get('id', '<unknown>')} lacks provenance: {missing}"
+            )
 
 
 def load_evidence_case_data(case_id: str) -> dict[str, Any]:
@@ -214,7 +236,11 @@ def build_agentic_eo_system(model: str | None = None) -> Agent:
         model=resolved_model,
         instructions=(
             "You are a conservative Earth-observation data-source specialist. "
-            "Use search_eo_sources to identify suitable official/public sources. "
+            "The search_eo_sources deterministic registry is the authoritative catalogue for "
+            "named source recommendations in this demonstration. Search surface_water, "
+            "water_extent and river_channel when those concepts are relevant. Prefer and name "
+            "only returned registry sources. If an additional source is scientifically useful, "
+            "label it explicitly as an additional non-registry suggestion. "
             "Explain sensor limitations and access requirements. Never claim that a documented "
             "catalogue entry means the project has already downloaded or analysed that product."
         ),
@@ -246,7 +272,11 @@ def build_agentic_eo_system(model: str | None = None) -> Agent:
             "or alerts. Separate OBSERVATION, DERIVED_VALUE, MODEL_ESTIMATE, HYPOTHESIS and "
             "UNKNOWN. Your final answer must contain: Research question; Tool/agent actions; "
             "Evidence; Uncertainty; Recommended next checks. State explicitly when the available "
-            "evidence does not establish an environmental finding or causal mechanism."
+            "evidence does not establish an environmental finding or causal mechanism. For named "
+            "mission recommendations, prefer the specialist's deterministic registry matches and "
+            "use the heading 'Registry-backed recommendations'. Never imply model-memory knowledge "
+            "came from that registry. Put any other mission under 'Additional non-registry "
+            "suggestions' and label it non-registry. Keep source selection separate from findings."
         ),
         tools=[
             source_scout.as_tool(
@@ -271,12 +301,78 @@ def build_agentic_eo_system(model: str | None = None) -> Agent:
     return coordinator
 
 
-def run_agentic_eo(question: str, *, model: str | None = None) -> str:
-    """Run the manager agent against one EO research question."""
+class PublicTraceHooks(RunHooks[Any]):
+    """Capture public tool boundaries without arguments, prompts, outputs or reasoning."""
+
+    def __init__(self) -> None:
+        self.events: list[dict[str, str]] = []
+
+    async def on_agent_start(self, context: Any, agent: Agent[Any]) -> None:
+        self.events.append({"event": "agent_start", "agent": agent.name})
+
+    async def on_agent_end(self, context: Any, agent: Agent[Any], output: Any) -> None:
+        self.events.append({"event": "agent_end", "agent": agent.name, "status": "success"})
+
+    async def on_tool_start(self, context: Any, agent: Agent[Any], tool: Any) -> None:
+        self.events.append(
+            {"event": "tool_start", "agent": agent.name, "tool": str(tool.name)}
+        )
+
+    async def on_tool_end(
+        self, context: Any, agent: Agent[Any], tool: Any, result: object
+    ) -> None:
+        self.events.append(
+            {
+                "event": "tool_end",
+                "agent": agent.name,
+                "tool": str(tool.name),
+                "status": "success",
+            }
+        )
+
+
+def build_public_trace(result: Any, hooks: PublicTraceHooks, model: str) -> dict[str, Any]:
+    """Build a compact allow-listed trace from SDK lifecycle events and result item types."""
+    return {
+        "sdk": "openai-agents",
+        "model": model,
+        "starting_agent": "Terra Agentic EO Coordinator",
+        "final_agent": result.last_agent.name,
+        "events": hooks.events,
+        "result_item_types": [str(getattr(item, "type", "unknown")) for item in result.new_items],
+    }
+
+
+def specialist_consultations(trace: dict[str, Any]) -> set[str]:
+    """Return successfully completed observable specialist tool consultations."""
+    return {
+        str(event.get("tool"))
+        for event in trace.get("events", [])
+        if isinstance(event, dict)
+        and event.get("event") == "tool_end"
+        and event.get("status") == "success"
+        and event.get("tool") in {"consult_eo_source_scout", "consult_evidence_verifier"}
+    }
+
+
+def run_agentic_eo_with_trace(
+    question: str, *, model: str | None = None
+) -> tuple[str, dict[str, Any]]:
+    """Run the coordinator and return its public answer plus an allow-listed trace."""
     if not os.getenv("OPENAI_API_KEY"):
         raise RuntimeError("OPENAI_API_KEY is required to run the Agentic EO coordinator.")
-    result = Runner.run_sync(build_agentic_eo_system(model), question, max_turns=8)
-    return str(result.final_output)
+    resolved_model = model or DEFAULT_AGENT_MODEL
+    hooks = PublicTraceHooks()
+    result = Runner.run_sync(
+        build_agentic_eo_system(resolved_model), question, max_turns=8, hooks=hooks
+    )
+    return str(result.final_output), build_public_trace(result, hooks, resolved_model)
+
+
+def run_agentic_eo(question: str, *, model: str | None = None) -> str:
+    """Run the manager agent against one EO research question."""
+    answer, _trace = run_agentic_eo_with_trace(question, model=model)
+    return answer
 
 
 def build_parser() -> argparse.ArgumentParser:
