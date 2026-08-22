@@ -44,7 +44,7 @@ def test_terrain_river_arrows_use_public_topology_and_dem_not_random_direction()
 
     assert "Show river flow arrows" in source
     assert "useState(true)" in source
-    assert 'way[\\"waterway\\"=\\"river\\"]' in source
+    assert 'way["waterway"="river"]' in source
     assert "Natural Earth 1:50m major rivers" in source
     assert "fetchResearchElevations" in source
     assert "Copernicus DEM slope" in source
