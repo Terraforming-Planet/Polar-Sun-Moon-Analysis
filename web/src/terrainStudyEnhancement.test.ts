@@ -1,7 +1,6 @@
-import { readFileSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 
+import terrainStudySource from './terrainStudyEnhancement.ts?raw'
 import {
   MAX_CONCURRENT_YEAR_REQUESTS,
   runYearTasksWithConcurrency,
@@ -23,8 +22,6 @@ function selection(overrides: Partial<SatelliteTimeSelection> = {}): SatelliteTi
     ...overrides,
   }
 }
-
-const source = readFileSync(fileURLToPath(new URL('./terrainStudyEnhancement.ts', import.meta.url)), 'utf8')
 
 describe('terrain study selection', () => {
   it('creates one study slot for every selected seasonal year', () => {
@@ -73,22 +70,22 @@ describe('terrain study selection', () => {
   })
 
   it('renders all yearly placeholders before starting network work and never hides years 11+', () => {
-    const placeholderRender = source.indexOf('renderStudy()\n\n  await runConcurrentYears')
+    const placeholderRender = terrainStudySource.indexOf('renderStudy()\n\n  await runConcurrentYears')
     expect(placeholderRender).toBeGreaterThan(-1)
-    expect(source).not.toContain('card.hidden =')
-    expect(source).not.toContain('INITIAL_VISIBLE')
+    expect(terrainStudySource).not.toContain('card.hidden =')
+    expect(terrainStudySource).not.toContain('INITIAL_VISIBLE')
   })
 
   it('uses the yearly gallery as primary multi-year result and keeps single context optional', () => {
-    expect(source).toContain('suppressSingleObservationCard(true)')
-    expect(source).toContain('setDailyContextVisibility(true)')
-    expect(source).toContain('selected years = ${totalYears} yearly study images')
+    expect(terrainStudySource).toContain('suppressSingleObservationCard(true)')
+    expect(terrainStudySource).toContain('setDailyContextVisibility(true)')
+    expect(terrainStudySource).toContain('selected years = ${totalYears} yearly study images')
   })
 
   it('starts AI from ready cards instead of waiting for the whole yearly run', () => {
-    const processYear = source.indexOf('async function processYear')
-    const pumpInsideYear = source.indexOf('pumpAi(request, currentRun, signal)', processYear)
-    const awaitWholeRun = source.indexOf('await runConcurrentYears')
+    const processYear = terrainStudySource.indexOf('async function processYear')
+    const pumpInsideYear = terrainStudySource.indexOf('pumpAi(request, currentRun, signal)', processYear)
+    const awaitWholeRun = terrainStudySource.indexOf('await runConcurrentYears')
     expect(processYear).toBeGreaterThan(-1)
     expect(pumpInsideYear).toBeGreaterThan(processYear)
     expect(pumpInsideYear).toBeLessThan(awaitWholeRun)
