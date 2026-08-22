@@ -3,10 +3,15 @@ from __future__ import annotations
 import pytest
 
 from terra_research_node.agentic_eo import (
+    PublicTraceHooks,
+    build_public_trace,
     compare_surface_water_areas_data,
     load_evidence_case_data,
     load_training_context_data,
     search_eo_sources_data,
+    select_vistula_sources_data,
+    specialist_consultations,
+    validate_registry_provenance,
     verify_evidence_case_data,
 )
 
@@ -15,6 +20,56 @@ def test_surface_water_source_search_includes_sentinel_1() -> None:
     matches = search_eo_sources_data("surface_water")
     ids = {item["id"] for item in matches}
     assert "esa-sentinel-1" in ids
+
+
+def test_vistula_registry_selection_includes_three_complementary_sources() -> None:
+    matches = select_vistula_sources_data()
+    ids = {item["id"] for item in matches}
+    assert {"esa-sentinel-1", "esa-sentinel-2", "usgs-landsat"} <= ids
+    validate_registry_provenance(matches)
+
+
+def test_sentinel_2_registry_metadata_is_scientifically_qualified() -> None:
+    source = next(
+        item for item in search_eo_sources_data("river_channel") if item["id"] == "esa-sentinel-2"
+    )
+    assert source["instrument"] == "MSI (MultiSpectral Instrument)"
+    assert all(value in source["spatial_resolution"] for value in ("10 m", "20 m", "60 m"))
+    assert "cloud" in source["limitations"].lower()
+    assert "water depth" in source["limitations"].lower()
+
+
+def test_landsat_registry_metadata_preserves_archive_differences() -> None:
+    source = next(
+        item for item in search_eo_sources_data("surface_water") if item["id"] == "usgs-landsat"
+    )
+    assert all(sensor in source["instrument"] for sensor in ("TM", "ETM+", "OLI", "OLI-2"))
+    assert "30 m" in source["spatial_resolution"]
+    assert "Sensor and platform differences" in source["limitations"]
+
+
+def test_public_trace_records_boundaries_without_private_data() -> None:
+    hooks = PublicTraceHooks()
+    hooks.events = [
+        {
+            "event": "tool_end",
+            "agent": "Terra Agentic EO Coordinator",
+            "tool": "consult_eo_source_scout",
+            "status": "success",
+        }
+    ]
+
+    class Result:
+        last_agent = type("AgentStub", (), {"name": "Terra Agentic EO Coordinator"})()
+        new_items = [type("ItemStub", (), {"type": "tool_call_item"})()]
+
+    trace = build_public_trace(Result(), hooks, "test-model")
+    serialized = str(trace).lower()
+    assert "argument" not in serialized
+    assert "prompt" not in serialized
+    assert "api_key" not in serialized
+    assert "authorization" not in serialized
+    assert specialist_consultations(trace) == {"consult_eo_source_scout"}
 
 
 def test_vistula_case_preserves_non_claim_flags() -> None:
