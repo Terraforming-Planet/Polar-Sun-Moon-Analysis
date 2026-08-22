@@ -1,7 +1,8 @@
 import { readdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
-const distDir = path.resolve('dist')
+const targetArg = process.argv[2]?.trim() || 'dist'
+const targetDir = path.resolve(targetArg)
 const rawBase = (process.env.TERRA_PUBLIC_BASE || '/Polar-Sun-Moon-Analysis/').trim() || '/'
 const publicBase = rawBase.endsWith('/') ? rawBase : `${rawBase}/`
 const workerUrl = (process.env.VITE_EVIDENCE_API_URL || '').trim().replace(/\/+$/, '')
@@ -46,7 +47,7 @@ function ensureRuntimeScript(source) {
   return `${source}\n${script}`
 }
 
-const htmlFiles = await listHtmlFiles(distDir)
+const htmlFiles = await listHtmlFiles(targetDir)
 let changed = 0
 for (const file of htmlFiles) {
   const original = await readFile(file, 'utf8')
@@ -58,4 +59,4 @@ for (const file of htmlFiles) {
   changed += 1
 }
 
-console.log(`Contest runtime post-build: ${changed}/${htmlFiles.length} HTML files updated; base=${publicBase}; worker=${workerUrl ? 'configured' : 'not-configured'}.`)
+console.log(`Contest runtime pass: ${changed}/${htmlFiles.length} HTML files updated in ${targetArg}; base=${publicBase}; worker=${workerUrl ? 'configured' : 'not-configured'}.`)
