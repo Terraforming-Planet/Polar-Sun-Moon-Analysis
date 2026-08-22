@@ -1,6 +1,7 @@
 name: Agentic EO Benchmark v1
 
 on:
+  workflow_dispatch:
   pull_request:
     branches: ["main"]
     paths:
@@ -9,19 +10,24 @@ on:
       - "scripts/run_agentic_eo_benchmark.py"
       - "tests/test_agentic_eo_benchmark.py"
       - "docs/AGENTIC_EO_BENCHMARK.md"
+      - "published/agentic-eo/benchmark-v1-summary.json"
+      - "published/agentic-eo/benchmark-v1-summary.md"
 
 permissions:
   contents: read
 
 concurrency:
-  group: agentic-eo-benchmark-${{ github.event.pull_request.number }}
+  group: agentic-eo-benchmark-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   benchmark:
     if: >-
-      github.event.pull_request.head.repo.full_name == github.repository &&
-      github.event.pull_request.head.ref == 'agent/esa-agentic-eo-benchmark-v1'
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' &&
+       github.event.pull_request.head.repo.full_name == github.repository &&
+       github.event.pull_request.head.ref == 'agent/esa-agentic-eo-benchmark-v1' &&
+       contains(github.event.pull_request.labels.*.name, 'run-agentic-eo-benchmark'))
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
