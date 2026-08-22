@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import {
   analysisRadiusForHeightKm,
+  DEFAULT_OBSERVATION_HEIGHT_KM,
   heightKmToSliderPosition,
   MAX_OBSERVATION_HEIGHT_KM,
   MIN_OBSERVATION_HEIGHT_KM,
@@ -11,6 +12,10 @@ import {
 } from './observationHeightEnhancement'
 
 describe('observation height scale', () => {
+  it('defaults terrain studies to 8 km', () => {
+    expect(DEFAULT_OBSERVATION_HEIGHT_KM).toBe(8)
+  })
+
   it('maps the full logarithmic slider to 1..25000 km', () => {
     expect(sliderPositionToHeightKm(0)).toBe(MIN_OBSERVATION_HEIGHT_KM)
     expect(sliderPositionToHeightKm(OBSERVATION_SLIDER_STEPS)).toBe(MAX_OBSERVATION_HEIGHT_KM)
