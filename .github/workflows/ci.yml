@@ -235,7 +235,7 @@ jobs:
           git diff --stat > codex-esa-artifact/diff-stat.txt
           git reset --quiet
           printf '%s\n' "${{ github.event.pull_request.head.sha }}" > codex-esa-artifact/source-sha.txt
-          cat > codex-esa-artifact/PROVENANCE.md <<EOF
+          cat > codex-esa-artifact/PROVENANCE.md <<'EOF'
           # ESA Agentic EO validated artifact provenance
 
           Source commit: `${{ github.event.pull_request.head.sha }}`
