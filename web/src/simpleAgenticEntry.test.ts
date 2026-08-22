@@ -1,8 +1,7 @@
-import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
-const indexHtml = readFileSync(new URL('../index.html', import.meta.url), 'utf8')
-const entryScript = readFileSync(new URL('../public/simple-agentic-entry.js', import.meta.url), 'utf8')
+import indexHtml from '../index.html?raw'
+import entryScript from '../public/simple-agentic-entry.js?raw'
 
 describe('Simple view Agentic EO entry', () => {
   it('loads the Agentic EO helper in the production entry page', () => {
