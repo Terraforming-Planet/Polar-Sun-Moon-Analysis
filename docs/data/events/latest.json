@@ -1,10 +1,10 @@
 {
   "schema_version": "7.0",
   "project": "Terraforming Planet",
-  "generated_at": "2026-08-22T16:37:03.239876Z",
-  "event_count": 973,
+  "generated_at": "2026-08-22T16:59:22.404105Z",
+  "event_count": 968,
   "summary": {
-    "earthquake": 231,
+    "earthquake": 226,
     "fire": 611,
     "storm": 25,
     "ice": 3,
@@ -19,7 +19,7 @@
     {
       "source": "USGS",
       "status": "ok",
-      "count": 223
+      "count": 218
     },
     {
       "source": "NASA EONET",
@@ -38,6 +38,22 @@
     }
   ],
   "events": [
+    {
+      "id": "usgs-ci41532976",
+      "type": "earthquake",
+      "title": "M 0.8 - 15 km N of Warner Springs, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 33.414,
+      "longitude": -116.6445,
+      "observed_at": "2026-08-22T16:42:15.210000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41532976",
+      "metadata": {
+        "magnitude": 0.75,
+        "depth_km": 6.36
+      }
+    },
     {
       "id": "usgs-nc75423022",
       "type": "earthquake",
@@ -3511,102 +3527,6 @@
       }
     },
     {
-      "id": "usgs-hv75022012",
-      "type": "earthquake",
-      "title": "M 1.7 - 1 km NW of Pāhala, Hawaii",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 19.2106666564941,
-      "longitude": -155.489837646484,
-      "observed_at": "2026-08-21T16:56:22.060000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75022012",
-      "metadata": {
-        "magnitude": 1.74,
-        "depth_km": 27.5900001525879
-      }
-    },
-    {
-      "id": "usgs-ci41532208",
-      "type": "earthquake",
-      "title": "M 0.6 - 7 km NE of Anza, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 33.5881666666667,
-      "longitude": -116.6145,
-      "observed_at": "2026-08-21T16:55:11.480000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41532208",
-      "metadata": {
-        "magnitude": 0.57,
-        "depth_km": 13.2
-      }
-    },
-    {
-      "id": "usgs-ci41532192",
-      "type": "earthquake",
-      "title": "M 0.8 - 10 km ENE of Coso Junction, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 36.0646666666667,
-      "longitude": -117.843,
-      "observed_at": "2026-08-21T16:47:50.770000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41532192",
-      "metadata": {
-        "magnitude": 0.82,
-        "depth_km": 3.76
-      }
-    },
-    {
-      "id": "usgs-us6000tmlh",
-      "type": "earthquake",
-      "title": "M 4.6 - 130 km W of Pangai, Tonga",
-      "severity": "moderate",
-      "status": "reviewed",
-      "latitude": -19.6881,
-      "longitude": -175.596,
-      "observed_at": "2026-08-21T16:45:36.096000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tmlh",
-      "metadata": {
-        "magnitude": 4.6,
-        "depth_km": 271.068
-      }
-    },
-    {
-      "id": "usgs-ci41532184",
-      "type": "earthquake",
-      "title": "M 0.8 - 3 km NE of Calimesa, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 34.0051666666667,
-      "longitude": -117.029666666667,
-      "observed_at": "2026-08-21T16:45:24.540000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41532184",
-      "metadata": {
-        "magnitude": 0.75,
-        "depth_km": 18.19
-      }
-    },
-    {
-      "id": "usgs-aka2026qnunrm",
-      "type": "earthquake",
-      "title": "M 1.2 - 69 km ESE of McCarthy, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 61.11,
-      "longitude": -141.808,
-      "observed_at": "2026-08-21T16:43:07.862000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qnunrm",
-      "metadata": {
-        "magnitude": 1.2,
-        "depth_km": 22.8
-      }
-    },
-    {
       "id": "eonet-EONET_22927",
       "type": "fire",
       "title": "Prescribed Fire RX Tom Green 7105, Tom Green, Texas",
@@ -3678,16 +3598,16 @@
       "title": "Typhoon Saudel",
       "severity": "moderate",
       "status": "open",
-      "latitude": 18.6,
-      "longitude": 145.8,
+      "latitude": 19.6,
+      "longitude": 144.8,
       "geometry": {
         "type": "Point",
         "coordinates": [
-          145.8,
-          18.6
+          144.8,
+          19.6
         ]
       },
-      "observed_at": "2026-08-22T06:00:00Z",
+      "observed_at": "2026-08-22T12:00:00Z",
       "source": "NASA EONET",
       "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22926",
       "metadata": {
@@ -3942,16 +3862,16 @@
       "title": "Tropical Storm Lala",
       "severity": "moderate",
       "status": "open",
-      "latitude": 28.7,
-      "longitude": -170.4,
+      "latitude": 30.2,
+      "longitude": -171.4,
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -170.4,
-          28.7
+          -171.4,
+          30.2
         ]
       },
-      "observed_at": "2026-08-22T00:00:00Z",
+      "observed_at": "2026-08-22T06:00:00Z",
       "source": "NASA EONET",
       "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22563",
       "metadata": {
