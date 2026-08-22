@@ -89,7 +89,7 @@ test('yearly gallery keeps an explicit missing slot when no official image is av
     assert.equal(payload.slots.length, 1)
     assert.equal(payload.slots[0].year, 1995)
     assert.equal(payload.slots[0].status, 'missing')
-    assert.match(payload.slots[0].reason, /Brak/)
+    assert.match(payload.slots[0].reason, /No browser-renderable Landsat image/)
   } finally {
     globalThis.fetch = originalFetch
   }
