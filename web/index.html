@@ -1,10 +1,11 @@
 <!doctype html>
-<html lang="pl">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#020711" />
     <meta name="description" content="Terra Observation System — 3D Earth, official satellite evidence and privacy-first OpenAI research tools" />
+    <meta name="terra-evidence-api" content="%VITE_EVIDENCE_API_URL%" />
     <title>Terra Observation System</title>
     <style>
       html,body,#root{min-height:100%;max-width:100%;margin:0;overflow-x:hidden}
@@ -14,6 +15,7 @@
   </head>
   <body>
     <div id="root"></div>
+    <script src="./contest-runtime.js" defer></script>
     <script type="module" src="./src/main.tsx"></script>
   </body>
 </html>
