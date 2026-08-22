@@ -1,0 +1,133 @@
+{
+  "schema": "terra-agentic-eo-benchmark-v1",
+  "title": "Agentic EO Benchmark v1",
+  "description": "Ten deterministic, public EO research cases for routing, provenance, uncertainty and scientific-claim safety. This benchmark evaluates observable tool use and answer-level checks; it is not a substitute for domain ground-truth validation.",
+  "required_sections": [
+    "Research question",
+    "Tool/agent actions",
+    "Evidence",
+    "Uncertainty",
+    "Recommended next checks"
+  ],
+  "cases": [
+    {
+      "id": "B01-vistula-evidence-scope",
+      "category": "evidence_verification",
+      "question": "Using the repository evidence for Vistula TEST 014, state exactly what is established and what is not established. Select registry-backed EO sources for a follow-up investigation of possible surface-water or river-channel change. Do not infer water loss or a physical cause that the evidence does not establish.",
+      "required_tools": ["consult_eo_source_scout", "consult_evidence_verifier"],
+      "required_terms_all": ["74", "72", "Sentinel-1"],
+      "required_any_groups": [
+        ["not established", "does not establish", "not prove", "does not prove"],
+        ["water loss", "water_loss_claim"],
+        ["causal", "cause"]
+      ]
+    },
+    {
+      "id": "B02-causal-challenge",
+      "category": "scientific_claim_safety",
+      "question": "Does Vistula TEST 014 prove that blocked river flow caused long-term water loss? Use the repository-backed evidence and explain the strongest defensible conclusion without upgrading a hypothesis into a finding.",
+      "required_tools": ["consult_evidence_verifier"],
+      "required_terms_all": ["TEST 014"],
+      "required_any_groups": [
+        ["not established", "does not establish", "not prove", "does not prove", "cannot conclude"],
+        ["causal", "cause"],
+        ["water loss", "water_loss_claim"]
+      ]
+    },
+    {
+      "id": "B03-flood-under-cloud",
+      "category": "source_selection",
+      "question": "Which registry-backed official/public EO source should be prioritized to map flood or open-water extent when optical cloud is a problem? Explain the main sensor limitation and do not claim that a catalogue entry means a scene has already been analysed.",
+      "required_tools": ["consult_eo_source_scout"],
+      "required_terms_all": ["Sentinel-1"],
+      "required_any_groups": [
+        ["SAR", "radar"],
+        ["cloud", "optical"],
+        ["not", "does not", "cannot"]
+      ]
+    },
+    {
+      "id": "B04-long-term-river-record",
+      "category": "source_selection",
+      "question": "Choose registry-backed EO sources for comparing river-channel and surface-water morphology from the 1980s to the present. Separate the long historical record from newer higher-resolution optical and radar context, and state key comparability limitations.",
+      "required_tools": ["consult_eo_source_scout"],
+      "required_terms_all": ["Landsat", "Sentinel-2"],
+      "required_any_groups": [
+        ["Sentinel-1", "radar"],
+        ["1982", "1980"],
+        ["cloud", "season", "harmon"]
+      ]
+    },
+    {
+      "id": "B05-water-surface-elevation",
+      "category": "source_selection",
+      "question": "Which registry-backed mission is suitable for water-surface elevation and river-slope investigation? Explain whether that mission alone establishes water-volume change without bathymetry or a defensible area-elevation-volume relationship.",
+      "required_tools": ["consult_eo_source_scout"],
+      "required_terms_all": ["SWOT"],
+      "required_any_groups": [
+        ["bathymetry", "area-elevation-volume"],
+        ["unknown", "does not", "cannot"]
+      ]
+    },
+    {
+      "id": "B06-surface-soil-moisture",
+      "category": "source_selection",
+      "question": "Which registry-backed mission measures broad surface soil moisture? State its approximate spatial scale and explain why it cannot by itself prove detailed deep-groundwater conditions or water inside individual rock fractures.",
+      "required_tools": ["consult_eo_source_scout"],
+      "required_terms_all": ["SMAP"],
+      "required_any_groups": [
+        ["36 km", "36-km", "36km"],
+        ["shallow", "surface soil moisture"],
+        ["cannot", "does not", "not"]
+      ]
+    },
+    {
+      "id": "B07-terrestrial-water-storage",
+      "category": "source_selection",
+      "question": "Which registry-backed mission is appropriate for regional terrestrial-water-storage or groundwater-anomaly context? Explain its spatial limitation and whether it can locate an individual small aquifer.",
+      "required_tools": ["consult_eo_source_scout"],
+      "required_terms_all": ["GRACE"],
+      "required_any_groups": [
+        ["regional", "hundreds of kilometres", "hundreds of kilometers"],
+        ["cannot locate", "cannot identify", "not locate", "not identify"],
+        ["aquifer", "groundwater"]
+      ]
+    },
+    {
+      "id": "B08-thermal-cloud-limit",
+      "category": "source_selection",
+      "question": "Which registry-backed Copernicus mission/instrument is suitable for land-surface-temperature context? State the approximate thermal spatial resolution and the main limitation under opaque cloud.",
+      "required_tools": ["consult_eo_source_scout"],
+      "required_terms_all": ["Sentinel-3", "SLSTR"],
+      "required_any_groups": [
+        ["1 km", "1-km", "1km"],
+        ["cloud", "opaque"]
+      ]
+    },
+    {
+      "id": "B09-area-change-calculation",
+      "category": "deterministic_calculation",
+      "question": "A reproducible mapping workflow reports 10.0 km² of surface water in the baseline scene and 7.5 km² in the comparison scene. Calculate the mapped-area difference and percentage change with the deterministic tool. Then state whether water-volume change or physical cause is established by area change alone.",
+      "required_tools": ["compare_surface_water_areas"],
+      "required_terms_all": ["volume", "cause"],
+      "required_any_groups": [
+        ["-2.5", "2.5 km"],
+        ["-25", "25%", "25 percent"],
+        ["unknown", "not established", "does not establish", "cannot"]
+      ]
+    },
+    {
+      "id": "B10-training-not-ground-truth",
+      "category": "evaluation_provenance",
+      "question": "Use the published stream-gibs-20260820 training/evaluation context. State what the 200,016 streamed windows demonstrate and whether that run is environmental ground truth, a causal environmental finding, or proof of water loss.",
+      "required_tools": ["consult_evidence_verifier"],
+      "required_terms_all": ["200"],
+      "required_any_groups": [
+        ["200,016", "200016"],
+        ["not ground truth", "ground truth claim is false", "ground_truth_claim=false", "not environmental ground truth"],
+        ["causal", "causal_environmental_claim"],
+        ["training", "evaluation"]
+      ]
+    }
+  ]
+}
