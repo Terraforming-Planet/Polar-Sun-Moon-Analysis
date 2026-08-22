@@ -8,10 +8,29 @@ describe('Simple view Agentic EO entry', () => {
     expect(indexHtml).toContain('./simple-agentic-entry.js')
   })
 
-  it('opens Advanced view and then the Agentic EO tab', () => {
+  it('opens Advanced view without depending on translated button text', () => {
     expect(entryScript).toContain(".simple-shell .mode-switch-bar")
-    expect(entryScript).toContain("'Open Advanced view'")
-    expect(entryScript).toContain("'Agentic EO'")
+    expect(entryScript).toContain("!button.hasAttribute(BUTTON_ATTR)")
+    expect(entryScript).toContain("buttons.find(button => button.textContent?.includes('Agentic EO')) ?? buttons[1]")
+    expect(entryScript).toContain('advancedButton.click()')
     expect(entryScript).toContain('agenticButton.click()')
+    expect(entryScript).not.toContain("findButtonByText(switchBar, 'Open Advanced view')")
+  })
+
+  it('publishes a detailed Agentic EO overview in Simple view', () => {
+    expect(entryScript).toContain('Agentic EO — AI research that plans, checks sources and preserves uncertainty')
+    expect(entryScript).toContain('Terra Agentic EO Coordinator')
+    expect(entryScript).toContain('EO Source Scout')
+    expect(entryScript).toContain('EO Evidence Verifier')
+    expect(entryScript).toContain('Sentinel-1')
+    expect(entryScript).toContain('Sentinel-2')
+    expect(entryScript).toContain('Landsat')
+    expect(entryScript).toContain('SWOT')
+    expect(entryScript).toContain('Vistula TEST 014')
+    expect(entryScript).toContain('environmental_finding_claim=false')
+    expect(entryScript).toContain('water_loss_claim=false')
+    expect(entryScript).toContain('causal_claim=false')
+    expect(entryScript).toContain('published/agentic-eo/vistula-test-014-live.json')
+    expect(entryScript).toContain('docs/ESA_AGENTIC_EO.md')
   })
 })
