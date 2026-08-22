@@ -78,7 +78,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python scripts/run_agentic_eo_benchmark.py \
+          python -m scripts.run_agentic_eo_benchmark \
             --config config/agentic-eo-benchmark-v1.json \
             --json-output benchmark-artifacts/agentic-eo-benchmark-v1.json \
             --markdown-output benchmark-artifacts/agentic-eo-benchmark-v1.md \
@@ -103,7 +103,12 @@ jobs:
           if summary.get("case_count") != 10:
               raise SystemExit("Benchmark did not execute exactly 10 cases.")
 
-          public_blob = json.dumps(payload, ensure_ascii=False).lower()
+          public_evidence = [
+              {"answer": case.get("answer"), "trace": case.get("trace")}
+              for case in payload.get("cases", [])
+              if isinstance(case, dict)
+          ]
+          public_blob = json.dumps(public_evidence, ensure_ascii=False).lower()
           forbidden = (
               "authorization: bearer",
               "openai_api_key",
