@@ -1,7 +1,7 @@
 # Vistula TEST 014 — live Agentic EO evidence
 
-- UTC: `2026-08-22T17:17:09.188995+00:00`
-- Git SHA: `3a2d3277916626085ebd744f7fa631f570dfe710`
+- UTC: `2026-08-22T17:29:40.927801+00:00`
+- Git SHA: `caee6bf3a0a44cda196b2eef93772d9fa2e17ad4`
 - Python: `3.12.14`
 - openai-agents: `0.20.0`
 - Model: `gpt-5.6-luna`
@@ -35,8 +35,8 @@ Required presence:
 - `agent_start` — `Terra Agentic EO Coordinator` — `observed`
 - `tool_start` — `consult_eo_source_scout` — `observed`
 - `tool_start` — `consult_evidence_verifier` — `observed`
-- `tool_end` — `consult_evidence_verifier` — `success`
 - `tool_end` — `consult_eo_source_scout` — `success`
+- `tool_end` — `consult_evidence_verifier` — `success`
 - `agent_end` — `Terra Agentic EO Coordinator` — `success`
 
 The trace contains observable names and states only. It excludes prompts, tool arguments and outputs, credentials, environment data, and private reasoning.
@@ -45,51 +45,54 @@ The trace contains observable names and states only. It excludes prompts, tool a
 
 ## Research question
 
-What is established for Vistula TEST 014, which official/public EO sources best investigate possible surface-water or river-channel change, and what checks are needed next?
+What is established for **Vistula TEST 014**, which official/public EO sources best investigate possible surface-water or river-channel change, and what checks are needed next?
 
 ## Tool/agent actions
 
-- Consulted the EO Source Scout using deterministic searches for `surface_water`, `water_extent`, and `river_channel`.
-- Consulted the EO Evidence Verifier for repository provenance, training context, and claim support.
-- No area-change calculation was possible because no mapped water-area measurements were provided.
+- Consulted the EO Source Scout using deterministic registry searches for `surface_water`, `water_extent`, and `river_channel`.
+- Consulted the Evidence Verifier for repository-backed provenance and claim status.
+- No mapped-area comparison was possible because no before/after water areas were provided.
 
 ## Evidence
 
-**OBSERVATION:** The repository describes a satellite-image test set for the Vistula Gniew–Grudziądz area, spanning spring and autumn from 1990–2026, with 74 records and 72 accepted records. Provenance fields include dates, platforms, item IDs, scene keys, and hashes.
+### Established — **OBSERVATION**
 
-**DERIVED_VALUE:** The evidence supports dataset integrity and temporal coverage.
+The repository contains an integrity-checked satellite-image test set for the Vistula Gniew–Grudziądz area:
 
-**MODEL_ESTIMATE:** None establishing environmental change.
+- Reported extent: **45 × 70 km**
+- Temporal scope: **spring and autumn, 1990–2026**
+- Records: **74 total; 72 accepted and 2 rejected/not accepted**
+- Per-record provenance includes dates, platforms, item IDs, source-scene keys, SHA-256 hashes, and image hashes.
 
-**HYPOTHESIS:** None established.
+### Not established
 
-**UNKNOWN:** The evidence does not establish surface-water loss, river-channel change, an environmental finding, or any causal mechanism. Training metrics contain no persisted environmental measurements or ground truth.
+- **DERIVED_VALUE:** No measured surface-water or channel-area change.
+- **MODEL_ESTIMATE:** None.
+- **HYPOTHESIS:** Hydrological causes remain untested hypotheses.
+- **UNKNOWN:** Whether environmental change occurred, its magnitude, and its cause.
 
-### Registry-backed recommendations
+The repository evidence establishes data integrity and temporal coverage—not an environmental finding, alert, water loss, or causal mechanism.
 
-1. **Copernicus Sentinel-1** — registry ID `esa-sentinel-1`  
-   Best for cloud-independent water-extent mapping; affected by wind, vegetation, roughness, viewing geometry, and processing.
+## Registry-backed recommendations
 
-2. **Copernicus Sentinel-2** — registry ID `esa-sentinel-2`  
-   Best for clear-sky water morphology and channel delineation; limited by clouds, shadows, seasonality, and lack of depth/cause information.
+1. **Copernicus Sentinel-1** — primary option for water extent and channel mapping, including cloudy conditions. Limitations include effects from wind, vegetation, surface roughness, viewing geometry, and classification.
+2. **Copernicus Sentinel-2** — complementary optical mapping of water boundaries and channel morphology. Limited by clouds and shadows; does not measure depth or establish cause.
+3. **Landsat 4–9** — longer historical comparison from 1982 onward. Requires attention to resolution, clouds, seasonality, and sensor harmonization.
 
-3. **USGS Landsat program** — registry ID `usgs-landsat`  
-   Best for longer-term channel and surface-water context; requires harmonization for sensor, cloud, and seasonal differences.
-
-**Additional non-registry suggestions: none.**
+**Additional non-registry suggestions: none**
 
 ## Uncertainty
 
-No analyzed EO measurements, mapped areas, or validated change detections are supplied. Apparent exposed sediment or channel constriction would not establish hydrological causation.
+No image-analysis results were supplied. Therefore, no environmental change or causal mechanism is established.
 
 ## Recommended next checks
 
-1. Retrieve comparable Sentinel-1, Sentinel-2, and Landsat scenes for the documented records.
-2. Apply cloud/shadow masking and seasonal matching.
-3. Produce independently validated surface-water masks and channel boundaries.
-4. Quantify mapped area and channel geometry with uncertainty.
-5. Check river stage, discharge, precipitation, ice, sediment, and regulation records before assessing possible causes.
-6. Preserve scene IDs, processing parameters, masks, and validation samples for reproducibility.
+1. Define fixed river-channel and surface-water boundaries.
+2. Compare same-season, comparable-date scenes across years.
+3. Process Sentinel-1 and cloud-screened Sentinel-2/Landsat imagery independently.
+4. Quantify mapped water area and channel geometry, reporting classification uncertainty.
+5. Check river stage/discharge, precipitation, ice, sediment, and land-use records before considering causes.
+6. Validate detected changes against higher-resolution imagery or field/reference data.
 
 ## Scientific safety assertions
 
