@@ -18,10 +18,6 @@ concurrency:
   group: terra-observation-planet-production
   cancel-in-progress: false
 
-env:
-  PLANET_CUSTOM_DOMAIN: planet.terra-observation.dev
-  PLANET_ZONE: terra-observation.dev
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -130,49 +126,6 @@ jobs:
           fi
           echo 'Root-path Cloudflare frontend bundle verified.'
 
-      - name: Check whether terra-observation.dev is visible as an active Cloudflare zone
-        id: zone
-        continue-on-error: true
-        shell: bash
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ steps.credentials.outputs.cloudflare_api_token }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ steps.credentials.outputs.cloudflare_account_id }}
-        run: |
-          set -euo pipefail
-          status=$(curl --silent --show-error \
-            --output /tmp/terra-zone.json \
-            --write-out '%{http_code}' \
-            --get 'https://api.cloudflare.com/client/v4/zones' \
-            --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-            --header 'Content-Type: application/json' \
-            --data-urlencode "name=$PLANET_ZONE" \
-            --data-urlencode "account.id=$CLOUDFLARE_ACCOUNT_ID" \
-            --data-urlencode 'status=active' || true)
-
-          available=false
-          if [ "$status" = '200' ]; then
-            available=$(python - <<'PY'
-          import json
-          from pathlib import Path
-          try:
-              payload = json.loads(Path('/tmp/terra-zone.json').read_text(encoding='utf-8'))
-              ok = payload.get('success') is True and any(
-                  item.get('name') == 'terra-observation.dev' and item.get('status') == 'active'
-                  for item in payload.get('result', []) if isinstance(item, dict)
-              )
-              print('true' if ok else 'false')
-          except Exception:
-              print('false')
-          PY
-            )
-          fi
-          echo "available=$available" >> "$GITHUB_OUTPUT"
-          if [ "$available" = 'true' ]; then
-            echo 'Active terra-observation.dev zone found.'
-          else
-            echo 'The token could not confirm an active terra-observation.dev zone. The custom-domain step will still make one safe attempt after the fallback deployment.'
-          fi
-
       - name: Deploy planet site to workers.dev
         id: deploy
         uses: cloudflare/wrangler-action@v4
@@ -201,57 +154,17 @@ jobs:
           grep -Fq 'AI Research' /tmp/planet-app.js
           echo "Planet frontend is live at ${SITE_URL%/}/"
 
-      - name: Attempt to attach planet.terra-observation.dev
-        id: custom_domain_deploy
-        continue-on-error: true
-        uses: cloudflare/wrangler-action@v4
-        with:
-          apiToken: ${{ steps.credentials.outputs.cloudflare_api_token }}
-          accountId: ${{ steps.credentials.outputs.cloudflare_account_id }}
-          workingDirectory: cloudflare/planet-site
-          wranglerVersion: '4'
-          command: deploy --config wrangler.custom-domain.jsonc
-
-      - name: Verify custom planet domain
-        id: verify_custom_domain
-        if: steps.custom_domain_deploy.outcome == 'success'
-        continue-on-error: true
-        shell: bash
-        run: |
-          set -euo pipefail
-          for attempt in $(seq 1 18); do
-            status=$(curl --connect-timeout 15 --max-time 30 -L -sS \
-              -H 'Cache-Control: no-cache' \
-              -o /tmp/custom-planet.html \
-              -w '%{http_code}' \
-              "https://${PLANET_CUSTOM_DOMAIN}/?deploy=${GITHUB_SHA}-${attempt}" || true)
-            if [ "$status" = '200' ] && grep -qi '<!doctype html' /tmp/custom-planet.html; then
-              echo "Custom domain is live: https://${PLANET_CUSTOM_DOMAIN}/"
-              exit 0
-            fi
-            echo "Custom domain certificate/DNS not ready yet (attempt $attempt/18; HTTP $status)."
-            sleep 10
-          done
-          echo 'Custom-domain attachment completed but the public hostname did not become ready in the verification window.'
-          exit 1
-
       - name: Deployment summary
         if: always()
         shell: bash
         env:
           WORKERS_DEV_URL: ${{ steps.deploy.outputs.deployment-url }}
-          ZONE_AVAILABLE: ${{ steps.zone.outputs.available }}
-          CUSTOM_OUTCOME: ${{ steps.custom_domain_deploy.outcome }}
-          CUSTOM_VERIFY_OUTCOME: ${{ steps.verify_custom_domain.outcome }}
         run: |
           {
             echo '## Terra Observation Planet'
             echo
             echo "- workers.dev: ${WORKERS_DEV_URL:-not-returned}"
-            echo "- requested custom domain: https://${PLANET_CUSTOM_DOMAIN}/"
-            echo "- terra-observation.dev active zone visible: ${ZONE_AVAILABLE:-unknown}"
-            echo "- custom-domain deployment outcome: ${CUSTOM_OUTCOME:-not-attempted}"
-            echo "- custom-domain live verification: ${CUSTOM_VERIFY_OUTCOME:-not-attempted}"
+            echo '- custom-domain attachment: disabled until Terraforming Planet owns or is formally delegated an eligible domain'
             echo '- frontend: production Vite build served from Cloudflare Workers Static Assets'
             echo '- Evidence/OpenAI backend: existing restricted Cloudflare Evidence Worker'
             echo '- GitHub Pages remains available as the independent fallback publication'
