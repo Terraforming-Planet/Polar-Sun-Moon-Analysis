@@ -154,7 +154,9 @@ def validate_live_report(
     if require_live_sdk_run:
         live_flag = report.get("run_metadata", {}).get("live_openai_agents_sdk_run")
         if live_flag is not True:
-            raise ValueError("Published live evidence must come from a verified live Agents SDK run.")
+            raise ValueError(
+                "Published live evidence must come from a verified live Agents SDK run."
+            )
 
     trace = report.get("public_execution_trace", {})
     validate_public_trace(trace)
