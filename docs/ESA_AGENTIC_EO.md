@@ -32,9 +32,11 @@ NVIDIA L4 metrics describe pipeline/training execution and are never environment
 The live runner records observable SDK boundaries only: agent names, tool names, success states,
 high-level result item types, model/SDK metadata, timestamp and commit. It deliberately excludes
 chain-of-thought, reasoning summaries, specialist prompts, tool arguments and outputs, environment
-variables, credentials, and authorization data. It exits non-zero unless both specialist tool
-consultations really completed and the three required sources came from provenance-complete
-registry matches.
+variables, credentials, and authorization data. Trace serialization rejects fields outside that
+public schema. The runner exits non-zero unless both specialist tools have observable start and
+successful-end boundaries and the three required sources came from provenance-complete registry
+matches. Explicit registry IDs in the model answer are also checked against those deterministic
+matches, so model text cannot manufacture registry provenance.
 
 From the repository root, with dependencies installed and `OPENAI_API_KEY` set only in the
 environment, run:
