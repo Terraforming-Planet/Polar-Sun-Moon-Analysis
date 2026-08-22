@@ -13,6 +13,7 @@ function corsHeaders(origin, env = {}) {
   const headers = {
     'Access-Control-Allow-Methods': 'GET,OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Expose-Headers': 'Content-Type,ETag,Last-Modified,X-Terra-Source-Host,X-Terra-Delivery,X-Terra-Provenance',
     'Access-Control-Max-Age': '86400',
     Vary: 'Origin',
   }
@@ -67,8 +68,14 @@ export async function handleSatelliteImageProxy(request, env = {}) {
       'Content-Type': type,
       'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800',
       'X-Terra-Source-Host': upstreamUrl.hostname,
+      'X-Terra-Delivery': 'streamed-official-imagery',
+      'X-Terra-Provenance': 'official-public-source; no image generation',
       ...corsHeaders(origin, env),
     })
+    for (const name of ['ETag', 'Last-Modified', 'Content-Length']) {
+      const value = upstream.headers.get(name)
+      if (value) headers.set(name, value)
+    }
     return new Response(upstream.body, { status: 200, headers })
   } catch {
     return jsonResponse({ error: 'Satellite image proxy failed safely.' }, 502, origin, env)

@@ -16,6 +16,20 @@
 **Live demo:** <https://terraforming-planet.github.io/Polar-Sun-Moon-Analysis/>  
 **Public repository:** <https://github.com/Terraforming-Planet/Polar-Sun-Moon-Analysis>
 
+## Final contest demo hardening — 22 August 2026
+
+The public BUILD FOR GOOD path has a final reliability layer focused on the problems that matter most during a short judge review:
+
+- **official satellite-image streaming:** browser cards for NASA GIBS, Copernicus/CDSE and USGS Landsat use the allowlisted Cloudflare Evidence Worker `/research/image` stream when configured; the Worker forwards official upstream image bytes and preserves source/provenance headers instead of generating replacement pixels;
+- **black-frame protection:** NASA GIBS display avoids the newest two UTC days, and the browser can retry earlier official daily observations when a loaded frame is effectively black;
+- **bounded galleries:** **Simple mode shows up to 4 satellite images** and **Advanced mode up to 8**; OpenAI visual inspection is independently bounded to 4 quick / 8 deep Worker-preflighted images;
+- **English contest UI:** the main public application declares English and applies an English UI pass to dynamically rendered content and same-origin embedded research/station tabs;
+- **Terrain laboratory reliability:** the merged Terrain laboratory work provides explicit loading/ready/fallback/error states, DEM/elevation tools and public-data river-flow direction arrows instead of leaving a permanent black viewer;
+- **scientific integrity remains unchanged:** unavailable imagery stays unavailable, hypotheses stay hypotheses, and OpenAI does not replace deterministic measurements.
+
+Final audit: [`docs/BUILD_FOR_GOOD_FINAL_AUDIT_2026-08-22.md`](docs/BUILD_FOR_GOOD_FINAL_AUDIT_2026-08-22.md)  
+Ready-to-paste Discord submission: [`docs/BUILD_FOR_GOOD_DISCORD_SUBMISSION.md`](docs/BUILD_FOR_GOOD_DISCORD_SUBMISSION.md)
+
 ## Terraforming Planet — short mission
 
 **Terraforming Planet** is an open research initiative focused on understanding how water, terrain and environmental systems change — and how better observation can help people restore damaged landscapes instead of reacting only after the damage is visible on the ground.

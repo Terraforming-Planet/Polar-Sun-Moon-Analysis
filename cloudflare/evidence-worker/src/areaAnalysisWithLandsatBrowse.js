@@ -262,9 +262,10 @@ export async function handleAreaAnalysisWithLandsatBrowse(request, env = {}) {
 
   const payload = await response.json()
   payload.gallery_policy = {
-    mode: 'progressive-separate-endpoint',
+    ...(payload.gallery_policy ?? {}),
+    historical_gallery_mode: 'progressive-separate-endpoint',
     requested_year_count: legacySeasonalYears.length || null,
-    note: 'Core OpenAI terrain analysis returns without waiting for annual catalogue requests. The browser loads one official image slot per requested year from /research/yearly-gallery in bounded batches.',
+    historical_gallery_note: 'Core OpenAI terrain analysis returns without waiting for annual catalogue requests. The browser loads one official image slot per requested year from /research/yearly-gallery in bounded batches.',
   }
   payload.evidence_policy = `${payload.evidence_policy}; annual historical gallery loads separately so long year ranges do not block the core AI analysis`
   const headers = new Headers(response.headers)
@@ -302,7 +303,7 @@ async function gallerySlot(request, body, year) {
     const chosen = chooseYearBrowseImage(images, year, body.season, body.cloud_mode)
     const selected = chosen ?? nasaFallbackImage(body, year)
     if (!selected) {
-      return { year, status: 'missing', reason: 'Brak browser-renderowalnego obrazu Landsat i brak dostępnego fallbacku NASA GIBS dla tego rocznika.' }
+      return { year, status: 'missing', reason: 'No browser-renderable Landsat image and no NASA GIBS fallback are available for this year.' }
     }
     const proxied = proxiedImage(request, {
       ...selected,
