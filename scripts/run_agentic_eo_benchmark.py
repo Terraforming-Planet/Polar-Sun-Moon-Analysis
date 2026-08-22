@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -262,7 +262,7 @@ def run_benchmark(
     payload = {
         "schema": "terra-agentic-eo-benchmark-result-v1",
         "benchmark": str(config.get("title", "Agentic EO Benchmark v1")),
-        "generated_utc": datetime.now(timezone.utc).isoformat(),
+        "generated_utc": datetime.now(UTC).isoformat(),
         "model": model,
         "config": str(config_path),
         "public_safety_note": (
