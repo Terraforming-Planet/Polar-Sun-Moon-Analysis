@@ -92,6 +92,8 @@ function installGalleryStyles() {
   const style = document.createElement('style')
   style.id = GALLERY_STYLE_ID
   style.textContent = `
+    .simple-context-grid figure:first-child{display:block!important}
+    .simple-context-grid figure:nth-child(n+2){display:none!important}
     .simple-research[data-source-gallery-mode="simple"] .simple-selected-period-images .simple-image-grid figure:nth-child(-n+4),
     .simple-research[data-source-gallery-mode="simple"] .simple-history-body .simple-image-grid figure:nth-child(-n+4),
     .simple-research[data-source-gallery-mode="advanced"] .simple-selected-period-images .simple-image-grid figure:nth-child(-n+8),
