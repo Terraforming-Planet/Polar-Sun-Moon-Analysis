@@ -147,8 +147,17 @@ def validate_final_answer_provenance(answer: str, matched_ids: set[str | None]) 
         )
 
 
-def validate_live_report(report: dict[str, Any]) -> None:
+def validate_live_report(
+    report: dict[str, Any], *, require_live_sdk_run: bool = False
+) -> None:
     """Fail closed when multi-agent, provenance, or scientific evidence is absent."""
+    if require_live_sdk_run:
+        live_flag = report.get("run_metadata", {}).get("live_openai_agents_sdk_run")
+        if live_flag is not True:
+            raise ValueError(
+                "Published live evidence must come from a verified live Agents SDK run."
+            )
+
     trace = report.get("public_execution_trace", {})
     validate_public_trace(trace)
     matches = report.get("deterministic_registry_selection", {}).get("matches", [])
@@ -186,8 +195,9 @@ def build_live_report(
     answer: str,
     trace: dict[str, Any],
     timestamp: str | None = None,
+    live_run_verified: bool = False,
 ) -> dict[str, Any]:
-    """Serialize deterministic and model-generated evidence without a network call."""
+    """Serialize deterministic and model-generated evidence without making a network call."""
     verification = verify_evidence_case_data(case_id)
     matches = select_vistula_sources_data()
     matched_ids = {item["id"] for item in matches}
@@ -199,7 +209,7 @@ def build_live_report(
             "python_version": platform.python_version(),
             "openai_agents_version": importlib.metadata.version("openai-agents"),
             "model": model,
-            "live_openai_agents_sdk_run": True,
+            "live_openai_agents_sdk_run": live_run_verified,
         },
         "case_id": case_id,
         "research_question": question,
@@ -223,8 +233,27 @@ def build_live_report(
         },
         "scientific_safety_assertions": safety_assertions(verification),
     }
-    validate_live_report(report)
+    validate_live_report(report, require_live_sdk_run=live_run_verified)
     return report
+
+
+def execute_live_report(*, case_id: str, question: str, model: str) -> dict[str, Any]:
+    """Execute the Agents SDK path and only then mark the resulting report as live."""
+    run_input = (
+        f"{question}\n\nPublic demonstration requirements: consult both specialist agents. "
+        "The source specialist must use deterministic registry searches for surface_water, "
+        "water_extent, and river_channel. Recommend registry-backed missions only; if none other "
+        "are needed, state 'Additional non-registry suggestions: none'."
+    )
+    answer, trace = run_agentic_eo_with_trace(run_input, model=model)
+    return build_live_report(
+        case_id=case_id,
+        question=question,
+        model=model,
+        answer=answer,
+        trace=trace,
+        live_run_verified=True,
+    )
 
 
 def render_markdown(report: dict[str, Any]) -> str:
@@ -240,6 +269,7 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"- Python: `{meta['python_version']}`",
         f"- openai-agents: `{meta['openai_agents_version']}`",
         f"- Model: `{meta['model']}`",
+        f"- Live OpenAI Agents SDK run: `{meta['live_openai_agents_sdk_run']}`",
         "",
         "## Research question",
         "",
@@ -303,20 +333,12 @@ def main() -> int:
     args = parse_args()
     if not os.getenv("OPENAI_API_KEY"):
         raise SystemExit("OPENAI_API_KEY is required for the live Agents SDK run.")
-    run_input = (
-        f"{args.question}\n\nPublic demonstration requirements: consult both specialist agents. "
-        "The source specialist must use deterministic registry searches for surface_water, "
-        "water_extent, and river_channel. Recommend registry-backed missions only; if none other "
-        "are needed, state 'Additional non-registry suggestions: none'."
-    )
-    answer, trace = run_agentic_eo_with_trace(run_input, model=args.model)
-    report = build_live_report(
+    report = execute_live_report(
         case_id=args.case_id,
         question=args.question,
         model=args.model,
-        answer=answer,
-        trace=trace,
     )
+    validate_live_report(report, require_live_sdk_run=True)
     args.json_output.parent.mkdir(parents=True, exist_ok=True)
     args.markdown_output.parent.mkdir(parents=True, exist_ok=True)
     args.json_output.write_text(

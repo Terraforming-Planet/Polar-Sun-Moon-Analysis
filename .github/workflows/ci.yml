@@ -189,6 +189,8 @@ jobs:
           if not md_path.is_file() or not md_path.stat().st_size:
               raise SystemExit('Missing Markdown live evidence.')
           payload = json.loads(json_path.read_text(encoding='utf-8'))
+          if payload.get('run_metadata', {}).get('live_openai_agents_sdk_run') is not True:
+              raise SystemExit('Published evidence is not marked as a verified live Agents SDK run.')
           text = json.dumps(payload, ensure_ascii=False).lower()
           required = ('consult_eo_source_scout', 'consult_evidence_verifier')
           missing = [name for name in required if name not in text]
@@ -198,7 +200,7 @@ jobs:
           leaked = [item for item in forbidden if item in text]
           if leaked:
               raise SystemExit(f'Potential secret material in public evidence: {leaked}')
-          print('Both specialist consultations are evidenced and the report has no obvious secret material.')
+          print('Verified live SDK flag, both specialist consultations, and no obvious secret material.')
           PY
 
       - name: Scan generated worktree for tracked secrets
@@ -227,10 +229,25 @@ jobs:
             test -f "$path" || continue
             mkdir -p "codex-esa-artifact/worktree/$(dirname "$path")"
             cp "$path" "codex-esa-artifact/worktree/$path"
+            git add -N -- "$path"
           done < codex-esa-artifact/changed-files.txt
           git diff --binary > codex-esa-artifact/codex.patch
           git diff --stat > codex-esa-artifact/diff-stat.txt
+          git reset --quiet
           printf '%s\n' "${{ github.event.pull_request.head.sha }}" > codex-esa-artifact/source-sha.txt
+          cat > codex-esa-artifact/PROVENANCE.md <<'EOF'
+          # ESA Agentic EO validated artifact provenance
+
+          Source commit: `${{ github.event.pull_request.head.sha }}`
+
+          - `source-sha.txt` identifies the exact PR source commit checked out before Codex and the live run produced any generated changes.
+          - `worktree/` is the validated post-run state for every path listed in `changed-files.txt`.
+          - `codex.patch` is the binary-capable Git diff from that source checkout to the captured post-run state. The workflow uses intent-to-add before generating the diff so previously untracked generated files are represented in the patch as new files.
+          - `diff-stat.txt` summarizes the same patch.
+          - The live JSON/Markdown evidence is generated only after the OpenAI Agents SDK runner returns successfully and the report carries `live_openai_agents_sdk_run=true`.
+
+          The artifact therefore distinguishes the source commit from the validated generated worktree instead of presenting them as the same state.
+          EOF
 
       - name: Upload validated ESA Agentic EO artifact
         uses: actions/upload-artifact@v4
