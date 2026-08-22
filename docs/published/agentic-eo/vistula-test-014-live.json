@@ -1,0 +1,187 @@
+{
+  "schema_version": "2.0",
+  "run_metadata": {
+    "timestamp_utc": "2026-08-22T17:10:29.750006+00:00",
+    "git_sha": "c7bb074d92cf9497d4ae98fef108feb735103fe7",
+    "python_version": "3.12.14",
+    "openai_agents_version": "0.20.0",
+    "model": "gpt-5.6-luna",
+    "live_openai_agents_sdk_run": true
+  },
+  "case_id": "vistula-test-014",
+  "research_question": "Using the repository evidence for Vistula TEST 014, state what is actually established, select the most suitable official/public EO sources for investigating possible surface-water or river-channel change, and recommend the next scientific checks. Do not infer a physical cause that the evidence does not establish.",
+  "public_execution_trace": {
+    "sdk": "openai-agents",
+    "model": "gpt-5.6-luna",
+    "starting_agent": "Terra Agentic EO Coordinator",
+    "final_agent": "Terra Agentic EO Coordinator",
+    "events": [
+      {
+        "event": "agent_start",
+        "agent": "Terra Agentic EO Coordinator"
+      },
+      {
+        "event": "tool_start",
+        "agent": "Terra Agentic EO Coordinator",
+        "tool": "consult_eo_source_scout"
+      },
+      {
+        "event": "tool_start",
+        "agent": "Terra Agentic EO Coordinator",
+        "tool": "consult_evidence_verifier"
+      },
+      {
+        "event": "tool_end",
+        "agent": "Terra Agentic EO Coordinator",
+        "tool": "consult_eo_source_scout",
+        "status": "success"
+      },
+      {
+        "event": "tool_end",
+        "agent": "Terra Agentic EO Coordinator",
+        "tool": "consult_evidence_verifier",
+        "status": "success"
+      },
+      {
+        "event": "agent_end",
+        "agent": "Terra Agentic EO Coordinator",
+        "status": "success"
+      }
+    ],
+    "result_item_types": [
+      "tool_call_item",
+      "tool_call_item",
+      "tool_call_output_item",
+      "tool_call_output_item",
+      "message_output_item"
+    ]
+  },
+  "final_model_answer": "## Research question\n\nWhat is established for Vistula TEST 014, which EO sources are suitable for investigating possible surface-water or river-channel change, and what checks should follow?\n\n## Tool/agent actions\n\n- Consulted the EO Source Scout, including deterministic registry searches for `surface_water`, `water_extent`, and `river_channel`.\n- Consulted the EO Evidence Verifier for repository-backed findings and provenance limits.\n\n## Evidence\n\n### Repository-backed evidence\n\n**OBSERVATION**\n- The repository describes a Vistula Gniew–Grudziądz satellite-image test set.\n- 72 of 74 records were accepted; 2 were rejected or not accepted.\n- Records contain provenance fields, including dates, platforms, item IDs, source keys, hashes, and scene metadata.\n- Reported temporal coverage is 1990–2026, with spring and autumn imagery.\n- Reported spatial extent is 45 × 70 km.\n\n**DERIVED_VALUE**\n- Accepted-record fraction: 72/74, approximately 97.3%.\n\n**UNKNOWN**\n- No environmental finding is established.\n- No surface-water or river-channel change is demonstrated.\n- No measured water loss, alert, environmental confidence value, or supported event date is provided.\n- No causal mechanism is established.\n\nThe repository evidence establishes dataset/provenance information, not a reproducible environmental change analysis.\n\n### Registry-backed recommendations\n\n- **Copernicus Sentinel-1** — SAR, useful through cloud cover for water extent and channel morphology. Limitations include effects from vegetation, wind, roughness, geometry, and classification processing; it does not measure water depth.\n- **Copernicus Sentinel-2** — optical multispectral imagery for water and channel-boundary mapping. Limited by clouds, shadows, resolution, and seasonal comparability.\n- **Landsat program** — longer historical context for surface-water and channel change. Requires harmonizing sensors, seasons, clouds, and shadows.\n- **SWOT** — newer radar/altimetry observations for water extent and potentially river-surface elevation. Volume interpretation requires bathymetry or an area–elevation–volume relationship.\n\nAdditional non-registry suggestions: none\n\n## Uncertainty\n\nThe listed missions are source recommendations only; no evidence shows that their data have been retrieved or analyzed for this test. Imagery alone would not establish a physical cause such as discharge change, sediment dynamics, or human intervention.\n\n## Recommended next checks\n\n1. Retrieve the referenced scenes and verify acquisition dates, hashes, and metadata.\n2. Co-register imagery and define comparable reaches and seasons.\n3. Map surface-water and channel extent with documented thresholds or classifiers.\n4. Quantify change with uncertainty and inspect sensor/resolution effects.\n5. Corroborate interpretations using river-gauge, hydrological, meteorological, and relevant human-activity records.\n6. Report any result explicitly as observation or derived measurement; retain causal explanations as hypotheses unless independently supported.",
+  "deterministic_claim_verification": {
+    "case_id": "vistula-test-014",
+    "evidence_class": "OBSERVATION",
+    "record_count": 74,
+    "accepted_count": 72,
+    "provenance_field_count": 8,
+    "environmental_finding_claim": false,
+    "water_loss_claim": false,
+    "causal_claim": false,
+    "safe_claims": {
+      "dataset_integrity_and_temporal_coverage": true,
+      "environmental_finding": false,
+      "water_loss": false,
+      "causal_mechanism": false
+    },
+    "limitations": [
+      "This artifact establishes the integrity and temporal coverage of the real satellite-image test set, not a measured water-loss result.",
+      "Environmental before/after conclusions require a separate reproducible image-analysis stage.",
+      "A visible sandbar, exposed bed or channel constriction is not by itself proof of hydrological causation."
+    ]
+  },
+  "deterministic_registry_selection": {
+    "catalogue": "terra_hazards/data_sources.json",
+    "query_phenomena": [
+      "surface_water",
+      "water_extent",
+      "river_channel"
+    ],
+    "matches": [
+      {
+        "id": "esa-sentinel-1",
+        "agency": "ESA / European Commission",
+        "mission": "Copernicus Sentinel-1",
+        "instrument": "C-band synthetic aperture radar",
+        "phenomena": [
+          "flood",
+          "surface_water",
+          "water_extent",
+          "river_channel",
+          "ground_deformation"
+        ],
+        "temporal_coverage": "2014-present",
+        "latency": "Product and acquisition dependent",
+        "spatial_resolution": "Mode dependent; commonly about 10 m for IW products",
+        "access": "Copernicus Data Space account/API",
+        "url": "https://dataspace.copernicus.eu/",
+        "limitations": "Radar backscatter is not a direct water-depth measurement; wind, vegetation, roughness, geometry and processing choices can affect water classification."
+      },
+      {
+        "id": "esa-sentinel-2",
+        "agency": "ESA / European Commission",
+        "mission": "Copernicus Sentinel-2",
+        "instrument": "MSI (MultiSpectral Instrument)",
+        "phenomena": [
+          "surface_water",
+          "water_extent",
+          "river_channel",
+          "land_cover",
+          "vegetation"
+        ],
+        "temporal_coverage": "2015-present (platform and product dependent)",
+        "latency": "Product and acquisition dependent",
+        "spatial_resolution": "MSI band dependent: 10 m, 20 m and 60 m",
+        "access": "Copernicus Data Space",
+        "url": "https://dataspace.copernicus.eu/explore-data/data-collections/sentinel-data/sentinel-2",
+        "limitations": "Opaque cloud and cloud shadow obscure optical observations. Optical imagery does not directly measure water depth or prove hydrological causation; seasonal and viewing-condition comparability must be checked."
+      },
+      {
+        "id": "usgs-landsat",
+        "agency": "USGS / NASA",
+        "mission": "Landsat program (Landsat 4-9 for long-term multispectral analysis; current Landsat 8/9 context)",
+        "instrument": "TM / ETM+ / OLI / OLI-2 (mission dependent)",
+        "phenomena": [
+          "surface_water",
+          "water_extent",
+          "river_channel",
+          "land_cover",
+          "vegetation"
+        ],
+        "temporal_coverage": "1982-present for Landsat 4-9 (sensor, platform and product dependent)",
+        "latency": "Product and acquisition dependent",
+        "spatial_resolution": "Commonly 30 m multispectral; mission-dependent exceptions include 15 m panchromatic and 60-120 m thermal bands",
+        "access": "USGS EarthExplorer / Landsat data services",
+        "url": "https://www.usgs.gov/landsat-missions/landsat-data-access",
+        "limitations": "Cloud and cloud shadow obscure optical observations. Sensor and platform differences across decades and seasonal comparability require harmonization; optical morphology does not prove physical or hydrological cause."
+      },
+      {
+        "id": "nasa-cnes-swot",
+        "agency": "NASA / CNES / CSA / UK Space Agency",
+        "mission": "SWOT",
+        "instrument": "KaRIn radar interferometer and nadir altimeter",
+        "phenomena": [
+          "water_surface_elevation",
+          "river_slope",
+          "water_extent",
+          "ocean_topography"
+        ],
+        "temporal_coverage": "2022-present",
+        "latency": "Science product dependent",
+        "spatial_resolution": "Product dependent",
+        "access": "NASA Earthdata / PO.DAAC",
+        "url": "https://swot.jpl.nasa.gov/",
+        "limitations": "Volume needs bathymetry or an area-elevation-volume relationship."
+      }
+    ],
+    "required_source_presence": {
+      "Sentinel-1": true,
+      "Sentinel-2": true,
+      "Landsat": true
+    }
+  },
+  "answer_provenance": {
+    "registry_selection_is_deterministic": true,
+    "model_answer_is_explanation_not_registry_evidence": true,
+    "non_registry_recommendations_must_be_explicitly_labelled": true
+  },
+  "scientific_safety_assertions": {
+    "test_014_is_integrity_context_not_environmental_finding": true,
+    "water_loss_not_established": true,
+    "causal_mechanism_not_established": true,
+    "training_metrics_are_not_environmental_ground_truth": true,
+    "mapped_area_is_not_volume_without_area_elevation_volume_evidence": true,
+    "morphology_does_not_establish_hydrological_causation": true,
+    "optical_comparisons_require_cloud_season_and_sensor_checks": true,
+    "sentinel_1_backscatter_is_not_direct_water_depth": true,
+    "recommendations_are_next_checks_not_confirmed_causes": true
+  }
+}
