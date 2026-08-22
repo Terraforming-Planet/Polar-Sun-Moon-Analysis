@@ -2,12 +2,19 @@ import { describe, expect, it } from 'vitest'
 
 import {
   SATELLITE_ARCHIVE_START,
+  defaultSatelliteTimeSelection,
   requestedSatelliteDateTimeUtc,
   seasonReferenceDate,
   selectionForPreset,
 } from './satelliteTimeSelection'
 
 describe('satellite time selection', () => {
+  it('defaults to the last five calendar years', () => {
+    const selection = defaultSatelliteTimeSelection()
+    expect(selection.preset).toBe('five-years')
+    expect(selection.endYear - selection.startYear + 1).toBe(5)
+  })
+
   it('starts the full comparable land archive at Landsat 1', () => {
     const selection = selectionForPreset('archive')
     expect(selection.startDate).toBe(SATELLITE_ARCHIVE_START)
@@ -17,6 +24,12 @@ describe('satellite time selection', () => {
   it('provides the requested quick historical ranges', () => {
     expect(selectionForPreset('from-1990').startDate).toBe('1990-01-01')
     expect(selectionForPreset('from-2015').startDate).toBe('2015-01-01')
+  })
+
+  it('makes the twenty-year preset exactly twenty calendar years', () => {
+    const twenty = selectionForPreset('twenty-years')
+    expect(twenty.endYear - twenty.startYear + 1).toBe(20)
+    expect(twenty.startDate).toBe(`${twenty.startYear}-01-01`)
   })
 
   it('makes the five-year preset exactly five calendar years and one-year exactly one calendar year', () => {
