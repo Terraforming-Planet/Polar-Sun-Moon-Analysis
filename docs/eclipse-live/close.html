@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pl">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -9,6 +9,7 @@
   <style>
     :root{color-scheme:dark;font-family:Inter,system-ui,sans-serif;background:#020711;color:#eaf7ff}*{box-sizing:border-box}body{margin:0;background:#020711}.shell{max-width:1200px;margin:auto;padding:8px}.panel{border:1px solid #17415f;background:#071525;border-radius:12px;padding:12px;margin-bottom:10px}.hero{border-color:#20c8ff}.eyebrow{font-size:11px;letter-spacing:.1em;color:#64e5ff;font-weight:800}h1{font-size:clamp(28px,6vw,52px);line-height:.98;margin:6px 0 10px}.notice{border-left:4px solid #ffd24a;background:#302812;color:#fff3be;padding:9px;line-height:1.42}.controls{display:flex;gap:7px;flex-wrap:wrap;align-items:end;margin:8px 0}button,select,a.button{background:#0d2c46;color:#eaf7ff;border:1px solid #2d6f97;border-radius:8px;padding:9px 10px;text-decoration:none}.active{background:#126884;border-color:#6be2ff}.stage{position:relative;height:min(70vh,680px);min-height:430px;border-radius:10px;overflow:hidden;background:#000}.cesium{position:absolute;inset:0}.night-vision .cesium canvas{filter:brightness(2.15) contrast(1.65) saturate(.10) sepia(.62) hue-rotate(58deg)}.night-overlay{position:absolute;inset:0;z-index:7;pointer-events:none;display:none;background:radial-gradient(circle at center,rgba(150,255,150,.13),rgba(0,28,0,.28)),repeating-linear-gradient(0deg,rgba(120,255,120,.022) 0,rgba(120,255,120,.022) 1px,rgba(0,0,0,.012) 2px,rgba(0,0,0,.012) 4px);box-shadow:inset 0 0 95px rgba(0,18,0,.68);mix-blend-mode:screen}.night-vision .night-overlay{display:block}.night-vision .model-badge{border-color:#79ff9a;color:#caffd2}.eclipse-overlay{position:absolute;inset:0;z-index:10;pointer-events:none;display:none}.eclipse-overlay.active{display:block}.eclipse-overlay svg{width:100%;height:100%;display:block}.model-badge{position:absolute;left:10px;top:10px;z-index:11;background:rgba(3,10,18,.86);border:1px solid #ffd24a;border-radius:8px;padding:7px 9px;font-size:12px;color:#fff2b5}.readout{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:10px}.fact{border:1px solid #173754;border-radius:8px;padding:8px;background:#06111e}.fact span{display:block;color:#91acbf;font-size:11px}.fact b{font-size:15px}.ok{color:#72ffc4}.tiny{font-size:12px;color:#a8bfd0;line-height:1.4}.night-note{border-left:3px solid #79ff9a;background:#0b2a18;color:#caffd2;padding:8px;margin-top:8px}.raw{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}.raw article{border:1px solid #173754;border-radius:8px;padding:9px;background:#06111e}.raw img{width:100%;display:block;background:#000;border-radius:6px}.raw a{color:#64dcff}@media(max-width:760px){.stage{height:520px;min-height:430px}.readout{grid-template-columns:1fr 1fr}.raw{grid-template-columns:1fr}button,select,a.button{font-size:12px;padding:8px}}
   </style>
+    <meta name="terra-evidence-api" content="https://terra-observation-evidence-explainer.xodobrox.workers.dev" />
 </head>
 <body>
 <div class="shell">
@@ -99,5 +100,6 @@ const EUMET_IR='https://view.eumetsat.int/geoserver/wms?service=WMS&version=1.3.
 function refreshRaw(){const q=Date.now();document.getElementById('eumet').src=EUMET_VIS+'&refresh='+q;document.getElementById('eumet-ir').src=EUMET_IR+'&refresh='+q;document.getElementById('noaa').src='https://cdn.star.nesdis.noaa.gov/GOES19/ABI/FD/02/1808x1808.jpg?refresh='+q}refreshRaw();setInterval(refreshRaw,30000);
 applyNightVision();aimClose();
 </script>
+    <script src="/Polar-Sun-Moon-Analysis/contest-runtime.js" defer></script>
 </body>
 </html>

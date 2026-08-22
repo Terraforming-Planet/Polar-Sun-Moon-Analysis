@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pl">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -7,6 +7,7 @@
   <style>
     :root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#050b14;color:#eaf6ff;font-family:Inter,system-ui,sans-serif}main{max-width:1250px;margin:auto;padding:20px}h1{color:#7be5ff;font-size:clamp(28px,6vw,52px);margin-bottom:10px}a{color:#8ce8ff}.btn{display:inline-block;background:#087da3;color:#fff;text-decoration:none;font-weight:800;padding:12px 16px;border-radius:10px;margin:8px 8px 8px 0}.note,.status{background:#0b1828;border:1px solid #274966;border-radius:14px;padding:16px;margin:16px 0;line-height:1.55}.status{border-color:#43d49f;background:#0b211c}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:12px;margin-top:20px}.shot{background:#0b1828;border:1px solid #274966;border-radius:12px;overflow:hidden}.shot img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;background:#02060a}.shot b,.shot span{display:block;padding:7px 9px}.shot span{font-size:.76rem;color:#a8bac9;padding-top:0;overflow-wrap:anywhere}.bad{border-color:#d66;background:#271313}
   </style>
+    <meta name="terra-evidence-api" content="https://terra-observation-evidence-explainer.xodobrox.workers.dev" />
 </head>
 <body>
 <main>
@@ -35,5 +36,6 @@ fetch(`${base}/integrity.json`,{cache:'no-store'}).then(r=>{if(!r.ok)throw new E
   }
 }).catch(err=>{statusBox.classList.add('bad');statusBox.innerHTML=`<b>Indeks chwilowo niedostępny.</b><br>${err.message}. Sprawdź bieżący run GitHub Actions.`});
 </script>
+    <script src="/Polar-Sun-Moon-Analysis/contest-runtime.js" defer></script>
 </body>
 </html>

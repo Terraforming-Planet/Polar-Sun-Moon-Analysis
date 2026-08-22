@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pl">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -12,6 +12,7 @@
     .notice{padding:13px 15px;border-left:4px solid var(--warn);margin:12px 0}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.toolbar input,.toolbar select,.toolbar a{background:#0b263d;color:var(--text);border:1px solid #2a5777;border-radius:9px;padding:10px 12px;text-decoration:none}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}.card{padding:16px}.card h2{margin:6px 0 4px;font-size:22px}.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#123552;border:1px solid #2d6b93;font-size:11px;font-weight:800}.mechanisms{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0}.mechanisms span{font-size:11px;border:1px solid #2b4f68;border-radius:999px;padding:4px 7px;color:#c8ddec}.links a{display:block;color:#79ddf2;margin-top:7px;overflow-wrap:anywhere}.stats{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px}.stats b{font-size:22px}.footer{margin:28px 0;color:#728da3;font-size:12px}.critical{color:#ffd66b}
   </style>
+    <meta name="terra-evidence-api" content="https://terra-observation-evidence-explainer.xodobrox.workers.dev" />
 </head>
 <body>
 <main>
@@ -60,5 +61,6 @@ Promise.allSettled(CASEBOOK_FILES.map(url=>fetch(url,{cache:'no-store'}).then(r=
 })
 document.querySelector('#search').addEventListener('input',render);document.querySelector('#type').addEventListener('change',render)
 </script>
+    <script src="/Polar-Sun-Moon-Analysis/contest-runtime.js" defer></script>
 </body>
 </html>

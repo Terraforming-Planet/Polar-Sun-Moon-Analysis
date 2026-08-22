@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pl">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -29,6 +29,7 @@
     .step{border-left:3px solid #2d6f97;padding-left:10px;margin:9px 0}.source-list a{display:block;margin:6px 0}.list{max-height:360px;overflow:auto}.result{padding:7px 0;border-bottom:1px solid #173754}
     @media(max-width:760px){.stage{height:560px;min-height:460px}button,a.button{font-size:12px;padding:8px}.status{font-size:11px}}
   </style>
+    <meta name="terra-evidence-api" content="https://terra-observation-evidence-explainer.xodobrox.workers.dev" />
 </head>
 <body>
 <div class="shell">
@@ -270,5 +271,6 @@ fetch('../data/hydrology/olszowka-multisensor.json?refresh='+Date.now(),{cache:'
 setInterval(()=>location.reload(),15*60*1000);
 </script>
 <script src="hydrology-100km.js"></script>
+    <script src="/Polar-Sun-Moon-Analysis/contest-runtime.js" defer></script>
 </body>
 </html>
