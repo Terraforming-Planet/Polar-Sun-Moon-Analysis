@@ -150,6 +150,7 @@ jobs:
           python scripts/ci/scan_tracked_secrets.py
 
       - name: Commit and push Codex + live evidence
+        if: github.event_name == 'workflow_dispatch'
         shell: bash
         run: |
           set -euo pipefail
@@ -165,5 +166,6 @@ jobs:
       - name: Summary
         run: |
           echo 'Codex task completed on agent/esa-agentic-eo-mvp.'
-          echo 'A real OpenAI Agents SDK Vistula run was required to pass before evidence was committed.'
+          echo 'A real OpenAI Agents SDK Vistula run was required to pass before evidence was considered valid.'
+          echo 'PR-triggered validation never pushes generated changes; manual workflow_dispatch may publish them.'
           echo 'PR #239 remains unmerged.'
