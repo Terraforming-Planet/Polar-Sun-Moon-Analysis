@@ -16,6 +16,21 @@
 **Live demo:** <https://terraforming-planet.github.io/Polar-Sun-Moon-Analysis/>  
 **Public repository:** <https://github.com/Terraforming-Planet/Polar-Sun-Moon-Analysis>
 
+## Agentic EO — multi-agent Earth-observation research
+
+Terra Observation System now includes a **real provenance-first multi-agent EO research coordinator** built with the **OpenAI Agents SDK**. It is designed to coordinate specialist agents and deterministic tools while keeping scientific claims tied to repository-backed evidence rather than model memory.
+
+- **Terra Agentic EO Coordinator** manages the research workflow and combines specialist results.
+- **EO Source Scout** selects suitable official/public sources from the controlled registry, including **Copernicus Sentinel-1, Sentinel-2, USGS/NASA Landsat and SWOT** where appropriate.
+- **EO Evidence Verifier** checks what the repository actually establishes before a conclusion is written.
+- **Tool use is provenance-first:** registry selection and evidence verification are deterministic; the model explains and coordinates but does not manufacture source evidence.
+- **Uncertainty is explicit:** the Vistula TEST 014 demonstration preserves `environmental_finding_claim=false`, `water_loss_claim=false` and `causal_claim=false` until a separate reproducible analysis establishes those facts.
+- **Public multi-agent evidence:** a live OpenAI Agents SDK run recorded successful calls to both specialist agents and published an allow-listed execution trace without chain-of-thought, prompts, credentials or private tool payloads.
+
+Agentic EO architecture and scientific boundaries: [`docs/ESA_AGENTIC_EO.md`](docs/ESA_AGENTIC_EO.md)  
+Published Vistula TEST 014 live evidence: [`docs/published/agentic-eo/vistula-test-014-live.md`](docs/published/agentic-eo/vistula-test-014-live.md)  
+Structured run evidence: [`docs/published/agentic-eo/vistula-test-014-live.json`](docs/published/agentic-eo/vistula-test-014-live.json)
+
 ## Final contest demo hardening — 22 August 2026
 
 The public BUILD FOR GOOD path has a final reliability layer focused on the problems that matter most during a short judge review:
