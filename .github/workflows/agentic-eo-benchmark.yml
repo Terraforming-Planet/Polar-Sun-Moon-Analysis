@@ -1,0 +1,135 @@
+name: Agentic EO Benchmark v1
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/agentic-eo-benchmark.yml"
+      - "config/agentic-eo-benchmark-v1.json"
+      - "scripts/run_agentic_eo_benchmark.py"
+      - "tests/test_agentic_eo_benchmark.py"
+      - "docs/AGENTIC_EO_BENCHMARK.md"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: agentic-eo-benchmark-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  benchmark:
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.head.ref == 'agent/esa-agentic-eo-benchmark-v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout benchmark branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Normalize and mask OpenAI API key
+        shell: bash
+        env:
+          RAW_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os
+          from pathlib import Path
+
+          raw = os.environ.get("RAW_OPENAI_API_KEY", "")
+          clean = raw.replace("\r", "").replace("\n", "").strip(" \t")
+          if not clean:
+              raise SystemExit("Missing OPENAI_API_KEY repository secret.")
+          print(f"::add-mask::{clean}")
+          with Path(os.environ["GITHUB_ENV"]).open("a", encoding="utf-8") as handle:
+              handle.write(f"OPENAI_API_KEY={clean}\n")
+          print("OPENAI_API_KEY configured and masked.")
+          PY
+
+      - name: Install project dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip check
+
+      - name: Offline benchmark tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m ruff check scripts/run_agentic_eo_benchmark.py tests/test_agentic_eo_benchmark.py
+          python -m pytest -q tests/test_agentic_eo_benchmark.py
+          python -m compileall scripts/run_agentic_eo_benchmark.py tests/test_agentic_eo_benchmark.py
+
+      - name: Run ten live Agentic EO cases
+        id: live_benchmark
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/run_agentic_eo_benchmark.py \
+            --config config/agentic-eo-benchmark-v1.json \
+            --json-output benchmark-artifacts/agentic-eo-benchmark-v1.json \
+            --markdown-output benchmark-artifacts/agentic-eo-benchmark-v1.md \
+            --fail-under 90
+
+      - name: Validate public benchmark evidence
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("benchmark-artifacts/agentic-eo-benchmark-v1.json")
+          if not path.is_file() or not path.stat().st_size:
+              raise SystemExit("Benchmark JSON artifact is missing.")
+          payload = json.loads(path.read_text(encoding="utf-8"))
+          if payload.get("schema") != "terra-agentic-eo-benchmark-result-v1":
+              raise SystemExit("Unexpected benchmark result schema.")
+          summary = payload.get("summary", {})
+          if summary.get("case_count") != 10:
+              raise SystemExit("Benchmark did not execute exactly 10 cases.")
+
+          public_blob = json.dumps(payload, ensure_ascii=False).lower()
+          forbidden = (
+              "authorization: bearer",
+              "openai_api_key",
+              "api_key=",
+              "sk-proj-",
+              "chain-of-thought",
+              "hidden reasoning",
+          )
+          leaked = [marker for marker in forbidden if marker in public_blob]
+          if leaked:
+              raise SystemExit(f"Forbidden public benchmark material: {leaked}")
+          print(json.dumps(summary, indent=2))
+          PY
+
+      - name: Upload benchmark artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agentic-eo-benchmark-v1
+          path: benchmark-artifacts/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Enforce live benchmark threshold
+        if: steps.live_benchmark.outcome != 'success'
+        shell: bash
+        run: |
+          echo "The 10-case live benchmark did not meet the configured 90% assertion threshold."
+          exit 1
