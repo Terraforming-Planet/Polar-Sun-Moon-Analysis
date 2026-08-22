@@ -21,10 +21,16 @@ describe('Simple view Agentic EO entry', () => {
     expect(entryScript).not.toContain("findButtonByText(switchBar, 'Open Advanced view')")
   })
 
-  it('keeps the Simple view clean and leaves the detailed research in the Agentic EO tab', () => {
+  it('keeps the Simple home clean and places extra explanation only in the active Agentic EO tab', () => {
     expect(entryScript).not.toContain('simple-agentic-overview')
-    expect(entryScript).not.toContain('Vistula TEST 014 · real live run')
-    expect(entryScript).not.toContain('How the agents work together')
+    expect(entryScript).not.toContain('shell.insertBefore(section, main)')
+    expect(entryScript).toContain("if (document.querySelector('.simple-shell')) return")
+    expect(entryScript).toContain("agenticButton?.classList.contains('active')")
+    expect(entryScript).toContain('data-agentic-eo-advanced-details')
+    expect(entryScript).toContain('Provenance before model memory')
+    expect(entryScript).toContain('Scientific uncertainty is explicit')
+    expect(entryScript).toContain('How the agents work together')
+    expect(entryScript).toContain('What TEST 014 does not prove')
 
     expect(mainSource).toContain("tab === 'agentic'")
     expect(mainSource).toContain('Agentic EO — multi-agent research coordinator')
@@ -35,7 +41,5 @@ describe('Simple view Agentic EO entry', () => {
     expect(mainSource).toContain('environmental_finding_claim=false')
     expect(mainSource).toContain('water_loss_claim=false')
     expect(mainSource).toContain('causal_claim=false')
-    expect(mainSource).toContain('published/agentic-eo/vistula-test-014-live.json')
-    expect(mainSource).toContain('docs/ESA_AGENTIC_EO.md')
   })
 })
