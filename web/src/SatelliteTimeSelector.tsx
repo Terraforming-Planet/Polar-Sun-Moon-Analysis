@@ -24,6 +24,7 @@ const PRESETS: Array<{ id: SatelliteTimePreset; label: string }> = [
   { id: 'archive', label: '1972 → dziś' },
   { id: 'from-1990', label: '1990 → dziś' },
   { id: 'from-2015', label: '2015 → dziś' },
+  { id: 'twenty-years', label: 'ostatnie 20 lat' },
   { id: 'five-years', label: 'ostatnie 5 lat' },
   { id: 'one-year', label: 'ostatni rok' },
 ]
