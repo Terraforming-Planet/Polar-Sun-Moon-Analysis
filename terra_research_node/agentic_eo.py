@@ -344,15 +344,24 @@ def build_public_trace(result: Any, hooks: PublicTraceHooks, model: str) -> dict
 
 
 def specialist_consultations(trace: dict[str, Any]) -> set[str]:
-    """Return successfully completed observable specialist tool consultations."""
-    return {
+    """Return specialist tools with observable start and successful end boundaries."""
+    required = {"consult_eo_source_scout", "consult_evidence_verifier"}
+    started = {
+        str(event.get("tool"))
+        for event in trace.get("events", [])
+        if isinstance(event, dict)
+        and event.get("event") == "tool_start"
+        and event.get("tool") in required
+    }
+    completed = {
         str(event.get("tool"))
         for event in trace.get("events", [])
         if isinstance(event, dict)
         and event.get("event") == "tool_end"
         and event.get("status") == "success"
-        and event.get("tool") in {"consult_eo_source_scout", "consult_evidence_verifier"}
+        and event.get("tool") in required
     }
+    return started & completed
 
 
 def run_agentic_eo_with_trace(
