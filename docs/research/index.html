@@ -1,35 +1,168 @@
 <!doctype html>
-<html lang="en">
+<html lang="pl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#040914" />
-  <meta name="description" content="Terraforming Planet research: polar station concept, interactive Sun-Earth-Moon model and 512-cell planetary navigation grid." />
-  <title>O tym / Research — Terraforming Planet</title>
+  <meta name="theme-color" content="#031019" />
+  <meta name="description" content="Terraforming Planet / Terra Observation System — otwarta platforma obserwacji Ziemi łącząca dane satelitarne, analizę środowiska, AI i model 3D dla dobra ludzi i planety." />
+  <title>O nas i misji — Terra Observation System</title>
   <style>
-    :root{font-family:Inter,system-ui,sans-serif;color:#eaf4ff;background:#030712;--cyan:#39d4ff;--line:rgba(145,190,235,.2);--panel:#081323;--muted:#8aa0b5}*{box-sizing:border-box}body{margin:0;min-width:320px;background:radial-gradient(circle at 70% 0,rgba(34,89,145,.22),transparent 35%),#030712}.top{position:sticky;top:0;z-index:40;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:14px clamp(16px,4vw,64px);background:rgba(3,7,18,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(16px)}.top a{color:#eaf8ff;text-decoration:none}.brand{font-weight:800;letter-spacing:.08em}.back,.control button,.layer-btn{border:1px solid #2b5878;border-radius:8px;background:#0b2136;color:#eaf7ff;padding:9px 12px;cursor:pointer}.control button.active,.layer-btn.active{background:#14678a;border-color:#67ddff}.shell{max-width:1550px;margin:auto;padding:0 clamp(16px,4vw,64px) 80px}.hero{padding:64px 0 38px;max-width:1050px}.eyebrow{color:var(--cyan);font-size:11px;letter-spacing:.2em;font-weight:800}.hero h1{font-size:clamp(40px,7vw,82px);line-height:.97;margin:12px 0 22px;letter-spacing:-.045em}.hero p,.card p,.card li,.section p{color:var(--muted);line-height:1.7}.badge{display:inline-block;margin:7px 7px 0 0;border:1px solid #29617e;border-radius:999px;padding:7px 10px;color:#9adff5;font-size:11px}.section{padding:46px 0;border-top:1px solid var(--line)}.section h2{font-size:clamp(27px,4vw,38px);margin:6px 0 12px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}.card,.model-panel,.nav-panel{border:1px solid var(--line);background:linear-gradient(145deg,rgba(12,27,50,.9),rgba(6,14,28,.9));border-radius:14px;padding:22px}.metric{font-size:38px;font-weight:800;color:#67ddff}.small,.model-note{font-size:12px;color:#7891a8;line-height:1.55}.models{display:grid;grid-template-columns:1fr 1fr;gap:18px}.model-canvas{height:min(64vh,620px);min-height:430px;border:1px solid var(--line);border-radius:12px;background:radial-gradient(circle,#0d213e,#02050c 72%);overflow:hidden;position:relative}.control{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0}.status{font:700 11px monospace;color:#78dfff}.model-error{padding:22px;color:#ffba72}.navigator{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(260px,.7fr);gap:18px}.cube-wrap{position:relative;min-height:620px;border:1px solid var(--line);border-radius:14px;background:radial-gradient(circle at 50% 35%,#123457,#040914 65%);overflow:hidden;perspective:1100px}.cube-stage{position:absolute;inset:30px;transform-style:preserve-3d;transform:rotateX(57deg) rotateZ(-37deg) translateY(-15px)}.voxel-layer{position:absolute;left:50%;top:50%;width:min(72vw,520px);max-width:82%;aspect-ratio:1;display:grid;grid-template-columns:repeat(8,1fr);transform:translate(-50%,-50%) translateZ(var(--z));transform-style:preserve-3d;transition:opacity .2s,filter .2s}.voxel-cell{appearance:none;border:1px solid rgba(235,250,255,.42);min-width:0;background:hsl(var(--h) 78% 47% / .58);color:transparent;cursor:pointer;box-shadow:inset 0 0 7px rgba(255,255,255,.08);padding:0}.voxel-cell:hover,.voxel-cell.selected{background:hsl(var(--h) 95% 67% / .95);box-shadow:0 0 12px rgba(89,220,255,.9),inset 0 0 8px white;z-index:5}.layer-controls{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:12px 0}.cell-readout{border:1px solid #285270;background:#07192a;border-radius:10px;padding:15px;margin-top:12px}.cell-address{font:800 clamp(24px,4vw,38px) monospace;color:#6fe2ff}.coords{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.coords div{border:1px solid #183b55;border-radius:8px;padding:9px;text-align:center}.coords b{display:block;color:#dff8ff}.cell-list{max-height:280px;overflow:auto;border:1px solid var(--line);border-radius:10px;margin-top:12px;background:#04101d}.cell-list button{width:100%;display:grid;grid-template-columns:90px 1fr 70px;border:0;border-bottom:1px solid #102b40;background:transparent;color:#9db4c7;padding:8px 10px;text-align:left;cursor:pointer}.cell-list button:hover{background:#0b2941;color:#e9faff}.legend{display:grid;grid-template-columns:repeat(8,1fr);height:14px;border-radius:999px;overflow:hidden;margin:10px 0}.station{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.station-diagram{position:relative;min-height:360px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:linear-gradient(#0b2946 0 48%,#8bc7e2 48% 51%,#073354 51% 100%)}.platform{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);width:58%;height:82px;border:3px solid #bcecff;border-radius:40px 40px 18px 18px;background:#123b57;box-shadow:0 18px 0 #06253d}.platform:before{content:'ARCTIC OCEAN RESEARCH PLATFORM';position:absolute;left:50%;top:27px;transform:translateX(-50%);white-space:nowrap;font-size:10px;font-weight:800}.mast{position:absolute;left:50%;top:-118px;width:6px;height:120px;background:#c7edf8}.mast:after{content:'';position:absolute;left:-28px;top:6px;width:62px;height:24px;border:2px solid #67ddff;border-radius:50%}.keel{position:absolute;left:50%;top:80px;transform:translateX(-50%);width:11px;height:140px;background:#08263d}.sensor{position:absolute;left:50%;top:195px;transform:translateX(-50%);width:40px;height:40px;border:2px solid #7be4ff;border-radius:50%;background:#071a2c}.drift{position:absolute;bottom:14px;left:14px;right:14px;color:#87bdd4;font-size:11px}.refs a{color:#62d9ff}.gpu{display:grid;grid-template-columns:1fr 1fr;gap:18px}footer{padding:28px clamp(16px,4vw,64px);border-top:1px solid var(--line);color:#5f7890;font-size:11px}@media(max-width:950px){.grid2,.models,.navigator,.station,.gpu{grid-template-columns:1fr}.model-canvas{min-height:390px}.cube-wrap{min-height:540px}.cube-stage{inset:20px}.layer-controls{grid-template-columns:repeat(4,1fr)}.hero{padding-top:48px}}@media(max-width:520px){.cube-wrap{min-height:480px}.cube-stage{inset:5px}.cell-list button{grid-template-columns:76px 1fr 52px;font-size:11px}}
+    :root{
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:#ecf8ff;background:#020812;
+      --bg:#020812;--panel:#071522;--panel2:#0a1c2b;--text:#ecf8ff;--muted:#9eb4c7;
+      --cyan:#45dcff;--green:#68f0ad;--blue:#5d91ff;--line:rgba(132,203,235,.18);
+      --glow:rgba(69,220,255,.18)
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;min-width:320px;color:var(--text);background:
+      radial-gradient(circle at 82% 0%,rgba(26,112,150,.24),transparent 31%),
+      radial-gradient(circle at 5% 38%,rgba(25,122,91,.13),transparent 28%),
+      linear-gradient(180deg,#020812 0%,#04101a 52%,#020812 100%)}
+    a{color:inherit}
+    .top{position:sticky;top:0;z-index:50;display:flex;gap:16px;align-items:center;justify-content:space-between;padding:14px clamp(16px,4vw,64px);background:rgba(2,8,18,.9);border-bottom:1px solid var(--line);backdrop-filter:blur(18px)}
+    .brand{font-weight:900;letter-spacing:.08em;text-decoration:none;font-size:13px}.brand span{color:var(--cyan)}
+    .top-actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+    .btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border:1px solid #29506b;border-radius:9px;padding:9px 13px;background:#0a2031;color:#eaf9ff;font-size:12px;font-weight:750;transition:.2s}
+    .btn:hover{transform:translateY(-1px);border-color:#59dfff;box-shadow:0 0 24px rgba(69,220,255,.12)}
+    .btn.primary{background:linear-gradient(135deg,#0a7596,#176d64);border-color:#56dfff}
+    .shell{max-width:1320px;margin:auto;padding:0 clamp(18px,4vw,64px) 80px}
+    .hero{padding:84px 0 58px;max-width:1120px}
+    .eyebrow{color:var(--cyan);font-size:11px;letter-spacing:.2em;font-weight:900;text-transform:uppercase}
+    h1{font-size:clamp(44px,7.7vw,96px);line-height:.94;margin:14px 0 24px;letter-spacing:-.055em;max-width:1100px}
+    .lead{font-size:clamp(18px,2vw,24px);line-height:1.55;color:#c4d9e8;max-width:970px;margin:0}
+    .hero strong,.accent{color:#79f2ba}
+    .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:28px}.badge{border:1px solid #2c5f76;border-radius:999px;padding:8px 11px;color:#a8eaff;background:rgba(8,35,53,.55);font-size:11px;font-weight:750}
+    .section{padding:58px 0;border-top:1px solid var(--line)}
+    .section h2{font-size:clamp(29px,4.6vw,52px);line-height:1.04;letter-spacing:-.035em;margin:9px 0 16px;max-width:980px}
+    .section-intro{max-width:920px;color:var(--muted);font-size:17px;line-height:1.75;margin:0 0 28px}
+    .grid2,.grid3,.grid4{display:grid;gap:16px}.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .card{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:16px;padding:24px;background:linear-gradient(145deg,rgba(12,31,47,.94),rgba(5,17,29,.94));box-shadow:0 16px 60px rgba(0,0,0,.12)}
+    .card:before{content:"";position:absolute;inset:0 0 auto;height:1px;background:linear-gradient(90deg,transparent,rgba(90,229,255,.7),transparent);opacity:.55}
+    .card h3{font-size:20px;margin:9px 0 10px}.card p,.card li{color:var(--muted);line-height:1.7}.card ul{padding-left:19px;margin:12px 0 0}.kicker{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:850;color:#74e9ff}
+    .number{font-size:clamp(36px,5vw,58px);font-weight:900;letter-spacing:-.05em;color:#76f0b8;margin:4px 0}.label{font-size:12px;color:#91aabd}
+    .mission{border:1px solid rgba(104,240,173,.26);background:linear-gradient(120deg,rgba(8,45,46,.78),rgba(7,24,40,.82));border-radius:20px;padding:clamp(24px,4vw,44px);margin-top:28px}
+    .mission p{font-size:clamp(19px,2.2vw,27px);line-height:1.55;color:#dff9ef;margin:0;max-width:1000px}
+    .quote{font-size:clamp(25px,4vw,43px);line-height:1.25;font-weight:800;letter-spacing:-.025em;color:#eafaff;max-width:1080px;margin:0}
+    .flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;align-items:stretch;margin-top:26px}.flow-step{border:1px solid var(--line);border-radius:13px;padding:18px;background:#071522}.flow-step b{display:block;color:#6fe4ff;margin-bottom:7px}.flow-step span{display:block;color:var(--muted);font-size:13px;line-height:1.55}
+    .source-list{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}.source{padding:10px 12px;border-radius:9px;border:1px solid #244c66;background:#071a29;color:#c9efff;font-size:12px;font-weight:800}
+    .callout{padding:24px;border-left:3px solid var(--cyan);background:rgba(9,29,44,.82);border-radius:0 14px 14px 0;color:#bdd4e5;line-height:1.75}
+    .links{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}
+    .footer{padding:30px clamp(18px,4vw,64px);border-top:1px solid var(--line);color:#6f8ba0;font-size:12px;text-align:center}
+    @media(max-width:1000px){.grid4{grid-template-columns:repeat(2,1fr)}.grid3{grid-template-columns:1fr}.flow{grid-template-columns:1fr 1fr}.hero{padding-top:62px}}
+    @media(max-width:720px){.grid2,.grid4,.flow{grid-template-columns:1fr}.top{align-items:flex-start}.top-actions .repo{display:none}h1{font-size:clamp(42px,14vw,68px)}.section{padding:45px 0}.card{padding:21px}}
   </style>
-    <meta name="terra-evidence-api" content="https://terra-observation-evidence-explainer.xodobrox.workers.dev" />
 </head>
 <body>
-<header class="top"><a class="brand" href="../">TERRAFORMING PLANET · RESEARCH</a><a class="back" href="../">← Powrót</a></header>
-<main class="shell">
-  <section class="hero"><div class="eyebrow">PLANETARY RESEARCH · OPEN SCIENCE</div><h1>Model planety z własnym systemem adresowania przestrzeni.</h1><p>Budujemy osobno Ziemię, Księżyc, Słońce i kolejne obiekty. Każdy model może korzystać z tej samej, deterministycznej siatki nawigacyjnej 8×8×8. Dopiero po walidacji modułów składamy je w większy układ.</p><span class="badge">NASA JPL Horizons</span><span class="badge">Copernicus / Sentinel</span><span class="badge">512 adresów</span><span class="badge">WebGL</span></section>
+  <header class="top">
+    <a class="brand" href="../">TERRA <span>OBSERVATION</span> SYSTEM</a>
+    <div class="top-actions">
+      <a class="btn repo" href="https://github.com/Terraforming-Planet/Polar-Sun-Moon-Analysis" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn" href="../">← Wróć do aplikacji</a>
+    </div>
+  </header>
 
-  <section class="section"><div class="eyebrow">MODEL 3D Z DANYCH PROJEKTU</div><h2>Słońce · Ziemia · Księżyc</h2><p>Oba widoki startują z tej samej epoki danych JPL zapisanej w <code>solar-system.json</code>. Standardowy model zachowuje normalną prędkość demonstracyjną, a drugi przyspiesza ruch 30×. Każdy ma niezależne Play/Stop, obrót kamery i zoom.</p><div class="models"><article class="model-panel"><h3>Model standardowy</h3><div class="small">Epoka: <span data-epoch>ładowanie…</span></div><div class="control"><button id="std-play">▶ Play</button><button id="std-stop" class="active">■ Stop</button><span id="std-status" class="status">STOP</span></div><div id="solar-standard" class="model-canvas"></div><p class="model-note">Pozycje początkowe pochodzą z heliocentrycznych wektorów ICRF. Ruch po naciśnięciu Play jest wizualizacją relacji orbitalnych.</p></article><article class="model-panel"><h3>Model przyspieszony 30×</h3><div class="small">Ta sama epoka i geometria</div><div class="control"><button id="fast-play">▶ Play 30×</button><button id="fast-stop" class="active">■ Stop</button><span id="fast-status" class="status">STOP</span></div><div id="solar-fast" class="model-canvas"></div><p class="model-note">Przyspieszenie służy do szybkiej obserwacji zmian geometrycznych. Nie zastępuje kolejnych efemeryd JPL.</p></article></div></section>
+  <main class="shell">
+    <section class="hero">
+      <div class="eyebrow">Terraforming Planet · Open Earth Intelligence</div>
+      <h1>Obserwujemy Ziemię, żeby lepiej ją <span class="accent">chronić i odbudowywać.</span></h1>
+      <p class="lead">Terra Observation System to otwarty projekt badawczo-inżynierski łączący <strong>dane satelitarne, analizę środowiska, sztuczną inteligencję i interaktywną Ziemię 3D</strong>. Chcemy zamieniać ogromne publiczne zbiory danych w narzędzia, które pomagają ludziom zauważać zmiany wcześniej, rozumieć je lepiej i podejmować decyzje oparte na dowodach.</p>
+      <div class="badges">
+        <span class="badge">OPEN SOURCE</span><span class="badge">NASA</span><span class="badge">ESA / COPERNICUS</span><span class="badge">USGS</span><span class="badge">NOAA</span><span class="badge">SATELLITE + AI</span><span class="badge">PUBLIC GOOD</span>
+      </div>
+    </section>
 
-  <section class="section"><div class="eyebrow">PLANETARY NAVIGATION GRID</div><h2>8 × 8 × 8 = 512 adresowanych komórek</h2><p>To nie jest dekoracyjna plansza. W przeglądarce tworzonych jest dokładnie <b>512 interaktywnych komórek</b>. Każda ma trwały numer <code>CELL-001…CELL-512</code> i współrzędne <code>X/Y/Z = 0…7</code>. Ten adres może później wskazywać kafelek danych, sektor LOD, blok chmury punktów, fragment atmosfery albo obszar analizowanej planety.</p><div class="navigator"><div class="cube-wrap"><div id="cube-stage" class="cube-stage" aria-label="Trójwymiarowa siatka 512 komórek"></div></div><aside class="nav-panel"><h3>Nawigacja warstw</h3><div id="layer-controls" class="layer-controls"></div><div class="legend" id="legend"></div><div class="cell-readout"><div class="small">WYBRANA KOMÓRKA</div><div id="cell-address" class="cell-address">CELL-001</div><div id="cell-index" class="small">index 0 · X0 Y0 Z0</div><div class="coords"><div><span>X</span><b id="coord-x">0</b></div><div><span>Y</span><b id="coord-y">0</b></div><div><span>Z</span><b id="coord-z">0</b></div></div><p class="model-note">Adres deterministyczny: <code>index = Z×64 + Y×8 + X</code>. Dzięki temu te same sektory można odtworzyć niezależnie na CPU, GPU, w JupyterLab i w przeglądarce.</p></div><h3>Rejestr 512 adresów</h3><div id="cell-list" class="cell-list" aria-label="Lista wszystkich 512 komórek"></div></aside></div></section>
+    <section class="section">
+      <div class="eyebrow">O NAS</div>
+      <h2>Projekt powstał z prostego pytania: czy technologia może pomóc nam lepiej dbać o planetę?</h2>
+      <p class="section-intro">Terraforming Planet rozwijamy jako otwarty projekt dla dobra wspólnego. Łączymy praktyczne myślenie inżynierskie, programowanie, obserwację Ziemi i nowe narzędzia AI. Zamiast budować zamknięty system, publikujemy kod, pokazujemy źródła danych i chcemy, aby wyniki można było sprawdzać, porównywać i dalej rozwijać.</p>
+      <div class="grid3">
+        <article class="card"><div class="kicker">Dlaczego</div><h3>Bo zmiany w środowisku dotyczą wszystkich</h3><p>Utrata wody, wysychające rzeki i jeziora, degradacja terenów, pożary, powodzie czy topnienie lodowców wpływają na ludzi, rolnictwo, infrastrukturę i całe ekosystemy.</p></article>
+        <article class="card"><div class="kicker">Jak pracujemy</div><h3>Najpierw dane, potem wnioski</h3><p>Podstawą są legalne, publiczne i oficjalne źródła. AI może pomagać w analizie i objaśnianiu, ale nie może zastępować pomiaru, źródła ani naukowej niepewności.</p></article>
+        <article class="card"><div class="kicker">Dla kogo</div><h3>Od zwykłej osoby po badacza</h3><p>System projektujemy dla społeczności lokalnych, uczniów, nauczycieli, rolników, organizacji środowiskowych, inżynierów, naukowców i zespołów analizujących ryzyko.</p></article>
+      </div>
+      <div class="mission"><p><strong>Nasza misja:</strong> sprawić, aby obserwacja Ziemi była bardziej dostępna, zrozumiała i użyteczna — tak, aby dane mogły pomagać chronić życie, wodę, przyrodę, żywność, domy i infrastrukturę.</p></div>
+    </section>
 
-  <section class="section"><div class="eyebrow">KONCEPCJA INFRASTRUKTURY</div><h2>Pływająca stacja badawcza Oceanu Arktycznego</h2><div class="station"><div class="station-diagram"><div class="platform"><div class="mast"></div><div class="keel"></div><div class="sensor"></div></div><div class="drift">GNSS zapisuje rzeczywistą pozycję dryfującej platformy; każdy pomiar otrzymuje znacznik UTC.</div></div><article class="card"><p>Proponowana bezzałogowa platforma uzupełniałaby obserwacje satelitarne pomiarami in situ.</p><ul><li>GNSS i telemetria satelitarna</li><li>temperatura, ciśnienie, wilgotność i wiatr</li><li>temperatura i zasolenie oceanu na wielu głębokościach</li><li>grubość lodu i albedo</li><li>opcjonalnie ADCP, sonar i hydrofon badawczy</li><li>PV + wiatr + magazyn energii</li></ul></article></div></section>
+    <section class="section">
+      <div class="eyebrow">OD CZEGO ZACZĘLIŚMY</div>
+      <h2>Woda jest jednym z najważniejszych sygnałów zmian na Ziemi.</h2>
+      <p class="section-intro">Duża część naszego obecnego kierunku badań skupia się na rzekach, jeziorach, mokradłach, suchych terenach i dawnych korytach. Chcemy porównywać obrazy z różnych lat, łączyć je z ukształtowaniem terenu i pomagać wskazywać miejsca, które wymagają dokładniejszego zbadania.</p>
+      <div class="grid4">
+        <article class="card"><div class="number">01</div><h3>Rzeki i jeziora</h3><p>Zmiany powierzchni wody, przebiegu koryta, dopływów i odpływów w czasie.</p></article>
+        <article class="card"><div class="number">02</div><h3>Teren i wysokość</h3><p>Profile DEM, spadki terenu i kontekst hydrologiczny pomagający zrozumieć kierunek przepływu.</p></article>
+        <article class="card"><div class="number">03</div><h3>Suche obszary</h3><p>Badanie wysychania, paleokoryt i terenów, które w przyszłości mogą zasługiwać na analizę pod kątem odtwarzania retencji i roślinności.</p></article>
+        <article class="card"><div class="number">04</div><h3>Porównanie w czasie</h3><p>Analiza tych samych miejsc w kolejnych latach i sezonach zamiast oceniania sytuacji na podstawie jednego zdjęcia.</p></article>
+      </div>
+    </section>
 
-  <section class="section grid2"><article class="card"><div class="eyebrow">BIEGUN POŁUDNIOWY</div><div class="metric">−12,3°C</div><h2>Amundsen–Scott</h2><p>Najwyższa temperatura odnotowana na stacji South Pole wyniosła −12,3°C 25 grudnia 2011 r. Dodatnie temperatury przy wybrzeżach Antarktydy nie oznaczają dodatniej temperatury dokładnie na geograficznym Biegunie Południowym.</p></article><article class="card"><div class="eyebrow">BIEGUN PÓŁNOCNY</div><div class="metric">≈ 0°C latem</div><h2>Ocean i dryf</h2><p>90°N leży na Oceanie Arktycznym. Ponieważ lód dryfuje, pomiary w rejonie bieguna muszą zawierać rzeczywistą pozycję GNSS i czas UTC.</p></article></section>
+    <section class="section">
+      <div class="eyebrow">CO BUDUJEMY</div>
+      <h2>Jedno miejsce do obserwacji planety z wielu oficjalnych źródeł.</h2>
+      <p class="section-intro">Docelowo Terra Observation System ma działać jak otwarte centrum sytuacyjne Ziemi: użytkownik wybiera miejsce i czas, przełącza źródła obserwacji, porównuje dane historyczne, analizuje teren oraz widzi aktualne zagrożenia na interaktywnym globusie 3D.</p>
+      <div class="grid2">
+        <article class="card"><div class="kicker">Interaktywna Ziemia 3D</div><h3>Globalny obraz i lokalny szczegół</h3><p>Model WebGL rozwijamy w stronę systemu kafelków, LOD, dynamicznego doczytywania, cache i renderowania tylko tego, co użytkownik rzeczywiście widzi. Dzięki temu duży zoom ma prowadzić do danych o wyższej rozdzielczości zamiast do rozmytej tekstury.</p></article>
+        <article class="card"><div class="kicker">Warstwy satelitarne</div><h3>Płynne przełączanie obserwacji</h3><p>Architektura ma łączyć m.in. NASA GIBS, Sentinel-1, Sentinel-2, Sentinel-3, Sentinel-5P, Copernicus, Landsat i NOAA bez przeładowywania całej sceny.</p></article>
+        <article class="card"><div class="kicker">Laboratorium terenu</div><h3>Od obrazu do pomiaru</h3><p>Flagi geograficzne, wysokości, linie pomiarowe, profile terenu i dane DEM pozwalają przejść od samego oglądania zdjęcia do bardziej technicznej analizy przestrzeni.</p></article>
+        <article class="card"><div class="kicker">AI Evidence</div><h3>AI ma tłumaczyć dowody, a nie je wymyślać</h3><p>OpenAI wykorzystujemy tam, gdzie pomaga człowiekowi zrozumieć przygotowany zestaw danych, niepewność i następne kroki badawcze. Ostateczne twierdzenia muszą pozostawać związane ze źródłami i obserwacją.</p></article>
+      </div>
+    </section>
 
-  <section class="section"><div class="eyebrow">CDSE COMPUTE</div><h2>Copernicus: automatyczne CPU/GPU</h2><div class="gpu"><article class="card"><h3>JupyterLab</h3><p>Pipeline nie wymaga ręcznego przełączania. Wykrywa dostępny akcelerator; jeżeli środowisko nie udostępnia GPU, wykonuje zadanie na CPU.</p><pre style="white-space:pre-wrap;color:#9fe8ff;background:#06111e;padding:14px;border-radius:9px">backend = "gpu" if accelerator_available() else "cpu"</pre></article><article class="card"><h3>Połączenie z siatką 512</h3><p>Adres komórki może stać się kluczem zadania batchowego i cache: przetwarzamy tylko potrzebny sektor planety, zapisujemy wynik pod jego adresem i publikujemy gotowy kafelek lub GeoJSON bez pobierania całych archiwów.</p></article></div></section>
+    <section class="section">
+      <div class="eyebrow">PIPELINE</div>
+      <h2>Od oficjalnego źródła do czytelnej informacji.</h2>
+      <div class="flow">
+        <div class="flow-step"><b>1 · Źródło</b><span>Satelita, agencja naukowa lub publiczny serwis danych.</span></div>
+        <div class="flow-step"><b>2 · Pobranie</b><span>Tylko potrzebny obszar, czas i produkt zamiast całych archiwów.</span></div>
+        <div class="flow-step"><b>3 · Przetwarzanie</b><span>Batch processing w JupyterLab, automatyczny wybór GPU lub CPU.</span></div>
+        <div class="flow-step"><b>4 · Walidacja</b><span>Testy, kontrola pochodzenia danych i ograniczanie nadinterpretacji.</span></div>
+        <div class="flow-step"><b>5 · Publikacja</b><span>Kafelki, miniatury, GeoJSON, indeksy i warstwy gotowe dla aplikacji.</span></div>
+      </div>
+    </section>
 
-  <section class="section refs"><div class="eyebrow">ŹRÓDŁA</div><h2>Oficjalne dane i dokumentacja</h2><ul><li><a href="https://www.southpole.aq/" target="_blank" rel="noreferrer">South Pole ASMA</a></li><li><a href="https://pmel.noaa.gov/arctic-zone/" target="_blank" rel="noreferrer">NOAA PMEL Arctic</a></li><li><a href="https://ssd.jpl.nasa.gov/horizons/" target="_blank" rel="noreferrer">NASA JPL Horizons</a></li><li><a href="https://documentation.dataspace.copernicus.eu/" target="_blank" rel="noreferrer">Copernicus Data Space Ecosystem</a></li></ul></section>
-</main>
-<footer>Terraforming Planet · otwarte badania środowiska i nawigacji planetarnej.</footer>
-<script type="module" src="./research-model.js"></script>
-    <script src="/Polar-Sun-Moon-Analysis/contest-runtime.js" defer></script>
+    <section class="section">
+      <div class="eyebrow">ZAGROŻENIA</div>
+      <h2>Chcemy skracać drogę od pojawienia się danych do zauważenia problemu.</h2>
+      <p class="section-intro">System jest rozwijany w kierunku modułowego monitorowania różnych klas zagrożeń. Każdy typ danych ma mieć własne źródło, własną logikę i własne testy.</p>
+      <div class="grid3">
+        <article class="card"><h3>🔥 Ogień i atmosfera</h3><p>Pożary, dym, zanieczyszczenia, aktywność słoneczna i burze geomagnetyczne.</p></article>
+        <article class="card"><h3>🌊 Woda i pogoda</h3><p>Powodzie, susze, burze, huragany, cyklony, zakwity glonów i wycieki ropy.</p></article>
+        <article class="card"><h3>🌋 Ziemia i lód</h3><p>Trzęsienia ziemi, erupcje wulkanów, osuwiska, zmiany lodowców i inne obserwowalne anomalie środowiskowe.</p></article>
+      </div>
+      <div class="callout" style="margin-top:18px"><strong>Ważne:</strong> Terra Observation System jest projektem badawczym i informacyjnym, a nie oficjalnym systemem alarmowym. W sytuacji zagrożenia zawsze należy korzystać z komunikatów właściwych służb i instytucji. Projekt nie twierdzi, że potrafi deterministycznie przewidywać trzęsienia ziemi.</div>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">OFICJALNE I PUBLICZNE DANE</div>
+      <h2>Źródła muszą być możliwe do sprawdzenia.</h2>
+      <p class="section-intro">Nie chcemy budować systemu opartego na niejasnym pochodzeniu danych. Integracje są projektowane modułowo, aby użytkownik mógł wiedzieć, skąd pochodzi obserwacja i kiedy została opublikowana.</p>
+      <div class="source-list">
+        <span class="source">NASA</span><span class="source">NASA FIRMS</span><span class="source">NASA GIBS</span><span class="source">NASA JPL</span><span class="source">ESA</span><span class="source">Copernicus / CDSE</span><span class="source">Sentinel</span><span class="source">USGS</span><span class="source">Landsat</span><span class="source">NOAA</span><span class="source">EMSC</span><span class="source">GDACS</span><span class="source">GloFAS</span><span class="source">Copernicus Emergency</span><span class="source">JRC</span><span class="source">OpenStreetMap</span><span class="source">Natural Earth</span>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">AI + OPEN SOURCE</div>
+      <h2>Nowe technologie mają zwiększać możliwości człowieka, nie zasłaniać rzeczywistość.</h2>
+      <p class="section-intro">Codex wspiera rozwój repozytorium, refaktoryzację, testy, automatyzację, integracje i kontrolę jakości. OpenAI API jest wykorzystywane tam, gdzie może pomóc w wyjaśnianiu danych. NVIDIA L4 i inne akceleratory mogą przyspieszać eksperymenty oraz przetwarzanie, ale sam wynik modelu AI nie jest automatycznie dowodem środowiskowym.</p>
+      <div class="grid2">
+        <article class="card"><div class="kicker">Automatyzacja</div><h3>GitHub Actions + CI</h3><p>Pobieranie danych, budowanie wyników, testy i publikacja strony są automatyzowane. Zmiany powinny przechodzić kontrolę jakości, a awaria jednego źródła nie powinna zatrzymywać całego systemu.</p></article>
+        <article class="card"><div class="kicker">Compute</div><h3>GPU, gdy jest dostępne. CPU, gdy nie jest.</h3><p>Środowisko obliczeniowe ma samo wykrywać dostępny akcelerator. JupyterLab pełni rolę centrum przetwarzania, a do aplikacji trafiają gotowe, możliwie lekkie wyniki.</p></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">DŁUGOTERMINOWA WIZJA</div>
+      <p class="quote">Chcemy zbudować otwartą platformę, która pozwoli patrzeć na Ziemię nie jak na statyczną mapę, ale jak na zmieniający się system — z historią, pomiarami, ryzykiem i miejscami, w których możemy działać mądrzej.</p>
+      <p class="section-intro" style="margin-top:24px">W przyszłości ta sama architektura może wspierać badania odtwarzania rzek i mokradeł, gospodarowania wodą na terenach suchych, ochrony rolnictwa, reagowania kryzysowego, nauki o klimacie oraz edukacji. Nie chodzi o zastępowanie naukowców i instytucji. Chodzi o zbudowanie narzędzia, które ułatwia dostęp do danych, pokazuje je razem i pomaga zadawać lepsze pytania.</p>
+      <div class="links">
+        <a class="btn primary" href="../">Otwórz Terra Observation System</a>
+        <a class="btn" href="https://github.com/Terraforming-Planet/Polar-Sun-Moon-Analysis" target="_blank" rel="noopener">Zobacz publiczne repozytorium</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">Terraforming Planet · Terra Observation System · Open science · Public data · Environmental intelligence for the public good</footer>
 </body>
 </html>
