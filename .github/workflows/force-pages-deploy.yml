@@ -157,6 +157,26 @@ jobs:
           test -s docs/deployment-probe.txt
           test -s docs/research-archive/index.json
 
+      - name: Apply English runtime to complete Pages tree
+        shell: bash
+        env:
+          VITE_EVIDENCE_API_URL: ${{ steps.production-inputs.outputs.url }}
+          TERRA_PUBLIC_BASE: /Polar-Sun-Moon-Analysis/
+        run: |
+          set -euo pipefail
+          node web/scripts/postbuild-contest-runtime.mjs docs
+          test -s docs/contest-runtime.js
+          if grep -RIlE --include='*.html' '<html[^>]*lang=["'"']pl["'"']' docs >/tmp/polish-html.txt; then
+            echo 'Pages tree still contains HTML documents declared as Polish:'
+            cat /tmp/polish-html.txt
+            exit 1
+          fi
+          if [ -s docs/experiment-001/index.html ]; then
+            grep -Fq 'contest-runtime.js' docs/experiment-001/index.html
+            grep -Fq 'name="terra-evidence-api"' docs/experiment-001/index.html
+          fi
+          echo 'Every final Pages HTML document now declares English and loads the shared English contest runtime.'
+
       - name: Commit generated Pages files with rebase retry
         shell: bash
         run: |
