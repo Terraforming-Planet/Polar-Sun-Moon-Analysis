@@ -2,7 +2,11 @@ from __future__ import annotations
 
 import pytest
 
-from scripts.run_agentic_eo_live import build_live_report, validate_live_report
+from scripts.run_agentic_eo_live import (
+    build_live_report,
+    execute_live_report,
+    validate_live_report,
+)
 
 ANSWER = """Registry-backed recommendations
 Sentinel-1, Sentinel-2, and Landsat are controlled-registry matches.
@@ -56,11 +60,49 @@ def test_live_report_serializer_is_offline_and_structured(monkeypatch: pytest.Mo
     )
     assert report["research_question"] == "What is established?"
     assert report["run_metadata"]["git_sha"] == "abc123"
+    assert report["run_metadata"]["live_openai_agents_sdk_run"] is False
     assert report["deterministic_registry_selection"]["required_source_presence"] == {
         "Sentinel-1": True,
         "Sentinel-2": True,
         "Landsat": True,
     }
+
+
+def test_published_live_validation_rejects_offline_serializer() -> None:
+    report = build_live_report(
+        case_id="vistula-test-014",
+        question="What is established?",
+        model="offline-test-model",
+        answer=ANSWER,
+        trace=complete_trace(),
+    )
+    with pytest.raises(ValueError, match="verified live Agents SDK run"):
+        validate_live_report(report, require_live_sdk_run=True)
+
+
+def test_execute_live_report_marks_sdk_run_only_after_runner_returns(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[tuple[str, str]] = []
+
+    def fake_run(run_input: str, *, model: str) -> tuple[str, dict[str, object]]:
+        calls.append((run_input, model))
+        return ANSWER, complete_trace()
+
+    monkeypatch.setattr("scripts.run_agentic_eo_live.run_agentic_eo_with_trace", fake_run)
+    monkeypatch.setattr("scripts.run_agentic_eo_live.git_sha", lambda: "live123")
+
+    report = execute_live_report(
+        case_id="vistula-test-014",
+        question="What is established?",
+        model="offline-test-model",
+    )
+
+    assert len(calls) == 1
+    assert calls[0][1] == "offline-test-model"
+    assert "consult both specialist agents" in calls[0][0]
+    assert report["run_metadata"]["git_sha"] == "live123"
+    assert report["run_metadata"]["live_openai_agents_sdk_run"] is True
 
 
 def test_report_rejects_missing_real_specialist_consultation() -> None:
