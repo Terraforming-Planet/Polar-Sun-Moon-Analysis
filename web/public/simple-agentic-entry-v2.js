@@ -1,5 +1,6 @@
 (() => {
   const BUTTON_ATTR = 'data-agentic-eo-simple-entry'
+  const DETAILS_ATTR = 'data-agentic-eo-advanced-details'
 
   function simpleSwitchBar() {
     return document.querySelector('.simple-shell .mode-switch-bar')
@@ -41,6 +42,7 @@
         window.clearInterval(timer)
         fireRealClick(agenticButton)
         window.setTimeout(() => {
+          ensureAdvancedDetails()
           const workspace = document.querySelector('.control-center-app main .workspace')
           workspace?.scrollIntoView({ behavior: 'smooth', block: 'start' })
         }, 100)
@@ -71,12 +73,39 @@
     else switchBar.appendChild(button)
   }
 
-  const observer = new MutationObserver(ensureButton)
+  function ensureAdvancedDetails() {
+    if (document.querySelector('.simple-shell')) return
+    const agenticButton = agenticTabButton()
+    if (!agenticButton?.classList.contains('active')) return
+
+    const main = document.querySelector('.control-center-app main')
+    const workspaces = main ? [...main.querySelectorAll('.workspace')] : []
+    const workspace = workspaces.find(section => section.querySelector('h1')?.textContent?.includes('Agentic EO'))
+    if (!workspace || workspace.querySelector(`[${DETAILS_ATTR}]`)) return
+
+    const details = document.createElement('div')
+    details.className = 'cards'
+    details.setAttribute(DETAILS_ATTR, 'true')
+    details.innerHTML = `
+      <article><h2>Provenance before model memory</h2><p>Sentinel-1, Sentinel-2, Landsat and SWOT are selected through a deterministic registry containing agency, mission, instrument, access, temporal coverage, resolution and limitations. A registry entry does not mean that a scene has already been downloaded or analysed.</p></article>
+      <article><h2>Scientific uncertainty is explicit</h2><p>The workflow separates observation, derived value, model estimate, hypothesis and unknown. Exposed bed, sandbars or channel constriction are not treated as proof of water loss or a physical cause without supporting measurements.</p></article>
+      <article><h2>How the agents work together</h2><p>The Coordinator receives the research objective, asks Source Scout which controlled EO sources can answer it, asks Evidence Verifier what the repository evidence actually supports, and only then prepares a response with uncertainty and recommended next checks.</p></article>
+      <article><h2>What TEST 014 does not prove</h2><p>The current evidence does not by itself prove long-term water loss, blocked river flow or a causal mechanism. Those questions require reproducible image measurements, matched seasons, hydrological observations and checks against alternative explanations.</p></article>
+    `
+    workspace.appendChild(details)
+  }
+
+  function ensureInterface() {
+    ensureButton()
+    ensureAdvancedDetails()
+  }
+
+  const observer = new MutationObserver(ensureInterface)
   observer.observe(document.documentElement, { childList: true, subtree: true })
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', ensureButton, { once: true })
+    document.addEventListener('DOMContentLoaded', ensureInterface, { once: true })
   } else {
-    ensureButton()
+    ensureInterface()
   }
 })()
