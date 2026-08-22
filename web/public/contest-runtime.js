@@ -8,7 +8,7 @@
   ])
   const processedImages = new WeakSet()
   const observedDocuments = new WeakSet()
-  const state = { scheduled: false }
+  const scheduledDocuments = new WeakSet()
 
   const endpointMeta = document.querySelector('meta[name="terra-evidence-api"]')
   const endpointValue = endpointMeta?.getAttribute('content')?.trim() ?? ''
@@ -70,6 +70,7 @@
     ['Jak zacząć:', 'How to start:'],
     ['⚑ Flaga + wysokość', '⚑ Flag + elevation'],
     ['Flaga + wysokość', 'Flag + elevation'],
+    ['✎ Rysuj linię', '✎ Draw line'],
     ['Rysuj linię', 'Draw line'],
     ['Dodaj 3 punkty referencyjne Nilu', 'Add 3 Nile reference points'],
     ['Wyczyść', 'Clear'],
@@ -79,7 +80,6 @@
     ['Otwórz techniczną Ziemię 3D', 'Open technical 3D Earth'],
     ['Pokaż oryginalny dzienny kontekst (może zawierać chmury)', 'Show original daily context (may contain clouds)'],
     ['Pokaż oryginalne sceny · natywna skala', 'Show original scenes · native scale'],
-    ['Zapisz obrazy + wnioski', 'Save images + findings'],
     ['Brak danych', 'No data'],
     ['brak danych', 'no data'],
     ['Ładowanie…', 'Loading…'],
@@ -94,6 +94,44 @@
     ['Zamknij', 'Close'],
     ['Powrót', 'Back'],
     ['Dalej', 'Next'],
+    ['Poprzedni', 'Previous'],
+    ['Następny', 'Next'],
+    ['Dodaj', 'Add'],
+    ['Usuń', 'Remove'],
+    ['Pobierz', 'Download'],
+    ['Uruchom', 'Run'],
+    ['Wczytaj', 'Load'],
+    ['Analiza', 'Analysis'],
+    ['Wynik', 'Result'],
+    ['Wyniki', 'Results'],
+    ['Raport', 'Report'],
+    ['Raporty', 'Reports'],
+    ['Zdjęcia', 'Images'],
+    ['Obrazy', 'Imagery'],
+    ['Mapa', 'Map'],
+    ['Dane', 'Data'],
+    ['Źródła', 'Sources'],
+    ['Badania', 'Research'],
+    ['Stacja badawcza', 'Research station'],
+    ['Wysokość', 'Elevation'],
+    ['Odległość', 'Distance'],
+    ['Kierunek', 'Direction'],
+    ['Północ', 'North'],
+    ['Południe', 'South'],
+    ['Wschód', 'East'],
+    ['Zachód', 'West'],
+    ['Punkt', 'Point'],
+    ['Linia', 'Line'],
+    ['Warstwa', 'Layer'],
+    ['Warstwy', 'Layers'],
+    ['Satelita', 'Satellite'],
+    ['Satelity', 'Satellites'],
+    ['Pożary', 'Fires'],
+    ['Powodzie', 'Floods'],
+    ['Woda', 'Water'],
+    ['Ziemia', 'Earth'],
+    ['Słońce', 'Sun'],
+    ['Księżyc', 'Moon'],
   ])
 
   const phraseTranslations = [
@@ -131,7 +169,18 @@
     ['niska', 'low'],
     ['miejsce → pytanie → obrazy → Ziemia 3D → wynik', 'place → question → imagery → 3D Earth → result'],
     ['stary pełny panel · obrazy HQ · pliki · modele · flagi · DEM · profile · raporty', 'full research panel · HQ imagery · files · models · flags · DEM · profiles · reports'],
+    ['Nie udało się', 'Could not'],
+    ['Nie można', 'Cannot'],
+    ['Brak ', 'No '],
   ]
+
+  const styleText = `
+    .terra-stream-badge{position:absolute;z-index:4;left:7px;top:7px;padding:4px 6px;border-radius:6px;background:rgba(0,12,20,.82);border:1px solid rgba(64,216,255,.45);color:#74e7ff;font:700 8px/1.2 system-ui;letter-spacing:.06em;pointer-events:none}
+    .simple-context-gallery figure,.simple-image-grid figure{position:relative}
+    .terra-image-unavailable{display:grid;place-items:center;min-height:180px;padding:18px;box-sizing:border-box;background:linear-gradient(145deg,#071a27,#0a2330);color:#a7c6d6;text-align:center;font:700 11px/1.5 system-ui}
+    .terra-gallery-limit{margin:0 0 10px;padding:8px 10px;border:1px solid #1d6179;border-radius:8px;background:#08202d;color:#75ddfa;font:700 10px/1.35 system-ui;letter-spacing:.02em}
+    [hidden]{display:none!important}
+  `
 
   function translateString(value) {
     if (!value || typeof value !== 'string') return value
@@ -145,11 +194,20 @@
     return output
   }
 
+  function installStyles(doc) {
+    if (!doc?.head || doc.head.querySelector('style[data-terra-contest-runtime]')) return
+    const style = doc.createElement('style')
+    style.dataset.terraContestRuntime = '1'
+    style.textContent = styleText
+    doc.head.appendChild(style)
+  }
+
   function translateDocument(doc) {
     if (!doc?.documentElement) return
     doc.documentElement.lang = 'en'
     const root = doc.body || doc.documentElement
-    const walker = doc.createTreeWalker(root, NodeFilter.SHOW_TEXT)
+    const showText = doc.defaultView?.NodeFilter?.SHOW_TEXT ?? 4
+    const walker = doc.createTreeWalker(root, showText)
     const nodes = []
     let node
     while ((node = walker.nextNode())) nodes.push(node)
@@ -191,9 +249,9 @@
     return `${evidenceApi}/research/image?url=${encodeURIComponent(sourceUrl)}`
   }
 
-  function sourceCandidates(rawUrl) {
+  function sourceCandidates(rawUrl, baseHref = location.href) {
     let parsed
-    try { parsed = new URL(rawUrl, location.href) } catch { return [] }
+    try { parsed = new URL(rawUrl, baseHref) } catch { return [] }
     if (!IMAGE_HOSTS.has(parsed.hostname)) return []
     parsed = safeGibsDate(parsed)
     const candidates = []
@@ -217,7 +275,8 @@
   function isNearBlack(img) {
     if (!img.naturalWidth || !img.naturalHeight) return true
     try {
-      const canvas = document.createElement('canvas')
+      const doc = img.ownerDocument || document
+      const canvas = doc.createElement('canvas')
       canvas.width = 24
       canvas.height = 24
       const context = canvas.getContext('2d', { willReadFrequently: true })
@@ -248,7 +307,7 @@
     img.style.display = 'none'
     let note = holder.querySelector?.('.terra-image-unavailable')
     if (!note) {
-      note = document.createElement('span')
+      note = img.ownerDocument.createElement('span')
       note.className = 'terra-image-unavailable'
       holder.appendChild(note)
     }
@@ -256,9 +315,10 @@
   }
 
   function attachImageStreaming(img) {
-    if (!(img instanceof HTMLImageElement) || processedImages.has(img)) return
+    if (!img || img.tagName !== 'IMG' || processedImages.has(img)) return
     const raw = img.currentSrc || img.getAttribute('src') || ''
-    const candidates = sourceCandidates(raw)
+    const baseHref = img.ownerDocument?.location?.href || location.href
+    const candidates = sourceCandidates(raw, baseHref)
     if (!candidates.length) return
     processedImages.add(img)
     img.dataset.terraOriginalSrc = raw
@@ -270,8 +330,10 @@
       if (candidateIndex >= candidates.length) {
         if (!directFallbackUsed) {
           directFallbackUsed = true
-          img.crossOrigin = ''
+          img.removeAttribute('crossorigin')
           img.src = candidates[0]
+          const anchor = img.closest('a')
+          if (anchor) anchor.href = candidates[0]
           return
         }
         markUnavailable(img)
@@ -279,10 +341,13 @@
       }
       const candidate = candidates[candidateIndex]
       img.dataset.terraSource = candidate
+      const anchor = img.closest('a')
+      if (anchor) anchor.href = candidate
       if (evidenceApi) {
         img.crossOrigin = 'anonymous'
         img.src = workerStreamUrl(candidate)
       } else {
+        img.removeAttribute('crossorigin')
         img.src = candidate
       }
     }
@@ -296,7 +361,7 @@
       img.style.display = ''
       const holder = img.closest('figure') || img.parentElement
       if (holder && !holder.querySelector('.terra-stream-badge')) {
-        const badge = document.createElement('span')
+        const badge = img.ownerDocument.createElement('span')
         badge.className = 'terra-stream-badge'
         badge.textContent = evidenceApi ? 'OFFICIAL IMAGE · STREAMED + VERIFIED' : 'OFFICIAL IMAGE · DIRECT SOURCE'
         holder.appendChild(badge)
@@ -339,16 +404,8 @@
     status.textContent = `${mode === 'advanced' ? 'Advanced' : 'Simple'} mode · up to ${limit} official satellite images · Evidence Worker streaming`
   }
 
-  function processDocument(doc) {
-    if (!doc?.documentElement) return
-    translateDocument(doc)
-    for (const img of doc.querySelectorAll('img')) attachImageStreaming(img)
-    enforceGalleryLimit(doc)
-    for (const iframe of doc.querySelectorAll('iframe')) attachIframe(iframe)
-  }
-
   function attachIframe(iframe) {
-    if (!(iframe instanceof HTMLIFrameElement) || iframe.dataset.terraEnglishObserved === '1') return
+    if (!iframe || iframe.tagName !== 'IFRAME' || iframe.dataset.terraEnglishObserved === '1') return
     iframe.dataset.terraEnglishObserved = '1'
     const process = () => {
       try {
@@ -362,11 +419,21 @@
     process()
   }
 
+  function processDocument(doc) {
+    if (!doc?.documentElement) return
+    installStyles(doc)
+    translateDocument(doc)
+    for (const img of doc.querySelectorAll('img')) attachImageStreaming(img)
+    enforceGalleryLimit(doc)
+    for (const iframe of doc.querySelectorAll('iframe')) attachIframe(iframe)
+  }
+
   function schedule(doc) {
-    if (state.scheduled) return
-    state.scheduled = true
-    requestAnimationFrame(() => {
-      state.scheduled = false
+    if (!doc || scheduledDocuments.has(doc)) return
+    scheduledDocuments.add(doc)
+    const view = doc.defaultView || window
+    view.requestAnimationFrame(() => {
+      scheduledDocuments.delete(doc)
       processDocument(doc)
     })
   }
@@ -375,20 +442,18 @@
     if (!doc?.documentElement || observedDocuments.has(doc)) return
     observedDocuments.add(doc)
     processDocument(doc)
-    const observer = new MutationObserver(() => schedule(doc))
-    observer.observe(doc.documentElement, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['class', 'src', 'placeholder', 'title', 'aria-label'] })
+    const Observer = doc.defaultView?.MutationObserver || MutationObserver
+    const observer = new Observer(() => schedule(doc))
+    observer.observe(doc.documentElement, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+      attributes: true,
+      attributeFilter: ['class', 'src', 'placeholder', 'title', 'aria-label'],
+    })
     doc.addEventListener('click', () => setTimeout(() => processDocument(doc), 0), true)
     doc.addEventListener('toggle', () => setTimeout(() => processDocument(doc), 0), true)
   }
 
-  const style = document.createElement('style')
-  style.textContent = `
-    .terra-stream-badge{position:absolute;z-index:4;left:7px;top:7px;padding:4px 6px;border-radius:6px;background:rgba(0,12,20,.82);border:1px solid rgba(64,216,255,.45);color:#74e7ff;font:700 8px/1.2 system-ui;letter-spacing:.06em;pointer-events:none}
-    .simple-context-gallery figure,.simple-image-grid figure{position:relative}
-    .terra-image-unavailable{display:grid;place-items:center;min-height:180px;padding:18px;box-sizing:border-box;background:linear-gradient(145deg,#071a27,#0a2330);color:#a7c6d6;text-align:center;font:700 11px/1.5 system-ui}
-    .terra-gallery-limit{margin:0 0 10px;padding:8px 10px;border:1px solid #1d6179;border-radius:8px;background:#08202d;color:#75ddfa;font:700 10px/1.35 system-ui;letter-spacing:.02em}
-    [hidden]{display:none!important}
-  `
-  document.head.appendChild(style)
   observeDocument(document)
 })()
