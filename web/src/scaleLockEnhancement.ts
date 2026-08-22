@@ -6,6 +6,8 @@ import {
 
 export const SCALE_LOCK_EVENT = 'terra-observation-scale-lock-change'
 
+const GALLERY_STYLE_ID = 'terra-source-gallery-visibility'
+
 let installed = false
 let previousFetch: typeof window.fetch | null = null
 let observer: MutationObserver | null = null
@@ -85,6 +87,31 @@ function rewriteGibsUrl(value: string, footprintRadiusKm: number) {
   }
 }
 
+function installGalleryStyles() {
+  if (document.getElementById(GALLERY_STYLE_ID)) return
+  const style = document.createElement('style')
+  style.id = GALLERY_STYLE_ID
+  style.textContent = `
+    .simple-context-grid figure:first-child{display:block!important}
+    .simple-context-grid figure:nth-child(n+2){display:none!important}
+    .simple-research[data-source-gallery-mode="simple"] .simple-selected-period-images .simple-image-grid figure:nth-child(-n+4),
+    .simple-research[data-source-gallery-mode="simple"] .simple-history-body .simple-image-grid figure:nth-child(-n+4),
+    .simple-research[data-source-gallery-mode="advanced"] .simple-selected-period-images .simple-image-grid figure:nth-child(-n+8),
+    .simple-research[data-source-gallery-mode="advanced"] .simple-history-body .simple-image-grid figure:nth-child(-n+8){display:block!important}
+    .simple-research[data-source-gallery-mode="simple"] .simple-selected-period-images .simple-image-grid figure:nth-child(n+5),
+    .simple-research[data-source-gallery-mode="simple"] .simple-history-body .simple-image-grid figure:nth-child(n+5),
+    .simple-research[data-source-gallery-mode="advanced"] .simple-selected-period-images .simple-image-grid figure:nth-child(n+9),
+    .simple-research[data-source-gallery-mode="advanced"] .simple-history-body .simple-image-grid figure:nth-child(n+9){display:none!important}
+  `
+  document.head.appendChild(style)
+}
+
+function activeResearchMode() {
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>('.simple-console-mode button')]
+  if (buttons.length >= 2 && buttons[1].classList.contains('active')) return 'advanced' as const
+  return 'simple' as const
+}
+
 function normalizeContextGrid() {
   const grid = document.querySelector<HTMLElement>('.simple-context-grid')
   if (!grid) return
@@ -105,15 +132,30 @@ function normalizeContextGrid() {
     }
     const title = figure.querySelector<HTMLElement>('figcaption b')
     const note = figure.querySelector<HTMLElement>('figcaption small')
-    if (title) title.textContent = `Kontekst · skala ${heightKm.toLocaleString('pl-PL')} km`
-    if (note) note.textContent = `Skala zablokowana dla całego badania · wirtualna wysokość ${heightKm.toLocaleString('pl-PL')} km · promień kadru ok. ${footprint.toFixed(1)} km.`
+    if (title) title.textContent = `Context · scale ${heightKm.toLocaleString('en-US')} km`
+    if (note) note.textContent = `Scale locked for this study · virtual height ${heightKm.toLocaleString('en-US')} km · frame radius about ${footprint.toFixed(1)} km.`
   })
 
   const gallery = grid.closest<HTMLElement>('.simple-context-gallery')
   const intro = gallery?.querySelector<HTMLElement>(':scope > .simple-section-head p')
   if (intro) {
-    intro.textContent = `Wszystkie obrazy badawcze używają jednej skali z suwaka: ${heightKm.toLocaleString('pl-PL')} km. Oryginalne sceny źródłowe są zachowane osobno w natywnym kadrze.`
+    intro.textContent = `All study imagery uses the selected scale: ${heightKm.toLocaleString('en-US')} km. The official source scenes remain visible below in their native frames.`
   }
+}
+
+function syncSourceGalleryLimit() {
+  const root = document.querySelector<HTMLElement>('.simple-research')
+  if (!root) return
+  const mode = activeResearchMode()
+  const limit = mode === 'advanced' ? 8 : 4
+  root.dataset.sourceGalleryMode = mode
+  root.dataset.sourceGalleryLimit = String(limit)
+
+  const selectedFigures = [...document.querySelectorAll<HTMLElement>('.simple-selected-period-images:not(.terrain-study-section) .simple-image-grid figure')]
+  const historyFigures = [...document.querySelectorAll<HTMLElement>('.simple-history-body .simple-image-grid figure')]
+  const total = Math.max(selectedFigures.length, historyFigures.length)
+  const summaryCount = document.querySelector<HTMLElement>('.simple-history .simple-evidence-summary span:first-child b')
+  if (summaryCount) summaryCount.textContent = String(Math.min(total, limit))
 }
 
 function normalizeOriginalSections() {
@@ -124,20 +166,25 @@ function normalizeOriginalSections() {
     toggle = document.createElement('button')
     toggle.type = 'button'
     toggle.className = 'secondary scale-lock-originals-toggle'
-    toggle.textContent = 'Pokaż oryginalne sceny · natywna skala'
+    toggle.dataset.collapsed = 'false'
     sections[0].insertAdjacentElement('beforebegin', toggle)
     toggle.addEventListener('click', () => {
-      const hidden = sections.every(section => section.hidden)
-      sections.forEach(section => { section.hidden = !hidden })
-      toggle!.textContent = hidden ? 'Ukryj oryginalne sceny · natywna skala' : 'Pokaż oryginalne sceny · natywna skala'
+      const nextCollapsed = toggle!.dataset.collapsed !== 'true'
+      toggle!.dataset.collapsed = nextCollapsed ? 'true' : 'false'
+      sections.forEach(section => { section.hidden = nextCollapsed })
+      toggle!.textContent = nextCollapsed ? 'Show original scenes · native scale' : 'Hide original scenes · native scale'
     })
   }
-  if (!toggle.dataset.userOpened) sections.forEach(section => { section.hidden = true })
+  const collapsed = toggle.dataset.collapsed === 'true'
+  sections.forEach(section => { section.hidden = collapsed })
+  toggle.textContent = collapsed ? 'Show original scenes · native scale' : 'Hide original scenes · native scale'
 }
 
 function enhanceAll() {
+  installGalleryStyles()
   normalizeContextGrid()
   normalizeOriginalSections()
+  syncSourceGalleryLimit()
 }
 
 function scheduleEnhance() {
@@ -171,9 +218,10 @@ export function installScaleLockEnhancement() {
   if (installed) return () => undefined
   installed = true
   installFetchScaleLock()
+  installGalleryStyles()
   document.addEventListener('change', onChange)
   observer = new MutationObserver(() => scheduleEnhance())
-  observer.observe(document.body, { childList: true, subtree: true })
+  observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] })
   enhanceAll()
   return () => {
     document.removeEventListener('change', onChange)
@@ -184,6 +232,9 @@ export function installScaleLockEnhancement() {
     window.clearTimeout(rerunTimer)
     rerunTimer = 0
     document.querySelector('.scale-lock-originals-toggle')?.remove()
+    document.getElementById(GALLERY_STYLE_ID)?.remove()
+    document.querySelector('.simple-research')?.removeAttribute('data-source-gallery-mode')
+    document.querySelector('.simple-research')?.removeAttribute('data-source-gallery-limit')
     document.querySelectorAll<HTMLElement>('.simple-selected-period-images').forEach(section => { section.hidden = false })
     document.querySelectorAll<HTMLElement>('.simple-context-grid figure').forEach(figure => { figure.hidden = false })
     if (previousFetch) window.fetch = previousFetch
