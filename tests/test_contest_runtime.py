@@ -3,6 +3,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / "web" / "index.html"
 RUNTIME = ROOT / "web" / "public" / "contest-runtime.js"
+POSTBUILD = ROOT / "web" / "scripts" / "postbuild-contest-runtime.mjs"
+PACKAGE = ROOT / "web" / "package.json"
 AREA = ROOT / "cloudflare" / "evidence-worker" / "src" / "areaAnalysisV2.js"
 IMAGE_PROXY = ROOT / "cloudflare" / "evidence-worker" / "src" / "imageProxy.js"
 
@@ -55,3 +57,15 @@ def test_runtime_translates_dynamic_app_and_same_origin_tabs() -> None:
     assert "['Prosty', 'Simple']" in runtime
     assert "['Zaawansowany', 'Advanced']" in runtime
     assert "['Rozwiń', 'Expand']" in runtime
+
+
+def test_every_built_html_page_receives_english_runtime_postbuild() -> None:
+    postbuild = POSTBUILD.read_text(encoding="utf-8")
+    package = PACKAGE.read_text(encoding="utf-8")
+    assert "listHtmlFiles" in postbuild
+    assert "ensureEnglishHtml" in postbuild
+    assert "ensureEvidenceMeta" in postbuild
+    assert "ensureRuntimeScript" in postbuild
+    assert "contest-runtime.js" in postbuild
+    assert "VITE_EVIDENCE_API_URL" in postbuild
+    assert "node scripts/postbuild-contest-runtime.mjs" in package
