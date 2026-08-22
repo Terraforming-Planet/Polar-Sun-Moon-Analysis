@@ -8,6 +8,7 @@ import importlib.metadata
 import json
 import os
 import platform
+import re
 import subprocess
 import sys
 from datetime import UTC, datetime
@@ -30,6 +31,29 @@ from terra_research_node.agentic_eo import (  # noqa: E402
 
 REQUIRED_SOURCE_IDS = {"esa-sentinel-1", "esa-sentinel-2", "usgs-landsat"}
 REQUIRED_CONSULTATIONS = {"consult_eo_source_scout", "consult_evidence_verifier"}
+PUBLIC_TRACE_FIELDS = {
+    "sdk",
+    "model",
+    "starting_agent",
+    "final_agent",
+    "events",
+    "result_item_types",
+}
+PUBLIC_EVENT_FIELDS = {"event", "agent", "tool", "status"}
+PUBLIC_AGENTS = {
+    "Terra Agentic EO Coordinator",
+    "EO Source Scout",
+    "EO Evidence Verifier",
+}
+PUBLIC_TOOLS = {
+    "consult_eo_source_scout",
+    "consult_evidence_verifier",
+    "search_eo_sources",
+    "load_evidence_case",
+    "verify_evidence_case",
+    "load_training_context",
+    "compare_surface_water_areas",
+}
 
 
 def git_sha() -> str | None:
@@ -62,6 +86,38 @@ def safety_assertions(verification: dict[str, Any]) -> dict[str, bool]:
     }
 
 
+def validate_public_trace(trace: dict[str, Any]) -> None:
+    """Reject trace content outside the deliberately small public metadata schema."""
+    if not isinstance(trace, dict):
+        raise ValueError("Public execution trace must be an object.")
+    unknown = set(trace) - PUBLIC_TRACE_FIELDS
+    if unknown:
+        raise ValueError(f"Public trace contains non-public fields: {sorted(unknown)}")
+    if trace.get("sdk") != "openai-agents":
+        raise ValueError("Public trace does not identify the OpenAI Agents SDK.")
+    for field in ("starting_agent", "final_agent"):
+        if trace.get(field) not in PUBLIC_AGENTS:
+            raise ValueError(f"Public trace has an unexpected {field} value.")
+    events = trace.get("events")
+    if not isinstance(events, list):
+        raise ValueError("Public trace events must be a list.")
+    for event in events:
+        if not isinstance(event, dict) or set(event) - PUBLIC_EVENT_FIELDS:
+            raise ValueError("Public trace event contains non-public fields.")
+        if event.get("agent") not in PUBLIC_AGENTS:
+            raise ValueError("Public trace event has an unexpected agent.")
+        if "tool" in event and event["tool"] not in PUBLIC_TOOLS:
+            raise ValueError("Public trace event has an unexpected tool.")
+        if "status" in event and event["status"] != "success":
+            raise ValueError("Public trace event has an unexpected status.")
+    item_types = trace.get("result_item_types")
+    if not isinstance(item_types, list) or not all(
+        isinstance(item, str) and re.fullmatch(r"[a-z][a-z0-9_]{0,63}", item)
+        for item in item_types
+    ):
+        raise ValueError("Public trace result item types are not safe metadata values.")
+
+
 def validate_final_answer_provenance(answer: str, matched_ids: set[str | None]) -> None:
     """Require explicit attribution markers for the model's Vistula recommendations."""
     lowered = answer.lower()
@@ -80,10 +136,21 @@ def validate_final_answer_provenance(answer: str, matched_ids: set[str | None]) 
     for source_id, term in source_terms.items():
         if term in lowered and source_id not in matched_ids:
             raise ValueError(f"Final answer presents {term} without a deterministic match.")
+    claimed_registry_ids = set(
+        re.findall(r"registry\s+id\s+[`'\"]?([a-z0-9][a-z0-9_-]+)", lowered)
+    )
+    unsupported_ids = claimed_registry_ids - matched_ids
+    if unsupported_ids:
+        raise ValueError(
+            "Final answer claims registry provenance for unmatched source IDs: "
+            f"{sorted(unsupported_ids)}"
+        )
 
 
 def validate_live_report(report: dict[str, Any]) -> None:
     """Fail closed when multi-agent, provenance, or scientific evidence is absent."""
+    trace = report.get("public_execution_trace", {})
+    validate_public_trace(trace)
     matches = report.get("deterministic_registry_selection", {}).get("matches", [])
     if not isinstance(matches, list):
         raise ValueError("Deterministic registry matches must be a list.")
@@ -94,7 +161,7 @@ def validate_live_report(report: dict[str, Any]) -> None:
         raise ValueError(f"Required controlled-registry sources absent: {sorted(missing_sources)}")
     validate_final_answer_provenance(str(report.get("final_model_answer", "")), matched_ids)
 
-    consultations = specialist_consultations(report.get("public_execution_trace", {}))
+    consultations = specialist_consultations(trace)
     missing_consultations = REQUIRED_CONSULTATIONS - consultations
     if missing_consultations:
         raise ValueError(
