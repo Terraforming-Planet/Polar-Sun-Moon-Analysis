@@ -1,11 +1,6 @@
 name: Codex ESA Agentic EO Live Evidence
 
 on:
-  push:
-    branches: ["agent/esa-agentic-eo-mvp"]
-    paths:
-      - "CODEX_ESA_AGENTIC_EO_LIVE.md"
-      - ".github/workflows/codex-esa-agentic-eo-live.yml"
   pull_request:
     branches: ["main"]
     paths:
