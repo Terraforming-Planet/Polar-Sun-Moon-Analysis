@@ -52,6 +52,11 @@ def test_public_trace_records_boundaries_without_private_data() -> None:
     hooks = PublicTraceHooks()
     hooks.events = [
         {
+            "event": "tool_start",
+            "agent": "Terra Agentic EO Coordinator",
+            "tool": "consult_eo_source_scout",
+        },
+        {
             "event": "tool_end",
             "agent": "Terra Agentic EO Coordinator",
             "tool": "consult_eo_source_scout",
@@ -70,6 +75,19 @@ def test_public_trace_records_boundaries_without_private_data() -> None:
     assert "api_key" not in serialized
     assert "authorization" not in serialized
     assert specialist_consultations(trace) == {"consult_eo_source_scout"}
+
+
+def test_specialist_consultation_requires_observable_start_and_end() -> None:
+    trace = {
+        "events": [
+            {
+                "event": "tool_end",
+                "tool": "consult_eo_source_scout",
+                "status": "success",
+            }
+        ]
+    }
+    assert specialist_consultations(trace) == set()
 
 
 def test_vistula_case_preserves_non_claim_flags() -> None:
