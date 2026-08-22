@@ -3,7 +3,7 @@ export const SATELLITE_TIME_STORAGE_KEY = 'terra-observation-satellite-time/v1'
 export const SATELLITE_TIME_EVENT = 'terra-satellite-time-selection'
 export const SATELLITE_TIME_MATCH_EVENT = 'terra-analysis-time-match'
 
-export type SatelliteTimePreset = 'archive' | 'from-1990' | 'from-2015' | 'five-years' | 'one-year' | 'custom' | 'exact' | 'seasonal'
+export type SatelliteTimePreset = 'archive' | 'from-1990' | 'from-2015' | 'twenty-years' | 'five-years' | 'one-year' | 'custom' | 'exact' | 'seasonal'
 export type SatelliteSeason = 'spring' | 'summer' | 'autumn' | 'winter'
 
 export type SatelliteTimeSelection = {
@@ -91,6 +91,9 @@ export function selectionForPreset(preset: SatelliteTimePreset, current?: Satell
   } else if (preset === 'from-2015') {
     startDate = '2015-01-01'
     endDate = today
+  } else if (preset === 'twenty-years') {
+    startDate = `${currentYear - 19}-01-01`
+    endDate = today
   } else if (preset === 'five-years') {
     startDate = `${currentYear - 4}-01-01`
     endDate = today
@@ -117,7 +120,7 @@ export function selectionForPreset(preset: SatelliteTimePreset, current?: Satell
 }
 
 export function defaultSatelliteTimeSelection() {
-  return selectionForPreset('archive')
+  return selectionForPreset('five-years')
 }
 
 export function readSatelliteTimeSelection(): SatelliteTimeSelection {
@@ -126,9 +129,9 @@ export function readSatelliteTimeSelection(): SatelliteTimeSelection {
     const raw = window.localStorage.getItem(SATELLITE_TIME_STORAGE_KEY)
     if (!raw) return defaultSatelliteTimeSelection()
     const parsed = JSON.parse(raw) as Partial<SatelliteTimeSelection>
-    const preset: SatelliteTimePreset = ['archive', 'from-1990', 'from-2015', 'five-years', 'one-year', 'custom', 'exact', 'seasonal'].includes(String(parsed.preset))
+    const preset: SatelliteTimePreset = ['archive', 'from-1990', 'from-2015', 'twenty-years', 'five-years', 'one-year', 'custom', 'exact', 'seasonal'].includes(String(parsed.preset))
       ? parsed.preset as SatelliteTimePreset
-      : 'archive'
+      : 'five-years'
     return selectionForPreset(preset, {
       preset,
       startDate: String(parsed.startDate ?? SATELLITE_ARCHIVE_START),
