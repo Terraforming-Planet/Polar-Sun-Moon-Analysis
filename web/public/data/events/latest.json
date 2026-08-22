@@ -1,10 +1,10 @@
 {
   "schema_version": "7.0",
   "project": "Terraforming Planet",
-  "generated_at": "2026-08-22T13:06:32.983739Z",
-  "event_count": 996,
+  "generated_at": "2026-08-22T13:43:34.047244Z",
+  "event_count": 982,
   "summary": {
-    "earthquake": 254,
+    "earthquake": 240,
     "fire": 611,
     "storm": 25,
     "ice": 3,
@@ -19,7 +19,7 @@
     {
       "source": "USGS",
       "status": "ok",
-      "count": 246
+      "count": 232
     },
     {
       "source": "NASA EONET",
@@ -38,6 +38,38 @@
     }
   ],
   "events": [
+    {
+      "id": "usgs-aka2026qpkjaa",
+      "type": "earthquake",
+      "title": "M 1.7 - 9 km SSW of Willow, Alaska",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 61.666,
+      "longitude": -150.073,
+      "observed_at": "2026-08-22T13:37:14.535000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qpkjaa",
+      "metadata": {
+        "magnitude": 1.7,
+        "depth_km": 0.2
+      }
+    },
+    {
+      "id": "usgs-nc75422952",
+      "type": "earthquake",
+      "title": "M 1.0 - 8 km W of Cobb, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 38.836498260498,
+      "longitude": -122.816497802734,
+      "observed_at": "2026-08-22T13:25:34.720000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75422952",
+      "metadata": {
+        "magnitude": 1.04,
+        "depth_km": 1.78999996185303
+      }
+    },
     {
       "id": "usgs-nc75422947",
       "type": "earthquake",
@@ -215,6 +247,22 @@
       }
     },
     {
+      "id": "usgs-se60506168",
+      "type": "earthquake",
+      "title": "M 2.0 - 7 km SSW of Canton, North Carolina",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 35.4708333333333,
+      "longitude": -82.8691666666667,
+      "observed_at": "2026-08-22T11:24:03.910000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/se60506168",
+      "metadata": {
+        "magnitude": 1.96,
+        "depth_km": 6.2
+      }
+    },
+    {
       "id": "usgs-ci41532880",
       "type": "earthquake",
       "title": "M 1.1 - 9 km NW of Imperial, CA",
@@ -251,7 +299,7 @@
       "type": "earthquake",
       "title": "M 2.5 - 7 km E of Ashford, Washington",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 46.7639999389648,
       "longitude": -121.93399810791,
       "observed_at": "2026-08-22T10:54:24.200000Z",
@@ -3700,278 +3748,6 @@
       "metadata": {
         "magnitude": -0.66,
         "depth_km": 2.09
-      }
-    },
-    {
-      "id": "usgs-nc75422402",
-      "type": "earthquake",
-      "title": "M 1.7 - 13 km NW of Pinnacles, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 36.6053352355957,
-      "longitude": -121.252502441406,
-      "observed_at": "2026-08-21T13:32:27.140000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75422402",
-      "metadata": {
-        "magnitude": 1.67,
-        "depth_km": 5.84999990463257
-      }
-    },
-    {
-      "id": "usgs-pr71529213",
-      "type": "earthquake",
-      "title": "M 3.4 - 109 km N of Charlotte Amalie, U.S. Virgin Islands",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 19.3255,
-      "longitude": -64.8663333333333,
-      "observed_at": "2026-08-21T13:31:47.070000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/pr71529213",
-      "metadata": {
-        "magnitude": 3.4,
-        "depth_km": 11.74
-      }
-    },
-    {
-      "id": "usgs-nc75422397",
-      "type": "earthquake",
-      "title": "M 1.6 - 17 km NE of Lopez Point, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 36.1181678771973,
-      "longitude": -121.420166015625,
-      "observed_at": "2026-08-21T13:29:44.430000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75422397",
-      "metadata": {
-        "magnitude": 1.64,
-        "depth_km": 4.42000007629395
-      }
-    },
-    {
-      "id": "usgs-ci41532040",
-      "type": "earthquake",
-      "title": "M 1.0 - 10 km ENE of Coso Junction, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 36.0641666666667,
-      "longitude": -117.84,
-      "observed_at": "2026-08-21T13:23:02.260000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41532040",
-      "metadata": {
-        "magnitude": 0.95,
-        "depth_km": 2.65
-      }
-    },
-    {
-      "id": "usgs-ci41532032",
-      "type": "earthquake",
-      "title": "M 1.1 - 17 km WSW of Johannesburg, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 35.3305,
-      "longitude": -117.813333333333,
-      "observed_at": "2026-08-21T13:21:28.260000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41532032",
-      "metadata": {
-        "magnitude": 1.1,
-        "depth_km": 7.19
-      }
-    },
-    {
-      "id": "usgs-hv75021917",
-      "type": "earthquake",
-      "title": "M 1.7 - 10 km S of Volcano, Hawaii",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 19.349,
-      "longitude": -155.242833333333,
-      "observed_at": "2026-08-21T13:20:01.970000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75021917",
-      "metadata": {
-        "magnitude": 1.69,
-        "depth_km": 29.74
-      }
-    },
-    {
-      "id": "usgs-ci41532024",
-      "type": "earthquake",
-      "title": "M 1.0 - 1 km NNW of La Verne, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 34.112,
-      "longitude": -117.776666666667,
-      "observed_at": "2026-08-21T13:18:37.890000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41532024",
-      "metadata": {
-        "magnitude": 0.95,
-        "depth_km": 7.27
-      }
-    },
-    {
-      "id": "usgs-aka2026qnnnum",
-      "type": "earthquake",
-      "title": "M 2.0 - 63 km W of Tyonek, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 61.042,
-      "longitude": -152.31,
-      "observed_at": "2026-08-21T13:13:34.127000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qnnnum",
-      "metadata": {
-        "magnitude": 2,
-        "depth_km": 113.4
-      }
-    },
-    {
-      "id": "usgs-av93066124",
-      "type": "earthquake",
-      "title": "M 1.0 - 58 km W of Nikolski, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 52.8448333333333,
-      "longitude": -169.713833333333,
-      "observed_at": "2026-08-21T13:11:36.020000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av93066124",
-      "metadata": {
-        "magnitude": 1.02,
-        "depth_km": 9.28
-      }
-    },
-    {
-      "id": "usgs-us6000tmfv",
-      "type": "earthquake",
-      "title": "M 4.4 - south of the Fiji Islands",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": -24.518,
-      "longitude": 179.8841,
-      "observed_at": "2026-08-21T13:11:12.019000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tmfv",
-      "metadata": {
-        "magnitude": 4.4,
-        "depth_km": 511.586
-      }
-    },
-    {
-      "id": "usgs-aka2026qnnkpc",
-      "type": "earthquake",
-      "title": "M 1.5 - 3 km ESE of Badger, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 64.787,
-      "longitude": -147.464,
-      "observed_at": "2026-08-21T13:09:51.698000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qnnkpc",
-      "metadata": {
-        "magnitude": 1.5,
-        "depth_km": 1.2
-      }
-    },
-    {
-      "id": "usgs-aka2026qnnkqb",
-      "type": "earthquake",
-      "title": "M 2.0 - 11 km NE of Fritz Creek, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 59.806,
-      "longitude": -151.145,
-      "observed_at": "2026-08-21T13:09:46.772000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qnnkqb",
-      "metadata": {
-        "magnitude": 2,
-        "depth_km": 42.6
-      }
-    },
-    {
-      "id": "usgs-ci10249150",
-      "type": "earthquake",
-      "title": "M 0.3 - 10 km ENE of Coso Junction, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 36.0635,
-      "longitude": -117.841166666667,
-      "observed_at": "2026-08-21T13:08:50.660000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci10249150",
-      "metadata": {
-        "magnitude": 0.3,
-        "depth_km": 2.73
-      }
-    },
-    {
-      "id": "usgs-aka2026qnnjqe",
-      "type": "earthquake",
-      "title": "M 1.5 - 60 km N of Chickaloon, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 62.335,
-      "longitude": -148.569,
-      "observed_at": "2026-08-21T13:08:36.689000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qnnjqe",
-      "metadata": {
-        "magnitude": 1.5,
-        "depth_km": 43
-      }
-    },
-    {
-      "id": "usgs-ci10249142",
-      "type": "earthquake",
-      "title": "M 0.7 - 10 km E of Coso Junction, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 36.0613333333333,
-      "longitude": -117.837833333333,
-      "observed_at": "2026-08-21T13:08:33.100000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci10249142",
-      "metadata": {
-        "magnitude": 0.74,
-        "depth_km": 2.34
-      }
-    },
-    {
-      "id": "usgs-ci41532016",
-      "type": "earthquake",
-      "title": "M 0.7 - 10 km ENE of Coso Junction, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 36.0636666666667,
-      "longitude": -117.8375,
-      "observed_at": "2026-08-21T13:08:29.460000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41532016",
-      "metadata": {
-        "magnitude": 0.65,
-        "depth_km": 3.25
-      }
-    },
-    {
-      "id": "usgs-us6000tmft",
-      "type": "earthquake",
-      "title": "M 5.4 - South Sandwich Islands region",
-      "severity": "moderate",
-      "status": "reviewed",
-      "latitude": -58.8509,
-      "longitude": -26.5571,
-      "observed_at": "2026-08-21T13:06:40.821000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tmft",
-      "metadata": {
-        "magnitude": 5.4,
-        "depth_km": 158.986
       }
     },
     {
