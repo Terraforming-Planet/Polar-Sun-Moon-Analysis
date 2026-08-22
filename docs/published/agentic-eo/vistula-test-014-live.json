@@ -1,8 +1,8 @@
 {
   "schema_version": "2.0",
   "run_metadata": {
-    "timestamp_utc": "2026-08-22T17:10:29.750006+00:00",
-    "git_sha": "c7bb074d92cf9497d4ae98fef108feb735103fe7",
+    "timestamp_utc": "2026-08-22T17:17:09.188995+00:00",
+    "git_sha": "3a2d3277916626085ebd744f7fa631f570dfe710",
     "python_version": "3.12.14",
     "openai_agents_version": "0.20.0",
     "model": "gpt-5.6-luna",
@@ -33,13 +33,13 @@
       {
         "event": "tool_end",
         "agent": "Terra Agentic EO Coordinator",
-        "tool": "consult_eo_source_scout",
+        "tool": "consult_evidence_verifier",
         "status": "success"
       },
       {
         "event": "tool_end",
         "agent": "Terra Agentic EO Coordinator",
-        "tool": "consult_evidence_verifier",
+        "tool": "consult_eo_source_scout",
         "status": "success"
       },
       {
@@ -56,7 +56,7 @@
       "message_output_item"
     ]
   },
-  "final_model_answer": "## Research question\n\nWhat is established for Vistula TEST 014, which EO sources are suitable for investigating possible surface-water or river-channel change, and what checks should follow?\n\n## Tool/agent actions\n\n- Consulted the EO Source Scout, including deterministic registry searches for `surface_water`, `water_extent`, and `river_channel`.\n- Consulted the EO Evidence Verifier for repository-backed findings and provenance limits.\n\n## Evidence\n\n### Repository-backed evidence\n\n**OBSERVATION**\n- The repository describes a Vistula Gniew–Grudziądz satellite-image test set.\n- 72 of 74 records were accepted; 2 were rejected or not accepted.\n- Records contain provenance fields, including dates, platforms, item IDs, source keys, hashes, and scene metadata.\n- Reported temporal coverage is 1990–2026, with spring and autumn imagery.\n- Reported spatial extent is 45 × 70 km.\n\n**DERIVED_VALUE**\n- Accepted-record fraction: 72/74, approximately 97.3%.\n\n**UNKNOWN**\n- No environmental finding is established.\n- No surface-water or river-channel change is demonstrated.\n- No measured water loss, alert, environmental confidence value, or supported event date is provided.\n- No causal mechanism is established.\n\nThe repository evidence establishes dataset/provenance information, not a reproducible environmental change analysis.\n\n### Registry-backed recommendations\n\n- **Copernicus Sentinel-1** — SAR, useful through cloud cover for water extent and channel morphology. Limitations include effects from vegetation, wind, roughness, geometry, and classification processing; it does not measure water depth.\n- **Copernicus Sentinel-2** — optical multispectral imagery for water and channel-boundary mapping. Limited by clouds, shadows, resolution, and seasonal comparability.\n- **Landsat program** — longer historical context for surface-water and channel change. Requires harmonizing sensors, seasons, clouds, and shadows.\n- **SWOT** — newer radar/altimetry observations for water extent and potentially river-surface elevation. Volume interpretation requires bathymetry or an area–elevation–volume relationship.\n\nAdditional non-registry suggestions: none\n\n## Uncertainty\n\nThe listed missions are source recommendations only; no evidence shows that their data have been retrieved or analyzed for this test. Imagery alone would not establish a physical cause such as discharge change, sediment dynamics, or human intervention.\n\n## Recommended next checks\n\n1. Retrieve the referenced scenes and verify acquisition dates, hashes, and metadata.\n2. Co-register imagery and define comparable reaches and seasons.\n3. Map surface-water and channel extent with documented thresholds or classifiers.\n4. Quantify change with uncertainty and inspect sensor/resolution effects.\n5. Corroborate interpretations using river-gauge, hydrological, meteorological, and relevant human-activity records.\n6. Report any result explicitly as observation or derived measurement; retain causal explanations as hypotheses unless independently supported.",
+  "final_model_answer": "## Research question\n\nWhat is established for Vistula TEST 014, which official/public EO sources best investigate possible surface-water or river-channel change, and what checks are needed next?\n\n## Tool/agent actions\n\n- Consulted the EO Source Scout using deterministic searches for `surface_water`, `water_extent`, and `river_channel`.\n- Consulted the EO Evidence Verifier for repository provenance, training context, and claim support.\n- No area-change calculation was possible because no mapped water-area measurements were provided.\n\n## Evidence\n\n**OBSERVATION:** The repository describes a satellite-image test set for the Vistula Gniew–Grudziądz area, spanning spring and autumn from 1990–2026, with 74 records and 72 accepted records. Provenance fields include dates, platforms, item IDs, scene keys, and hashes.\n\n**DERIVED_VALUE:** The evidence supports dataset integrity and temporal coverage.\n\n**MODEL_ESTIMATE:** None establishing environmental change.\n\n**HYPOTHESIS:** None established.\n\n**UNKNOWN:** The evidence does not establish surface-water loss, river-channel change, an environmental finding, or any causal mechanism. Training metrics contain no persisted environmental measurements or ground truth.\n\n### Registry-backed recommendations\n\n1. **Copernicus Sentinel-1** — registry ID `esa-sentinel-1`  \n   Best for cloud-independent water-extent mapping; affected by wind, vegetation, roughness, viewing geometry, and processing.\n\n2. **Copernicus Sentinel-2** — registry ID `esa-sentinel-2`  \n   Best for clear-sky water morphology and channel delineation; limited by clouds, shadows, seasonality, and lack of depth/cause information.\n\n3. **USGS Landsat program** — registry ID `usgs-landsat`  \n   Best for longer-term channel and surface-water context; requires harmonization for sensor, cloud, and seasonal differences.\n\n**Additional non-registry suggestions: none.**\n\n## Uncertainty\n\nNo analyzed EO measurements, mapped areas, or validated change detections are supplied. Apparent exposed sediment or channel constriction would not establish hydrological causation.\n\n## Recommended next checks\n\n1. Retrieve comparable Sentinel-1, Sentinel-2, and Landsat scenes for the documented records.\n2. Apply cloud/shadow masking and seasonal matching.\n3. Produce independently validated surface-water masks and channel boundaries.\n4. Quantify mapped area and channel geometry with uncertainty.\n5. Check river stage, discharge, precipitation, ice, sediment, and regulation records before assessing possible causes.\n6. Preserve scene IDs, processing parameters, masks, and validation samples for reproducibility.",
   "deterministic_claim_verification": {
     "case_id": "vistula-test-014",
     "evidence_class": "OBSERVATION",
