@@ -1,10 +1,10 @@
 {
   "schema_version": "7.0",
   "project": "Terraforming Planet",
-  "generated_at": "2026-08-23T20:35:40.117345Z",
-  "event_count": 1064,
+  "generated_at": "2026-08-23T20:58:03.122560Z",
+  "event_count": 1065,
   "summary": {
-    "earthquake": 322,
+    "earthquake": 323,
     "fire": 611,
     "storm": 25,
     "ice": 3,
@@ -19,7 +19,7 @@
     {
       "source": "USGS",
       "status": "ok",
-      "count": 314
+      "count": 315
     },
     {
       "source": "NASA EONET",
@@ -39,19 +39,51 @@
   ],
   "events": [
     {
-      "id": "usgs-ci41534504",
+      "id": "usgs-nc75423792",
       "type": "earthquake",
-      "title": "M 1.1 - 10 km ENE of Coso Junction, CA",
+      "title": "M 1.3 - 7 km NE of San Martin, CA",
       "severity": "low",
       "status": "automatic",
-      "latitude": 36.0660018920898,
-      "longitude": -117.836166381836,
+      "latitude": 37.1248321533203,
+      "longitude": -121.548667907715,
+      "observed_at": "2026-08-23T20:41:45.280000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75423792",
+      "metadata": {
+        "magnitude": 1.25,
+        "depth_km": 6.82000017166138
+      }
+    },
+    {
+      "id": "usgs-ci41534512",
+      "type": "earthquake",
+      "title": "M 1.3 - 10 km E of Coso Junction, CA",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 36.0606666666667,
+      "longitude": -117.84,
+      "observed_at": "2026-08-23T20:40:44.780000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41534512",
+      "metadata": {
+        "magnitude": 1.33,
+        "depth_km": 2.59
+      }
+    },
+    {
+      "id": "usgs-ci41534504",
+      "type": "earthquake",
+      "title": "M 0.8 - 10 km ENE of Coso Junction, CA",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 36.0636666666667,
+      "longitude": -117.8365,
       "observed_at": "2026-08-23T20:33:18.130000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41534504",
       "metadata": {
-        "magnitude": 1.08432856305768,
-        "depth_km": 3.24000000953674
+        "magnitude": 0.84,
+        "depth_km": 2.88
       }
     },
     {
@@ -59,7 +91,7 @@
       "type": "earthquake",
       "title": "M 1.5 - 10 km E of Coso Junction, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 36.0613333333333,
       "longitude": -117.840333333333,
       "observed_at": "2026-08-23T20:29:27.300000Z",
@@ -75,7 +107,7 @@
       "type": "earthquake",
       "title": "M 1.1 - 11 km NNW of Anza, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 33.637,
       "longitude": -116.7305,
       "observed_at": "2026-08-23T20:29:22.100000Z",
@@ -87,11 +119,27 @@
       }
     },
     {
+      "id": "usgs-pr71529548",
+      "type": "earthquake",
+      "title": "M 2.4 - 5 km ENE of Sabana Grande, Puerto Rico",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 18.0995,
+      "longitude": -66.917,
+      "observed_at": "2026-08-23T20:28:20.460000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/pr71529548",
+      "metadata": {
+        "magnitude": 2.37,
+        "depth_km": 49.9
+      }
+    },
+    {
       "id": "usgs-ci41534480",
       "type": "earthquake",
       "title": "M 1.1 - 6 km NNW of Fontana, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 34.1483333333333,
       "longitude": -117.477666666667,
       "observed_at": "2026-08-23T20:27:03.850000Z",
@@ -107,7 +155,7 @@
       "type": "earthquake",
       "title": "M 0.6 - 10 km ENE of Coso Junction, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 36.0681666666667,
       "longitude": -117.842,
       "observed_at": "2026-08-23T20:12:09.870000Z",
@@ -123,7 +171,7 @@
       "type": "earthquake",
       "title": "M 0.7 - 10 km ENE of Coso Junction, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 36.0646666666667,
       "longitude": -117.8345,
       "observed_at": "2026-08-23T20:09:26.740000Z",
@@ -139,7 +187,7 @@
       "type": "earthquake",
       "title": "M 0.3 - 9 km S of Idyllwild, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 33.6556666666667,
       "longitude": -116.716166666667,
       "observed_at": "2026-08-23T20:06:35.560000Z",
@@ -267,15 +315,15 @@
       "type": "earthquake",
       "title": "M 0.5 - 12 km NE of Julian, CA",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 33.1555,
+      "status": "reviewed",
+      "latitude": 33.1596666666667,
       "longitude": -116.518,
       "observed_at": "2026-08-23T19:15:21.650000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41534424",
       "metadata": {
         "magnitude": 0.5,
-        "depth_km": 7.19
+        "depth_km": 6.76
       }
     },
     {
@@ -379,7 +427,7 @@
       "type": "earthquake",
       "title": "M 0.9 - 17 km WSW of Johannesburg, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 35.3095,
       "longitude": -117.801833333333,
       "observed_at": "2026-08-23T18:39:41.700000Z",
@@ -395,15 +443,15 @@
       "type": "earthquake",
       "title": "M 1.6 - 8 km ENE of Moreno Valley, CA",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 33.9585,
-      "longitude": -117.145,
-      "observed_at": "2026-08-23T18:30:55.110000Z",
+      "status": "reviewed",
+      "latitude": 33.9588333333333,
+      "longitude": -117.1475,
+      "observed_at": "2026-08-23T18:30:55.040000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41534400",
       "metadata": {
-        "magnitude": 1.63,
-        "depth_km": 15.86
+        "magnitude": 1.55,
+        "depth_km": 16.58
       }
     },
     {
@@ -5028,38 +5076,6 @@
       "metadata": {
         "magnitude": 3.8,
         "depth_km": 13.6
-      }
-    },
-    {
-      "id": "usgs-tx2026qnhief",
-      "type": "earthquake",
-      "title": "M 1.7 - 55 km S of Whites City, New Mexico",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 31.682,
-      "longitude": -104.307,
-      "observed_at": "2026-08-22T20:41:53.613000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026qnhief",
-      "metadata": {
-        "magnitude": 1.7,
-        "depth_km": 4.9242
-      }
-    },
-    {
-      "id": "usgs-ci41533144",
-      "type": "earthquake",
-      "title": "M 1.7 - 12 km S of Lompoc, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 34.537,
-      "longitude": -120.480166666667,
-      "observed_at": "2026-08-22T20:39:49.150000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41533144",
-      "metadata": {
-        "magnitude": 1.74,
-        "depth_km": 5.5
       }
     },
     {
