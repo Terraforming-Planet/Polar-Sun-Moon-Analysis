@@ -1,10 +1,10 @@
 {
   "schema_version": "7.0",
   "project": "Terraforming Planet",
-  "generated_at": "2026-08-23T11:09:28.251542Z",
-  "event_count": 1017,
+  "generated_at": "2026-08-23T11:41:37.535390Z",
+  "event_count": 1024,
   "summary": {
-    "earthquake": 275,
+    "earthquake": 282,
     "fire": 611,
     "storm": 25,
     "ice": 3,
@@ -19,7 +19,7 @@
     {
       "source": "USGS",
       "status": "ok",
-      "count": 267
+      "count": 274
     },
     {
       "source": "NASA EONET",
@@ -39,19 +39,163 @@
   ],
   "events": [
     {
-      "id": "usgs-ci41533992",
+      "id": "usgs-ci41534024",
       "type": "earthquake",
-      "title": "M 1.3 - 8 km ENE of Heber, CA",
+      "title": "M 0.7 - 29 km SW of Maricopa, CA",
       "severity": "low",
       "status": "automatic",
-      "latitude": 32.7584991455078,
-      "longitude": -115.44766998291,
-      "observed_at": "2026-08-23T11:06:58.550000Z",
+      "latitude": 34.8575,
+      "longitude": -119.601,
+      "observed_at": "2026-08-23T11:37:09.950000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41534024",
+      "metadata": {
+        "magnitude": 0.72,
+        "depth_km": 9.46
+      }
+    },
+    {
+      "id": "usgs-hv75022837",
+      "type": "earthquake",
+      "title": "M 2.0 - 1 km S of Pāhala, Hawaii",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 19.1873340606689,
+      "longitude": -155.480331420898,
+      "observed_at": "2026-08-23T11:32:00.650000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75022837",
+      "metadata": {
+        "magnitude": 2.04,
+        "depth_km": 29.3700008392334
+      }
+    },
+    {
+      "id": "usgs-nc75423582",
+      "type": "earthquake",
+      "title": "M 0.7 - 4 km WNW of The Geysers, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 38.7948341369629,
+      "longitude": -122.799163818359,
+      "observed_at": "2026-08-23T11:30:44.900000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75423582",
+      "metadata": {
+        "magnitude": 0.74,
+        "depth_km": 3.52999997138977
+      }
+    },
+    {
+      "id": "usgs-us6000tmyk",
+      "type": "earthquake",
+      "title": "M 5.3 - southern Mid-Atlantic Ridge",
+      "severity": "moderate",
+      "status": "reviewed",
+      "latitude": -12.8299,
+      "longitude": -14.8524,
+      "observed_at": "2026-08-23T11:22:41.913000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tmyk",
+      "metadata": {
+        "magnitude": 5.3,
+        "depth_km": 10
+      }
+    },
+    {
+      "id": "usgs-nc75423577",
+      "type": "earthquake",
+      "title": "M 1.2 - 11 km ESE of Gilroy, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 36.9705009460449,
+      "longitude": -121.457664489746,
+      "observed_at": "2026-08-23T11:22:03.490000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75423577",
+      "metadata": {
+        "magnitude": 1.17,
+        "depth_km": 6.84000015258789
+      }
+    },
+    {
+      "id": "usgs-ci41534016",
+      "type": "earthquake",
+      "title": "M 0.8 - 6 km NNE of San Bernardino, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 34.1803333333333,
+      "longitude": -117.273333333333,
+      "observed_at": "2026-08-23T11:20:33.950000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41534016",
+      "metadata": {
+        "magnitude": 0.76,
+        "depth_km": 1.45
+      }
+    },
+    {
+      "id": "usgs-ci41534008",
+      "type": "earthquake",
+      "title": "M 0.6 - 12 km WSW of Ocotillo Wells, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 33.1093333333333,
+      "longitude": -116.252666666667,
+      "observed_at": "2026-08-23T11:09:52.860000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41534008",
+      "metadata": {
+        "magnitude": 0.55,
+        "depth_km": 10.4
+      }
+    },
+    {
+      "id": "usgs-ci41534000",
+      "type": "earthquake",
+      "title": "M 0.8 - 10 km ENE of Coso Junction, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 36.0645,
+      "longitude": -117.8355,
+      "observed_at": "2026-08-23T11:09:29.500000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41534000",
+      "metadata": {
+        "magnitude": 0.84,
+        "depth_km": 3.85
+      }
+    },
+    {
+      "id": "usgs-ci41533992",
+      "type": "earthquake",
+      "title": "M 1.3 - 9 km E of Heber, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 32.7393333333333,
+      "longitude": -115.434833333333,
+      "observed_at": "2026-08-23T11:06:58.530000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41533992",
       "metadata": {
-        "magnitude": 1.320595361424,
-        "depth_km": 11.5200004577637
+        "magnitude": 1.3,
+        "depth_km": 11.58
+      }
+    },
+    {
+      "id": "usgs-ci41533984",
+      "type": "earthquake",
+      "title": "M 0.3 - 11 km NE of Julian, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 33.1535,
+      "longitude": -116.518666666667,
+      "observed_at": "2026-08-23T11:06:36.750000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41533984",
+      "metadata": {
+        "magnitude": 0.32,
+        "depth_km": 6.56
       }
     },
     {
@@ -164,6 +308,22 @@
       "metadata": {
         "magnitude": 0.91,
         "depth_km": 2.54
+      }
+    },
+    {
+      "id": "usgs-us6000tmyf",
+      "type": "earthquake",
+      "title": "M 4.3 - 60 km NNW of Lae, Papua New Guinea",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": -6.2034,
+      "longitude": 146.8216,
+      "observed_at": "2026-08-23T10:44:51.354000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tmyf",
+      "metadata": {
+        "magnitude": 4.3,
+        "depth_km": 103.003
       }
     },
     {
@@ -1623,6 +1783,22 @@
       }
     },
     {
+      "id": "usgs-pr71529483",
+      "type": "earthquake",
+      "title": "M 2.1 - 8 km SSE of Maria Antonia, Puerto Rico",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 17.9086666666667,
+      "longitude": -66.8573333333333,
+      "observed_at": "2026-08-23T07:32:19.590000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/pr71529483",
+      "metadata": {
+        "magnitude": 2.11,
+        "depth_km": 10.81
+      }
+    },
+    {
       "id": "usgs-ci41533376",
       "type": "earthquake",
       "title": "M 2.2 - 11 km S of Lompoc, CA",
@@ -2476,14 +2652,14 @@
       "title": "M 1.3 - 9 km SSW of Big Spring, Texas",
       "severity": "low",
       "status": "automatic",
-      "latitude": 32.174,
-      "longitude": -101.527,
-      "observed_at": "2026-08-23T00:56:46.973000Z",
+      "latitude": 32.173,
+      "longitude": -101.528,
+      "observed_at": "2026-08-23T00:56:47.014000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026qnpuwe",
       "metadata": {
         "magnitude": 1.3,
-        "depth_km": 3.672
+        "depth_km": 3.7115
       }
     },
     {
@@ -4244,70 +4420,6 @@
       "metadata": {
         "magnitude": 2.1,
         "depth_km": 3.24000000953674
-      }
-    },
-    {
-      "id": "usgs-hv75022432",
-      "type": "earthquake",
-      "title": "M 2.1 - 0 km WNW of Pāhala, Hawaii",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 19.2056674957275,
-      "longitude": -155.483001708984,
-      "observed_at": "2026-08-22T11:37:11.020000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75022432",
-      "metadata": {
-        "magnitude": 2.05,
-        "depth_km": 33.7000007629395
-      }
-    },
-    {
-      "id": "usgs-nc75422922",
-      "type": "earthquake",
-      "title": "M 0.8 - 5 km NW of The Geysers, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 38.8091659545898,
-      "longitude": -122.790832519531,
-      "observed_at": "2026-08-22T11:26:02.190000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75422922",
-      "metadata": {
-        "magnitude": 0.77,
-        "depth_km": 3.47000002861023
-      }
-    },
-    {
-      "id": "usgs-se60506168",
-      "type": "earthquake",
-      "title": "M 2.0 - 7 km SSW of Canton, North Carolina",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 35.4708333333333,
-      "longitude": -82.8691666666667,
-      "observed_at": "2026-08-22T11:24:03.910000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/se60506168",
-      "metadata": {
-        "magnitude": 1.96,
-        "depth_km": 6.2
-      }
-    },
-    {
-      "id": "usgs-ci41532880",
-      "type": "earthquake",
-      "title": "M 1.1 - 9 km NW of Imperial, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 32.9096666666667,
-      "longitude": -115.629666666667,
-      "observed_at": "2026-08-22T11:12:22.530000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41532880",
-      "metadata": {
-        "magnitude": 1.14,
-        "depth_km": 5.47
       }
     },
     {
