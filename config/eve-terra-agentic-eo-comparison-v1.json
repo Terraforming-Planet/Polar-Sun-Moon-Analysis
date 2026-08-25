@@ -1,0 +1,104 @@
+{
+  "schema": "terra-eve-agentic-eo-comparison-v1",
+  "title": "Terra Agentic EO vs EVE-Instruct Comparative Benchmark v1",
+  "base_benchmark_config": "config/agentic-eo-benchmark-v1.json",
+  "scope": "Compare observable Agentic EO behavior on the frozen B01-B10 case set without changing historical benchmark results.",
+  "systems": {
+    "terra": {
+      "label": "Terra Agentic EO Coordinator",
+      "adapter": "terra",
+      "runner": "terra_research_node.agentic_eo.run_agentic_eo_with_trace",
+      "model_env": "OPENAI_AGENT_MODEL",
+      "runtime_class": "remote_agent_system"
+    },
+    "eve": {
+      "label": "EVE-Instruct + Terra parity harness",
+      "adapter": "eve_openai_compatible",
+      "model": "eve-esa/EVE-Instruct-GGUF-Q4_K_M",
+      "base_url_env": "EVE_BASE_URL",
+      "default_base_url": "http://127.0.0.1:8000/v1/chat/completions",
+      "runtime": "vllm",
+      "runtime_class": "local_model_plus_parity_tools",
+      "tool_call_parser": "mistral",
+      "temperature": 0,
+      "max_turns": 8
+    }
+  },
+  "fairness": {
+    "same_question_text": true,
+    "same_frozen_case_config": true,
+    "same_repository_evidence": true,
+    "same_deterministic_source_registry": true,
+    "same_deterministic_calculator": true,
+    "same_required_final_sections": true,
+    "answer_key_visible_to_models": false,
+    "network_browsing_in_parity_track": false,
+    "fine_tuning_before_baseline": false
+  },
+  "logical_capabilities": {
+    "source_selection": {
+      "terra_tools": ["consult_eo_source_scout"],
+      "eve_tools": ["search_eo_sources"]
+    },
+    "evidence_verification": {
+      "terra_tools": ["consult_evidence_verifier"],
+      "eve_tools": ["load_evidence_case", "verify_evidence_case", "load_training_context"]
+    },
+    "deterministic_calculation": {
+      "terra_tools": ["compare_surface_water_areas"],
+      "eve_tools": ["compare_surface_water_areas"]
+    }
+  },
+  "eve_allowed_tools": [
+    "search_eo_sources",
+    "load_evidence_case",
+    "verify_evidence_case",
+    "load_training_context",
+    "compare_surface_water_areas"
+  ],
+  "execution": {
+    "smoke_repetitions": 1,
+    "publish_repetitions": 3,
+    "gpu_sample_interval_seconds": 1.0,
+    "retain_failed_runs": true,
+    "cherry_pick_best_run": false
+  },
+  "metrics": [
+    "observable_assertion_pass_rate",
+    "strict_case_pass_rate",
+    "logical_tool_routing_success",
+    "provenance_safety_failures",
+    "scientific_claim_safety_failures",
+    "self_recovery_behavior",
+    "wall_clock_seconds",
+    "turn_count",
+    "tool_call_count",
+    "token_usage_when_available",
+    "gpu_peak_memory_mib_when_available",
+    "gpu_utilization_when_available",
+    "gpu_power_draw_when_available"
+  ],
+  "local_eve_hardware_target": {
+    "preferred_gpu": "NVIDIA L4",
+    "expected_vram_gib_approx": 24,
+    "required_gpu": false,
+    "cpu_fallback_must_be_labeled": true
+  },
+  "publication": {
+    "local_run_root": "research_runs/eve-terra",
+    "public_json": "published/agentic-eo/eve-terra-v1-summary.json",
+    "public_markdown": "published/agentic-eo/eve-terra-v1-summary.md",
+    "publish_only_from_real_run": true,
+    "include_raw_chain_of_thought": false,
+    "include_tool_arguments": false,
+    "include_raw_tool_outputs": false,
+    "required_attribution_label": "EVE-Instruct + Terra parity harness"
+  },
+  "external_public_sources": {
+    "eve_model": "https://huggingface.co/eve-esa/EVE-Instruct",
+    "eve_quantized_model": "https://huggingface.co/eve-esa/EVE-Instruct-GGUF-Q4_K_M",
+    "eve_agents": "https://github.com/eve-esa/agents",
+    "eve_mcp_registry": "https://github.com/eve-esa/mcp-tool-registry",
+    "eve_evalkit": "https://github.com/eve-esa/evalkit"
+  }
+}
