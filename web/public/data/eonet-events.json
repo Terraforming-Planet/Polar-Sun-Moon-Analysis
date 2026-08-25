@@ -1,7 +1,34 @@
 {
-  "generatedUtc": "2026-08-25T13:33:40.376799Z",
+  "generatedUtc": "2026-08-25T14:27:03.362051Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
+    {
+      "id": "EONET_23286",
+      "title": "Tropical Storm Julio",
+      "categories": [
+        "Severe Storms"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 40.0,
+        "magnitudeUnit": "kts",
+        "date": "2026-08-25T06:00:00Z",
+        "type": "Point",
+        "coordinates": [
+          -119.9,
+          14.9
+        ]
+      },
+      "sources": [
+        {
+          "id": "JTWC",
+          "url": "https://www.metoc.navy.mil/jtwc/products/ep1026.tcw"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23286",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
     {
       "id": "EONET_23209",
       "title": "Wildfire Old Deer, Carson, Texas",
@@ -5374,36 +5401,38 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21400",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_21405",
-      "title": "Wildfire Egypt, Harney, Oregon",
-      "categories": [
-        "Wildfires"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 4685.0,
-        "magnitudeUnit": "acres",
-        "date": "2026-07-16T20:11:00Z",
-        "type": "Point",
-        "coordinates": [
-          -119.468417,
-          43.727167
-        ]
-      },
-      "sources": [
-        {
-          "id": "IRWIN",
-          "url": "https://irwin.doi.gov/observer/incidents/2026-ORMAF-002671"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21405",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
+    {
+      "type": "Feature",
+      "id": "EONET_23286",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -119.9,
+          14.9
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Tropical Storm Julio",
+        "categories": [
+          "Severe Storms"
+        ],
+        "observationUtc": "2026-08-25T06:00:00Z",
+        "observation_time": "2026-08-25T06:00:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23286",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23286",
+        "sources": [
+          {
+            "id": "JTWC",
+            "url": "https://www.metoc.navy.mil/jtwc/products/ep1026.tcw"
+          }
+        ]
+      }
+    },
     {
       "type": "Feature",
       "id": "EONET_23209",
@@ -11171,35 +11200,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-OROCF-000500"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_21405",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -119.468417,
-          43.727167
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Wildfire Egypt, Harney, Oregon",
-        "categories": [
-          "Wildfires"
-        ],
-        "observationUtc": "2026-07-16T20:11:00Z",
-        "observation_time": "2026-07-16T20:11:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21405",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21405",
-        "sources": [
-          {
-            "id": "IRWIN",
-            "url": "https://irwin.doi.gov/observer/incidents/2026-ORMAF-002671"
           }
         ]
       }
