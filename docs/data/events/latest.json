@@ -1,10 +1,10 @@
 {
   "schema_version": "7.0",
   "project": "Terraforming Planet",
-  "generated_at": "2026-08-25T19:51:09.831977Z",
-  "event_count": 1021,
+  "generated_at": "2026-08-25T20:13:23.188064Z",
+  "event_count": 1025,
   "summary": {
-    "earthquake": 279,
+    "earthquake": 283,
     "storm": 29,
     "fire": 609,
     "ice": 3,
@@ -19,7 +19,7 @@
     {
       "source": "USGS",
       "status": "ok",
-      "count": 271
+      "count": 275
     },
     {
       "source": "NASA EONET",
@@ -39,19 +39,83 @@
   ],
   "events": [
     {
+      "id": "usgs-aka2026qvlgrk",
+      "type": "earthquake",
+      "title": "M 2.4 - 63 km NE of Whittier, Alaska",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 61.124,
+      "longitude": -147.758,
+      "observed_at": "2026-08-25T20:02:23.237000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qvlgrk",
+      "metadata": {
+        "magnitude": 2.4,
+        "depth_km": 13.6
+      }
+    },
+    {
+      "id": "usgs-aka2026qvlfsy",
+      "type": "earthquake",
+      "title": "M 3.4 - 56 km WNW of Nanwalek, Alaska",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 59.515,
+      "longitude": -152.86,
+      "observed_at": "2026-08-25T20:01:13.329000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026qvlfsy",
+      "metadata": {
+        "magnitude": 3.4,
+        "depth_km": 96
+      }
+    },
+    {
+      "id": "usgs-hv75023872",
+      "type": "earthquake",
+      "title": "M 2.3 - 16 km N of Kukuihaele, Hawaii",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 20.2691669464111,
+      "longitude": -155.582168579102,
+      "observed_at": "2026-08-25T19:52:39.360000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75023872",
+      "metadata": {
+        "magnitude": 2.26,
+        "depth_km": 15.7799997329712
+      }
+    },
+    {
+      "id": "usgs-ci41536400",
+      "type": "earthquake",
+      "title": "M 1.0 - 18 km SSW of Ocotillo Wells, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 33.0021666666667,
+      "longitude": -116.2335,
+      "observed_at": "2026-08-25T19:47:53.610000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41536400",
+      "metadata": {
+        "magnitude": 0.96,
+        "depth_km": 7.41
+      }
+    },
+    {
       "id": "usgs-tx2026qssrhj",
       "type": "earthquake",
       "title": "M 1.5 - 36 km NNW of Toyah, Texas",
       "severity": "low",
       "status": "automatic",
-      "latitude": 31.601,
-      "longitude": -103.974,
-      "observed_at": "2026-08-25T19:46:50.891000Z",
+      "latitude": 31.603,
+      "longitude": -103.977,
+      "observed_at": "2026-08-25T19:46:50.676000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026qssrhj",
       "metadata": {
         "magnitude": 1.5,
-        "depth_km": 4.6761
+        "depth_km": 5.3155
       }
     },
     {
@@ -68,6 +132,22 @@
       "metadata": {
         "magnitude": 1.93,
         "depth_km": 12.87
+      }
+    },
+    {
+      "id": "usgs-us7000tbtn",
+      "type": "earthquake",
+      "title": "M 4.3 - 169 km SSE of Vilyuchinsk, Russia",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 51.5035,
+      "longitude": 159.2777,
+      "observed_at": "2026-08-25T19:33:01.086000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tbtn",
+      "metadata": {
+        "magnitude": 4.3,
+        "depth_km": 35
       }
     },
     {
@@ -164,6 +244,22 @@
       "metadata": {
         "magnitude": 0.71,
         "depth_km": 2.3
+      }
+    },
+    {
+      "id": "usgs-us7000tbtj",
+      "type": "earthquake",
+      "title": "M 4.2 - 192 km SSE of Sarangani, Philippines",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 3.693,
+      "longitude": 125.8069,
+      "observed_at": "2026-08-25T19:16:11.963000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tbtj",
+      "metadata": {
+        "magnitude": 4.2,
+        "depth_km": 386.382
       }
     },
     {
@@ -1097,17 +1193,17 @@
     {
       "id": "usgs-ci41536056",
       "type": "earthquake",
-      "title": "M 1.6 - 9 km SSW of Valencia, CA",
+      "title": "M 1.5 - 9 km SSW of Valencia, CA",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 34.3831666666667,
-      "longitude": -118.626,
-      "observed_at": "2026-08-25T12:42:57.090000Z",
+      "status": "reviewed",
+      "latitude": 34.3861666666667,
+      "longitude": -118.625,
+      "observed_at": "2026-08-25T12:42:57.060000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41536056",
       "metadata": {
-        "magnitude": 1.58,
-        "depth_km": 3.3
+        "magnitude": 1.54,
+        "depth_km": 4.5
       }
     },
     {
@@ -1460,6 +1556,22 @@
       "metadata": {
         "magnitude": 1.05,
         "depth_km": 1.47000002861023
+      }
+    },
+    {
+      "id": "usgs-uw714085692",
+      "type": "earthquake",
+      "title": "M 1.4 - 0 km NNW of North Bend, Washington",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 47.5028333333333,
+      "longitude": -121.790166666667,
+      "observed_at": "2026-08-25T10:19:15.080000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uw714085692",
+      "metadata": {
+        "magnitude": 1.42,
+        "depth_km": 18.24
       }
     },
     {
@@ -4324,54 +4436,6 @@
       "metadata": {
         "magnitude": 3.9,
         "depth_km": 125.5
-      }
-    },
-    {
-      "id": "usgs-uw714085432",
-      "type": "earthquake",
-      "title": "M 0.6 Explosion - 1 km SE of Kapowsin, Washington",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 46.9738333333333,
-      "longitude": -122.2065,
-      "observed_at": "2026-08-24T20:09:17.520000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uw714085432",
-      "metadata": {
-        "magnitude": 0.6,
-        "depth_km": -0.48
-      }
-    },
-    {
-      "id": "usgs-uw714085412",
-      "type": "earthquake",
-      "title": "M 1.3 Explosion - 11 km S of Rainier, Washington",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 46.784,
-      "longitude": -122.6595,
-      "observed_at": "2026-08-24T19:58:28.720000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uw714085412",
-      "metadata": {
-        "magnitude": 1.25,
-        "depth_km": -0.38
-      }
-    },
-    {
-      "id": "usgs-tx2026qqxill",
-      "type": "earthquake",
-      "title": "M 1.7 - 58 km S of Whites City, New Mexico",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 31.65,
-      "longitude": -104.395,
-      "observed_at": "2026-08-24T19:57:10.346000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026qqxill",
-      "metadata": {
-        "magnitude": 1.7,
-        "depth_km": 6.228
       }
     },
     {
