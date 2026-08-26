@@ -1,0 +1,224 @@
+{
+  "schema": "terra-training-004-tp26-sar-federation-v1",
+  "title": "Training #4 — TP-26 Federated SAR and Water Observation Track",
+  "purpose": "Use the TP-26 Global Virtual Constellation as a legal/public multi-provider routing and validation layer for SAR, hydrology and water-observation training. The goal is architecture improvement and cross-sensor generalization, not provider ranking.",
+  "tp26_role": {
+    "model": "TP-26 Global Virtual Constellation",
+    "registry": "web/public/data/tp26-global-sources.json",
+    "principle": "TP-26 is a virtual federation of observation sources and processing routes. It is not a claim that Terraforming Planet owns, controls or partners with the listed satellites, agencies or companies.",
+    "routing_dimensions": [
+      "phenomenon/task suitability",
+      "sensor physics and frequency band",
+      "acquisition time",
+      "coverage/AOI",
+      "native resolution",
+      "quality/cloud/NoData flags",
+      "processing level",
+      "licence/access conditions",
+      "reproducibility",
+      "latency"
+    ]
+  },
+  "training_tracks": {
+    "sar_c_band": {
+      "priority": 1,
+      "sources": [
+        "ESA/European Commission Copernicus Sentinel-1 through CDSE",
+        "NASA JPL OPERA RTC-S1 derived from Sentinel-1",
+        "NASA JPL OPERA DSWx-S1 for validated dynamic surface-water extent where applicable"
+      ],
+      "roles": [
+        "primary modern SAR stream",
+        "flood and surface-water extent context",
+        "river/channel morphology under cloud",
+        "reference product for water classification where DSWx-S1 is valid"
+      ],
+      "allowed_inputs": [
+        "RTC backscatter products",
+        "VV/VH polarization where available",
+        "product metadata",
+        "DSWx-S1 classification layers",
+        "quality/provenance metadata"
+      ],
+      "guardrails": [
+        "Do not call rendered preview luma calibrated sigma0/gamma0.",
+        "Do not infer water depth or hydrological cause from SAR intensity alone.",
+        "Do not claim paleochannel ground truth without independently verified labels."
+      ]
+    },
+    "sar_l_band": {
+      "priority": 2,
+      "sources": [
+        "JAXA ALOS PALSAR",
+        "JAXA ALOS-2 PALSAR-2",
+        "JAXA JERS-1 SAR global mosaics where officially released"
+      ],
+      "roles": [
+        "cross-frequency generalization check against Sentinel-1 C-band",
+        "longer historical SAR context",
+        "independent provider validation",
+        "vegetation/land-structure complementary radar representation"
+      ],
+      "default_data_policy": "Prefer JAXA officially released free global mosaics/high-level research products. Do not assume unrestricted access to standard PALSAR-3 or other account/proposal-gated products.",
+      "guardrails": [
+        "Preserve JAXA/METI attribution and terms of use.",
+        "Do not redistribute source products contrary to their licence.",
+        "Keep acquisition-date metadata because annual mosaics are not temporal averages unless the source states otherwise."
+      ]
+    },
+    "optical_context": {
+      "priority": 3,
+      "sources": [
+        "NASA GIBS MODIS/VIIRS",
+        "USGS/NASA Landsat",
+        "Copernicus Sentinel-2",
+        "Digital Earth Australia analysis-ready Landsat/Sentinel-2",
+        "INPE Brazil Data Cube / CBERS / Amazonia-1 where applicable"
+      ],
+      "roles": [
+        "visual/reflectance context",
+        "historical comparison",
+        "cross-modality consistency checks",
+        "cloud-limited complement to SAR"
+      ]
+    },
+    "terrain_and_water_cycle": {
+      "priority": 4,
+      "sources": [
+        "Copernicus DEM",
+        "NASA/CNES SWOT",
+        "NASA GRACE/GRACE-FO",
+        "NASA SMAP",
+        "NASA GPM where available through CMR",
+        "NOAA/GEBCO bathymetry and multibeam metadata for coastal/ocean context"
+      ],
+      "roles": [
+        "terrain/drainage context",
+        "water-surface elevation and slope",
+        "regional terrestrial-water-storage context",
+        "surface-soil-moisture context",
+        "precipitation context",
+        "coastal/seafloor context"
+      ],
+      "guardrails": [
+        "SWOT water-surface elevation is not bathymetry by itself.",
+        "GRACE/GRACE-FO is regional and must not be used to locate a small aquifer.",
+        "SMAP does not provide local subsurface fracture/aquifer maps.",
+        "NOAA multibeam sonar is an in-situ/shipborne acoustic source, not SAR and not a satellite replacement."
+      ]
+    }
+  },
+  "tp26_provider_roles": {
+    "active_or_public_first": [
+      {
+        "provider": "ESA / European Commission — CDSE",
+        "use": "Sentinel-1/2/3 discovery, metadata and selected public/authorized product access",
+        "status": "primary"
+      },
+      {
+        "provider": "NASA Earthdata / JPL OPERA",
+        "use": "RTC-S1 and DSWx-S1 products plus CMR/GIBS discovery/streaming",
+        "status": "primary"
+      },
+      {
+        "provider": "USGS / NASA Landsat",
+        "use": "long optical record and independent historical context",
+        "status": "primary"
+      },
+      {
+        "provider": "JAXA EORC",
+        "use": "official free PALSAR/PALSAR-2/JERS-1 global SAR mosaics for L-band diversity",
+        "status": "secondary-public-validation"
+      },
+      {
+        "provider": "CEOS / WGISS",
+        "use": "federated discovery and interoperability reference; not treated as one sensor",
+        "status": "discovery-backbone"
+      },
+      {
+        "provider": "NOAA / GEBCO",
+        "use": "weather/ocean/bathymetry context and multibeam source registry",
+        "status": "context"
+      }
+    ],
+    "conditional_authorized_only": [
+      {
+        "provider": "CSA / NRCan RADARSAT Constellation Mission / RADARSAT-2",
+        "rule": "Use only after authentication/licence terms are verified for the specific research product."
+      },
+      {
+        "provider": "CONAE SAOCOM",
+        "rule": "Use only after official product access and redistribution terms are verified."
+      },
+      {
+        "provider": "DLR TerraSAR-X / TanDEM-X",
+        "rule": "Use only through an allowed public/research/proposal path."
+      },
+      {
+        "provider": "ASI COSMO-SkyMed",
+        "rule": "Use only through an allowed account/proposal/research path."
+      },
+      {
+        "provider": "KARI KOMPSAT-5",
+        "rule": "Use only under an explicit authorized/commercial/research licence."
+      },
+      {
+        "provider": "ICEYE / Capella / other commercial SAR providers",
+        "rule": "Never use by default. Integrate only under an explicit research, disaster-response or commercial licence and keep all licensed assets outside the public repository unless redistribution is expressly permitted."
+      }
+    ]
+  },
+  "dataset_design": {
+    "target_training_patches_total": 500000,
+    "patch_resolution": 512,
+    "minimum_cross_provider_holdout": true,
+    "minimum_cross_geography_holdout": true,
+    "minimum_cross_time_holdout": true,
+    "recommended_distribution": {
+      "sentinel1_opera_c_band_percent": 35,
+      "jaxa_l_band_percent": 15,
+      "optical_percent": 30,
+      "dem_water_cycle_context_percent": 20
+    },
+    "note": "Percentages are initial sampling targets, not quotas. The builder must reduce/skip a source when licence, quality, coverage, temporal comparability or rate-limit rules require it."
+  },
+  "evidence_package_for_agents": [
+    "provider",
+    "mission",
+    "sensor/band/polarization",
+    "product/processing level",
+    "product or granule identifier",
+    "acquisition UTC",
+    "AOI/footprint",
+    "native resolution",
+    "quality/cloud/NoData metadata",
+    "deterministic pixel/area/backscatter-derived metrics only when scientifically valid",
+    "source-specific limitations",
+    "licence/access state",
+    "provenance URL/identifier",
+    "evidence class"
+  ],
+  "agent_question": "Given this multi-provider TP-26 evidence package, what can be concluded, what remains unknown, which independent observation should be requested next, and what would falsify the current hypothesis?",
+  "agent_systems": [
+    "Terra Agentic EO Coordinator",
+    "EVE-Instruct through official hosted API if available, otherwise an official eve-esa checkpoint on ephemeral cloud GPU"
+  ],
+  "learning_goal": "Generate architecture lessons for a better planetary-observation system: provider routing, sensor complementarity, failure recovery, uncertainty, provenance, cross-sensor validation and missing-observation detection.",
+  "not_goals": [
+    "provider ranking",
+    "claiming partnership/endorsement by listed organizations",
+    "declaring Terra or EVE globally superior",
+    "inventing environmental ground truth from training loss",
+    "downloading full mission archives",
+    "bypassing access/licence controls"
+  ],
+  "acceptance_gates": [
+    "Every used asset has provider, product ID, acquisition time/coverage and licence/access provenance.",
+    "Sentinel-1 C-band and at least one independent JAXA L-band public product are represented in the full run if operationally available.",
+    "DSWx-S1 is treated as a validated NASA water product, not universal ground truth for every hydrological question.",
+    "Restricted/commercial TP-26 providers remain disabled unless explicit authorization is recorded.",
+    "No benchmark B01-B10 samples enter training.",
+    "Cross-provider/geography/time holdouts remain untouched until evaluation.",
+    "All regressions and source failures are reported."
+  ]
+}
