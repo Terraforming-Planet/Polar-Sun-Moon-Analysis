@@ -4,8 +4,8 @@ import argparse
 import json
 import math
 import time
-from collections import Counter
 from collections.abc import Iterable
+from collections import Counter
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Protocol, cast
@@ -161,14 +161,15 @@ def _compact_item(item: dict[str, Any]) -> dict[str, object]:
     safe_properties = properties if isinstance(properties, dict) else {}
     platform = safe_properties.get("platform")
     instruments = safe_properties.get("instruments")
+    item_datetime = _item_datetime(item)
     return {
         "status": "selected",
         "stac_collection": str(item.get("collection", LANDSAT_SR_COLLECTION)),
         "stac_item_id": str(item.get("id", "")),
         "stac_item_href": _self_href(item),
         "datetime": (
-            _item_datetime(item).isoformat().replace("+00:00", "Z")
-            if _item_datetime(item) is not None
+            item_datetime.isoformat().replace("+00:00", "Z")
+            if item_datetime is not None
             else None
         ),
         "cloud_cover_percent": _cloud_cover(item),
