@@ -4,15 +4,14 @@ import argparse
 import json
 import math
 import time
-from collections.abc import Iterable
 from collections import Counter
+from collections.abc import Iterable
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Protocol, cast
 from urllib.parse import urlparse
 
 import requests
-
 
 USGS_LANDSAT_STAC = "https://landsatlook.usgs.gov/stac-server/search"
 LANDSAT_SR_COLLECTION = "landsat-c2l2-sr"
