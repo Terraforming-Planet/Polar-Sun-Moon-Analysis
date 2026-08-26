@@ -9,7 +9,6 @@ from terra_research_node.water_cycle_manifest import (
     quota_counts,
 )
 
-
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "config" / "training-004-water-cycle-30y.json"
 REGIONS = ROOT / "config" / "global_training_regions.json"
