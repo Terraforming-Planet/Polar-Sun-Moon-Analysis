@@ -1,17 +1,17 @@
 {
   "schema_version": "7.0",
   "project": "Terraforming Planet",
-  "generated_at": "2026-08-26T10:02:23.805827Z",
-  "event_count": 984,
+  "generated_at": "2026-08-26T10:49:17.619954Z",
+  "event_count": 988,
   "summary": {
-    "earthquake": 242,
+    "earthquake": 246,
     "storm": 29,
     "fire": 609,
     "ice": 3,
     "volcano": 8,
-    "flood": 81,
+    "flood": 82,
     "other": 7,
-    "landslide": 3,
+    "landslide": 2,
     "transport_accident": 1,
     "industrial_accident": 1
   },
@@ -19,7 +19,7 @@
     {
       "source": "USGS",
       "status": "ok",
-      "count": 234
+      "count": 238
     },
     {
       "source": "NASA EONET",
@@ -38,6 +38,86 @@
     }
   ],
   "events": [
+    {
+      "id": "usgs-nc75425352",
+      "type": "earthquake",
+      "title": "M 1.9 - 21 km SE of Pinnacles, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 36.398998260498,
+      "longitude": -120.983833312988,
+      "observed_at": "2026-08-26T10:45:00.890000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75425352",
+      "metadata": {
+        "magnitude": 1.91,
+        "depth_km": 7.8600001335144
+      }
+    },
+    {
+      "id": "usgs-ci41536736",
+      "type": "earthquake",
+      "title": "M 0.9 - 16 km NNE of Borrego Springs, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 33.3796666666667,
+      "longitude": -116.282,
+      "observed_at": "2026-08-26T10:43:59.450000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41536736",
+      "metadata": {
+        "magnitude": 0.86,
+        "depth_km": 11.55
+      }
+    },
+    {
+      "id": "usgs-ok2026qrvd",
+      "type": "earthquake",
+      "title": "M 2.6 - 5 km S of Meno, Oklahoma",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 36.33651733,
+      "longitude": -98.17487335,
+      "observed_at": "2026-08-26T10:33:23.242000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ok2026qrvd",
+      "metadata": {
+        "magnitude": 2.63,
+        "depth_km": 5
+      }
+    },
+    {
+      "id": "usgs-ci41536728",
+      "type": "earthquake",
+      "title": "M 0.9 - 11 km ESE of Coso Junction, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 36.024,
+      "longitude": -117.831,
+      "observed_at": "2026-08-26T10:32:03.600000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41536728",
+      "metadata": {
+        "magnitude": 0.94,
+        "depth_km": 1.14
+      }
+    },
+    {
+      "id": "usgs-hv75024167",
+      "type": "earthquake",
+      "title": "M 2.1 - 10 km SE of Leilani Estates, Hawaii",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 19.3918342590332,
+      "longitude": -154.855834960938,
+      "observed_at": "2026-08-26T10:07:22.420000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75024167",
+      "metadata": {
+        "magnitude": 2.11,
+        "depth_km": 3.82999992370605
+      }
+    },
     {
       "id": "usgs-ci41536720",
       "type": "earthquake",
@@ -535,6 +615,22 @@
       }
     },
     {
+      "id": "usgs-pr71529808",
+      "type": "earthquake",
+      "title": "M 2.3 - 3 km S of Palmarejo, Puerto Rico",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 18.0091666666667,
+      "longitude": -67.0798333333333,
+      "observed_at": "2026-08-26T06:15:03.040000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/pr71529808",
+      "metadata": {
+        "magnitude": 2.31,
+        "depth_km": 13.9
+      }
+    },
+    {
       "id": "usgs-nc75425267",
       "type": "earthquake",
       "title": "M 1.0 - 7 km ESE of Cloverdale, CA",
@@ -836,6 +932,22 @@
       "metadata": {
         "magnitude": 1.06,
         "depth_km": 1.5
+      }
+    },
+    {
+      "id": "usgs-pr71529868",
+      "type": "earthquake",
+      "title": "M 2.4 - 9 km NNE of Cruz Bay, U.S. Virgin Islands",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 18.4085,
+      "longitude": -64.7465,
+      "observed_at": "2026-08-26T04:15:35.530000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/pr71529868",
+      "metadata": {
+        "magnitude": 2.42,
+        "depth_km": 93.91
       }
     },
     {
@@ -1241,17 +1353,17 @@
     {
       "id": "usgs-tx2026qtbyru",
       "type": "earthquake",
-      "title": "M 1.1 - 10 km NNW of Big Spring, Texas",
+      "title": "M 1.0 - 11 km NNW of Big Spring, Texas",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 32.341,
-      "longitude": -101.524,
-      "observed_at": "2026-08-26T00:25:39.611000Z",
+      "status": "reviewed",
+      "latitude": 32.337,
+      "longitude": -101.536,
+      "observed_at": "2026-08-26T00:25:40.537000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026qtbyru",
       "metadata": {
-        "magnitude": 1.1,
-        "depth_km": 4.3129
+        "magnitude": 1,
+        "depth_km": 4.5166
       }
     },
     {
@@ -3735,54 +3847,6 @@
       }
     },
     {
-      "id": "usgs-ci41535992",
-      "type": "earthquake",
-      "title": "M 0.5 - 22 km NE of Pine Valley, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 32.9383333333333,
-      "longitude": -116.335666666667,
-      "observed_at": "2026-08-25T10:44:22.720000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41535992",
-      "metadata": {
-        "magnitude": 0.5,
-        "depth_km": 8.64
-      }
-    },
-    {
-      "id": "usgs-nc75424832",
-      "type": "earthquake",
-      "title": "M 1.1 - 7 km WNW of Cobb, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 38.8373336791992,
-      "longitude": -122.798667907715,
-      "observed_at": "2026-08-25T10:34:21.020000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75424832",
-      "metadata": {
-        "magnitude": 1.05,
-        "depth_km": 1.47000002861023
-      }
-    },
-    {
-      "id": "usgs-uw714085692",
-      "type": "earthquake",
-      "title": "M 1.4 - 0 km NNW of North Bend, Washington",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 47.5028333333333,
-      "longitude": -121.790166666667,
-      "observed_at": "2026-08-25T10:19:15.080000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uw714085692",
-      "metadata": {
-        "magnitude": 1.42,
-        "depth_km": 18.24
-      }
-    },
-    {
       "id": "eonet-EONET_23286",
       "type": "storm",
       "title": "Tropical Storm Julio",
@@ -3876,16 +3940,16 @@
       "title": "Tropical Storm Iselle",
       "severity": "moderate",
       "status": "open",
-      "latitude": 21.1,
-      "longitude": -122.1,
+      "latitude": 21.5,
+      "longitude": -122.9,
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -122.1,
-          21.1
+          -122.9,
+          21.5
         ]
       },
-      "observed_at": "2026-08-26T00:00:00Z",
+      "observed_at": "2026-08-26T06:00:00Z",
       "source": "NASA EONET",
       "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23205",
       "metadata": {
@@ -4272,16 +4336,16 @@
       "title": "Typhoon Saudel",
       "severity": "moderate",
       "status": "open",
-      "latitude": 27.8,
-      "longitude": 127.3,
+      "latitude": 28.3,
+      "longitude": 126.5,
       "geometry": {
         "type": "Point",
         "coordinates": [
-          127.3,
-          27.8
+          126.5,
+          28.3
         ]
       },
-      "observed_at": "2026-08-26T00:00:00Z",
+      "observed_at": "2026-08-26T06:00:00Z",
       "source": "NASA EONET",
       "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22926",
       "metadata": {
@@ -4624,16 +4688,16 @@
       "title": "Tropical Storm Lala",
       "severity": "moderate",
       "status": "open",
-      "latitude": 35.1,
-      "longitude": -177.4,
+      "latitude": 35.3,
+      "longitude": -177.6,
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -177.4,
-          35.1
+          -177.6,
+          35.3
         ]
       },
-      "observed_at": "2026-08-26T00:00:00Z",
+      "observed_at": "2026-08-26T06:00:00Z",
       "source": "NASA EONET",
       "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22563",
       "metadata": {
@@ -14783,6 +14847,26 @@
       }
     },
     {
+      "id": "cems-EMSR927",
+      "type": "flood",
+      "title": "Flood in Nepal",
+      "severity": "high",
+      "status": "active",
+      "latitude": 28.212231792029492,
+      "longitude": 85.35376299877846,
+      "observed_at": "2026-08-25T22:00:00",
+      "source": "Copernicus EMS",
+      "source_url": "https://mapping.emergency.copernicus.eu/activations/EMSR927",
+      "metadata": {
+        "code": "EMSR927",
+        "products": 0,
+        "countries": [
+          "Nepal"
+        ],
+        "gdacs_id": null
+      }
+    },
+    {
       "id": "cems-EMSR926",
       "type": "flood",
       "title": "Flood in Latvia and Lithuania",
@@ -19776,26 +19860,6 @@
         "products": 2,
         "countries": [
           "Spain"
-        ],
-        "gdacs_id": null
-      }
-    },
-    {
-      "id": "cems-EMSR666",
-      "type": "landslide",
-      "title": "Landslides in Slovenia",
-      "severity": "moderate",
-      "status": "closed",
-      "latitude": 46.416441,
-      "longitude": 15.578957,
-      "observed_at": "2023-05-17T00:00:00",
-      "source": "Copernicus EMS",
-      "source_url": "https://mapping.emergency.copernicus.eu/activations/EMSR666",
-      "metadata": {
-        "code": "EMSR666",
-        "products": 0,
-        "countries": [
-          "Slovenia"
         ],
         "gdacs_id": null
       }
