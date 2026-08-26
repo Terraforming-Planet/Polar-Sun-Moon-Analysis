@@ -1,0 +1,137 @@
+{
+  "schema": "terra-training-004-planet-observation-v1",
+  "title": "Training #4 — Planet Observation Multi-Source Streaming + Agentic EO Lessons",
+  "purpose": "Improve a public-good Earth-observation system by combining efficient large-stream self-supervised vision training with evidence-grounded agent evaluation. This is not a model-vs-model contest.",
+  "hardware_target": {
+    "gpu": "NVIDIA L4 24 GB",
+    "recommended_vcpu": "12-16",
+    "recommended_ram_gb": "32-64",
+    "recommended_ephemeral_nvme_gb": 100,
+    "cpu_upgrade_rule": "Do not add CPU blindly. Increase CPU only when decode/preprocess utilization is saturated while the GPU input queue is starved."
+  },
+  "training_003_reference": {
+    "run_id": "stream_gibs_20260820T013036Z",
+    "remote_unique_windows_trained": 200016,
+    "elapsed_seconds": 3293.797,
+    "windows_per_second": 60.7251,
+    "steps_per_second": 2.5345,
+    "batch_size_final": 24,
+    "workers": 32,
+    "remote_download_bytes": 1822759168,
+    "diagnosis": "Training and streaming were tightly coupled. 24 * 2.5345 ~= 60.8 samples/s, essentially matching the observed stream rate. Training #4 must decouple fetch/decode from GPU optimization and measure queue starvation explicitly."
+  },
+  "vision_stream": {
+    "target_training_patches": 500000,
+    "patch_resolution": 512,
+    "initial_batch_size": 24,
+    "target_content_unique_percent_min": 85,
+    "sources": [
+      "NASA GIBS MODIS/VIIRS imagery",
+      "USGS/NASA Landsat official catalogue/assets where windowed access is available",
+      "Copernicus Sentinel-1/2/3 through official CDSE interfaces where legal/public and operational"
+    ],
+    "rules": [
+      "Do not download full satellite archives.",
+      "Prefer tile/chunk/COG/window reads and reuse one fetched source chunk for multiple local 512x512 patches.",
+      "Respect provider rate limits and backoff.",
+      "Cache only ephemeral research data outside Git.",
+      "Self-supervised training is allowed without pixel labels; supervised segmentation requires legitimate labels and separate geographic/time splits."
+    ]
+  },
+  "pipeline_v2": {
+    "stages": [
+      "async_fetch",
+      "bounded_ephemeral_cache",
+      "parallel_decode_preprocess",
+      "pinned_memory_prefetch",
+      "gpu_training"
+    ],
+    "prefetch_batches_target": 12,
+    "adaptive_concurrency": true,
+    "telemetry_required": [
+      "gpu_utilization_percent",
+      "gpu_memory_used_mb",
+      "gpu_power_watts",
+      "cpu_utilization_percent",
+      "network_bytes_per_second",
+      "fetch_latency_ms_p50",
+      "fetch_latency_ms_p95",
+      "decode_ms_p50",
+      "decode_ms_p95",
+      "ready_queue_depth",
+      "gpu_wait_for_data_seconds",
+      "cache_hit_rate_percent",
+      "windows_per_second",
+      "steps_per_second"
+    ],
+    "bottleneck_rules": {
+      "data_or_network_bound": "GPU utilization low + ready queue repeatedly empty + CPU not saturated",
+      "cpu_decode_bound": "GPU utilization low + ready queue empty + CPU/decode workers saturated",
+      "gpu_bound": "ready queue remains healthy + GPU utilization high",
+      "remote_service_latency_bound": "network bandwidth modest but fetch p95 high despite allowed concurrency and low local CPU pressure"
+    }
+  },
+  "agentic_public_good_track": {
+    "curriculum_config": "config/agentic-eo-public-good-training-v1.json",
+    "frozen_external_benchmark": "config/agentic-eo-benchmark-v1.json",
+    "systems": [
+      "Terra Agentic EO Coordinator",
+      "EVE-Instruct through official hosted API if available, otherwise official eve-esa checkpoint on ephemeral cloud L4"
+    ],
+    "shared_evidence_package": [
+      "source agency/mission/instrument",
+      "acquisition or observation date",
+      "AOI/bbox",
+      "spatial resolution",
+      "cloud/quality metadata where available",
+      "deterministic derived metrics",
+      "evidence class",
+      "limitations",
+      "provenance identifiers/URLs"
+    ],
+    "rule": "EVE-Instruct is text-first in this experiment. Do not pretend it directly inspected raw pixels unless the tested endpoint/model demonstrably supports that modality. Give both systems the same structured evidence package for the reasoning track."
+  },
+  "public_good_topics": [
+    "flood and surface-water monitoring",
+    "river morphology and channel change",
+    "wildfire/thermal context",
+    "drought and vegetation stress",
+    "glacier/snow/ice change",
+    "coast/estuary change",
+    "soil-moisture and terrestrial-water-storage scale limits",
+    "missing-data and source-failure honesty"
+  ],
+  "experimental_order": [
+    "freeze baseline before any adaptation",
+    "5-minute fetch/decode/GPU pipeline calibration",
+    "20k-patch smoke training",
+    "500k-patch full Training #4 if smoke gates pass",
+    "evaluate untouched internal holdout",
+    "evaluate untouched B01-B10 external benchmark",
+    "generate shared lessons report from deterministic scores and observed failures"
+  ],
+  "smoke_gates": {
+    "max_failure_rate_percent": 0.5,
+    "no_secret_leak": true,
+    "no_training_test_leakage": true,
+    "must_record_gpu_wait_for_data": true,
+    "must_record_provider_backoff": true
+  },
+  "success_criteria": {
+    "primary": [
+      "reduce GPU starvation versus Training #3",
+      "increase content diversity",
+      "preserve provenance and scientific claim boundaries",
+      "improve holdout behavior without tuning on B01-B10",
+      "identify shared architecture improvements for planetary observation"
+    ],
+    "not_a_success_criterion": "Declaring one organization/model globally better than another"
+  },
+  "evidence_policy": {
+    "official_public_only": true,
+    "environmental_ground_truth_claim_from_training": false,
+    "causal_environmental_claim_from_training": false,
+    "publish_failures_and_regressions": true,
+    "publish_chain_of_thought": false
+  }
+}
