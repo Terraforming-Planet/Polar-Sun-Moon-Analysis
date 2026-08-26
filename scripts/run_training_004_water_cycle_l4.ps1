@@ -223,6 +223,10 @@ try {
     }
     $trainerModule = Join-Path $repoRoot 'terra_research_node\water_cycle_training.py'
     if (Test-Path $trainerModule) { $trainingModules += 'terra_research_node/water_cycle_training.py' }
+    $trainingModules += @(
+        'terra_research_node/water_cycle_pipeline.py',
+        'terra_research_node/water_cycle_agentic.py'
+    )
 
     Invoke-Checked 'MYPY TRAINING 004 MODULES' {
         & $python -m mypy @trainingModules

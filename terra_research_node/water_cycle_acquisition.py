@@ -161,6 +161,8 @@ def _compact_item(item: dict[str, Any]) -> dict[str, object]:
     platform = safe_properties.get("platform")
     instruments = safe_properties.get("instruments")
     item_datetime = _item_datetime(item)
+    raw_assets = item.get("assets")
+    asset_ids = sorted(str(key) for key in raw_assets) if isinstance(raw_assets, dict) else []
     return {
         "status": "selected",
         "stac_collection": str(item.get("collection", LANDSAT_SR_COLLECTION)),
@@ -174,6 +176,7 @@ def _compact_item(item: dict[str, Any]) -> dict[str, object]:
         "cloud_cover_percent": _cloud_cover(item),
         "platform": platform if isinstance(platform, str) else None,
         "instruments": instruments if isinstance(instruments, list) else None,
+        "asset_identifiers": asset_ids,
         "provider": "USGS Landsat Collection 2 Level-2 Surface Reflectance",
         "evidence_class": "OBSERVATION",
         "pixel_data_downloaded": False,
