@@ -14,15 +14,29 @@ def test_investigation_page_contains_authorization_and_safety_boundaries() -> No
         text = _read(path)
         assert "Dostęp specjalny wymaga oficjalnych uprawnień" in text
         assert "rozpoznawanie twarzy" in text
-        assert "śledzenie konkretnej osoby" in text
+        assert "bez wymaganej autoryzacji" in text
         assert "automatyczne przypisywanie winy" in text
         assert "wnioskowanie o poglądach politycznych" in text
         assert "wskazywanie celów do użycia siły" in text
 
 
+def test_investigation_page_defines_rapid_emergency_authorization() -> None:
+    for path in (PUBLISHED, SOURCE):
+        text = _read(path)
+        assert "RAPID EMERGENCY AUTHORIZATION" in text
+        assert "maksymalnie 1 godziny" in text
+        assert "skradziony pojazd" in text
+        assert "porwaniem dziecka" in text
+        assert "bezpośrednie zagrożenie" in text
+        assert "celem operacyjnym systemu, nie obietnicą prawną" in text
+        assert "nie może samodzielnie wybrać człowieka jako celu" in text
+
+
 def test_investigation_page_surfaces_requested_public_good_case_families() -> None:
     for path in (PUBLISHED, SOURCE):
         text = _read(path)
+        assert "Pilne odzyskanie skradzionego pojazdu" in text
+        assert "Porwanie lub bezpośrednie zagrożenie życia" in text
         assert "Zabójstwo lub poważne przestępstwo" in text
         assert "Korupcja lub nadużycia infrastrukturalne" in text
         assert "Przestępczość zorganizowana" in text
@@ -46,6 +60,7 @@ def test_public_and_source_pages_share_core_investigation_copy() -> None:
     required = [
         "GEOFORENSICS · PUBLIC EVIDENCE · HUMAN SAFETY",
         "PUBLIC DEMO · RESTRICTED OPERATIONS",
+        "RAPID EMERGENCY AUTHORIZATION",
         "AUTHENTICITY & SHARED REALITY",
         "PLANETARY SAFETY",
     ]
