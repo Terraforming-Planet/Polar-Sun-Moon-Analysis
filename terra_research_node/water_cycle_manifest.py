@@ -156,6 +156,23 @@ def _category_schedule(config: dict[str, Any], total: int, seed: int) -> list[st
     return schedule
 
 
+def _sample_center(region: Region, index: int) -> dict[str, float]:
+    """Place deterministic nearby windows across the registered AOI without upsampling."""
+    if region["span_deg"] <= 0.0:
+        return {"lat": region["lat"], "lon": region["lon"]}
+
+    modulus = 1_000_003
+    u = ((index * 2654435761) % modulus) / (modulus - 1)
+    v = ((index * 2246822519 + 3266489917) % modulus) / (modulus - 1)
+    usable_span = region["span_deg"] * 0.80
+    lat = region["lat"] + (u - 0.5) * usable_span
+    lon = region["lon"] + (v - 0.5) * usable_span
+    return {
+        "lat": max(-89.8, min(89.8, lat)),
+        "lon": max(-180.0, min(180.0, lon)),
+    }
+
+
 def _season_definition(lat: float, index: int) -> dict[str, object]:
     spring_first = index % 2 == 0
     if abs(lat) < 23.5:
@@ -239,7 +256,9 @@ def iter_manifest_records(
         category_index[category] += 1
         pool = pools[category]
         region = pool[local_index % len(pool)]
-        season = _season_definition(region["lat"], local_index)
+        region_sample_index = local_index // len(pool)
+        center = _sample_center(region, region_sample_index)
+        season = _season_definition(center["lat"], local_index)
         temporal = _temporal_pair(local_index)
         experimental = None
         if category == "experimental_paleochannel_counterfactual":
@@ -251,7 +270,8 @@ def iter_manifest_records(
             "category": category,
             "region_id": region["id"],
             "region_name": region["name"],
-            "center": {"lat": region["lat"], "lon": region["lon"]},
+            "region_center": {"lat": region["lat"], "lon": region["lon"]},
+            "sample_center": center,
             "region_span_deg": region["span_deg"],
             "region_tags": region["tags"],
             "season": season,
@@ -264,12 +284,16 @@ def iter_manifest_records(
             "acquisition_policy": {
                 "optical_preferred_cloud_percent_max": 15,
                 "optical_fallback_cloud_percent_max": 30,
+                "qa_pixel_required": True,
                 "no_valid_optical_action": "UNKNOWN_and_optional_SAR_complement",
                 "official_public_only": True,
                 "require_product_or_granule_id": True,
+                "landsat_sensor_id_required": True,
+                "harmonize_band_semantics_across_landsat_eras": True,
+                "landsat7_slc_off_gaps_after_2003_05_30": "mask_as_invalid_not_water_loss",
             },
             "preferred_evidence": [
-                "Landsat Collection 2 Level-2 Surface Reflectance",
+                "Landsat Collection 2 Level-2 Surface Reflectance COG bands plus QA",
                 "Sentinel-2 Level-2A for recent detail",
                 "Sentinel-1/OPERA radar when complementary or cloud-limited",
                 "NASADEM or authorized Copernicus DEM context",
