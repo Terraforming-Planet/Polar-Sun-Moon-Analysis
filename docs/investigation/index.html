@@ -1,4 +1,90 @@
 <!doctype html>
-<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><meta name="description" content="Geospatial investigation support based on authentic Earth observation products."/><title>Investigation Support · Terraforming Planet</title><link rel="stylesheet" href="../multi-angle/styles.css"/>    <meta name="terra-evidence-api" content="https://terra-observation-evidence-explainer.xodobrox.workers.dev" />
-</head><body><header class="topbar"><a href="../">← Terra Observation</a><nav><a href="../multi-angle/">Obserwacja wielokątowa</a><a class="active" href="./">Investigation Support</a></nav></header><main><section class="hero"><p class="eyebrow">GEOFORENSICS · CHANGE DETECTION</p><h1>Investigation Support</h1><p>Wpisz adres, wybierz obszar i dwa okresy. Współrzędne są opcjonalne i ukryte domyślnie.</p></section><section class="panel"><form id="case-form"><label>Rodzaj analizy<select id="case-type"><option>Porwanie lub trasa pojazdu — analiza obszaru</option><option>Kradzież lub zdarzenie — analiza zmian</option><option>Nielegalna wycinka</option><option>Nielegalne górnictwo</option><option>Pożar i miejsce początku</option><option>Szkody powodziowe</option><option>Inne zdarzenie</option></select></label><label class="address-field">Adres lub nazwa miejsca<input id="address" type="search" placeholder="np. ulica, miasto, kraj"/><button id="geocode" type="button" class="secondary">Znajdź adres</button></label><label class="coordinate-toggle"><input id="manual-coordinates" type="checkbox"/> Pokaż ręczne współrzędne</label><div id="coordinate-fields" class="coordinate-fields" hidden><label>Szerokość<input id="lat" type="number" step="0.0001" min="-90" max="90" value="52.2297"/></label><label>Długość<input id="lon" type="number" step="0.0001" min="-180" max="180" value="21.0122"/></label></div><label>Okres „przed” — od<input id="before-from" type="date" value="2024-03-01" required/></label><label>Okres „przed” — do<input id="before-to" type="date" value="2024-04-30" required/></label><label>Okres „po” — od<input id="after-from" type="date" value="2024-05-01" required/></label><label>Okres „po” — do<input id="after-to" type="date" value="2024-06-30" required/></label><label>Promień obszaru (km)<input id="radius" type="number" min="0.1" max="100" step="0.1" value="2" required/></label><label>Sensor<select id="collection"><option value="sentinel-2-l2a">Sentinel-2 optyczny</option><option value="sentinel-1-grd">Sentinel-1 radar SAR</option></select></label><button type="submit">Utwórz pakiet porównawczy</button></form></section><section class="status" id="status" aria-live="polite">Wpisz adres i dwa okresy.</section><section id="case-summary" class="summary"></section><section id="results" class="results"></section></main><script type="module" src="./app.js"></script>    <script src="/Polar-Sun-Moon-Analysis/contest-runtime.js" defer></script>
-</body></html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="description" content="Geospatial investigation support based on authentic Earth observation products, public evidence and strict authorization boundaries."/>
+  <title>Investigation Support · Terraforming Planet</title>
+  <link rel="stylesheet" href="../multi-angle/styles.css"/>
+    <meta name="terra-evidence-api" content="https://terra-observation-evidence-explainer.xodobrox.workers.dev" />
+</head>
+<body>
+<header class="topbar"><a href="../">← Terra Observation</a><nav><a href="../multi-angle/">Obserwacja wielokątowa</a><a class="active" href="./">Investigation Support</a></nav></header>
+<main>
+  <section class="hero">
+    <p class="eyebrow">GEOFORENSICS · PUBLIC EVIDENCE · HUMAN SAFETY</p>
+    <h1>Investigation Support</h1>
+    <p>Wsparcie analizy miejsca i zmian w czasie na podstawie autentycznych produktów obserwacji Ziemi i innych legalnych, oficjalnych lub publicznie dostępnych źródeł. System ma pomagać weryfikować fakty — nie wskazywać automatycznie winnych.</p>
+  </section>
+
+  <section class="panel">
+    <p class="eyebrow">PUBLIC DEMO · RESTRICTED OPERATIONS</p>
+    <h2>Dostęp specjalny wymaga oficjalnych uprawnień</h2>
+    <p>Publiczna wersja działa wyłącznie na danych publicznych i analizie obszarowej. Operacyjne, ukierunkowane śledzenie w sprawach karnych lub bezpieczeństwa może należeć wyłącznie do wydzielonego trybu dla uprawnionych organów i tylko wtedy, gdy istnieje oficjalnie zarejestrowana sprawa, podstawa prawna, zgoda właściwego organu, wymóg konieczności i proporcjonalności, nadzór człowieka, ograniczenie czasowe oraz audytowalny rejestr działań. Ta strona nie przyznaje takich uprawnień.</p>
+    <p><strong>Niedozwolone w publicznym systemie:</strong> rozpoznawanie twarzy, operacyjne śledzenie konkretnej osoby lub prywatnego pojazdu bez wymaganej autoryzacji, przechwytywanie prywatnej komunikacji, automatyczne przypisywanie winy, wnioskowanie o poglądach politycznych, masowa obserwacja ludzi ani wskazywanie celów do użycia siły.</p>
+  </section>
+
+  <section class="panel" style="margin-top:1rem">
+    <p class="eyebrow">RAPID EMERGENCY AUTHORIZATION</p>
+    <h2>Cel operacyjny: decyzja w ciągu maksymalnie 1 godziny</h2>
+    <p>W sytuacji pilnej system powinien skracać drogę od zgłoszenia do legalnej decyzji operacyjnej. Przykłady obejmują skradziony pojazd należący do pokrzywdzonego, pojazd bezpośrednio powiązany z porwaniem dziecka albo aktywną sprawę dotyczącą osoby stwarzającej bezpośrednie zagrożenie dla innych. Jeżeli odpowiednie dane obserwacyjne są legalnie dostępne, uprawniony funkcjonariusz powinien otrzymać możliwie szybki dostęp do analizy i czasowo ograniczonego śledzenia zgodnie z obowiązującym prawem.</p>
+    <p><strong>≤ 1 godzina jest celem operacyjnym systemu, nie obietnicą prawną.</strong> W trybach nagłego zagrożenia procedura może być szybsza, jeżeli pozwalają na to przepisy. W innych jurysdykcjach wymagane zgody mogą wyglądać inaczej. AI może porządkować dowody, wskazywać pilność i przygotowywać pakiet decyzyjny, ale nie może samodzielnie wybrać człowieka jako celu, rozpocząć śledzenia ani przedłużać go bez zatwierdzenia.</p>
+  </section>
+
+  <section class="panel" style="margin-top:1rem">
+    <form id="case-form">
+      <label>Rodzaj analizy
+        <select id="case-type">
+          <option>Zgłoszone zdarzenie lub osoba zaginiona — analiza zmian miejsca</option>
+          <option>Pilne odzyskanie skradzionego pojazdu — tryb operacyjny po autoryzacji</option>
+          <option>Porwanie lub bezpośrednie zagrożenie życia — tryb operacyjny po autoryzacji</option>
+          <option>Osoba stwarzająca bezpośrednie zagrożenie w aktywnej sprawie — tryb operacyjny po autoryzacji</option>
+          <option>Zabójstwo lub poważne przestępstwo — analiza miejsca i zmian, bez automatycznego ustalania winy</option>
+          <option>Korupcja lub nadużycia infrastrukturalne — porównanie publicznych danych, bez ustalania winy</option>
+          <option>Przestępczość zorganizowana lub nielegalna działalność — analiza obszaru dla uprawnionych organów</option>
+          <option>Kradzież lub szkoda majątkowa — analiza zmian</option>
+          <option>Nielegalna wycinka</option>
+          <option>Nielegalne górnictwo</option>
+          <option>Naruszenia na terenie rezerwatu lub obszaru chronionego</option>
+          <option>Ochrona zwierząt i siedlisk — analiza obszarowa</option>
+          <option>Pożar i analiza obszaru początku</option>
+          <option>Szkody powodziowe</option>
+          <option>Konflikt lub kryzys humanitarny — weryfikacja szkód i zmian, bez targetowania</option>
+          <option>Weryfikacja materiału AI/deepfake — korelacja miejsca, czasu i zdarzenia z niezależnymi źródłami</option>
+          <option>Inne zdarzenie</option>
+        </select>
+      </label>
+      <label class="address-field">Adres lub nazwa miejsca<input id="address" type="search" placeholder="np. ulica, miasto, kraj"/><button id="geocode" type="button" class="secondary">Znajdź adres</button></label>
+      <label class="coordinate-toggle"><input id="manual-coordinates" type="checkbox"/> Pokaż ręczne współrzędne</label>
+      <div id="coordinate-fields" class="coordinate-fields" hidden><label>Szerokość<input id="lat" type="number" step="0.0001" min="-90" max="90" value="52.2297"/></label><label>Długość<input id="lon" type="number" step="0.0001" min="-180" max="180" value="21.0122"/></label></div>
+      <label>Okres „przed” — od<input id="before-from" type="date" value="2024-03-01" required/></label>
+      <label>Okres „przed” — do<input id="before-to" type="date" value="2024-04-30" required/></label>
+      <label>Okres „po” — od<input id="after-from" type="date" value="2024-05-01" required/></label>
+      <label>Okres „po” — do<input id="after-to" type="date" value="2024-06-30" required/></label>
+      <label>Promień obszaru (km)<input id="radius" type="number" min="0.1" max="100" step="0.1" value="2" required/></label>
+      <label>Sensor<select id="collection"><option value="sentinel-2-l2a">Sentinel-2 optyczny</option><option value="sentinel-1-grd">Sentinel-1 radar SAR</option></select></label>
+      <button type="submit">Utwórz pakiet porównawczy</button>
+    </form>
+  </section>
+
+  <section class="panel" style="margin-top:1rem">
+    <p class="eyebrow">AUTHENTICITY & SHARED REALITY</p>
+    <h2>AI, propaganda i weryfikacja rzeczywistości</h2>
+    <p>W świecie generatywnego AI coraz ważniejsze staje się porównywanie nagrań, zdjęć i publicznych twierdzeń z niezależnymi źródłami. Dane satelitarne mogą pomóc sprawdzić, czy deklarowane miejsce, czas, pogoda, zniszczenia, pożar, powódź albo zmiana infrastruktury są zgodne z oficjalnymi obserwacjami. Nie oznacza to jednak, że satelita samodzielnie potrafi rozstrzygnąć autentyczność każdego filmu.</p>
+    <p>W konfliktach i sporach politycznych system powinien służyć przede wszystkim dokumentowaniu szkód, ochronie ludności, środowiska i infrastruktury oraz budowaniu wspólnej, weryfikowalnej podstawy faktów. Może wspierać deeskalację i odpowiedzialność, ale nie podejmuje decyzji politycznych ani militarnych.</p>
+  </section>
+
+  <section class="panel" style="margin-top:1rem">
+    <p class="eyebrow">PLANETARY SAFETY</p>
+    <h2>Bezpieczeństwo ludzi, zwierząt i obszarów chronionych</h2>
+    <p>Długoterminowy kierunek obejmuje wykrywanie zmian środowiskowych, szkód katastroficznych, naruszeń w rezerwatach i innych zdarzeń widocznych w legalnych danych obserwacyjnych. AI ma zmniejszać czas potrzebny na przegląd ogromnych zbiorów danych i kierować uwagę człowieka do miejsc wymagających sprawdzenia, a nie zastępować sąd, śledczego, ratownika, naukowca ani organ ochrony przyrody.</p>
+  </section>
+
+  <section class="status" id="status" aria-live="polite">Wpisz adres i dwa okresy.</section>
+  <section id="case-summary" class="summary"></section>
+  <section id="results" class="results"></section>
+</main>
+<script type="module" src="./app.js"></script>
+    <script src="/Polar-Sun-Moon-Analysis/contest-runtime.js" defer></script>
+</body>
+</html>
