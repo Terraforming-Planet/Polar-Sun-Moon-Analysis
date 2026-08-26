@@ -13,6 +13,9 @@ from .common import AssetRef, EvidenceClass, GateState
 SR_SCALE = 0.0000275
 SR_OFFSET = -0.2
 REQUIRED_SEMANTICS = ("green", "red", "nir", "swir1", "qa_pixel")
+USGS_LANDSATLOOK_HOST = "landsatlook.usgs.gov"
+USGS_LANDSATLOOK_DATA_PREFIX = "/data/"
+USGS_LANDSAT_S3_PREFIX = "s3://usgs-landsat/"
 
 # Collection 2 STAC keys vary across revisions. Matching is semantic and inspected
 # from the live item; no fixed key is assumed to exist.
@@ -54,6 +57,19 @@ class RasterBackend(Protocol):
     def read(self, href: str, bbox: tuple[float, float, float, float], size: int) -> np.ndarray: ...
 
 
+def official_cloud_href(href: str) -> str:
+    """Map the USGS STAC HTTPS data facade to the official requester-pays S3 object."""
+    parsed = urlparse(href)
+    if (
+        parsed.scheme in {"http", "https"}
+        and parsed.hostname == USGS_LANDSATLOOK_HOST
+        and parsed.path.startswith(USGS_LANDSATLOOK_DATA_PREFIX)
+    ):
+        key = parsed.path.removeprefix(USGS_LANDSATLOOK_DATA_PREFIX).lstrip("/")
+        return f"{USGS_LANDSAT_S3_PREFIX}{key}"
+    return href
+
+
 def _asset_aliases(key: str, raw: Mapping[str, Any]) -> set[str]:
     aliases = {key.lower()}
     title = raw.get("title")
@@ -92,7 +108,7 @@ def semantic_assets(item: Mapping[str, Any]) -> dict[str, AssetRef]:
             if not isinstance(value, dict) or not (_asset_aliases(str(key), value) & wanted_lower):
                 continue
             href = value.get("href")
-            if not isinstance(href, str) or urlparse(href).scheme not in {"https", "http"}:
+            if not isinstance(href, str) or urlparse(href).scheme not in {"https", "http", "s3"}:
                 continue
             mapped[semantic] = AssetRef(
                 str(key),
@@ -152,34 +168,55 @@ def quality_gate(
 
 
 class RasterioCogBackend:
-    """Reads only an AOI window from a range-capable COG through rasterio/GDAL."""
+    """Reads only an AOI window from official USGS Collection 2 COGs."""
 
     def read(self, href: str, bbox: tuple[float, float, float, float], size: int) -> np.ndarray:
         try:
             rasterio = import_module("rasterio")
+            RasterioIOError = import_module("rasterio.errors").RasterioIOError
             Resampling = import_module("rasterio.enums").Resampling
             transform_bounds = import_module("rasterio.warp").transform_bounds
             from_bounds = import_module("rasterio.windows").from_bounds
         except ImportError as exc:
             raise RuntimeError("rasterio is required for scientific COG window reads") from exc
-        with (
-            rasterio.Env(GDAL_HTTP_MULTIRANGE="YES", GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR"),
-            rasterio.open(href) as dataset,
-        ):
-            bounds = transform_bounds("EPSG:4326", dataset.crs, *bbox, densify_pts=21)
-            window = (
-                from_bounds(*bounds, transform=dataset.transform).round_offsets().round_lengths()
+
+        cloud_href = official_cloud_href(href)
+        env: dict[str, str] = {
+            "GDAL_HTTP_MULTIRANGE": "YES",
+            "GDAL_DISABLE_READDIR_ON_OPEN": "EMPTY_DIR",
+        }
+        if cloud_href.startswith(USGS_LANDSAT_S3_PREFIX):
+            env.update(
+                {
+                    "AWS_REQUEST_PAYER": "requester",
+                    "AWS_REGION": "us-west-2",
+                }
             )
-            return cast(
-                np.ndarray,
-                dataset.read(
-                    1,
-                    window=window,
-                    out_shape=(size, size),
-                    resampling=Resampling.nearest,
-                    masked=True,
-                ),
-            )
+
+        try:
+            with rasterio.Env(**env), rasterio.open(cloud_href) as dataset:
+                bounds = transform_bounds("EPSG:4326", dataset.crs, *bbox, densify_pts=21)
+                window = (
+                    from_bounds(*bounds, transform=dataset.transform).round_offsets().round_lengths()
+                )
+                return cast(
+                    np.ndarray,
+                    dataset.read(
+                        1,
+                        window=window,
+                        out_shape=(size, size),
+                        resampling=Resampling.nearest,
+                        masked=True,
+                    ),
+                )
+        except RasterioIOError as exc:
+            if cloud_href.startswith(USGS_LANDSAT_S3_PREFIX):
+                raise RuntimeError(
+                    "Official USGS Landsat Collection 2 requester-pays S3 read failed. "
+                    "Configure valid AWS credentials with requester-pays access or use an "
+                    "authenticated USGS M2M acquisition path; do not fall back to preview imagery."
+                ) from exc
+            raise
 
 
 def read_scientific_window(
@@ -199,7 +236,12 @@ def read_scientific_window(
     qa = backend.read(assets["qa_pixel"].href, bbox, size)
     gate = quality_gate(np.asarray(qa), landsat7_slc_off=slc_off)
     provenance = {
-        semantic: {"asset_key": asset.key, "href": asset.href} for semantic, asset in assets.items()
+        semantic: {
+            "asset_key": asset.key,
+            "catalog_href": asset.href,
+            "cloud_href": official_cloud_href(asset.href),
+        }
+        for semantic, asset in assets.items()
     }
     if gate.state == GateState.UNAVAILABLE:
         return {
