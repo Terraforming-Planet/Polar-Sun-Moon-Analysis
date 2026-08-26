@@ -4,13 +4,21 @@ on:
   pull_request:
     branches: ["main"]
     paths:
+      - "CODEX_TRAINING_004_WATER_CYCLE_L4_EXECUTION.md"
       - "config/training-004-water-cycle-30y.json"
+      - "docs/TRAINING_004_LAST_20_PR_SYNTHESIS.md"
+      - "docs/TRAINING_004_WATER_CYCLE_30Y.md"
       - "terra_research_node/water_cycle_manifest.py"
       - "terra_research_node/water_cycle_acquisition.py"
+      - "terra_research_node/training004_sources/**"
+      - "terra_research_node/water_cycle_training.py"
       - "scripts/build_training_004_water_cycle_manifest.py"
       - "scripts/resolve_training_004_water_cycle_landsat.py"
+      - "scripts/run_training_004_water_cycle_l4.ps1"
+      - "scripts/run_training_004_water_cycle_l4.py"
       - "tests/test_water_cycle_manifest.py"
       - "tests/test_water_cycle_acquisition.py"
+      - "tests/test_training004_water_cycle*.py"
       - ".github/workflows/training-004-water-cycle.yml"
   workflow_dispatch:
 
@@ -69,3 +77,10 @@ jobs:
             terra_research_node/water_cycle_acquisition.py \
             scripts/build_training_004_water_cycle_manifest.py \
             scripts/resolve_training_004_water_cycle_landsat.py
+
+      - name: Parse PowerShell orchestrator
+        shell: pwsh
+        run: |
+          $content = Get-Content scripts/run_training_004_water_cycle_l4.ps1 -Raw
+          [void][scriptblock]::Create($content)
+          Write-Host 'PowerShell syntax OK'
