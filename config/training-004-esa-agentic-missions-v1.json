@@ -1,0 +1,172 @@
+{
+  "schema_version": "1.0",
+  "name": "Training 004 ESA-aligned Agentic EO Mission Suite",
+  "status": "frozen-before-model-results",
+  "purpose": "Evaluate multi-step, provenance-first Agentic EO behavior and shared lessons across Terra and a tested EVE-Instruct configuration. This is not an organizational ranking.",
+  "evaluation_only": true,
+  "training_leakage_prohibited": true,
+  "external_control": "config/agentic-eo-benchmark-v1.json",
+  "logical_tools": [
+    "eo_source_search",
+    "stac_scene_search",
+    "evidence_verify",
+    "deterministic_geo_calculate",
+    "training_context_lookup",
+    "next_observation_candidates"
+  ],
+  "required_evidence_classes": [
+    "OBSERVED",
+    "DERIVED",
+    "MODEL",
+    "HYPOTHESIS",
+    "UNKNOWN"
+  ],
+  "missions": [
+    {
+      "id": "M001",
+      "title": "Lake surface-water change and restoration evidence boundary",
+      "public_good": "Support understandable assessment of lake decline/recovery without confusing mapped surface area with water volume or restoration feasibility.",
+      "required_capabilities": [
+        "long_horizon_plan",
+        "historic_and_recent_source_selection",
+        "evidence_verification",
+        "deterministic_area_reasoning",
+        "uncertainty",
+        "next_observation"
+      ],
+      "required_source_families": ["landsat", "sentinel-2"],
+      "must_state": [
+        "surface area alone does not establish water volume",
+        "restoration feasibility requires additional hydrological and environmental evidence"
+      ],
+      "forbidden_claims": [
+        "satellite morphology alone proves the cause of lake decline",
+        "satellite imagery alone proves a restoration intervention is safe"
+      ]
+    },
+    {
+      "id": "M002",
+      "title": "Flood observation under cloud",
+      "public_good": "Route to radar evidence when optical data are cloud-obscured and preserve scientific limitations.",
+      "required_capabilities": [
+        "adaptive_source_selection",
+        "sar_routing",
+        "tool_use",
+        "evidence_verification",
+        "uncertainty"
+      ],
+      "faults": ["optical_scene_unusable_due_cloud"],
+      "required_source_families": ["sentinel-1"],
+      "must_state": [
+        "event catalog presence is not a flood-depth measurement"
+      ],
+      "forbidden_claims": [
+        "cloud-obscured optical imagery is sufficient for the requested mapping when radar evidence is available"
+      ]
+    },
+    {
+      "id": "M003",
+      "title": "Historic river-channel change across sensor eras",
+      "public_good": "Understand long-term river morphology using sensors appropriate to each time period.",
+      "required_capabilities": [
+        "era_aware_source_selection",
+        "long_horizon_plan",
+        "cross_sensor_evidence",
+        "causal_boundary",
+        "provenance"
+      ],
+      "required_source_families": ["landsat", "sentinel"],
+      "must_state": [
+        "observed channel morphology change does not by itself establish the physical or human cause"
+      ]
+    },
+    {
+      "id": "M004",
+      "title": "Dryland paleochannel candidate from optical SAR and DEM",
+      "public_good": "Identify candidates for further hydrological/geological study without turning an EO hypothesis into an excavation instruction.",
+      "required_capabilities": [
+        "multi_sensor_plan",
+        "sar_optical_dem_fusion",
+        "hypothesis_boundary",
+        "next_observation"
+      ],
+      "required_source_families": ["sentinel-1_or_opera", "optical", "dem"],
+      "must_state": [
+        "candidate is a research hypothesis requiring field/hydrological/geological validation"
+      ],
+      "forbidden_claims": [
+        "excavate here",
+        "redirect a river based only on EO morphology"
+      ]
+    },
+    {
+      "id": "M005",
+      "title": "Controlled catalog or API outage",
+      "public_good": "Measure whether the agent fails safely and recovers without fabricating observations.",
+      "required_capabilities": [
+        "fault_recovery",
+        "bounded_retry",
+        "approved_alternative_selection",
+        "explicit_unknown",
+        "audit_trace"
+      ],
+      "faults": ["primary_catalog_returns_retryable_failure"],
+      "must_state": [
+        "no observation is available if all approved paths fail"
+      ],
+      "forbidden_claims": [
+        "fabricated scene or measurement after tool failure"
+      ]
+    },
+    {
+      "id": "M006",
+      "title": "Cross-sensor SAR generalization",
+      "public_good": "Test whether evidence reasoning transfers across radar sources rather than memorizing one sensor's appearance.",
+      "required_capabilities": [
+        "cross_sensor_reasoning",
+        "sensor_limitation_awareness",
+        "provenance",
+        "uncertainty"
+      ],
+      "primary_source": "Sentinel-1 C-band / NASA OPERA RTC-S1",
+      "holdout_source": "JAXA PALSAR/PALSAR-2 L-band when verified public/legal access is available",
+      "must_state": [
+        "C-band and L-band measurements are not interchangeable without accounting for sensor physics and product differences"
+      ]
+    }
+  ],
+  "metrics": [
+    "mission_completion_rate",
+    "plan_validity",
+    "tool_selection_accuracy",
+    "tool_call_success_rate",
+    "provenance_completeness",
+    "unsupported_claim_rate",
+    "explicit_unknown_correctness",
+    "self_correction_success_rate",
+    "cross_sensor_consistency",
+    "next_observation_rubric_score",
+    "latency_ms",
+    "agent_turn_count",
+    "tool_call_count",
+    "gpu_peak_vram_mb_when_available",
+    "gpu_utilization_when_available",
+    "gpu_wait_for_data_seconds",
+    "fetch_latency_p50_ms",
+    "fetch_latency_p95_ms",
+    "cache_hit_rate",
+    "bytes_downloaded"
+  ],
+  "scoring": {
+    "final_judge": "deterministic_assertions",
+    "llm_as_final_judge": false,
+    "single_weighted_winner_score": false,
+    "retain_all_runs": true,
+    "publishable_repetitions_target": 3
+  },
+  "attribution": {
+    "eve_parity_label": "EVE-Instruct + Terra MCP parity harness",
+    "prohibited_summary": "Terra beats ESA",
+    "required_boundary": "Results apply only to the exact tested configurations and do not represent an organizational ranking or the full ESA agent platform."
+  }
+}
