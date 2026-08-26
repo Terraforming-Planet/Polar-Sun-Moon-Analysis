@@ -9,6 +9,7 @@ from terra_research_node.training004_sources.landsat import (
     SR_OFFSET,
     SR_SCALE,
     decode_qa_pixel,
+    official_cloud_href,
     read_scientific_window,
     semantic_assets,
 )
@@ -61,6 +62,22 @@ def test_mission_aware_assets_and_scientific_scale() -> None:
     assert result["state"] == "READY"
     assert np.isclose(result["bands"]["green"][0, 0], 10_000 * SR_SCALE + SR_OFFSET)
     assert result["native_resolution_m"] == 30
+
+
+def test_usgs_landsatlook_data_href_rewrites_to_official_requester_pays_s3() -> None:
+    href = (
+        "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/"
+        "2020/001/001/LC08_TEST/LC08_TEST_SR_B3.TIF"
+    )
+    assert official_cloud_href(href) == (
+        "s3://usgs-landsat/collection02/level-2/standard/oli-tirs/"
+        "2020/001/001/LC08_TEST/LC08_TEST_SR_B3.TIF"
+    )
+
+
+def test_non_usgs_asset_href_is_not_rewritten() -> None:
+    href = "https://example.test/data/scene.tif"
+    assert official_cloud_href(href) == href
 
 
 def test_usgs_underscore_platform_schema_is_supported() -> None:
