@@ -19,16 +19,26 @@
   <section class="panel">
     <p class="eyebrow">PUBLIC DEMO · RESTRICTED OPERATIONS</p>
     <h2>Dostęp specjalny wymaga oficjalnych uprawnień</h2>
-    <p>Publiczna wersja działa wyłącznie na danych publicznych i analizie obszarowej. Zastosowania operacyjne w sprawach karnych lub bezpieczeństwa powinny wymagać oficjalnego zgłoszenia sprawy, podstawy prawnej, upoważnienia właściwego organu, kontroli dostępu i audytowalnego rejestru działań. Ta strona nie przyznaje takich uprawnień.</p>
-    <p><strong>Niedozwolone w publicznym systemie:</strong> rozpoznawanie twarzy, śledzenie konkretnej osoby lub prywatnego pojazdu, przechwytywanie prywatnej komunikacji, automatyczne przypisywanie winy, wnioskowanie o poglądach politycznych, masowa obserwacja ludzi ani wskazywanie celów do użycia siły.</p>
+    <p>Publiczna wersja działa wyłącznie na danych publicznych i analizie obszarowej. Operacyjne, ukierunkowane śledzenie w sprawach karnych lub bezpieczeństwa może należeć wyłącznie do wydzielonego trybu dla uprawnionych organów i tylko wtedy, gdy istnieje oficjalnie zarejestrowana sprawa, podstawa prawna, zgoda właściwego organu, wymóg konieczności i proporcjonalności, nadzór człowieka, ograniczenie czasowe oraz audytowalny rejestr działań. Ta strona nie przyznaje takich uprawnień.</p>
+    <p><strong>Niedozwolone w publicznym systemie:</strong> rozpoznawanie twarzy, operacyjne śledzenie konkretnej osoby lub prywatnego pojazdu bez wymaganej autoryzacji, przechwytywanie prywatnej komunikacji, automatyczne przypisywanie winy, wnioskowanie o poglądach politycznych, masowa obserwacja ludzi ani wskazywanie celów do użycia siły.</p>
+  </section>
+
+  <section class="panel" style="margin-top:1rem">
+    <p class="eyebrow">RAPID EMERGENCY AUTHORIZATION</p>
+    <h2>Cel operacyjny: decyzja w ciągu maksymalnie 1 godziny</h2>
+    <p>W sytuacji pilnej system powinien skracać drogę od zgłoszenia do legalnej decyzji operacyjnej. Przykłady obejmują skradziony pojazd należący do pokrzywdzonego, pojazd bezpośrednio powiązany z porwaniem dziecka albo aktywną sprawę dotyczącą osoby stwarzającej bezpośrednie zagrożenie dla innych. Jeżeli odpowiednie dane obserwacyjne są legalnie dostępne, uprawniony funkcjonariusz powinien otrzymać możliwie szybki dostęp do analizy i czasowo ograniczonego śledzenia zgodnie z obowiązującym prawem.</p>
+    <p><strong>≤ 1 godzina jest celem operacyjnym systemu, nie obietnicą prawną.</strong> W trybach nagłego zagrożenia procedura może być szybsza, jeżeli pozwalają na to przepisy. W innych jurysdykcjach wymagane zgody mogą wyglądać inaczej. AI może porządkować dowody, wskazywać pilność i przygotowywać pakiet decyzyjny, ale nie może samodzielnie wybrać człowieka jako celu, rozpocząć śledzenia ani przedłużać go bez zatwierdzenia.</p>
   </section>
 
   <section class="panel" style="margin-top:1rem">
     <form id="case-form">
       <label>Rodzaj analizy
         <select id="case-type">
-          <option>Zgłoszone zdarzenie lub osoba zaginiona — analiza zmian miejsca, bez śledzenia osoby</option>
-          <option>Zabójstwo lub poważne przestępstwo — analiza miejsca i zmian, bez identyfikacji osób</option>
+          <option>Zgłoszone zdarzenie lub osoba zaginiona — analiza zmian miejsca</option>
+          <option>Pilne odzyskanie skradzionego pojazdu — tryb operacyjny po autoryzacji</option>
+          <option>Porwanie lub bezpośrednie zagrożenie życia — tryb operacyjny po autoryzacji</option>
+          <option>Osoba stwarzająca bezpośrednie zagrożenie w aktywnej sprawie — tryb operacyjny po autoryzacji</option>
+          <option>Zabójstwo lub poważne przestępstwo — analiza miejsca i zmian, bez automatycznego ustalania winy</option>
           <option>Korupcja lub nadużycia infrastrukturalne — porównanie publicznych danych, bez ustalania winy</option>
           <option>Przestępczość zorganizowana lub nielegalna działalność — analiza obszaru dla uprawnionych organów</option>
           <option>Kradzież lub szkoda majątkowa — analiza zmian</option>
