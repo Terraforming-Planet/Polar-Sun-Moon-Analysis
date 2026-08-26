@@ -27,6 +27,19 @@
 
     <section class="architecture"><h2>How the data are synchronized</h2><div class="steps"><article><b>1. Discovery</b><span>Find the product in an official catalogue.</span></article><article><b>2. Verification</b><span>Verify product ID, acquisition time, footprint, sensor and licence.</span></article><article><b>3. Assignment</b><span>Assign the observation to a TP-26 sector.</span></article><article><b>4. Frame</b><span>Build a UTC frame with the age of every source fragment.</span></article><article><b>5. Scientific view</b><span>Missing data remain missing data.</span></article></div></section>
 
+    <section class="safety-monitor" id="tp26-training4-agentic-eo">
+      <div class="section-head"><div><p class="eyebrow">TRAINING #4 · MULTI-SENSOR SAR · AGENTIC EO</p><h2>TP-26 as a research federation for better planetary observation</h2></div></div>
+      <p>TP-26 is being extended from a provider registry into a research routing layer: choose the sensor that matches the scientific question, preserve provenance and limitations, compare independent observations, and let AI agents identify what is established, what remains unknown and what observation should come next.</p>
+      <div class="provider-grid">
+        <article><h3>Multi-sensor SAR</h3><p>Sentinel-1 C-band radar and NASA OPERA RTC-S1 are already used by the project. Training #4 adds a dedicated SAR track and plans independent cross-sensor checks with legally available L-band products such as JAXA PALSAR/PALSAR-2 mosaics. Provider-specific licences and access rules always apply.</p></article>
+        <article><h3>Water and terrain evidence</h3><p>Radar observations can be combined with optical imagery, Copernicus DEM and official water products such as NASA OPERA DSWx-S1 where appropriate. A radar preview is not water depth, a mapped area is not volume, and no single source is treated as proof of physical cause.</p></article>
+        <article><h3>Training #4 on NVIDIA L4</h3><p>The planned large-stream experiment separates network fetch, ephemeral cache, decode/preprocess and GPU training so the L4 can stay fed efficiently. The full target of up to 500,000 training patches is gated by calibration, a 20k-patch smoke run, provenance checks and telemetry.</p></article>
+        <article><h3>Terra + EVE lessons</h3><p>Terra Agentic EO and ESA Φ-lab's public EVE-Instruct are evaluated on the same versioned evidence packages and tool boundaries. The purpose is not to declare a winner. The purpose is to discover shared failure modes and architecture improvements for a more reliable open Earth-observation system.</p></article>
+      </div>
+      <p class="map-note"><strong>Research status:</strong> independent open-source research using official/public data and publicly released models or interfaces. Listing ESA, NASA, JAXA or another provider does not imply partnership, endorsement or privileged access. Results must distinguish observation, derived value, model estimate, hypothesis and unknown.</p>
+      <p><a href="https://github.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/blob/main/docs/ESA_AGENTIC_EO.md">Read the reproducible Agentic EO methodology on GitHub</a></p>
+    </section>
+
     <section class="safety-monitor" id="api-health">
       <div class="section-head"><div><p class="eyebrow">API ACCESS REGISTRY · PUBLIC FIRST</p><h2>Verified TP-26 endpoints and adapters</h2></div><div class="live-state"><i id="apiDot"></i><span id="apiStatus">Loading registry…</span><small id="apiCheckedAt"></small></div></div>
       <p>The registry separates public sources from providers that require an account, token or licence. The frontend never stores secrets. “LIVE PUBLIC” means an endpoint was verified with an HTTP/JSON response during a preflight run; it is not a guarantee of uninterrupted availability.</p>
