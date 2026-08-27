@@ -55,7 +55,12 @@ MISSION_BANDS: dict[str, dict[str, tuple[str, ...]]] = {
 
 
 class RasterBackend(Protocol):
-    def read(self, href: str, bbox: tuple[float, float, float, float], size: int) -> np.ndarray: ...
+    def read(
+        self,
+        href: str,
+        bbox: tuple[float, float, float, float],
+        size: int,
+    ) -> np.ndarray: ...
 
 
 def official_cloud_href(href: str) -> str:
@@ -106,10 +111,16 @@ def semantic_assets(item: Mapping[str, Any]) -> dict[str, AssetRef]:
     for semantic, wanted in candidates.items():
         wanted_lower = {value.lower() for value in wanted}
         for key, value in raw_assets.items():
-            if not isinstance(value, dict) or not (_asset_aliases(str(key), value) & wanted_lower):
+            if not isinstance(value, dict) or not (
+                _asset_aliases(str(key), value) & wanted_lower
+            ):
                 continue
             href = value.get("href")
-            if not isinstance(href, str) or urlparse(href).scheme not in {"https", "http", "s3"}:
+            if not isinstance(href, str) or urlparse(href).scheme not in {
+                "https",
+                "http",
+                "s3",
+            }:
                 continue
             mapped[semantic] = AssetRef(
                 str(key),
@@ -126,7 +137,11 @@ def semantic_assets(item: Mapping[str, Any]) -> dict[str, AssetRef]:
     return mapped
 
 
-def decode_qa_pixel(qa: np.ndarray, *, landsat7_slc_off: bool = False) -> dict[str, np.ndarray]:
+def decode_qa_pixel(
+    qa: np.ndarray,
+    *,
+    landsat7_slc_off: bool = False,
+) -> dict[str, np.ndarray]:
     qa_u = qa.astype(np.uint16, copy=False)
     fill = (qa_u & 1) != 0
     dilated_cloud = (qa_u & (1 << 1)) != 0
@@ -155,7 +170,10 @@ class QualityResult:
 
 
 def quality_gate(
-    qa: np.ndarray, *, landsat7_slc_off: bool = False, minimum_valid_ratio: float = 0.70
+    qa: np.ndarray,
+    *,
+    landsat7_slc_off: bool = False,
+    minimum_valid_ratio: float = 0.70,
 ) -> QualityResult:
     masks = decode_qa_pixel(qa, landsat7_slc_off=landsat7_slc_off)
     stats = {name: float(mask.mean()) for name, mask in masks.items()}
@@ -193,7 +211,12 @@ class RasterioCogBackend:
             "or USGS_USERNAME + USGS_M2M_TOKEN. Preview imagery is not accepted."
         )
 
-    def read(self, href: str, bbox: tuple[float, float, float, float], size: int) -> np.ndarray:
+    def read(
+        self,
+        href: str,
+        bbox: tuple[float, float, float, float],
+        size: int,
+    ) -> np.ndarray:
         try:
             rasterio = import_module("rasterio")
             RasterioIOError = import_module("rasterio.errors").RasterioIOError
@@ -206,7 +229,9 @@ class RasterioCogBackend:
         try:
             access_href, requester_pays = self._access_href(href)
         except (requests.RequestException, UsgsM2MError) as exc:
-            raise RuntimeError("Authenticated USGS M2M individual-band resolution failed") from exc
+            raise RuntimeError(
+                "Authenticated USGS M2M individual-band resolution failed"
+            ) from exc
 
         env: dict[str, str] = {
             "GDAL_HTTP_MULTIRANGE": "YES",
@@ -223,9 +248,11 @@ class RasterioCogBackend:
                     *bbox,
                     densify_pts=21,
                 )
-                window = (
-                    from_bounds(*bounds, transform=dataset.transform).round_offsets().round_lengths()
+                raw_window = from_bounds(
+                    *bounds,
+                    transform=dataset.transform,
                 )
+                window = raw_window.round_offsets().round_lengths()
                 return cast(
                     np.ndarray,
                     dataset.read(
@@ -250,7 +277,9 @@ def read_scientific_window(
     assets = semantic_assets(item)
     properties = item.get("properties")
     platform = (
-        str(properties.get("platform", "unknown")) if isinstance(properties, dict) else "unknown"
+        str(properties.get("platform", "unknown"))
+        if isinstance(properties, dict)
+        else "unknown"
     )
     acquired = str(properties.get("datetime", "")) if isinstance(properties, dict) else ""
     slc_off = "landsat-7" in platform.lower() and acquired[:10] > "2003-05-30"
@@ -277,7 +306,10 @@ def read_scientific_window(
     masks = decode_qa_pixel(np.asarray(qa), landsat7_slc_off=slc_off)
     bands: dict[str, np.ndarray] = {}
     for semantic in ("green", "red", "nir", "swir1"):
-        raw = np.asarray(backend.read(assets[semantic].href, bbox, size), dtype=np.float32)
+        raw = np.asarray(
+            backend.read(assets[semantic].href, bbox, size),
+            dtype=np.float32,
+        )
         scaled = raw * SR_SCALE + SR_OFFSET
         bands[semantic] = np.where(masks["valid"], scaled, np.nan)
     return {
