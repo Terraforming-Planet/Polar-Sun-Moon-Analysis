@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 import os
 import time
 from pathlib import PurePosixPath
@@ -146,10 +147,8 @@ class UsgsM2MClient:
                 {"listId": list_id, "datasetName": dataset},
             )
         finally:
-            try:
+            with contextlib.suppress(requests.RequestException, UsgsM2MError):
                 self._call("scene-list-remove", {"listId": list_id})
-            except (requests.RequestException, UsgsM2MError):
-                pass
 
         if not isinstance(products, list):
             raise UsgsM2MError("USGS M2M download-options returned no product list")
