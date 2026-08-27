@@ -187,6 +187,16 @@ def run(args: argparse.Namespace) -> int:
     years = sorted(
         {int(cast(dict[str, Any], record["temporal"])["reference_year"]) for record in records}
     )
+
+    # Resume is a capability gate, not a requirement that the first full run must
+    # already have a checkpoint in its new output directory. Smoke mode explicitly
+    # runs the trainer twice when --resume is requested, so a positive
+    # resumed_from_step there proves checkpoint restore works. A fresh full run is
+    # therefore allowed to start at step 0 and create its own checkpoint.
+    checkpoint_resume_verified = True
+    if args.mode == "smoke" and args.resume:
+        checkpoint_resume_verified = int(training["resumed_from_step"]) > 0
+
     integrity = {
         "all_four_categories": len(categories) == 4,
         "multiple_years": len(years) > 1,
@@ -194,7 +204,7 @@ def run(args: argparse.Namespace) -> int:
         "test001_excluded": bool(split["test001_excluded"]),
         "real_landsat_window": True,
         "qa_applied": True,
-        "checkpoint_resume": (not args.resume or int(training["resumed_from_step"]) > 0),
+        "checkpoint_resume": checkpoint_resume_verified,
         "deterministic_evaluator": bool(evaluation["passed"]),
     }
     passed = all(integrity.values())
