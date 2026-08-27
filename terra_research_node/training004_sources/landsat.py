@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from collections.abc import Mapping
 from dataclasses import dataclass
 from importlib import import_module
@@ -9,6 +10,7 @@ from urllib.parse import urlparse
 import numpy as np
 
 from .common import AssetRef, EvidenceClass, GateState
+from .usgs_m2m import UsgsM2MClient, UsgsM2MError
 
 SR_SCALE = 0.0000275
 SR_OFFSET = -0.2
@@ -17,8 +19,6 @@ USGS_LANDSATLOOK_HOST = "landsatlook.usgs.gov"
 USGS_LANDSATLOOK_DATA_PREFIX = "/data/"
 USGS_LANDSAT_S3_PREFIX = "s3://usgs-landsat/"
 
-# Collection 2 STAC keys vary across revisions. Matching is semantic and inspected
-# from the live item; no fixed key is assumed to exist.
 MISSION_BANDS: dict[str, dict[str, tuple[str, ...]]] = {
     "landsat-4": {
         "green": ("green", "SR_B2"),
@@ -133,8 +133,6 @@ def decode_qa_pixel(qa: np.ndarray, *, landsat7_slc_off: bool = False) -> dict[s
     shadow = (qa_u & (1 << 4)) != 0
     snow = (qa_u & (1 << 5)) != 0
     invalid = fill | dilated_cloud | cloud | shadow
-    # USGS represents SLC-off scan gaps as fill/NoData. The explicit branch makes
-    # the scientific invariant testable and prevents gap pixels entering change loss.
     sensor_artifact = fill.copy() if landsat7_slc_off else np.zeros_like(fill)
     invalid |= sensor_artifact
     return {
@@ -167,8 +165,32 @@ def quality_gate(
     return QualityResult(state, ratio, stats, None)
 
 
+def _aws_credentials_available() -> bool:
+    return bool(
+        os.getenv("AWS_ACCESS_KEY_ID")
+        or os.getenv("AWS_PROFILE")
+        or os.getenv("AWS_WEB_IDENTITY_TOKEN_FILE")
+    )
+
+
 class RasterioCogBackend:
-    """Reads only an AOI window from official USGS Collection 2 COGs."""
+    """Read AOI windows from official USGS C2 assets via AWS or authenticated M2M."""
+
+    def __init__(self) -> None:
+        self.m2m = UsgsM2MClient.from_env()
+
+    def _access_href(self, catalog_href: str) -> tuple[str, bool]:
+        cloud_href = official_cloud_href(catalog_href)
+        if not cloud_href.startswith(USGS_LANDSAT_S3_PREFIX):
+            return cloud_href, False
+        if _aws_credentials_available():
+            return cloud_href, True
+        if self.m2m is not None:
+            return self.m2m.signed_band_url(catalog_href), False
+        raise RuntimeError(
+            "USGS Landsat scientific access requires either AWS requester-pays credentials "
+            "or USGS_USERNAME + USGS_M2M_TOKEN. Preview imagery is not accepted."
+        )
 
     def read(self, href: str, bbox: tuple[float, float, float, float], size: int) -> np.ndarray:
         try:
@@ -180,21 +202,20 @@ class RasterioCogBackend:
         except ImportError as exc:
             raise RuntimeError("rasterio is required for scientific COG window reads") from exc
 
-        cloud_href = official_cloud_href(href)
+        try:
+            access_href, requester_pays = self._access_href(href)
+        except (requests.RequestException, UsgsM2MError) as exc:  # type: ignore[name-defined]
+            raise RuntimeError("Authenticated USGS M2M individual-band resolution failed") from exc
+
         env: dict[str, str] = {
             "GDAL_HTTP_MULTIRANGE": "YES",
             "GDAL_DISABLE_READDIR_ON_OPEN": "EMPTY_DIR",
         }
-        if cloud_href.startswith(USGS_LANDSAT_S3_PREFIX):
-            env.update(
-                {
-                    "AWS_REQUEST_PAYER": "requester",
-                    "AWS_REGION": "us-west-2",
-                }
-            )
+        if requester_pays:
+            env.update({"AWS_REQUEST_PAYER": "requester", "AWS_REGION": "us-west-2"})
 
         try:
-            with rasterio.Env(**env), rasterio.open(cloud_href) as dataset:
+            with rasterio.Env(**env), rasterio.open(access_href) as dataset:
                 bounds = transform_bounds("EPSG:4326", dataset.crs, *bbox, densify_pts=21)
                 window = (
                     from_bounds(*bounds, transform=dataset.transform).round_offsets().round_lengths()
@@ -210,13 +231,7 @@ class RasterioCogBackend:
                     ),
                 )
         except RasterioIOError as exc:
-            if cloud_href.startswith(USGS_LANDSAT_S3_PREFIX):
-                raise RuntimeError(
-                    "Official USGS Landsat Collection 2 requester-pays S3 read failed. "
-                    "Configure valid AWS credentials with requester-pays access or use an "
-                    "authenticated USGS M2M acquisition path; do not fall back to preview imagery."
-                ) from exc
-            raise
+            raise RuntimeError("Official USGS Landsat scientific raster read failed") from exc
 
 
 def read_scientific_window(
@@ -240,6 +255,7 @@ def read_scientific_window(
             "asset_key": asset.key,
             "catalog_href": asset.href,
             "cloud_href": official_cloud_href(asset.href),
+            "access_policy": "AWS_requester_pays_or_USGS_M2M_individual_band",
         }
         for semantic, asset in assets.items()
     }
