@@ -8,6 +8,7 @@ from typing import Any, Protocol, cast
 from urllib.parse import urlparse
 
 import numpy as np
+import requests
 
 from .common import AssetRef, EvidenceClass, GateState
 from .usgs_m2m import UsgsM2MClient, UsgsM2MError
@@ -204,7 +205,7 @@ class RasterioCogBackend:
 
         try:
             access_href, requester_pays = self._access_href(href)
-        except (requests.RequestException, UsgsM2MError) as exc:  # type: ignore[name-defined]
+        except (requests.RequestException, UsgsM2MError) as exc:
             raise RuntimeError("Authenticated USGS M2M individual-band resolution failed") from exc
 
         env: dict[str, str] = {
