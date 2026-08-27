@@ -8,10 +8,9 @@ from typing import Any, Protocol, cast
 from urllib.parse import urlparse
 
 import numpy as np
-import requests
 
 from .common import AssetRef, EvidenceClass, GateState
-from .usgs_m2m import UsgsM2MClient, UsgsM2MError
+from .usgs_m2m import UsgsM2MClient
 
 SR_SCALE = 0.0000275
 SR_OFFSET = -0.2
@@ -226,12 +225,7 @@ class RasterioCogBackend:
         except ImportError as exc:
             raise RuntimeError("rasterio is required for scientific COG window reads") from exc
 
-        try:
-            access_href, requester_pays = self._access_href(href)
-        except (requests.RequestException, UsgsM2MError) as exc:
-            raise RuntimeError(
-                "Authenticated USGS M2M individual-band resolution failed"
-            ) from exc
+        access_href, requester_pays = self._access_href(href)
 
         env: dict[str, str] = {
             "GDAL_HTTP_MULTIRANGE": "YES",

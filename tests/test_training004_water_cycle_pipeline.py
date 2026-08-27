@@ -17,6 +17,7 @@ from terra_research_node.water_cycle_pipeline import (
     AcquisitionPlan,
     build_evidence_package,
     build_split_manifest,
+    provider_health_records,
 )
 
 
@@ -128,3 +129,15 @@ def test_geographic_split_keeps_region_together_and_rejects_test001(tmp_path: Pa
         assert "leakage" in str(exc).lower()
     else:
         raise AssertionError("TEST 001 leakage was accepted")
+
+
+def test_provider_health_attempts_put_unresolved_tropical_records_last() -> None:
+    tropical = _record("T004-W30-0000002")
+    tropical["season"] = {"zone": "tropical"}
+    temperate = _record("T004-W30-0000003")
+    temperate["season"]["zone"] = "mid_latitude"
+    ordered = provider_health_records([tropical, temperate])
+    assert [row["pack_id"] for row in ordered] == [
+        "T004-W30-0000003",
+        "T004-W30-0000002",
+    ]

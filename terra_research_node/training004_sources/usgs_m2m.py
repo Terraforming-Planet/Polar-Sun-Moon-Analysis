@@ -24,6 +24,10 @@ class UsgsM2MError(RuntimeError):
     pass
 
 
+class UsgsM2MProviderError(UsgsM2MError):
+    """Provider transport/policy failure, distinct from a JSON contract error."""
+
+
 def parse_landsat_asset(href: str) -> tuple[str, str, str]:
     path = PurePosixPath(urlparse(href).path)
     display_id = path.parent.name
@@ -62,10 +66,10 @@ def _matches_band(option: dict[str, Any], band: str) -> bool:
 
 
 def _downloadable(option: dict[str, Any]) -> bool:
-    """Prefer the M2M bulkAvailable flag used for secondary band downloads."""
-    if "bulkAvailable" in option:
-        return bool(option.get("bulkAvailable"))
-    return bool(option.get("available", True))
+    """Accept either advertised immediate or bulk download availability."""
+    if "available" not in option and "bulkAvailable" not in option:
+        return True
+    return bool(option.get("available") or option.get("bulkAvailable"))
 
 
 class UsgsM2MClient:
@@ -113,7 +117,19 @@ class UsgsM2MClient:
                     headers=headers,
                     timeout=self.timeout_s,
                 )
-                response.raise_for_status()
+                if response.status_code == 429 or response.status_code >= 500:
+                    last_error = UsgsM2MProviderError(
+                        f"USGS M2M {endpoint} provider HTTP {response.status_code}"
+                    )
+                    if attempt < 3:
+                        time.sleep(2**attempt)
+                        continue
+                    break
+                if response.status_code >= 400:
+                    raise UsgsM2MProviderError(
+                        f"USGS M2M {endpoint} provider HTTP {response.status_code} "
+                        f"{response.reason}"
+                    )
                 body = cast(dict[str, Any], response.json())
                 error_code = body.get("errorCode")
                 if error_code is not None:
@@ -127,6 +143,8 @@ class UsgsM2MClient:
                     )
                 else:
                     return body.get("data")
+            except UsgsM2MProviderError:
+                raise
             except (requests.RequestException, ValueError) as exc:
                 last_error = exc
 
@@ -135,7 +153,12 @@ class UsgsM2MClient:
 
         if isinstance(last_error, UsgsM2MError):
             raise last_error
-        raise UsgsM2MError(f"USGS M2M {endpoint} request failed after retries") from last_error
+        if isinstance(last_error, UsgsM2MProviderError):
+            raise last_error
+        detail = f": {last_error}" if last_error is not None else ""
+        raise UsgsM2MProviderError(
+            f"USGS M2M {endpoint} request failed after retries{detail}"
+        ) from last_error
 
     @property
     def api_key(self) -> str:
@@ -189,10 +212,11 @@ class UsgsM2MClient:
         for raw_product in products:
             if not isinstance(raw_product, dict):
                 continue
+            raw_options: list[Any] = [raw_product]
             secondary = raw_product.get("secondaryDownloads")
-            if not isinstance(secondary, list):
-                continue
-            for raw_option in secondary:
+            if isinstance(secondary, list):
+                raw_options.extend(secondary)
+            for raw_option in raw_options:
                 if not isinstance(raw_option, dict):
                     continue
                 option = cast(dict[str, Any], raw_option)
@@ -232,6 +256,10 @@ class UsgsM2MClient:
             },
         )
         url = self._extract_url(result)
+        if url is None and not self._pending(result):
+            raise UsgsM2MError(
+                "USGS M2M download-request returned neither an available nor pending download"
+            )
         for attempt in range(18):
             if url is not None:
                 self._url_cache[cache_key] = url
@@ -239,6 +267,11 @@ class UsgsM2MClient:
             time.sleep(min(5 + attempt * 2, 20))
             result = self._call("download-retrieve", {"label": label})
             url = self._extract_url(result)
+            if url is None and not self._pending(result):
+                raise UsgsM2MError(
+                    "USGS M2M download-retrieve returned neither an available nor "
+                    "pending download"
+                )
 
         raise UsgsM2MError(
             f"USGS M2M band download not ready after polling for {display_id}/{band}"
@@ -248,7 +281,7 @@ class UsgsM2MClient:
     def _extract_url(result: Any) -> str | None:
         if not isinstance(result, dict):
             return None
-        for key in ("availableDownloads", "available", "requested"):
+        for key in ("availableDownloads", "available"):
             items = result.get(key)
             if not isinstance(items, list):
                 continue
@@ -256,3 +289,17 @@ class UsgsM2MClient:
                 if isinstance(item, dict) and isinstance(item.get("url"), str):
                     return cast(str, item["url"])
         return None
+
+    @staticmethod
+    def _pending(result: Any) -> bool:
+        if not isinstance(result, dict):
+            return False
+        return any(
+            isinstance(result.get(key), list) and bool(result[key])
+            for key in (
+                "preparingDownloads",
+                "requestedDownloads",
+                "preparing",
+                "requested",
+            )
+        )

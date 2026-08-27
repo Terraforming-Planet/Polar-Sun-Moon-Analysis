@@ -175,6 +175,18 @@ def representative_records(path: Path, maximum: int) -> list[dict[str, Any]]:
     ]
 
 
+def provider_health_records(records: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Order smoke probes without changing the representative smoke dataset itself."""
+    indexed = list(enumerate(records))
+    indexed.sort(
+        key=lambda pair: (
+            cast(dict[str, Any], pair[1].get("season", {})).get("zone") == "tropical",
+            pair[0],
+        )
+    )
+    return [record for _, record in indexed]
+
+
 def iter_jsonl(path: Path) -> Iterator[dict[str, Any]]:
     with path.open("r", encoding="utf-8") as handle:
         for line in handle:

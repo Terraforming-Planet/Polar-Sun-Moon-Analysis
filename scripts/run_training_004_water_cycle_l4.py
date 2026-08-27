@@ -33,6 +33,7 @@ from terra_research_node.water_cycle_pipeline import (  # noqa: E402
     build_evidence_package,
     build_split_manifest,
     iter_jsonl,
+    provider_health_records,
     representative_records,
 )
 from terra_research_node.water_cycle_training import train_temporal_arrays  # noqa: E402
@@ -125,7 +126,7 @@ def run(args: argparse.Namespace) -> int:
     real_resolved: dict[str, Any] | None = None
     errors: list[str] = []
     tried_keys: set[str] = set()
-    for record in records:
+    for record in provider_health_records(records):
         key = acquisition_key(record)
         if key in tried_keys:
             continue
