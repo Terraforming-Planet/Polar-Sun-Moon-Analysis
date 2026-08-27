@@ -30,6 +30,7 @@ if ($null -eq $cred) {
 $env:USGS_USERNAME = $cred.UserName
 $env:USGS_M2M_TOKEN = $cred.GetNetworkCredential().Password
 $env:MPLBACKEND = 'Agg'
+$env:PYTHONPATH = (Get-Location).Path
 
 $python = '.\.venv-l4\Scripts\python.exe'
 
@@ -43,7 +44,7 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host 'USGS M2M LOGIN OK - credential verified and kept encrypted locally.' -ForegroundColor Green
 Write-Host 'Checking scientific Landsat download permission before expensive quality gates...' -ForegroundColor Cyan
 
-& $python .\scripts\preflight_training004_usgs_download.py
+& $python -m scripts.preflight_training004_usgs_download
 $preflightExit = $LASTEXITCODE
 if ($preflightExit -ne 0) {
     if ($preflightExit -eq 21) {
