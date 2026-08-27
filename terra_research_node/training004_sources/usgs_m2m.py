@@ -61,6 +61,13 @@ def _matches_band(option: dict[str, Any], band: str) -> bool:
     return False
 
 
+def _downloadable(option: dict[str, Any]) -> bool:
+    """Prefer the M2M bulkAvailable flag used for secondary band downloads."""
+    if "bulkAvailable" in option:
+        return bool(option.get("bulkAvailable"))
+    return bool(option.get("available", True))
+
+
 class UsgsM2MClient:
     def __init__(self, username: str, application_token: str, *, timeout_s: float = 60.0) -> None:
         if not username or not application_token:
@@ -96,20 +103,39 @@ class UsgsM2MClient:
         headers: dict[str, str] = {}
         if authenticated:
             headers["X-Auth-Token"] = self.api_key
-        response = self.session.post(
-            f"{M2M_BASE}{endpoint}",
-            json=payload,
-            headers=headers,
-            timeout=self.timeout_s,
-        )
-        response.raise_for_status()
-        body = cast(dict[str, Any], response.json())
-        if body.get("errorCode") is not None:
-            raise UsgsM2MError(
-                f"USGS M2M {endpoint} failed: {body.get('errorCode')} "
-                f"{body.get('errorMessage')}"
-            )
-        return body.get("data")
+
+        last_error: Exception | None = None
+        for attempt in range(4):
+            try:
+                response = self.session.post(
+                    f"{M2M_BASE}{endpoint}",
+                    json=payload,
+                    headers=headers,
+                    timeout=self.timeout_s,
+                )
+                response.raise_for_status()
+                body = cast(dict[str, Any], response.json())
+                error_code = body.get("errorCode")
+                if error_code is not None:
+                    message = str(body.get("errorMessage") or "")
+                    if error_code in {"AUTH_INVALID", "AUTH_UNAUTHORIZED"}:
+                        raise UsgsM2MError(
+                            f"USGS M2M {endpoint} failed: {error_code} {message}"
+                        )
+                    last_error = UsgsM2MError(
+                        f"USGS M2M {endpoint} failed: {error_code} {message}"
+                    )
+                else:
+                    return body.get("data")
+            except (requests.RequestException, ValueError) as exc:
+                last_error = exc
+
+            if attempt < 3:
+                time.sleep(2**attempt)
+
+        if isinstance(last_error, UsgsM2MError):
+            raise last_error
+        raise UsgsM2MError(f"USGS M2M {endpoint} request failed after retries") from last_error
 
     @property
     def api_key(self) -> str:
@@ -132,7 +158,7 @@ class UsgsM2MClient:
             return cached
 
         list_id = f"terra-t004-{uuid4().hex}"
-        self._call(
+        added = self._call(
             "scene-list-add",
             {
                 "listId": list_id,
@@ -141,6 +167,11 @@ class UsgsM2MClient:
                 "datasetName": dataset,
             },
         )
+        if not isinstance(added, int) or added < 1:
+            raise UsgsM2MError(
+                f"USGS M2M could not resolve Landsat scene {display_id} in {dataset}"
+            )
+
         try:
             products = self._call(
                 "download-options",
@@ -152,7 +183,9 @@ class UsgsM2MClient:
 
         if not isinstance(products, list):
             raise UsgsM2MError("USGS M2M download-options returned no product list")
+
         selected: dict[str, Any] | None = None
+        seen_names: list[str] = []
         for raw_product in products:
             if not isinstance(raw_product, dict):
                 continue
@@ -163,39 +196,53 @@ class UsgsM2MClient:
                 if not isinstance(raw_option, dict):
                     continue
                 option = cast(dict[str, Any], raw_option)
-                if option.get("available", True) and _matches_band(option, band):
+                name = str(option.get("productName") or option.get("displayId") or "")
+                if name:
+                    seen_names.append(name)
+                if _downloadable(option) and _matches_band(option, band):
                     selected = option
                     break
             if selected is not None:
                 break
+
         if selected is None:
+            sample = "; ".join(seen_names[:12]) or "no secondary download names returned"
             raise UsgsM2MError(
-                f"USGS M2M did not expose individual band {band} for {display_id}"
+                f"USGS M2M did not expose downloadable individual band {band} for "
+                f"{display_id}. Options: {sample}"
             )
 
         entity_id = selected.get("entityId")
         product_id = selected.get("id")
-        if not isinstance(entity_id, str) or not isinstance(product_id, str):
+        if entity_id is None or product_id is None:
             raise UsgsM2MError("USGS M2M band option is missing entityId/product id")
 
         label = f"terra-t004-{uuid4().hex}"
         result = self._call(
             "download-request",
             {
-                "downloads": [{"entityId": entity_id, "productId": product_id}],
+                "downloads": [
+                    {
+                        "datasetName": dataset,
+                        "entityId": str(entity_id),
+                        "productId": str(product_id),
+                    }
+                ],
                 "label": label,
-                "returnAvailable": True,
             },
         )
         url = self._extract_url(result)
-        for _ in range(12):
+        for attempt in range(18):
             if url is not None:
                 self._url_cache[cache_key] = url
                 return url
-            time.sleep(5)
+            time.sleep(min(5 + attempt * 2, 20))
             result = self._call("download-retrieve", {"label": label})
             url = self._extract_url(result)
-        raise UsgsM2MError(f"USGS M2M band download not ready for {display_id}/{band}")
+
+        raise UsgsM2MError(
+            f"USGS M2M band download not ready after polling for {display_id}/{band}"
+        )
 
     @staticmethod
     def _extract_url(result: Any) -> str | None:
