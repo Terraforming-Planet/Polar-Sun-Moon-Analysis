@@ -8,7 +8,13 @@ from typing import Any
 import numpy as np
 
 from terra_research_node.water_cycle_pipeline import split_for_group
-from terra_research_node.water_cycle_streaming import StreamState, run_stream
+from terra_research_node.water_cycle_streaming import (
+    DERIVED_TARGET_CONFIG,
+    DERIVED_TARGET_CONFIG_HASH,
+    StreamState,
+    derive_water_change_target,
+    run_stream,
+)
 
 
 def record(index: int) -> dict[str, Any]:
@@ -58,6 +64,19 @@ def write_manifest(path: Path, count: int) -> None:
     path.write_text(
         "".join(json.dumps(record(index)) + "\n" for index in range(count)), encoding="utf-8"
     )
+
+
+def test_derived_water_change_target_is_versioned_and_directional() -> None:
+    before = np.zeros((4, 2, 2), dtype=np.float32)
+    before[0], before[2], before[3] = 0.2, 0.3, 0.3
+    after = before.copy()
+    after[0], after[2], after[3] = 0.5, 0.1, 0.1
+    target, score = derive_water_change_target(before, after)
+    assert target == 2
+    assert score > float(DERIVED_TARGET_CONFIG["threshold"])
+    assert DERIVED_TARGET_CONFIG["evidence_class"] == "DERIVED"
+    assert DERIVED_TARGET_CONFIG["environmental_ground_truth"] is False
+    assert len(DERIVED_TARGET_CONFIG_HASH) == 64
 
 
 def test_stream_counts_real_consumed_and_resumes(tmp_path: Path) -> None:

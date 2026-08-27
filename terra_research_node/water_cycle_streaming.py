@@ -22,6 +22,44 @@ from .water_cycle_manifest import ANCHOR_HOLDOUT_REGION
 from .water_cycle_pipeline import FROZEN_IDS, acquisition_key, iter_jsonl, split_for_group
 
 RUN_SCHEMA = "terra-training-004-real-streaming-v1"
+DERIVED_TARGET_CONFIG = {
+    "schema": "terra-training-004-derived-water-change-target-v1",
+    "indices": {
+        "ndwi": "(green - nir) / (green + nir)",
+        "mndwi": "(green - swir1) / (green + swir1)",
+    },
+    "score": "mean(0.5 * (after_ndwi-before_ndwi + after_mndwi-before_mndwi))",
+    "classes": {"0": "water_signal_decrease", "1": "stable", "2": "water_signal_increase"},
+    "threshold": 0.03,
+    "evidence_class": "DERIVED",
+    "environmental_ground_truth": False,
+}
+DERIVED_TARGET_CONFIG_HASH = hashlib.sha256(
+    json.dumps(DERIVED_TARGET_CONFIG, sort_keys=True, separators=(",", ":")).encode()
+).hexdigest()
+
+
+def derive_water_change_target(before: np.ndarray, after: np.ndarray) -> tuple[int, float]:
+    """Derive a reproducible weak label from quality-masked C2 surface reflectance."""
+    epsilon = np.float32(1e-6)
+
+    def index(array: np.ndarray, left: int, right: int) -> np.ndarray:
+        denominator = array[left] + array[right]
+        return np.where(
+            np.abs(denominator) > epsilon,
+            (array[left] - array[right]) / denominator,
+            np.nan,
+        )
+
+    delta = 0.5 * (
+        (index(after, 0, 2) - index(before, 0, 2))
+        + (index(after, 0, 3) - index(before, 0, 3))
+    )
+    score = float(np.nanmean(delta))
+    if not np.isfinite(score):
+        raise LookupError("UNKNOWN_derived_target_has_no_valid_pixels")
+    threshold = float(cast(float, DERIVED_TARGET_CONFIG["threshold"]))
+    return (0 if score < -threshold else (2 if score > threshold else 1)), score
 
 
 def utc_now() -> str:

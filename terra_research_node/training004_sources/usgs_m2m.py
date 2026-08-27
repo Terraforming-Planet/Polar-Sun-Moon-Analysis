@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import contextlib
 import os
+import threading
 import time
 from pathlib import PurePosixPath
 from typing import Any, cast
@@ -88,6 +89,9 @@ class UsgsM2MClient:
         )
         self._api_key: str | None = None
         self._url_cache: dict[tuple[str, str], str] = {}
+        # requests.Session and the M2M scene-list control plane are not thread-safe.
+        # One re-entrant lock also provides single-flight token creation.
+        self._control_lock = threading.RLock()
 
     @classmethod
     def from_env(cls) -> UsgsM2MClient | None:
@@ -98,6 +102,16 @@ class UsgsM2MClient:
         return cls(username, token)
 
     def _call(
+        self,
+        endpoint: str,
+        payload: dict[str, Any] | None,
+        *,
+        authenticated: bool = True,
+    ) -> Any:
+        with self._control_lock:
+            return self._call_locked(endpoint, payload, authenticated=authenticated)
+
+    def _call_locked(
         self,
         endpoint: str,
         payload: dict[str, Any] | None,
@@ -162,18 +176,25 @@ class UsgsM2MClient:
 
     @property
     def api_key(self) -> str:
-        if self._api_key is None:
-            data = self._call(
-                "login-token",
-                {"username": self.username, "token": self.application_token},
-                authenticated=False,
-            )
-            if not isinstance(data, str) or not data:
-                raise UsgsM2MError("USGS M2M login-token returned no API key")
-            self._api_key = data
-        return self._api_key
+        if self._api_key is not None:
+            return self._api_key
+        with self._control_lock:
+            if self._api_key is None:
+                data = self._call_locked(
+                    "login-token",
+                    {"username": self.username, "token": self.application_token},
+                    authenticated=False,
+                )
+                if not isinstance(data, str) or not data:
+                    raise UsgsM2MError("USGS M2M login-token returned no API key")
+                self._api_key = data
+            return self._api_key
 
     def signed_band_url(self, href: str) -> str:
+        with self._control_lock:
+            return self._signed_band_url_locked(href)
+
+    def _signed_band_url_locked(self, href: str) -> str:
         dataset, display_id, band = parse_landsat_asset(href)
         cache_key = (display_id, band)
         cached = self._url_cache.get(cache_key)

@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
 import pytest
@@ -46,6 +49,25 @@ def test_login_token_response_is_cached_without_exposing_credential() -> None:
     assert len(calls) == 1
     assert calls[0][1] == {"username": "ExactUser", "token": "application-secret"}
     assert "X-Auth-Token" not in calls[0][2]
+
+
+def test_login_token_is_single_flight_across_workers() -> None:
+    client = UsgsM2MClient("ExactUser", "application-secret")
+    calls = 0
+    calls_lock = threading.Lock()
+
+    def post(url: str, **kwargs: Any) -> FakeResponse:
+        nonlocal calls
+        time.sleep(0.02)
+        with calls_lock:
+            calls += 1
+        return FakeResponse(200, {"data": "one-api-key", "errorCode": None})
+
+    client.session.post = post  # type: ignore[method-assign]
+    with ThreadPoolExecutor(max_workers=16) as pool:
+        keys = list(pool.map(lambda _: client.api_key, range(64)))
+    assert keys == ["one-api-key"] * 64
+    assert calls == 1
 
 
 def test_asset_parser_resolves_display_id_and_exact_scientific_bands() -> None:
