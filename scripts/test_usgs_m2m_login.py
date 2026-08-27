@@ -1,8 +1,13 @@
 from __future__ import annotations
 
 import sys
+from pathlib import Path
 
-from terra_research_node.training004_sources.usgs_m2m import UsgsM2MClient
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from terra_research_node.training004_sources.usgs_m2m import UsgsM2MClient  # noqa: E402
 
 
 def main() -> int:
