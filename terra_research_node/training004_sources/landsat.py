@@ -217,7 +217,12 @@ class RasterioCogBackend:
 
         try:
             with rasterio.Env(**env), rasterio.open(access_href) as dataset:
-                bounds = transform_bounds("EPSG:4326", dataset.crs, *bbox, densify_pts=21)
+                bounds = transform_bounds(
+                    "EPSG:4326",
+                    dataset.crs,
+                    *bbox,
+                    densify_pts=21,
+                )
                 window = (
                     from_bounds(*bounds, transform=dataset.transform).round_offsets().round_lengths()
                 )
