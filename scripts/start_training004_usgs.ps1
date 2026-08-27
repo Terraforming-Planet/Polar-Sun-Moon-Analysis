@@ -19,7 +19,7 @@ if (Test-Path $secretFile) {
 }
 
 if ($null -eq $cred) {
-    $cred = Get-Credential -UserName 'terraformingplanet' -Message 'Wklej NOWY USGS Application Token jako haslo. Zostanie zaszyfrowany lokalnie przez Windows.'
+    $cred = Get-Credential -UserName 'Terraformingplanet' -Message 'Wklej NOWY USGS Application Token jako haslo. Zostanie zaszyfrowany lokalnie przez Windows.'
     if ($null -eq $cred) {
         throw 'USGS credential entry cancelled.'
     }
