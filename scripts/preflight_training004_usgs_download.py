@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import os
-import sys
 
 from terra_research_node.training004_sources.usgs_m2m import (
     UsgsM2MClient,
