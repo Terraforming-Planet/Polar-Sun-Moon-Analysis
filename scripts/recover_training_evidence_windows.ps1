@@ -46,7 +46,10 @@ $priorityNames = @(
     'gpu_audit_summary.json',
     'gpu_image_audit.jsonl',
     'stream_failures.jsonl',
-    'source_manifest.json'
+    'source_manifest.json',
+    'run_training004_cached_gpu_l4.py',
+    'gpu1h.ps1',
+    'gpu_parameter_golf.ps1'
 )
 
 $results = New-Object System.Collections.Generic.List[object]
@@ -117,7 +120,7 @@ if ($DeepScan) {
     }
 }
 
-# Copy only evidence/log/manifest artifacts. Do not copy secrets or entire repositories.
+# Copy only evidence/log/manifest/source artifacts. Do not copy secrets or entire repositories.
 $copyRoot = Join-Path $OutputRoot 'evidence-files'
 New-Item -ItemType Directory -Force -Path $copyRoot | Out-Null
 
