@@ -191,9 +191,12 @@ def main() -> int:
     parser.add_argument("--device", choices=("cuda", "cpu", "auto"), default="cuda")
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--first-batch-timeout-seconds", type=float)
+    parser.add_argument("--max-runtime-seconds", type=float)
     args = parser.parse_args()
     if args.target_real_windows < 1 or args.workers < 1 or args.max_in_flight < 1:
         parser.error("target, workers, and max-in-flight must be positive")
+    if args.max_runtime_seconds is not None and args.max_runtime_seconds <= 0:
+        parser.error("max-runtime-seconds must be positive")
     if not args.resume and (args.output_dir / "stream-state.json").exists():
         raise RuntimeError("Existing stream state requires --resume or a new output directory")
     trainer = TorchBatchTrainer(args.output_dir, args.device, args.seed)
@@ -211,6 +214,7 @@ def main() -> int:
             batch_size=args.batch_size,
             max_attempts=args.max_attempts,
             first_batch_timeout_s=args.first_batch_timeout_seconds,
+            max_runtime_s=args.max_runtime_seconds,
             train_batch=trainer,
         )
     except Exception as exc:
