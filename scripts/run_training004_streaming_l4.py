@@ -186,6 +186,7 @@ def main() -> int:
     parser.add_argument("--max-in-flight", type=int, default=8)
     parser.add_argument("--max-attempts", type=int)
     parser.add_argument("--batch-size", type=int, default=8)
+    parser.add_argument("--bootstrap-batch-size", type=int, default=1)
     parser.add_argument("--window-size", type=int, default=256)
     parser.add_argument("--seed", type=int, default=4004)
     parser.add_argument("--device", choices=("cuda", "cpu", "auto"), default="cuda")
@@ -193,8 +194,14 @@ def main() -> int:
     parser.add_argument("--first-batch-timeout-seconds", type=float)
     parser.add_argument("--max-runtime-seconds", type=float)
     args = parser.parse_args()
-    if args.target_real_windows < 1 or args.workers < 1 or args.max_in_flight < 1:
-        parser.error("target, workers, and max-in-flight must be positive")
+    if (
+        args.target_real_windows < 1
+        or args.workers < 1
+        or args.max_in_flight < 1
+        or args.batch_size < 1
+        or args.bootstrap_batch_size < 1
+    ):
+        parser.error("target, workers, queues, and batch sizes must be positive")
     if args.max_runtime_seconds is not None and args.max_runtime_seconds <= 0:
         parser.error("max-runtime-seconds must be positive")
     if not args.resume and (args.output_dir / "stream-state.json").exists():
@@ -212,6 +219,7 @@ def main() -> int:
             workers=args.workers,
             queue_size=args.max_in_flight,
             batch_size=args.batch_size,
+            bootstrap_batch_size=args.bootstrap_batch_size,
             max_attempts=args.max_attempts,
             first_batch_timeout_s=args.first_batch_timeout_seconds,
             max_runtime_s=args.max_runtime_seconds,

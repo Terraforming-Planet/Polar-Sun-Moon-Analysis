@@ -117,6 +117,19 @@ def _select_best(
     year: int,
     window: tuple[str, str],
 ) -> dict[str, Any] | None:
+    ranked = _rank_candidates(items, lat=lat, lon=lon, year=year, window=window)
+    return ranked[0] if ranked else None
+
+
+def _rank_candidates(
+    items: Iterable[dict[str, Any]],
+    *,
+    lat: float,
+    lon: float,
+    year: int,
+    window: tuple[str, str],
+) -> list[dict[str, Any]]:
+    """Return every policy-compliant scene in deterministic preference order."""
     target = _midpoint(year, window)
     ranked: list[tuple[tuple[float, ...], dict[str, Any]]] = []
     for item in items:
@@ -136,10 +149,8 @@ def _select_best(
             day_distance,
         )
         ranked.append((score, item))
-    if not ranked:
-        return None
     ranked.sort(key=lambda pair: pair[0])
-    return ranked[0][1]
+    return [item for _, item in ranked]
 
 
 def _self_href(item: dict[str, Any]) -> str | None:

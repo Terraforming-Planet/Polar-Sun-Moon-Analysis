@@ -64,6 +64,7 @@ try {
         --workers $Workers `
         --max-in-flight $MaxInFlight `
         --batch-size $BatchSize `
+        --bootstrap-batch-size 1 `
         --window-size $WindowSize `
         --seed $Seed `
         --device cuda `

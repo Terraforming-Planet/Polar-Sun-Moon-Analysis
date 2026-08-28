@@ -11,6 +11,7 @@ from terra_research_node.water_cycle_pipeline import split_for_group
 from terra_research_node.water_cycle_streaming import (
     DERIVED_TARGET_CONFIG,
     DERIVED_TARGET_CONFIG_HASH,
+    LandsatPairSource,
     StreamState,
     derive_water_change_target,
     run_stream,
@@ -184,3 +185,74 @@ def test_stream_first_batch_timeout_is_bounded(tmp_path: Path) -> None:
     else:
         raise AssertionError("First-batch deadline was not enforced")
     assert time.monotonic() - started < 2.0
+
+
+def test_landsat_source_retries_next_ranked_scene(monkeypatch: Any) -> None:
+    items = [
+        {
+            "id": "LC08_FIRST_T1_SR",
+            "bbox": [9.0, 49.0, 11.0, 51.0],
+            "properties": {
+                "datetime": "2020-04-15T10:00:00Z",
+                "eo:cloud_cover": 1.0,
+                "platform": "landsat-8",
+            },
+        },
+        {
+            "id": "LC08_SECOND_T1_SR",
+            "bbox": [9.0, 49.0, 11.0, 51.0],
+            "properties": {
+                "datetime": "2020-04-16T10:00:00Z",
+                "eo:cloud_cover": 2.0,
+                "platform": "landsat-8",
+            },
+        },
+    ]
+
+    class Searcher:
+        def search(self, **kwargs: Any) -> list[dict[str, Any]]:
+            return items
+
+    calls: list[str] = []
+
+    def fake_read(item: dict[str, Any], *args: Any, **kwargs: Any) -> dict[str, Any]:
+        calls.append(str(item["id"]))
+        if len(calls) == 1:
+            return {"evidence_class": "UNKNOWN", "reason": "optical_unavailable"}
+        return {"evidence_class": "OBSERVATION"}
+
+    monkeypatch.setattr(
+        "terra_research_node.water_cycle_streaming.read_scientific_window", fake_read
+    )
+    source = LandsatPairSource(
+        Searcher(), object(), size=256, max_scene_attempts=2  # type: ignore[arg-type]
+    )
+    selected = source._one(record(0), 2020, ("03-01", "05-31"))
+    assert selected["item"]["id"] == "LC08_SECOND_T1_SR"
+    assert calls == ["LC08_FIRST_T1_SR", "LC08_SECOND_T1_SR"]
+
+
+def test_stream_uses_small_bootstrap_batch_before_regular_batch(tmp_path: Path) -> None:
+    manifest, output = tmp_path / "manifest.jsonl", tmp_path / "run"
+    write_manifest(manifest, 20)
+    batch_sizes: list[int] = []
+
+    def trainer(batch: list[dict[str, Any]], state: StreamState) -> dict[str, Any]:
+        batch_sizes.append(len(batch))
+        return {}
+
+    summary = run_stream(
+        manifest,
+        output,
+        FakeSource(),
+        target=4,
+        seed=4,
+        workers=2,
+        queue_size=4,
+        batch_size=3,
+        bootstrap_batch_size=1,
+        max_attempts=None,
+        train_batch=trainer,
+    )
+    assert summary["status"] == "PASS"
+    assert batch_sizes == [1, 3]

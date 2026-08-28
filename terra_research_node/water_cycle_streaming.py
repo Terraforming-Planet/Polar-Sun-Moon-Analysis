@@ -17,7 +17,7 @@ from typing import Any, Protocol, cast
 import numpy as np
 
 from .training004_sources.landsat import RasterBackend, read_scientific_window
-from .water_cycle_acquisition import UsgsLandsatSearcher, _select_best
+from .water_cycle_acquisition import UsgsLandsatSearcher, _rank_candidates
 from .water_cycle_manifest import ANCHOR_HOLDOUT_REGION
 from .water_cycle_pipeline import FROZEN_IDS, acquisition_key, iter_jsonl, split_for_group
 
@@ -98,23 +98,43 @@ class ScientificPairSource(Protocol):
 class LandsatPairSource:
     """Resolve and range-read exactly two official Landsat C2 L2 AOI windows."""
 
-    def __init__(self, searcher: UsgsLandsatSearcher, backend: RasterBackend, size: int = 256):
+    def __init__(
+        self,
+        searcher: UsgsLandsatSearcher,
+        backend: RasterBackend,
+        size: int = 256,
+        max_scene_attempts: int = 4,
+    ):
         self.searcher, self.backend, self.size = searcher, backend, size
+        self.max_scene_attempts = max(1, max_scene_attempts)
 
     def _one(self, record: dict[str, Any], year: int, window: tuple[str, str]) -> dict[str, Any]:
         center = cast(dict[str, Any], record["sample_center"])
         items = self.searcher.search(
             lat=float(center["lat"]), lon=float(center["lon"]), year=year, window=window
         )
-        item = _select_best(
+        candidates = _rank_candidates(
             items, lat=float(center["lat"]), lon=float(center["lon"]), year=year, window=window
         )
-        if item is None:
+        if not candidates:
             raise LookupError("UNKNOWN_optical_unavailable")
-        result = read_scientific_window(item, window_bbox(record), self.backend, size=self.size)
-        if result["evidence_class"] != "OBSERVATION":
-            raise LookupError(str(result.get("reason", "UNKNOWN_quality_gate")))
-        return {"item": item, "window": result}
+        reasons: Counter[str] = Counter()
+        for item in candidates[: self.max_scene_attempts]:
+            try:
+                result = read_scientific_window(
+                    item, window_bbox(record), self.backend, size=self.size
+                )
+            except LookupError as exc:
+                reasons[str(exc)] += 1
+                continue
+            if result["evidence_class"] == "OBSERVATION":
+                return {"item": item, "window": result}
+            reasons[str(result.get("reason", "UNKNOWN_quality_gate"))] += 1
+        detail = ",".join(f"{reason}:{count}" for reason, count in sorted(reasons.items()))
+        raise LookupError(
+            "UNKNOWN_optical_unavailable_after_candidate_retry"
+            + (f" ({detail})" if detail else "")
+        )
 
     def acquire(self, record: dict[str, Any]) -> dict[str, Any]:
         season = cast(dict[str, Any], record["season"])
@@ -338,6 +358,7 @@ def run_stream(
     queue_size: int,
     batch_size: int,
     max_attempts: int | None,
+    bootstrap_batch_size: int | None = None,
     first_batch_timeout_s: float | None = None,
     max_runtime_s: float | None = None,
     heartbeat_interval_s: float = 5.0,
@@ -413,6 +434,10 @@ def run_stream(
     threads = [threading.Thread(target=worker, daemon=True) for _ in range(max(1, workers))]
     producer_thread = threading.Thread(target=producer, daemon=True)
     telemetry = TelemetrySampler(output_dir / "telemetry.jsonl", 5.0, ready.qsize)
+    if batch_size <= 0:
+        raise ValueError("batch_size must be positive")
+    if bootstrap_batch_size is not None and bootstrap_batch_size <= 0:
+        raise ValueError("bootstrap_batch_size must be positive")
     if max_runtime_s is not None and max_runtime_s <= 0:
         raise ValueError("max_runtime_s must be positive")
     started = time.monotonic()
@@ -513,7 +538,10 @@ def run_stream(
             continue
         assert_training_record(record)
         batch.append(payload)
-        if len(batch) >= max(1, batch_size) or state.consumed + len(batch) >= target:
+        required_batch = batch_size
+        if not first_cuda_batch and bootstrap_batch_size is not None:
+            required_batch = min(batch_size, bootstrap_batch_size)
+        if len(batch) >= required_batch or state.consumed + len(batch) >= target:
             remaining = target - state.consumed
             selected = batch[:remaining]
             training_metrics = train_batch(selected, state)
