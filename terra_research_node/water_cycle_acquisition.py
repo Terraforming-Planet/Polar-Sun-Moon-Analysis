@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import threading
 import time
 from collections import Counter
 from collections.abc import Iterable
@@ -15,6 +16,8 @@ import requests
 
 USGS_LANDSAT_STAC = "https://landsatlook.usgs.gov/stac-server/search"
 LANDSAT_SR_COLLECTION = "landsat-c2l2-sr"
+PLANETARY_COMPUTER_STAC = "https://planetarycomputer.microsoft.com/api/stac/v1/search"
+PLANETARY_COMPUTER_LANDSAT_COLLECTION = "landsat-c2-l2"
 ALLOWED_STAC_HOSTS = frozenset({"landsatlook.usgs.gov"})
 PREFERRED_CLOUD_PERCENT = 15.0
 FALLBACK_CLOUD_PERCENT = 30.0
@@ -192,6 +195,116 @@ def _compact_item(item: dict[str, Any]) -> dict[str, object]:
         "evidence_class": "OBSERVATION",
         "pixel_data_downloaded": False,
     }
+
+
+class PlanetaryComputerLandsatSearcher:
+    """Thread-safe Landsat C2 L2 discovery through Microsoft's public STAC mirror."""
+
+    def __init__(
+        self,
+        endpoint: str = PLANETARY_COMPUTER_STAC,
+        *,
+        timeout_s: float = 20.0,
+        request_delay_ms: int = 0,
+        max_retries: int = 2,
+    ) -> None:
+        parsed = urlparse(endpoint)
+        if (
+            parsed.scheme != "https"
+            or parsed.hostname != "planetarycomputer.microsoft.com"
+            or parsed.path != "/api/stac/v1/search"
+        ):
+            raise ValueError(
+                "Only the official Microsoft Planetary Computer STAC endpoint is allowed"
+            )
+        self.endpoint = endpoint
+        self.timeout_s = timeout_s
+        self.request_delay_s = max(0, request_delay_ms) / 1000.0
+        self.max_retries = max(1, max_retries)
+        self._local = threading.local()
+        self._cache: dict[tuple[float, float, int, str, str], list[dict[str, Any]]] = {}
+        self._cache_lock = threading.Lock()
+
+    def _session(self) -> requests.Session:
+        session = getattr(self._local, "session", None)
+        if session is None:
+            session = requests.Session()
+            session.headers.update(
+                {
+                    "User-Agent": (
+                        "TerraObservationSystem-Training004/1.0 (+public-research)"
+                    )
+                }
+            )
+            self._local.session = session
+        return cast(requests.Session, session)
+
+    def search(
+        self,
+        *,
+        lat: float,
+        lon: float,
+        year: int,
+        window: tuple[str, str],
+    ) -> list[dict[str, Any]]:
+        qlat = _quantize(lat)
+        qlon = _quantize(lon)
+        key = (qlat, qlon, year, window[0], window[1])
+        with self._cache_lock:
+            cached = self._cache.get(key)
+        if cached is not None:
+            return cached
+
+        body: dict[str, object] = {
+            "collections": [PLANETARY_COMPUTER_LANDSAT_COLLECTION],
+            "bbox": [
+                qlon - SEARCH_HALF_SPAN_DEG,
+                qlat - SEARCH_HALF_SPAN_DEG,
+                qlon + SEARCH_HALF_SPAN_DEG,
+                qlat + SEARCH_HALF_SPAN_DEG,
+            ],
+            "datetime": _window_iso(year, window),
+            "limit": 100,
+        }
+        payload = self._post(body)
+        raw_features = _json_list(payload.get("features", []), label="features")
+        features = [
+            cast(dict[str, Any], raw)
+            for raw in raw_features
+            if isinstance(raw, dict)
+        ]
+        with self._cache_lock:
+            selected = self._cache.setdefault(key, features)
+        if self.request_delay_s:
+            time.sleep(self.request_delay_s)
+        return selected
+
+    def _post(self, body: dict[str, object]) -> dict[str, Any]:
+        last_error: Exception | None = None
+        for attempt in range(self.max_retries):
+            try:
+                response = self._session().post(
+                    self.endpoint,
+                    json=body,
+                    timeout=self.timeout_s,
+                )
+                if response.status_code == 429 or response.status_code >= 500:
+                    raise requests.HTTPError(
+                        f"Temporary Planetary Computer STAC HTTP {response.status_code}",
+                        response=response,
+                    )
+                response.raise_for_status()
+                return _json_object(
+                    response.json(), label="Microsoft Planetary Computer STAC response"
+                )
+            except (requests.RequestException, ValueError) as exc:
+                last_error = exc
+                if attempt + 1 >= self.max_retries:
+                    break
+                time.sleep(min(4.0, 0.5 * (2**attempt)))
+        raise RuntimeError(
+            "Microsoft Planetary Computer Landsat STAC request failed after retries"
+        ) from last_error
 
 
 class UsgsLandsatSearcher:

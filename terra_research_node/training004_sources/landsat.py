@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import os
-from collections.abc import Mapping
+import threading
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from importlib import import_module
 from typing import Any, Protocol, cast
@@ -18,6 +19,7 @@ REQUIRED_SEMANTICS = ("green", "red", "nir", "swir1", "qa_pixel")
 USGS_LANDSATLOOK_HOST = "landsatlook.usgs.gov"
 USGS_LANDSATLOOK_DATA_PREFIX = "/data/"
 USGS_LANDSAT_S3_PREFIX = "s3://usgs-landsat/"
+AZURE_BLOB_STORAGE_SUFFIX = ".blob.core.windows.net"
 
 MISSION_BANDS: dict[str, dict[str, tuple[str, ...]]] = {
     "landsat-4": {
@@ -194,11 +196,36 @@ def _aws_credentials_available() -> bool:
 class RasterioCogBackend:
     """Read AOI windows from official USGS C2 assets via AWS or authenticated M2M."""
 
-    def __init__(self) -> None:
+    def __init__(
+        self, *, azure_signer: Callable[[str], str] | None = None
+    ) -> None:
         self.m2m = UsgsM2MClient.from_env()
+        self._azure_sign_lock = threading.Lock()
+        self._azure_signer = azure_signer
+        if self._azure_signer is None:
+            try:
+                module = import_module("planetary_computer")
+                self._azure_signer = cast(
+                    Callable[[str], str], getattr(module, "sign_url")
+                )
+            except (ImportError, AttributeError):
+                self._azure_signer = None
 
     def _access_href(self, catalog_href: str) -> tuple[str, bool]:
         cloud_href = official_cloud_href(catalog_href)
+        parsed = urlparse(cloud_href)
+        hostname = parsed.hostname or ""
+        if (
+            parsed.scheme in {"http", "https"}
+            and hostname.endswith(AZURE_BLOB_STORAGE_SUFFIX)
+        ):
+            if self._azure_signer is None:
+                raise RuntimeError(
+                    "Microsoft Planetary Computer asset signing requires "
+                    "planetary-computer==1.0.0"
+                )
+            with self._azure_sign_lock:
+                return self._azure_signer(cloud_href), False
         if not cloud_href.startswith(USGS_LANDSAT_S3_PREFIX):
             return cloud_href, False
         if _aws_credentials_available():
@@ -292,7 +319,10 @@ def read_scientific_window(
             "asset_key": asset.key,
             "catalog_href": asset.href,
             "cloud_href": official_cloud_href(asset.href),
-            "access_policy": "AWS_requester_pays_or_USGS_M2M_individual_band",
+            "access_policy": (
+                "AWS_requester_pays_or_USGS_M2M_or_"
+                "Microsoft_Planetary_Computer_SAS"
+            ),
         }
         for semantic, asset in assets.items()
     }

@@ -7,6 +7,7 @@ param(
     [ValidateRange(1, 500000)][int]$TargetWindows = 500000,
     [ValidateRange(30, 3600)][int]$FirstNewBatchTimeoutSeconds = 300,
     [ValidateRange(30, 3600)][int]$NoProgressTimeoutSeconds = 300,
+    [ValidateSet('planetary-computer', 'usgs-m2m')][string]$Provider = 'planetary-computer',
     [int]$Seed = 4004
 )
 
@@ -20,17 +21,31 @@ if (-not (Test-Path $python)) {
     throw "Missing CUDA Python environment: $python"
 }
 
-$credentialPath = Join-Path $env:LOCALAPPDATA 'TerraformingPlanet\usgs_m2m.credential.xml'
-if (-not (Test-Path $credentialPath)) {
-    throw 'Missing encrypted USGS credential. Run scripts\start_training004_usgs.ps1 once to save it.'
-}
-$credential = Import-Clixml -Path $credentialPath
-$env:USGS_USERNAME = $credential.UserName
-$env:USGS_M2M_TOKEN = $credential.GetNetworkCredential().Password
 $env:PYTHONPATH = $repoRoot
 $env:MPLBACKEND = 'Agg'
-if ([string]::IsNullOrWhiteSpace($env:USGS_USERNAME) -or [string]::IsNullOrWhiteSpace($env:USGS_M2M_TOKEN)) {
-    throw 'Encrypted USGS credential is empty.'
+if ($Provider -eq 'usgs-m2m') {
+    $credentialPath = Join-Path $env:LOCALAPPDATA 'TerraformingPlanet\usgs_m2m.credential.xml'
+    if (-not (Test-Path $credentialPath)) {
+        throw 'Missing encrypted USGS credential. Run scripts\start_training004_usgs.ps1 once.'
+    }
+    $credential = Import-Clixml -Path $credentialPath
+    $env:USGS_USERNAME = $credential.UserName
+    $env:USGS_M2M_TOKEN = $credential.GetNetworkCredential().Password
+    if (
+        [string]::IsNullOrWhiteSpace($env:USGS_USERNAME) -or
+        [string]::IsNullOrWhiteSpace($env:USGS_M2M_TOKEN)
+    ) {
+        throw 'Encrypted USGS credential is empty.'
+    }
+} else {
+    & $python -c "import planetary_computer; assert planetary_computer.__version__ == '1.0.0'"
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host 'Installing pinned Microsoft Planetary Computer SDK 1.0.0...' -ForegroundColor Cyan
+        & $python -m pip install --disable-pip-version-check 'planetary-computer==1.0.0'
+        if ($LASTEXITCODE -ne 0) {
+            throw 'planetary-computer==1.0.0 installation failed.'
+        }
+    }
 }
 
 $manifest = Join-Path $repoRoot 'research_runs\training004_water_cycle_manifest.jsonl'
@@ -54,7 +69,8 @@ try {
     }
 
     $seconds = $Minutes * 60
-    Write-Host 'TERRA TRAINING #4 — REAL USGS LANDSAT STREAMING' -ForegroundColor Green
+    Write-Host 'TERRA TRAINING #4 — REAL LANDSAT COLLECTION 2 STREAMING' -ForegroundColor Green
+    Write-Host "Distribution provider: $Provider" -ForegroundColor Green
     Write-Host "Runtime budget: $Minutes minutes | target ceiling: $TargetWindows real windows" -ForegroundColor Green
     Write-Host "Workers=$Workers | max-in-flight=$MaxInFlight | batch=$BatchSize | window=$WindowSize | CUDA" -ForegroundColor Cyan
     Write-Host "Checkpoint/resume directory: $runRoot" -ForegroundColor Cyan
@@ -70,6 +86,7 @@ try {
         --bootstrap-batch-size 1 `
         --window-size $WindowSize `
         --seed $Seed `
+        --provider $Provider `
         --device cuda `
         --resume `
         --first-batch-timeout-seconds $FirstNewBatchTimeoutSeconds `

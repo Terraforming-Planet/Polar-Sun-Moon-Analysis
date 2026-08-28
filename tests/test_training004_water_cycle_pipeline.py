@@ -8,6 +8,7 @@ import numpy as np
 from terra_research_node.training004_sources.landsat import (
     SR_OFFSET,
     SR_SCALE,
+    RasterioCogBackend,
     decode_qa_pixel,
     official_cloud_href,
     read_scientific_window,
@@ -141,3 +142,17 @@ def test_provider_health_attempts_put_unresolved_tropical_records_last() -> None
         "T004-W30-0000003",
         "T004-W30-0000002",
     ]
+
+def test_planetary_computer_blob_is_signed_lazily() -> None:
+    unsigned = (
+        "https://landsateuwest.blob.core.windows.net/landsat-c2/"
+        "level-2/example_SR_B3.TIF"
+    )
+    backend = RasterioCogBackend(
+        azure_signer=lambda href: f"{href}?sig=temporary-not-persisted"
+    )
+    signed, requester_pays = backend._access_href(unsigned)
+    assert signed.endswith("?sig=temporary-not-persisted")
+    assert requester_pays is False
+    assert official_cloud_href(unsigned) == unsigned
+

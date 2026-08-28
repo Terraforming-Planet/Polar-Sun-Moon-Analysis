@@ -2,7 +2,12 @@ from __future__ import annotations
 
 from typing import Any
 
-from terra_research_node.water_cycle_acquisition import _select_best, resolve_pack
+from terra_research_node.water_cycle_acquisition import (
+    PLANETARY_COMPUTER_LANDSAT_COLLECTION,
+    PlanetaryComputerLandsatSearcher,
+    _select_best,
+    resolve_pack,
+)
 
 
 def _item(
@@ -152,3 +157,46 @@ def test_tropical_pack_requires_real_hydroclimatic_windows_without_search() -> N
     resolved = resolve_pack(pack, searcher)
     assert resolved["status"] == "NEEDS_HYDROCLIMATIC_WINDOW"
     assert searcher.calls == []
+
+class _FakePlanetaryResponse:
+    status_code = 200
+
+    def __init__(self, body: dict[str, Any]) -> None:
+        self.body = body
+
+    def raise_for_status(self) -> None:
+        return None
+
+    def json(self) -> dict[str, Any]:
+        return self.body
+
+
+class _FakePlanetarySession:
+    def __init__(self, body: dict[str, Any]) -> None:
+        self.body = body
+        self.calls: list[dict[str, Any]] = []
+
+    def post(self, endpoint: str, **kwargs: Any) -> _FakePlanetaryResponse:
+        self.calls.append({"endpoint": endpoint, **kwargs})
+        return _FakePlanetaryResponse(self.body)
+
+
+def test_planetary_computer_search_is_thread_local_and_cached() -> None:
+    feature = _item("LC08_PC_T1_SR", date="2020-04-15", cloud=4.0)
+    searcher = PlanetaryComputerLandsatSearcher(request_delay_ms=0)
+    session = _FakePlanetarySession({"type": "FeatureCollection", "features": [feature]})
+    searcher._local.session = session
+
+    first = searcher.search(
+        lat=53.5, lon=19.0, year=2020, window=("03-01", "05-31")
+    )
+    second = searcher.search(
+        lat=53.5, lon=19.0, year=2020, window=("03-01", "05-31")
+    )
+
+    assert first == second == [feature]
+    assert len(session.calls) == 1
+    assert session.calls[0]["json"]["collections"] == [
+        PLANETARY_COMPUTER_LANDSAT_COLLECTION
+    ]
+

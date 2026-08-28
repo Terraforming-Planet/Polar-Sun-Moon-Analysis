@@ -15,7 +15,10 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from terra_research_node.training004_sources.landsat import RasterioCogBackend  # noqa: E402
-from terra_research_node.water_cycle_acquisition import UsgsLandsatSearcher  # noqa: E402
+from terra_research_node.water_cycle_acquisition import (  # noqa: E402
+    PlanetaryComputerLandsatSearcher,
+    UsgsLandsatSearcher,
+)
 from terra_research_node.water_cycle_streaming import (  # noqa: E402
     DERIVED_TARGET_CONFIG,
     DERIVED_TARGET_CONFIG_HASH,
@@ -189,6 +192,11 @@ def main() -> int:
     parser.add_argument("--bootstrap-batch-size", type=int, default=1)
     parser.add_argument("--window-size", type=int, default=256)
     parser.add_argument("--seed", type=int, default=4004)
+    parser.add_argument(
+        "--provider",
+        choices=("planetary-computer", "usgs-m2m"),
+        default="usgs-m2m",
+    )
     parser.add_argument("--device", choices=("cuda", "cpu", "auto"), default="cuda")
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--first-batch-timeout-seconds", type=float)
@@ -208,7 +216,12 @@ def main() -> int:
     if not args.resume and (args.output_dir / "stream-state.json").exists():
         raise RuntimeError("Existing stream state requires --resume or a new output directory")
     trainer = TorchBatchTrainer(args.output_dir, args.device, args.seed)
-    live_source = LandsatPairSource(UsgsLandsatSearcher(), RasterioCogBackend(), args.window_size)
+    searcher = (
+        PlanetaryComputerLandsatSearcher()
+        if args.provider == "planetary-computer"
+        else UsgsLandsatSearcher()
+    )
+    live_source = LandsatPairSource(searcher, RasterioCogBackend(), args.window_size)
     source = CachedPairSource(live_source, args.output_dir.parent / "raster-block-cache")
     try:
         summary = run_stream(
@@ -232,6 +245,7 @@ def main() -> int:
             "schema": "terra-training-004-real-streaming-v1",
             "status": "BLOCKED",
             "requested_target": args.target_real_windows,
+            "distribution_provider": args.provider,
             "real_scientific_windows_trained": 0,
             "generated_satellite_pixels": False,
             "test001_leakage": False,
@@ -245,6 +259,10 @@ def main() -> int:
         )
         print(json.dumps(summary, sort_keys=True), flush=True)
         return 2
+    summary["distribution_provider"] = args.provider
+    (args.output_dir / "summary.json").write_text(
+        json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     print(json.dumps(summary, sort_keys=True))
     return 0 if summary["status"] == "PASS" else 2
 
