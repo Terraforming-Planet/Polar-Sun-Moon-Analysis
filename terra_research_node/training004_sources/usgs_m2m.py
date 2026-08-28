@@ -89,6 +89,7 @@ class UsgsM2MClient:
         )
         self._api_key: str | None = None
         self._url_cache: dict[tuple[str, str], str] = {}
+        self._options_cache: dict[tuple[str, str], list[dict[str, Any]]] = {}
         # requests.Session and the M2M scene-list control plane are not thread-safe.
         # One re-entrant lock also provides single-flight token creation.
         self._control_lock = threading.RLock()
@@ -201,53 +202,15 @@ class UsgsM2MClient:
         if cached is not None:
             return cached
 
-        list_id = f"terra-t004-{uuid4().hex}"
-        added = self._call(
-            "scene-list-add",
-            {
-                "listId": list_id,
-                "idField": "displayId",
-                "entityIds": [display_id],
-                "datasetName": dataset,
-            },
-        )
-        if not isinstance(added, int) or added < 1:
-            raise UsgsM2MError(
-                f"USGS M2M could not resolve Landsat scene {display_id} in {dataset}"
-            )
-
-        try:
-            products = self._call(
-                "download-options",
-                {"listId": list_id, "datasetName": dataset},
-            )
-        finally:
-            with contextlib.suppress(requests.RequestException, UsgsM2MError):
-                self._call("scene-list-remove", {"listId": list_id})
-
-        if not isinstance(products, list):
-            raise UsgsM2MError("USGS M2M download-options returned no product list")
-
+        options = self._scene_options_locked(dataset, display_id)
         selected: dict[str, Any] | None = None
         seen_names: list[str] = []
-        for raw_product in products:
-            if not isinstance(raw_product, dict):
-                continue
-            raw_options: list[Any] = [raw_product]
-            secondary = raw_product.get("secondaryDownloads")
-            if isinstance(secondary, list):
-                raw_options.extend(secondary)
-            for raw_option in raw_options:
-                if not isinstance(raw_option, dict):
-                    continue
-                option = cast(dict[str, Any], raw_option)
-                name = str(option.get("productName") or option.get("displayId") or "")
-                if name:
-                    seen_names.append(name)
-                if _downloadable(option) and _matches_band(option, band):
-                    selected = option
-                    break
-            if selected is not None:
+        for option in options:
+            name = str(option.get("productName") or option.get("displayId") or "")
+            if name:
+                seen_names.append(name)
+            if _downloadable(option) and _matches_band(option, band):
+                selected = option
                 break
 
         if selected is None:
@@ -297,6 +260,54 @@ class UsgsM2MClient:
         raise UsgsM2MError(
             f"USGS M2M band download not ready after polling for {display_id}/{band}"
         )
+
+    def _scene_options_locked(self, dataset: str, display_id: str) -> list[dict[str, Any]]:
+        cache_key = (dataset, display_id)
+        cached = self._options_cache.get(cache_key)
+        if cached is not None:
+            return cached
+
+        list_id = f"terra-t004-{uuid4().hex}"
+        added = self._call(
+            "scene-list-add",
+            {
+                "listId": list_id,
+                "idField": "displayId",
+                "entityIds": [display_id],
+                "datasetName": dataset,
+            },
+        )
+        if not isinstance(added, int) or added < 1:
+            raise UsgsM2MError(
+                f"USGS M2M could not resolve Landsat scene {display_id} in {dataset}"
+            )
+
+        try:
+            products = self._call(
+                "download-options",
+                {"listId": list_id, "datasetName": dataset},
+            )
+        finally:
+            with contextlib.suppress(requests.RequestException, UsgsM2MError):
+                self._call("scene-list-remove", {"listId": list_id})
+
+        if not isinstance(products, list):
+            raise UsgsM2MError("USGS M2M download-options returned no product list")
+
+        options: list[dict[str, Any]] = []
+        for raw_product in products:
+            if not isinstance(raw_product, dict):
+                continue
+            raw_options: list[Any] = [raw_product]
+            secondary = raw_product.get("secondaryDownloads")
+            if isinstance(secondary, list):
+                raw_options.extend(secondary)
+            for raw_option in raw_options:
+                if not isinstance(raw_option, dict):
+                    continue
+                options.append(cast(dict[str, Any], raw_option))
+        self._options_cache[cache_key] = options
+        return options
 
     @staticmethod
     def _extract_url(result: Any) -> str | None:

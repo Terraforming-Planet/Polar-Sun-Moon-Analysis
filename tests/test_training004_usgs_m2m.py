@@ -118,6 +118,61 @@ def test_response_buckets_immediate_and_preparing_flow() -> None:
     assert UsgsM2MClient._extract_url({"requestedDownloads": [{"url": "preview"}]}) is None
 
 
+def test_scene_download_options_are_reused_across_band_requests() -> None:
+    client = UsgsM2MClient("user", "application-token")
+    client._api_key = "ephemeral-key"
+    calls: list[str] = []
+
+    def call(endpoint: str, payload: dict[str, Any] | None, **kwargs: Any) -> Any:
+        calls.append(endpoint)
+        if endpoint == "scene-list-add":
+            return 1
+        if endpoint == "download-options":
+            return [
+                {
+                    "secondaryDownloads": [
+                        {
+                            "productName": "Pixel Quality Assessment QA_PIXEL",
+                            "entityId": "entity-qa",
+                            "id": "product-qa",
+                            "available": True,
+                        },
+                        {
+                            "productName": "Surface Reflectance Band 3",
+                            "entityId": "entity-b3",
+                            "id": "product-b3",
+                            "available": True,
+                        },
+                    ]
+                }
+            ]
+        if endpoint == "scene-list-remove":
+            return 1
+        if endpoint == "download-request":
+            assert payload is not None
+            product_id = payload["downloads"][0]["productId"]
+            return {"availableDownloads": [{"url": f"https://download.example/{product_id}"}]}
+        raise AssertionError(endpoint)
+
+    client._call = call  # type: ignore[method-assign]
+    root = (
+        "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/"
+        "2025/189/023/LC08_L2SP_189023_20250308_20250312_02_T1/"
+    )
+    qa_url = client.signed_band_url(
+        root + "LC08_L2SP_189023_20250308_20250312_02_T1_QA_PIXEL.TIF"
+    )
+    band_url = client.signed_band_url(
+        root + "LC08_L2SP_189023_20250308_20250312_02_T1_SR_B3.TIF"
+    )
+    assert qa_url.endswith("product-qa")
+    assert band_url.endswith("product-b3")
+    assert calls.count("scene-list-add") == 1
+    assert calls.count("download-options") == 1
+    assert calls.count("scene-list-remove") == 1
+    assert calls.count("download-request") == 2
+
+
 def test_provider_http_error_preserves_endpoint_and_status_without_secrets() -> None:
     client = UsgsM2MClient("user", "do-not-log-this")
     client._api_key = "also-secret"

@@ -1,7 +1,7 @@
 param(
     [ValidateRange(1, 1440)][int]$Minutes = 60,
-    [ValidateRange(1, 64)][int]$Workers = 16,
-    [ValidateRange(1, 128)][int]$MaxInFlight = 64,
+    [ValidateRange(1, 64)][int]$Workers = 4,
+    [ValidateRange(1, 128)][int]$MaxInFlight = 8,
     [ValidateRange(1, 128)][int]$BatchSize = 24,
     [ValidateRange(64, 1024)][int]$WindowSize = 256,
     [ValidateRange(1, 500000)][int]$TargetWindows = 500000,
