@@ -1,0 +1,159 @@
+RECOVERED TRAINING #4 CONSOLE EVIDENCE
+======================================
+
+IMPORTANT PROVENANCE NOTE
+This is a reconstruction of the visible final 60-minute NVIDIA L4 console output
+from screenshots captured during the run in the ChatGPT conversation on 2026-08-28.
+It is NOT the original raw PowerShell transcript, because Start-Transcript/Tee-Object
+was not enabled before the run. The original pre-transcript terminal buffer was lost
+when the L4 instance was shut down.
+
+What is recovered here:
+- the run invocation and CUDA training header;
+- every periodic GPU_SSL_TRAINING line visible for steps 300..9500 inclusive
+  (93 periodic records, one every 100 steps);
+- the final saved summary.json values and checkpoint SHA-256.
+
+The periodic values below were transcribed from the screenshots; exposures are also
+cross-checked by the runner invariant exposures = step * effective_batch_size (128).
+This file must be cited as reconstructed evidence, not as an original raw log.
+
+CHECKPOINT=C:\TP\Polar-Sun-Moon-Analysis\research_runs\training004_gpu_ssl_one_hour\checkpoints\latest.pt
+PS C:\TP\Polar-Sun-Moon-Analysis> .\scripts\gpu1h.ps1 -Minutes 60 -BatchSize 192 -MaxPairs 256
+TERRA TRAINING #4 - MASKED SPECTRAL-TEMPORAL CUDA
+Minutes=60 | requested batch=192 | real cache limit=256
+Mixed 256/512 caches normalize to one 256 px scientific AOI tensor.
+CACHED_SSL_CUDA_START gpu=NVIDIA L4 unique_real_pairs=95 requested_batch=192 canvas=256 mask=0.40 minutes=60 source_shapes={'8x512x512': 71, '8x256x256': 24}
+
+GPU_SSL_TRAINING step=300 exposures=38400 batch=128 loss=0.055454 reconstruction=0.050706 validation=0.243687
+GPU_SSL_TRAINING step=400 exposures=51200 batch=128 loss=0.052100 reconstruction=0.042034 validation=0.269304
+GPU_SSL_TRAINING step=500 exposures=64000 batch=128 loss=0.039661 reconstruction=0.034976 validation=0.240656
+GPU_SSL_TRAINING step=600 exposures=76800 batch=128 loss=0.040841 reconstruction=0.035587 validation=0.235329
+GPU_SSL_TRAINING step=700 exposures=89600 batch=128 loss=0.041859 reconstruction=0.037530 validation=0.234497
+GPU_SSL_TRAINING step=800 exposures=102400 batch=128 loss=0.039925 reconstruction=0.035191 validation=0.224086
+GPU_SSL_TRAINING step=900 exposures=115200 batch=128 loss=0.037797 reconstruction=0.033610 validation=0.230734
+GPU_SSL_TRAINING step=1000 exposures=128000 batch=128 loss=0.032550 reconstruction=0.028353 validation=0.222944
+GPU_SSL_TRAINING step=1100 exposures=140800 batch=128 loss=0.035625 reconstruction=0.031519 validation=0.221243
+GPU_SSL_TRAINING step=1200 exposures=153600 batch=128 loss=0.034614 reconstruction=0.030490 validation=0.230381
+GPU_SSL_TRAINING step=1300 exposures=166400 batch=128 loss=0.028661 reconstruction=0.024550 validation=0.229175
+GPU_SSL_TRAINING step=1400 exposures=179200 batch=128 loss=0.030981 reconstruction=0.026887 validation=0.226471
+GPU_SSL_TRAINING step=1500 exposures=192000 batch=128 loss=0.025460 reconstruction=0.021370 validation=0.230414
+GPU_SSL_TRAINING step=1600 exposures=204800 batch=128 loss=0.030275 reconstruction=0.026199 validation=0.223094
+GPU_SSL_TRAINING step=1700 exposures=217600 batch=128 loss=0.025046 reconstruction=0.020976 validation=0.226310
+GPU_SSL_TRAINING step=1800 exposures=230400 batch=128 loss=0.029006 reconstruction=0.024925 validation=0.228496
+GPU_SSL_TRAINING step=1900 exposures=243200 batch=128 loss=0.035599 reconstruction=0.025637 validation=0.218347
+GPU_SSL_TRAINING step=2000 exposures=256000 batch=128 loss=0.026572 reconstruction=0.022507 validation=0.226494
+GPU_SSL_TRAINING step=2100 exposures=268800 batch=128 loss=0.025918 reconstruction=0.021850 validation=0.225849
+GPU_SSL_TRAINING step=2200 exposures=281600 batch=128 loss=0.027533 reconstruction=0.023481 validation=0.220919
+GPU_SSL_TRAINING step=2300 exposures=294400 batch=128 loss=0.026442 reconstruction=0.022385 validation=0.225850
+GPU_SSL_TRAINING step=2400 exposures=307200 batch=128 loss=0.027269 reconstruction=0.023224 validation=0.223589
+GPU_SSL_TRAINING step=2500 exposures=320000 batch=128 loss=0.029350 reconstruction=0.025299 validation=0.221164
+GPU_SSL_TRAINING step=2600 exposures=332800 batch=128 loss=0.021819 reconstruction=0.017777 validation=0.211126
+GPU_SSL_TRAINING step=2700 exposures=345600 batch=128 loss=0.023872 reconstruction=0.019836 validation=0.216887
+GPU_SSL_TRAINING step=2800 exposures=358400 batch=128 loss=0.023479 reconstruction=0.019430 validation=0.219851
+GPU_SSL_TRAINING step=2900 exposures=371200 batch=128 loss=0.022227 reconstruction=0.018193 validation=0.222228
+GPU_SSL_TRAINING step=3000 exposures=384000 batch=128 loss=0.025115 reconstruction=0.021080 validation=0.223019
+GPU_SSL_TRAINING step=3100 exposures=396800 batch=128 loss=0.019298 reconstruction=0.015260 validation=0.213561
+GPU_SSL_TRAINING step=3200 exposures=409600 batch=128 loss=0.023074 reconstruction=0.019032 validation=0.227793
+GPU_SSL_TRAINING step=3300 exposures=422400 batch=128 loss=0.021608 reconstruction=0.017554 validation=0.220797
+GPU_SSL_TRAINING step=3400 exposures=435200 batch=128 loss=0.025429 reconstruction=0.020808 validation=0.224140
+GPU_SSL_TRAINING step=3500 exposures=448000 batch=128 loss=0.025111 reconstruction=0.019444 validation=0.224093
+GPU_SSL_TRAINING step=3600 exposures=460800 batch=128 loss=0.022373 reconstruction=0.017605 validation=0.216461
+GPU_SSL_TRAINING step=3700 exposures=473600 batch=128 loss=0.028536 reconstruction=0.024488 validation=0.223105
+GPU_SSL_TRAINING step=3800 exposures=486400 batch=128 loss=0.022019 reconstruction=0.017973 validation=0.222289
+GPU_SSL_TRAINING step=3900 exposures=499200 batch=128 loss=0.025137 reconstruction=0.021094 validation=0.220239
+GPU_SSL_TRAINING step=4000 exposures=512000 batch=128 loss=0.021930 reconstruction=0.017890 validation=0.219108
+GPU_SSL_TRAINING step=4100 exposures=524800 batch=128 loss=0.024018 reconstruction=0.019985 validation=0.217518
+GPU_SSL_TRAINING step=4200 exposures=537600 batch=128 loss=0.021516 reconstruction=0.017487 validation=0.219952
+GPU_SSL_TRAINING step=4300 exposures=550400 batch=128 loss=0.019021 reconstruction=0.014998 validation=0.220825
+GPU_SSL_TRAINING step=4400 exposures=563200 batch=128 loss=0.021408 reconstruction=0.017383 validation=0.219106
+GPU_SSL_TRAINING step=4500 exposures=576000 batch=128 loss=0.023984 reconstruction=0.019961 validation=0.215108
+GPU_SSL_TRAINING step=4600 exposures=588800 batch=128 loss=0.022342 reconstruction=0.018314 validation=0.210960
+GPU_SSL_TRAINING step=4700 exposures=601600 batch=128 loss=0.019645 reconstruction=0.015616 validation=0.209630
+GPU_SSL_TRAINING step=4800 exposures=614400 batch=128 loss=0.021998 reconstruction=0.017976 validation=0.222296
+GPU_SSL_TRAINING step=4900 exposures=627200 batch=128 loss=0.022277 reconstruction=0.018250 validation=0.209885
+GPU_SSL_TRAINING step=5000 exposures=640000 batch=128 loss=0.019955 reconstruction=0.015931 validation=0.218855
+GPU_SSL_TRAINING step=5100 exposures=652800 batch=128 loss=0.020539 reconstruction=0.016509 validation=0.215880
+GPU_SSL_TRAINING step=5200 exposures=665600 batch=128 loss=0.020991 reconstruction=0.016966 validation=0.213301
+GPU_SSL_TRAINING step=5300 exposures=678400 batch=128 loss=0.030231 reconstruction=0.024015 validation=0.205246
+GPU_SSL_TRAINING step=5400 exposures=691200 batch=128 loss=0.023325 reconstruction=0.018937 validation=0.218904
+GPU_SSL_TRAINING step=5500 exposures=704000 batch=128 loss=0.022866 reconstruction=0.018829 validation=0.214264
+GPU_SSL_TRAINING step=5600 exposures=716800 batch=128 loss=0.021530 reconstruction=0.017498 validation=0.211259
+GPU_SSL_TRAINING step=5700 exposures=729600 batch=128 loss=0.018364 reconstruction=0.014337 validation=0.220188
+GPU_SSL_TRAINING step=5800 exposures=742400 batch=128 loss=0.019658 reconstruction=0.015627 validation=0.211511
+GPU_SSL_TRAINING step=5900 exposures=755200 batch=128 loss=0.021461 reconstruction=0.017440 validation=0.215261
+GPU_SSL_TRAINING step=6000 exposures=768000 batch=128 loss=0.017145 reconstruction=0.013125 validation=0.215795
+GPU_SSL_TRAINING step=6100 exposures=780800 batch=128 loss=0.017716 reconstruction=0.013694 validation=0.214382
+GPU_SSL_TRAINING step=6200 exposures=793600 batch=128 loss=0.019866 reconstruction=0.015846 validation=0.210827
+GPU_SSL_TRAINING step=6300 exposures=806400 batch=128 loss=0.019603 reconstruction=0.015580 validation=0.216855
+GPU_SSL_TRAINING step=6400 exposures=819200 batch=128 loss=0.020512 reconstruction=0.016493 validation=0.215704
+GPU_SSL_TRAINING step=6500 exposures=832000 batch=128 loss=0.021764 reconstruction=0.017747 validation=0.218910
+GPU_SSL_TRAINING step=6600 exposures=844800 batch=128 loss=0.020717 reconstruction=0.016694 validation=0.216145
+GPU_SSL_TRAINING step=6700 exposures=857600 batch=128 loss=0.019372 reconstruction=0.015350 validation=0.212277
+GPU_SSL_TRAINING step=6800 exposures=870400 batch=128 loss=0.016266 reconstruction=0.012245 validation=0.211294
+GPU_SSL_TRAINING step=6900 exposures=883200 batch=128 loss=0.018129 reconstruction=0.014108 validation=0.213136
+GPU_SSL_TRAINING step=7000 exposures=896000 batch=128 loss=0.017865 reconstruction=0.013848 validation=0.216702
+GPU_SSL_TRAINING step=7100 exposures=908800 batch=128 loss=0.021052 reconstruction=0.017030 validation=0.209541
+GPU_SSL_TRAINING step=7200 exposures=921600 batch=128 loss=0.015996 reconstruction=0.011969 validation=0.216333
+GPU_SSL_TRAINING step=7300 exposures=934400 batch=128 loss=0.018971 reconstruction=0.014948 validation=0.214281
+GPU_SSL_TRAINING step=7400 exposures=947200 batch=128 loss=0.017889 reconstruction=0.013873 validation=0.213254
+GPU_SSL_TRAINING step=7500 exposures=960000 batch=128 loss=0.016864 reconstruction=0.012846 validation=0.215455
+GPU_SSL_TRAINING step=7600 exposures=972800 batch=128 loss=0.017879 reconstruction=0.013859 validation=0.214424
+GPU_SSL_TRAINING step=7700 exposures=985600 batch=128 loss=0.017603 reconstruction=0.013583 validation=0.212907
+GPU_SSL_TRAINING step=7800 exposures=998400 batch=128 loss=0.037028 reconstruction=0.019700 validation=0.235111
+GPU_SSL_TRAINING step=7900 exposures=1011200 batch=128 loss=0.020265 reconstruction=0.016155 validation=0.216128
+GPU_SSL_TRAINING step=8000 exposures=1024000 batch=128 loss=0.018470 reconstruction=0.014439 validation=0.220912
+GPU_SSL_TRAINING step=8100 exposures=1036800 batch=128 loss=0.016178 reconstruction=0.012154 validation=0.214622
+GPU_SSL_TRAINING step=8200 exposures=1049600 batch=128 loss=0.018184 reconstruction=0.014164 validation=0.210838
+GPU_SSL_TRAINING step=8300 exposures=1062400 batch=128 loss=0.019056 reconstruction=0.015035 validation=0.211703
+GPU_SSL_TRAINING step=8400 exposures=1075200 batch=128 loss=0.017869 reconstruction=0.013847 validation=0.210576
+GPU_SSL_TRAINING step=8500 exposures=1088000 batch=128 loss=0.015732 reconstruction=0.011715 validation=0.213729
+GPU_SSL_TRAINING step=8600 exposures=1100800 batch=128 loss=0.017757 reconstruction=0.013740 validation=0.211159
+GPU_SSL_TRAINING step=8700 exposures=1113600 batch=128 loss=0.019667 reconstruction=0.015647 validation=0.210282
+GPU_SSL_TRAINING step=8800 exposures=1126400 batch=128 loss=0.015616 reconstruction=0.011597 validation=0.212996
+GPU_SSL_TRAINING step=8900 exposures=1139200 batch=128 loss=0.017958 reconstruction=0.013939 validation=0.210523
+GPU_SSL_TRAINING step=9000 exposures=1152000 batch=128 loss=0.018386 reconstruction=0.014369 validation=0.212370
+GPU_SSL_TRAINING step=9100 exposures=1164800 batch=128 loss=0.015988 reconstruction=0.011974 validation=0.212852
+GPU_SSL_TRAINING step=9200 exposures=1177600 batch=128 loss=0.018561 reconstruction=0.014543 validation=0.209421
+GPU_SSL_TRAINING step=9300 exposures=1190400 batch=128 loss=0.015521 reconstruction=0.011498 validation=0.208794
+GPU_SSL_TRAINING step=9400 exposures=1203200 batch=128 loss=0.018357 reconstruction=0.014340 validation=0.212906
+GPU_SSL_TRAINING step=9500 exposures=1216000 batch=128 loss=0.016761 reconstruction=0.012746 validation=0.207441
+
+FINAL SAVED SUMMARY.JSON
+========================
+{
+  "benchmark_leakage": false,
+  "blocker": null,
+  "canvas_size": 256,
+  "checkpoint": "C:\\TP\\Polar-Sun-Moon-Analysis\\research_runs\\training004_gpu_ssl_one_hour\\checkpoints\\latest.pt",
+  "checkpoint_sha256": "a8962b45fcf848c1b35d527b421a1ed92f642a06b603c87c834f690aea4a8051",
+  "device": "cuda",
+  "effective_batch_size": 128,
+  "elapsed_seconds": 3600.280999999999,
+  "environmental_ground_truth": false,
+  "equivalent_epochs": 14230.32558139535,
+  "generated_satellite_pixels": false,
+  "gpu_name": "NVIDIA L4",
+  "gpu_peak_vram_mib": 12237.9736328125,
+  "loss_last": 0.016761193051934242,
+  "loss_min": 0.015521327033638954,
+  "mask_ratio": 0.4,
+  "mission_leakage": false,
+  "mixed_precision": true,
+  "objective": "masked eight-channel before/after reconstruction plus derived change head",
+  "provenance_records": 95,
+  "reconstruction_loss_last": 0.012745996005833149,
+  "requested_batch_size": 192,
+  "scope": "masked spectral-temporal cache adaptation; augmented exposures are not independent observation windows",
+  "source_shape_counts": {
+    "8x256x256": 24,
+    "8x512x512": 71
+  },
+  "status": "COMPLETE",
+  "steps": 9561,
+  "test001_leakage": false,
+  "training_exposures": 1223808,
+  "unique_real_scientific_pairs": 95,
+  "validation_loss_last": 0.20744109153747559,
+  "validation_pairs": 9
+}
