@@ -143,6 +143,7 @@ def test_provider_health_attempts_put_unresolved_tropical_records_last() -> None
         "T004-W30-0000002",
     ]
 
+
 def test_planetary_computer_blob_is_signed_lazily() -> None:
     unsigned = (
         "https://landsateuwest.blob.core.windows.net/landsat-c2/"

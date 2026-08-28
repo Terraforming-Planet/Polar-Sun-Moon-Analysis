@@ -158,6 +158,7 @@ def test_tropical_pack_requires_real_hydroclimatic_windows_without_search() -> N
     assert resolved["status"] == "NEEDS_HYDROCLIMATIC_WINDOW"
     assert searcher.calls == []
 
+
 class _FakePlanetaryResponse:
     status_code = 200
 
