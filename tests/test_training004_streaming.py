@@ -187,6 +187,46 @@ def test_stream_first_batch_timeout_is_bounded(tmp_path: Path) -> None:
     assert time.monotonic() - started < 2.0
 
 
+def test_resumed_stream_still_requires_a_new_cuda_batch(tmp_path: Path) -> None:
+    manifest, output = tmp_path / "manifest.jsonl", tmp_path / "run"
+    write_manifest(manifest, 20)
+    first = run_stream(
+        manifest,
+        output,
+        FakeSource(),
+        target=1,
+        seed=4,
+        workers=1,
+        queue_size=1,
+        batch_size=1,
+        max_attempts=None,
+        train_batch=FakeTrainer(),
+    )
+    assert first["real_scientific_windows_trained"] == 1
+
+    started = time.monotonic()
+    try:
+        run_stream(
+            manifest,
+            output,
+            SlowUnknownSource(),
+            target=2,
+            seed=4,
+            workers=1,
+            queue_size=1,
+            batch_size=1,
+            max_attempts=None,
+            first_batch_timeout_s=0.1,
+            heartbeat_interval_s=0.05,
+            train_batch=FakeTrainer(),
+        )
+    except TimeoutError as exc:
+        assert "No real scientific batch reached CUDA" in str(exc)
+    else:
+        raise AssertionError("Resumed run incorrectly treated old progress as a new CUDA batch")
+    assert time.monotonic() - started < 2.0
+
+
 def test_landsat_source_retries_next_ranked_scene(monkeypatch: Any) -> None:
     items = [
         {

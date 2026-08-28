@@ -192,6 +192,7 @@ def main() -> int:
     parser.add_argument("--device", choices=("cuda", "cpu", "auto"), default="cuda")
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--first-batch-timeout-seconds", type=float)
+    parser.add_argument("--no-progress-timeout-seconds", type=float)
     parser.add_argument("--max-runtime-seconds", type=float)
     args = parser.parse_args()
     if (
@@ -222,6 +223,7 @@ def main() -> int:
             bootstrap_batch_size=args.bootstrap_batch_size,
             max_attempts=args.max_attempts,
             first_batch_timeout_s=args.first_batch_timeout_seconds,
+            no_progress_timeout_s=args.no_progress_timeout_seconds,
             max_runtime_s=args.max_runtime_seconds,
             train_batch=trainer,
         )

@@ -5,6 +5,8 @@ param(
     [ValidateRange(1, 128)][int]$BatchSize = 24,
     [ValidateRange(64, 1024)][int]$WindowSize = 256,
     [ValidateRange(1, 500000)][int]$TargetWindows = 500000,
+    [ValidateRange(30, 3600)][int]$FirstNewBatchTimeoutSeconds = 300,
+    [ValidateRange(30, 3600)][int]$NoProgressTimeoutSeconds = 300,
     [int]$Seed = 4004
 )
 
@@ -56,6 +58,7 @@ try {
     Write-Host "Runtime budget: $Minutes minutes | target ceiling: $TargetWindows real windows" -ForegroundColor Green
     Write-Host "Workers=$Workers | max-in-flight=$MaxInFlight | batch=$BatchSize | window=$WindowSize | CUDA" -ForegroundColor Cyan
     Write-Host "Checkpoint/resume directory: $runRoot" -ForegroundColor Cyan
+    Write-Host "Hard watchdog: first new CUDA batch=$FirstNewBatchTimeoutSeconds s; later progress=$NoProgressTimeoutSeconds s" -ForegroundColor Yellow
 
     & $python scripts\run_training004_streaming_l4.py `
         --manifest $manifest `
@@ -69,7 +72,8 @@ try {
         --seed $Seed `
         --device cuda `
         --resume `
-        --first-batch-timeout-seconds 600 `
+        --first-batch-timeout-seconds $FirstNewBatchTimeoutSeconds `
+        --no-progress-timeout-seconds $NoProgressTimeoutSeconds `
         --max-runtime-seconds $seconds 2>&1 | Tee-Object -FilePath $consoleLog
 
     $runnerExit = $LASTEXITCODE
@@ -82,7 +86,7 @@ try {
         Write-Host "TIME_BUDGET_REACHED=$($summary.time_budget_reached)" -ForegroundColor Cyan
         Write-Host "CHECKPOINT=$runRoot\checkpoints\latest.pt" -ForegroundColor Cyan
         Write-Host "TELEMETRY=$runRoot\telemetry.jsonl" -ForegroundColor Cyan
-        if ($summary.time_budget_reached -eq $true -and [int64]$summary.real_scientific_windows_trained -gt 0) {
+        if ($summary.time_budget_reached -eq $true -and [int64]$summary.new_windows_this_invocation -gt 0) {
             Write-Host 'TRAINING004 ONE-HOUR CUDA RUN: COMPLETE (checkpoint saved; resumable)' -ForegroundColor Green
             exit 0
         }

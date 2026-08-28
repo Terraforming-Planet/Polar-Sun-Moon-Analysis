@@ -360,6 +360,7 @@ def run_stream(
     max_attempts: int | None,
     bootstrap_batch_size: int | None = None,
     first_batch_timeout_s: float | None = None,
+    no_progress_timeout_s: float | None = None,
     max_runtime_s: float | None = None,
     heartbeat_interval_s: float = 5.0,
     train_batch: Callable[[list[dict[str, Any]], StreamState], dict[str, Any]],
@@ -438,6 +439,8 @@ def run_stream(
         raise ValueError("batch_size must be positive")
     if bootstrap_batch_size is not None and bootstrap_batch_size <= 0:
         raise ValueError("bootstrap_batch_size must be positive")
+    if no_progress_timeout_s is not None and no_progress_timeout_s <= 0:
+        raise ValueError("no_progress_timeout_s must be positive")
     if max_runtime_s is not None and max_runtime_s <= 0:
         raise ValueError("max_runtime_s must be positive")
     started = time.monotonic()
@@ -451,7 +454,8 @@ def run_stream(
     pending: dict[int, tuple[int, dict[str, Any], dict[str, Any] | None, str | None]] = {}
     expected_sequence = 0
     last_heartbeat = started - heartbeat_interval_s
-    first_cuda_batch = state.consumed > 0
+    new_cuda_batch_completed = False
+    last_cuda_progress = started
 
     def abort(exc: BaseException) -> None:
         stop.set()
@@ -475,19 +479,31 @@ def run_stream(
                 f"attempted={state.attempted} resolved={counters['RESOLVED']} "
                 f"rejected={counters['REJECTED']} UNKNOWN={counters['UNKNOWN']} "
                 f"provider_errors={counters['PROVIDER_ERROR']} input_queue={work.qsize()} "
-                f"ready_queue={ready.qsize()} cache_hits={int(getattr(source, 'hits', 0))}",
+                f"ready_queue={ready.qsize()} pending={len(pending)} "
+                f"cache_hits={int(getattr(source, 'hits', 0))}",
                 flush=True,
             )
             last_heartbeat = now
         if (
             first_batch_timeout_s is not None
-            and not first_cuda_batch
+            and not new_cuda_batch_completed
             and now - started >= first_batch_timeout_s
         ):
             abort(
                 TimeoutError(
                     "No real scientific batch reached CUDA within "
                     f"{first_batch_timeout_s:.0f} seconds"
+                )
+            )
+        if (
+            no_progress_timeout_s is not None
+            and new_cuda_batch_completed
+            and now - last_cuda_progress >= no_progress_timeout_s
+        ):
+            abort(
+                TimeoutError(
+                    "No additional real scientific batch reached CUDA within "
+                    f"{no_progress_timeout_s:.0f} seconds"
                 )
             )
         if max_attempts is not None and state.attempted - initial_attempted >= max_attempts:
@@ -539,13 +555,14 @@ def run_stream(
         assert_training_record(record)
         batch.append(payload)
         required_batch = batch_size
-        if not first_cuda_batch and bootstrap_batch_size is not None:
+        if not new_cuda_batch_completed and bootstrap_batch_size is not None:
             required_batch = min(batch_size, bootstrap_batch_size)
         if len(batch) >= required_batch or state.consumed + len(batch) >= target:
             remaining = target - state.consumed
             selected = batch[:remaining]
             training_metrics = train_batch(selected, state)
-            first_cuda_batch = True
+            new_cuda_batch_completed = True
+            last_cuda_progress = time.monotonic()
             for item in selected:
                 store.append(store.provenance_path, cast(dict[str, Any], item["provenance"]))
             state.consumed += len(selected)
@@ -576,6 +593,9 @@ def run_stream(
         "manifest_sha256": manifest_hash,
         "elapsed_seconds": elapsed,
         "max_runtime_seconds": max_runtime_s,
+        "first_batch_timeout_seconds": first_batch_timeout_s,
+        "no_progress_timeout_seconds": no_progress_timeout_s,
+        "new_cuda_batch_completed": new_cuda_batch_completed,
         "time_budget_reached": bool(counters["TIME_BUDGET_REACHED"]),
         "test001_leakage": False,
         "benchmark_leakage": False,
