@@ -206,7 +206,7 @@ class RasterioCogBackend:
             try:
                 module = import_module("planetary_computer")
                 self._azure_signer = cast(
-                    Callable[[str], str], getattr(module, "sign_url")
+                    Callable[[str], str], module.sign_url
                 )
             except (ImportError, AttributeError):
                 self._azure_signer = None
