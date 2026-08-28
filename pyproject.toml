@@ -25,6 +25,11 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 # correctness, bugbear, modernization and simplification checks remain enabled.
 "scripts/publish_streaming_gibs_run.py" = ["E501"]
 "tests/test_streaming_gibs_report.py" = ["I001"]
+# Agentic EO dataset examples intentionally preserve complete scientific task and
+# evidence-boundary instructions as single literals. Ignore only line length for
+# these two files; all other Ruff checks remain active.
+"scripts/build_agentic_eo_public_good_dataset.py" = ["E501"]
+"tests/test_agentic_eo_public_good_dataset.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"

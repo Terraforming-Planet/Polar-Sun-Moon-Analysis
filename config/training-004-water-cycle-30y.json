@@ -1,0 +1,265 @@
+{
+  "schema": "terra-training-004-water-cycle-30y-v1",
+  "title": "Training #4 — 30-Year Seasonal Water-Cycle Change Dataset",
+  "purpose": "Train and evaluate temporal Earth-observation representations for detecting reproducible surface-water, river, wetland, cryosphere and terrain-linked change while preserving provenance, uncertainty and environmental-consequence boundaries.",
+  "time_policy": {
+    "core_30_complete_years": {"start": 1996, "end": 2025, "inclusive_years": 30},
+    "project_archive_context": {"start": 1990, "end": 2026},
+    "current_year_2026": "context/evaluation only until both requested seasonal windows are complete",
+    "rule": "Never describe 1990-2026 as a 30-year interval. TEST 001 keeps its full historical context while the reproducible training core uses exactly 30 complete calendar years."
+  },
+  "target": {
+    "temporal_change_packs": 500000,
+    "pack_meaning": "A pack is a provenance-linked multi-date/multi-source observation bundle for one AOI, not one independent image.",
+    "distribution": {
+      "green_water_rich": {"percent": 30, "packs": 150000},
+      "dry_arid_desert": {"percent": 30, "packs": 150000},
+      "polar_cryosphere": {"percent": 30, "packs": 150000},
+      "experimental_paleochannel_counterfactual": {"percent": 10, "packs": 50000}
+    },
+    "distribution_note": "This is a deliberate balanced sampling policy for representation learning, not a claim about the natural percentage of Earth's surface occupied by these classes."
+  },
+  "test_001_anchor": {
+    "id": "test-001-forest-pond-kuchnia",
+    "region_id": "kuchnia-pond-pl",
+    "repo_evidence": "published/experiment-001/field-observation-report.json",
+    "catalog_temporal_scope": "1990-2026 spring + autumn",
+    "role": "anchor_holdout",
+    "training_policy": "The methodology and scientific guardrails may inform curriculum design, but exact TEST 001 AOI pixels and outcome labels are excluded from training and validation. They are reserved for independent evaluation.",
+    "known_public_context_class": "AUTHOR_FIELD_OBSERVATION",
+    "independently_verified": false,
+    "causal_claim_allowed": false,
+    "lesson": "Learn to distinguish observed water loss, observed water gain elsewhere, stable/no-recovery cases, seasonal variability and unknown cause."
+  },
+  "season_policy": {
+    "northern_mid_latitudes": {
+      "spring": ["03-01", "05-31"],
+      "autumn": ["09-01", "11-30"]
+    },
+    "southern_mid_latitudes": {
+      "spring": ["09-01", "11-30"],
+      "autumn": ["03-01", "05-31"]
+    },
+    "tropics": "Do not falsely label local hydroclimatic seasons as spring/autumn. Derive two matched local hydrological windows from an official precipitation climatology and store the actual window labels and method.",
+    "polar": "Use matched shoulder-season windows when illumination and sensor physics permit; otherwise use SAR/validated ice products and record optical_unavailable instead of substituting a fake clear optical scene.",
+    "comparison_rule": "Prefer same-AOI same-season comparisons across years. Intra-year spring-to-autumn packs are a separate seasonal-response task."
+  },
+  "temporal_pairing": {
+    "year_gap_targets": [1, 5, 10, 20, 29],
+    "long_baseline_example": "1996 versus 2025 is the endpoint comparison of the 30 complete-year archive.",
+    "modes": {
+      "same_season_cross_year": 80,
+      "within_year_seasonal_response": 20
+    },
+    "controls_required": ["no_material_change", "reversible_seasonal_change", "persistent_change"]
+  },
+  "spatial_policy": {
+    "historic_core": {
+      "sensor_family": "Landsat Collection 2 Level-2 Surface Reflectance",
+      "native_resolution_m": 30,
+      "pixels": 512,
+      "side_km": 15.36,
+      "rule": "Do not upsample 30 m Landsat and claim new 10 m detail."
+    },
+    "recent_detail": {
+      "sensor_family": "Sentinel-2 Level-2A where available",
+      "native_resolution_m": 10,
+      "pixels": 512,
+      "side_km": 5.12,
+      "rule": "Use as recent detail context; keep resolution metadata explicit when comparing to Landsat."
+    },
+    "regional_terrain_context": {
+      "default_dem": "Copernicus DEM GLO-90",
+      "pixels": 512,
+      "side_km_at_90m": 46.08,
+      "higher_resolution": "NASADEM/SRTM 30 m where scientifically suitable; COP-DEM-GLO-30 only when current access rights authorize it.",
+      "rule": "Coarser context may be resampled for tensor alignment but must retain native-resolution provenance."
+    }
+  },
+  "scene_quality": {
+    "optical_preferred_cloud_percent": 15,
+    "optical_fallback_cloud_percent": 30,
+    "selection": "Search the seasonal window and choose the best valid observation using official QA/cloud metadata, not visual preference alone.",
+    "landsat_quality": ["Collection 2 QA_PIXEL", "Level-2 quality metadata"],
+    "sentinel2_quality": ["L2A scene classification/quality metadata", "CDSE product metadata"],
+    "fallback": "If no scientifically usable optical observation exists, record UNKNOWN/optical_unavailable and use SAR as complementary evidence where appropriate.",
+    "no_cloud_fabrication": true
+  },
+  "official_source_hierarchy": {
+    "historic_surface_reflectance": [
+      "USGS/NASA Landsat Collection 2 Level-2 Surface Reflectance"
+    ],
+    "water_change_cross_checks": [
+      "European Commission JRC Global Surface Water yearly/monthly history as an official derived product"
+    ],
+    "recent_optical": [
+      "Copernicus Sentinel-2 Level-2A through CDSE"
+    ],
+    "all_weather_radar": [
+      "Copernicus Sentinel-1 through CDSE",
+      "NASA JPL OPERA RTC-S1",
+      "NASA JPL OPERA DSWx-S1 where its validation scope applies",
+      "JAXA public ALOS/PALSAR/PALSAR-2/JERS-1 products for independent L-band context"
+    ],
+    "terrain": [
+      "NASADEM/SRTM",
+      "Copernicus DEM GLO-90",
+      "Copernicus DEM GLO-30 only when authorized"
+    ],
+    "dynamic_water_height": [
+      "NASA/CNES SWOT RiverSP water-surface elevation, slope, width, area and discharge estimates from 2022 onward"
+    ],
+    "hydrometeorology": [
+      "Copernicus Climate Change Service ERA5-Land for long-period meteorological context",
+      "NASA GPM IMERG from 1998 onward",
+      "NASA GRACE/GRACE-FO for regional terrestrial-water-storage context",
+      "NASA SMAP for surface-soil-moisture context"
+    ],
+    "hydrography": [
+      "official/public basin, river and drainage products with explicit licence/provenance; HydroSHEDS may be used where its terms and resolution are suitable"
+    ]
+  },
+  "terrain_height_features": {
+    "purpose": "Connect the project's terrain/elevation flags to reproducible hydrological context.",
+    "static_features": [
+      "elevation_m",
+      "local_relief_m",
+      "slope_deg",
+      "aspect_deg",
+      "flow_direction_if_derived_with_documented_method",
+      "flow_accumulation_if_derived_with_documented_method",
+      "height_above_nearest_drainage_if_derived_with_documented_method"
+    ],
+    "dynamic_features": [
+      "SWOT water_surface_elevation_when_available",
+      "water_extent_change",
+      "precipitation_context",
+      "soil_moisture_context",
+      "regional_water_storage_context"
+    ],
+    "ui_bridge": "Every displayed height flag should be traceable to the DEM/product, native resolution, vertical datum when known and derivation method."
+  },
+  "learning_targets": {
+    "representation_tasks": [
+      "multi-temporal masked/self-supervised representation learning",
+      "same-season change representation",
+      "cross-sensor consistency",
+      "missing-observation awareness"
+    ],
+    "derived_change_classes": [
+      "surface_water_loss",
+      "surface_water_gain",
+      "seasonal_recurrence_change",
+      "shoreline_migration",
+      "wetland_inundation_change",
+      "river_channel_migration",
+      "potential_overbank_spill_context",
+      "no_material_change",
+      "unknown"
+    ],
+    "label_policy": "Derived water-change classes are DERIVED_VALUE or MODEL_ESTIMATE unless independently validated. Training loss is never environmental ground truth."
+  },
+  "spill_risk_policy": {
+    "output_class": "MODEL_ESTIMATE",
+    "candidate_features": [
+      "low local height above drainage",
+      "increasing water extent or validated water-surface elevation",
+      "upstream flow accumulation/topology",
+      "antecedent precipitation",
+      "soil moisture/saturation context",
+      "known river/lake connectivity",
+      "DEM uncertainty and NoData"
+    ],
+    "forbidden_shortcut": "Do not infer imminent flooding from elevation or water-area change alone.",
+    "validation": "Calibrate false-alert and missed-event rates on geographically held-out historical flood/non-flood cases before public risk use."
+  },
+  "experimental_track": {
+    "packs": 50000,
+    "subtasks": {
+      "paleochannel_candidate_detection": 50,
+      "water_routing_counterfactuals": 25,
+      "downstream_consequence_analysis": 15,
+      "negative_and_falsification_controls": 10
+    },
+    "paleochannel_evidence": [
+      "SAR C/L-band structure",
+      "DEM terrain and drainage anomalies",
+      "optical/hyperspectral land-surface context where available",
+      "published geology/hydrography when public and authoritative"
+    ],
+    "intervention_rule": "The system may evaluate counterfactual water-routing scenarios but must not present a real river diversion as a ready-to-build recommendation.",
+    "required_consequence_matrix": [
+      "downstream environmental flow",
+      "delta/coastal freshwater and salinity effects",
+      "sediment and nutrient transport",
+      "wetlands and aquatic habitat",
+      "groundwater recharge",
+      "evaporation losses",
+      "soil salinization/waterlogging",
+      "flood and drought redistribution",
+      "pumping/head energy",
+      "reservoir and navigation effects",
+      "transboundary/legal constraints",
+      "effects on communities using public aggregate evidence only",
+      "uncertainty and field-validation requirements"
+    ],
+    "claim_class": "HYPOTHESIS or MODEL_ESTIMATE",
+    "required_question": "What evidence would falsify this restoration/diversion hypothesis, and what field/hydrological checks are required before any intervention is considered?"
+  },
+  "geographic_split": {
+    "region_registry": "config/global_training_regions.json",
+    "priority": "Split by watershed/geography before random pixel split.",
+    "neighbor_leakage_rule": "Do not place spatially overlapping or immediately adjacent windows from the same event/AOI in both train and holdout.",
+    "cross_provider_holdout": true,
+    "cross_time_holdout": true,
+    "cross_geography_holdout": true,
+    "test_001_exact_aoi_holdout": true
+  },
+  "pack_provenance_required": [
+    "pack_id",
+    "region_id",
+    "bbox_or_center_and_size",
+    "category",
+    "season_definition",
+    "reference_and_comparison_dates",
+    "provider/mission/instrument",
+    "product/granule identifiers",
+    "native spatial resolution",
+    "quality/cloud/NoData metadata",
+    "processing level",
+    "licence/access state",
+    "source URL or reproducible catalogue identifier",
+    "derived metrics and method version",
+    "evidence class",
+    "limitations"
+  ],
+  "evaluation": {
+    "metrics": [
+      "water_change_mask_iou_when_validated_labels_exist",
+      "surface_water_area_delta_error",
+      "temporal_direction_accuracy_loss_gain_stable",
+      "seasonal_consistency",
+      "cross_sensor_generalization",
+      "cross_geography_generalization",
+      "water_surface_elevation_error_where_valid_reference_exists",
+      "uncertainty_calibration",
+      "unknown_correctness",
+      "spill_risk_false_alert_rate",
+      "spill_risk_missed_event_rate",
+      "provenance_completeness",
+      "unsupported_causal_claim_rate"
+    ],
+    "publish_failures": true,
+    "no_cherry_picking": true
+  },
+  "scientific_policy": {
+    "official_public_data_only": true,
+    "observation_classes": ["OBSERVATION", "AUTHOR_FIELD_OBSERVATION", "DERIVED_VALUE", "MODEL_ESTIMATE", "HYPOTHESIS", "UNKNOWN"],
+    "no_causal_claim_from_correlation": true,
+    "no_intervention_safety_claim_without_model_and_field_validation": true,
+    "no_water_volume_claim_from_2d_area_alone": true,
+    "no_groundwater_localization_from_grace": true,
+    "no_bathymetry_claim_from_swot_wse_alone": true,
+    "no_training_metric_as_environmental_finding": true
+  }
+}

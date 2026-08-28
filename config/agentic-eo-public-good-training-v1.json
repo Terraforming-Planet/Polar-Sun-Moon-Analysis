@@ -1,0 +1,110 @@
+{
+  "schema": "terra-eve-public-good-curriculum-v1",
+  "dataset": {
+    "builder": "scripts/build_agentic_eo_public_good_dataset.py",
+    "seed": "datasets/agentic-eo-public-good-v1/seed.jsonl",
+    "generated_dir": "datasets/agentic-eo-public-good-v1/generated",
+    "external_holdout": "config/agentic-eo-benchmark-v1.json",
+    "external_holdout_training_allowed": false
+  },
+  "research_goal": "Measure whether a shared official/public EO curriculum improves observable source selection, provenance, uncertainty, deterministic reasoning and safe recovery without increasing unsupported environmental claims.",
+  "systems": [
+    {
+      "id": "terra-agentic-eo",
+      "kind": "hosted_openai_model_plus_deterministic_tools",
+      "foundation_weight_training_in_this_repo": false,
+      "allowed_adaptation": [
+        "prompt_policy",
+        "tool_routing",
+        "source_registry",
+        "deterministic_validators",
+        "retrieval_examples"
+      ],
+      "required_label": "Terra Agentic EO system adaptation; not OpenAI foundation-weight training"
+    },
+    {
+      "id": "eve-instruct",
+      "kind": "esa_philab_open_checkpoint_or_official_hosted_api",
+      "preferred_runtime_order": [
+        "official_EVE_hosted_API_if_documented_access_is_available",
+        "official_eve-esa_quantized_checkpoint_on_ephemeral_cloud_L4"
+      ],
+      "local_user_disk_weights": false,
+      "cloud_l4_checkpoint": "eve-esa/EVE-Instruct-GGUF-Q4_K_M",
+      "cloud_l4_checkpoint_is_quantized": true,
+      "full_bf16_single_l4_supported": false,
+      "weight_or_lora_training_requires_controlled_open_checkpoint_runtime": true,
+      "hosted_api_assumed_trainable": false
+    }
+  ],
+  "phases": [
+    {
+      "id": "P0-baseline",
+      "action": "Run both systems before any curriculum adaptation",
+      "datasets": ["validation", "holdout", "external_holdout"],
+      "retain_all_runs": true
+    },
+    {
+      "id": "P1-curriculum",
+      "action": "Adapt each system only by methods genuinely supported by that system",
+      "dataset": "train",
+      "do_not_claim_equivalent_training_methods": true
+    },
+    {
+      "id": "P2-validation",
+      "action": "Tune implementation choices only on validation",
+      "dataset": "validation"
+    },
+    {
+      "id": "P3-final-holdout",
+      "action": "Evaluate final configuration once on internal holdout",
+      "dataset": "holdout",
+      "no_cherry_picking": true
+    },
+    {
+      "id": "P4-external-benchmark",
+      "action": "Re-run frozen Agentic EO Benchmark v1 B01-B10 without training leakage",
+      "dataset": "config/agentic-eo-benchmark-v1.json",
+      "no_case_specific_tuning": true
+    },
+    {
+      "id": "P5-lessons",
+      "action": "Generate a joint lessons report from deterministic failure tables",
+      "requirements": [
+        "show_pre_vs_post_metrics",
+        "show_every_failed_case",
+        "separate_factual_tool_routing_provenance_uncertainty_recovery_errors",
+        "allow_each_model_to_suggest_improvements_but_do_not_use_self_grading_as_score",
+        "state_when_no_improvement_is_measured"
+      ]
+    }
+  ],
+  "primary_metrics": [
+    "observable_assertion_pass_rate",
+    "strict_case_pass_rate",
+    "source_selection_accuracy",
+    "logical_tool_routing_success",
+    "provenance_completeness",
+    "unsupported_claim_rate",
+    "missing_data_honesty",
+    "tool_failure_recovery_success",
+    "deterministic_calculation_accuracy"
+  ],
+  "runtime_metrics": [
+    "wall_clock_seconds",
+    "turn_count",
+    "tool_call_count",
+    "input_tokens_if_available",
+    "output_tokens_if_available",
+    "peak_vram_mb_for_local_eve",
+    "gpu_utilization_for_local_eve"
+  ],
+  "publication_rules": [
+    "Never say Terra beats ESA based on this small benchmark.",
+    "Name the exact EVE configuration, including quantization and runtime.",
+    "Do not compare local-EVE GPU efficiency to hosted Terra without equivalent telemetry.",
+    "Do not call curriculum examples environmental ground truth.",
+    "Do not hide regressions or failed runs.",
+    "Do not publish chain-of-thought, secrets, credentials or unrestricted tool payloads."
+  ]
+}

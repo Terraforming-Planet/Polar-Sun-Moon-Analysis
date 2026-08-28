@@ -1,0 +1,103 @@
+name: Training 004 Water Cycle
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "CODEX_TRAINING_004_WATER_CYCLE_L4_EXECUTION.md"
+      - "config/training-004-water-cycle-30y.json"
+      - "docs/TRAINING_004_LAST_20_PR_SYNTHESIS.md"
+      - "docs/TRAINING_004_WATER_CYCLE_30Y.md"
+      - "terra_research_node/water_cycle_manifest.py"
+      - "terra_research_node/water_cycle_acquisition.py"
+      - "terra_research_node/training004_sources/**"
+      - "terra_research_node/water_cycle_training.py"
+      - "terra_research_node/water_cycle_pipeline.py"
+      - "terra_research_node/water_cycle_agentic.py"
+      - "scripts/build_training_004_water_cycle_manifest.py"
+      - "scripts/resolve_training_004_water_cycle_landsat.py"
+      - "scripts/run_training_004_water_cycle_l4.ps1"
+      - "scripts/run_training_004_water_cycle_l4.py"
+      - "tests/test_water_cycle_manifest.py"
+      - "tests/test_water_cycle_acquisition.py"
+      - "tests/test_training004_water_cycle*.py"
+      - ".github/workflows/training-004-water-cycle.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-cdse.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt -r requirements-cdse.txt
+          python -m pip check
+
+      - name: Ruff
+        run: |
+          python -m ruff check \
+            terra_research_node/water_cycle_manifest.py \
+            terra_research_node/water_cycle_acquisition.py \
+            terra_research_node/water_cycle_pipeline.py \
+            terra_research_node/water_cycle_training.py \
+            terra_research_node/water_cycle_agentic.py \
+            terra_research_node/training004_sources \
+            scripts/run_training_004_water_cycle_l4.py \
+            scripts/build_training_004_water_cycle_manifest.py \
+            scripts/resolve_training_004_water_cycle_landsat.py \
+            tests/test_water_cycle_manifest.py \
+            tests/test_water_cycle_acquisition.py
+
+      - name: MyPy
+        run: |
+          python -m mypy \
+            terra_research_node/water_cycle_manifest.py \
+            terra_research_node/water_cycle_acquisition.py \
+            terra_research_node/water_cycle_pipeline.py \
+            terra_research_node/water_cycle_training.py \
+            terra_research_node/water_cycle_agentic.py \
+            terra_research_node/training004_sources
+
+      - name: Unit tests without network
+        run: |
+          python -m pytest -q \
+            tests/test_water_cycle_manifest.py \
+            tests/test_water_cycle_acquisition.py \
+            tests/test_training004_water_cycle_pipeline.py
+
+      - name: Compile modules
+        run: |
+          python -m compileall \
+            terra_research_node/water_cycle_manifest.py \
+            terra_research_node/water_cycle_acquisition.py \
+            terra_research_node/water_cycle_pipeline.py \
+            terra_research_node/water_cycle_training.py \
+            terra_research_node/water_cycle_agentic.py \
+            terra_research_node/training004_sources \
+            scripts/run_training_004_water_cycle_l4.py \
+            scripts/build_training_004_water_cycle_manifest.py \
+            scripts/resolve_training_004_water_cycle_landsat.py
+
+      - name: Parse PowerShell orchestrator
+        shell: pwsh
+        run: |
+          $content = Get-Content scripts/run_training_004_water_cycle_l4.ps1 -Raw
+          [void][scriptblock]::Create($content)
+          Write-Host 'PowerShell syntax OK'
