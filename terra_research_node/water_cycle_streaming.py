@@ -339,6 +339,7 @@ def run_stream(
     batch_size: int,
     max_attempts: int | None,
     first_batch_timeout_s: float | None = None,
+    max_runtime_s: float | None = None,
     heartbeat_interval_s: float = 5.0,
     train_batch: Callable[[list[dict[str, Any]], StreamState], dict[str, Any]],
 ) -> dict[str, Any]:
@@ -412,6 +413,8 @@ def run_stream(
     threads = [threading.Thread(target=worker, daemon=True) for _ in range(max(1, workers))]
     producer_thread = threading.Thread(target=producer, daemon=True)
     telemetry = TelemetrySampler(output_dir / "telemetry.jsonl", 5.0, ready.qsize)
+    if max_runtime_s is not None and max_runtime_s <= 0:
+        raise ValueError("max_runtime_s must be positive")
     started = time.monotonic()
     telemetry.start()
     for thread in threads:
@@ -438,6 +441,9 @@ def run_stream(
         if fatal_error is not None:
             abort(fatal_error)
         now = time.monotonic()
+        if max_runtime_s is not None and now - started >= max_runtime_s:
+            counters["TIME_BUDGET_REACHED"] += 1
+            break
         if now - last_heartbeat >= heartbeat_interval_s:
             print(
                 "HEARTBEAT "
@@ -541,6 +547,8 @@ def run_stream(
         "seed": seed,
         "manifest_sha256": manifest_hash,
         "elapsed_seconds": elapsed,
+        "max_runtime_seconds": max_runtime_s,
+        "time_budget_reached": bool(counters["TIME_BUDGET_REACHED"]),
         "test001_leakage": False,
         "benchmark_leakage": False,
         "mission_leakage": False,
