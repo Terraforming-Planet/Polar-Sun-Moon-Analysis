@@ -91,7 +91,21 @@ class TorchBatchTrainer:
                 "evidence_class": "DERIVED",
                 "environmental_ground_truth": False,
             }
-        cpu_tensor = self.torch.from_numpy(np.stack(arrays))
+        target_height = min(int(array.shape[-2]) for array in arrays)
+        target_width = min(int(array.shape[-1]) for array in arrays)
+        normalized_arrays: list[Any] = []
+        for array in arrays:
+            value = self.torch.from_numpy(np.asarray(array, dtype=np.float32)).unsqueeze(0)
+            value = self.torch.nan_to_num(value, nan=0.0, posinf=0.0, neginf=0.0)
+            if tuple(value.shape[-2:]) != (target_height, target_width):
+                value = self.torch.nn.functional.interpolate(
+                    value,
+                    size=(target_height, target_width),
+                    mode="bilinear",
+                    align_corners=False,
+                )
+            normalized_arrays.append(value.squeeze(0))
+        cpu_tensor = self.torch.stack(normalized_arrays)
         if self.device.type == "cuda":
             cpu_tensor = cpu_tensor.pin_memory()
         tensor = cpu_tensor.to(device=self.device, dtype=self.torch.float32, non_blocking=True)
@@ -112,10 +126,12 @@ class TorchBatchTrainer:
                     )
                 if not bool(self.torch.isfinite(loss)):
                     raise FloatingPointError("NaN/inf training loss")
+                scale_before = self.scaler.get_scale()
                 self.scaler.scale(loss).backward()
                 self.scaler.step(self.optimizer)
                 self.scaler.update()
-                self.scheduler.step()
+                if self.scaler.get_scale() >= scale_before:
+                    self.scheduler.step()
                 self.steps += 1
                 self.losses.append(float(loss.detach().cpu()))
                 offset += chunk_size
@@ -157,6 +173,7 @@ class TorchBatchTrainer:
             "mixed_precision": self.device.type == "cuda",
             "pinned_memory": self.device.type == "cuda",
             "automatic_batch_size": self.adaptive_batch_size,
+            "normalized_batch_dimensions": [target_height, target_width],
             "steps": self.steps,
             "loss_min": min(values),
             "loss_mean": sum(values) / len(values),

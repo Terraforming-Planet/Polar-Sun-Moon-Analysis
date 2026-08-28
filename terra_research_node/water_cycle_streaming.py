@@ -205,15 +205,39 @@ class CachedPairSource:
         self.misses = 0
 
     def acquire(self, record: dict[str, Any]) -> dict[str, Any]:
-        key = acquisition_key(record)
+        base_key = acquisition_key(record)
+        requested_size = getattr(self.source, "size", None)
+        key = (
+            f"{base_key}-{requested_size}px"
+            if isinstance(requested_size, int)
+            else base_key
+        )
         array_path = self.cache_dir / f"{key}.npz"
         metadata_path = self.cache_dir / f"{key}.json"
-        if array_path.exists() and metadata_path.exists():
-            loaded = np.load(array_path, allow_pickle=False)
+        candidates = [(array_path, metadata_path)]
+        if key != base_key:
+            candidates.append(
+                (
+                    self.cache_dir / f"{base_key}.npz",
+                    self.cache_dir / f"{base_key}.json",
+                )
+            )
+        for candidate_array, candidate_metadata in candidates:
+            if not candidate_array.exists() or not candidate_metadata.exists():
+                continue
+            with np.load(candidate_array, allow_pickle=False) as loaded:
+                before = loaded["before"]
+                after = loaded["after"]
+                if isinstance(requested_size, int) and (
+                    tuple(before.shape[-2:]) != (requested_size, requested_size)
+                    or tuple(after.shape[-2:]) != (requested_size, requested_size)
+                ):
+                    continue
+                arrays = (before, after)
             self.hits += 1
             return {
-                "arrays": (loaded["before"], loaded["after"]),
-                "provenance": json.loads(metadata_path.read_text(encoding="utf-8")),
+                "arrays": arrays,
+                "provenance": json.loads(candidate_metadata.read_text(encoding="utf-8")),
             }
         payload = self.source.acquire(record)
         before, after = cast(tuple[np.ndarray, np.ndarray], payload["arrays"])
