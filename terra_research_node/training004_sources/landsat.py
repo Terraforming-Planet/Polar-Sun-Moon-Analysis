@@ -236,16 +236,24 @@ class RasterioCogBackend:
 
         try:
             with rasterio.Env(**env), rasterio.open(access_href) as dataset:
-                bounds = transform_bounds(
-                    "EPSG:4326",
-                    dataset.crs,
-                    *bbox,
-                    densify_pts=21,
-                )
-                raw_window = from_bounds(
-                    *bounds,
-                    transform=dataset.transform,
-                )
+                if dataset.crs is None:
+                    raise LookupError("UNKNOWN_scientific_raster_missing_crs")
+                try:
+                    bounds = transform_bounds(
+                        "EPSG:4326",
+                        dataset.crs,
+                        *bbox,
+                        densify_pts=21,
+                    )
+                    raw_window = from_bounds(
+                        *bounds,
+                        transform=dataset.transform,
+                    )
+                except Exception as exc:  # noqa: BLE001
+                    raise LookupError(
+                        "UNKNOWN_invalid_scientific_raster_georeferencing "
+                        f"error={type(exc).__name__}: {exc}"
+                    ) from exc
                 window = raw_window.round_offsets().round_lengths()
                 return cast(
                     np.ndarray,
