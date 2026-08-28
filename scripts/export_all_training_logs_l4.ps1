@@ -5,19 +5,17 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-function Find-RepoRoot {
-    $candidates = @(
-        'C:\TP\Polar-Sun-Moon-Analysis',
-        'C:\Users\xodobrox\Polar-Sun-Moon-Analysis',
-        (Get-Location).Path
-    ) | Select-Object -Unique
-    foreach ($candidate in $candidates) {
-        if (Test-Path (Join-Path $candidate '.git')) { return (Resolve-Path $candidate).Path }
-    }
+$repoCandidates = @(
+    'C:\TP\Polar-Sun-Moon-Analysis',
+    'C:\Users\xodobrox\Polar-Sun-Moon-Analysis',
+    (Get-Location).Path
+) | Select-Object -Unique | Where-Object { Test-Path (Join-Path $_ '.git') }
+
+if (-not $repoCandidates) {
     throw 'Polar-Sun-Moon-Analysis repository was not found on this L4 Windows machine.'
 }
 
-$repoRoot = Find-RepoRoot
+$repoRoot = (Resolve-Path ($repoCandidates | Select-Object -First 1)).Path
 $timestamp = (Get-Date).ToUniversalTime().ToString('yyyyMMddTHHmmssZ')
 if (-not $OutputDir) {
     $desktop = [Environment]::GetFolderPath('Desktop')
@@ -35,26 +33,10 @@ $knownHashes = @{
 }
 
 $trainingDefinitions = @(
-    [pscustomobject]@{
-        Id = 'training-001'
-        Label = 'Training #1'
-        Tokens = @('20260819T202428Z','l4-training-2026-08-19')
-    },
-    [pscustomobject]@{
-        Id = 'training-002'
-        Label = 'Training #2'
-        Tokens = @('site_20260819T223835Z')
-    },
-    [pscustomobject]@{
-        Id = 'training-003'
-        Label = 'Training #3'
-        Tokens = @('stream_gibs_20260820T013036Z')
-    },
-    [pscustomobject]@{
-        Id = 'training-004'
-        Label = 'Training #4 - two 60-minute L4 sessions, 120 minutes total'
-        Tokens = @('training004','training-004','gpu_ssl_one_hour','20260828')
-    }
+    [pscustomobject]@{ Id='training-001'; Label='Training #1'; Tokens=@('20260819T202428Z','l4-training-2026-08-19') },
+    [pscustomobject]@{ Id='training-002'; Label='Training #2'; Tokens=@('site_20260819T223835Z') },
+    [pscustomobject]@{ Id='training-003'; Label='Training #3'; Tokens=@('stream_gibs_20260820T013036Z') },
+    [pscustomobject]@{ Id='training-004'; Label='Training #4 - two 60-minute L4 sessions, 120 minutes total'; Tokens=@('training004','training-004','gpu_ssl_one_hour','training004-gpu-20260828') }
 )
 
 $allowedNames = @(
@@ -64,17 +46,6 @@ $allowedNames = @(
     '*training004*.zip','*training004*.zip.sha256.txt',
     'gpu1h.ps1','gpu_parameter_golf.ps1','run_training004_cached_gpu_l4.py'
 )
-
-$searchRoots = @(
-    $repoRoot,
-    (Join-Path $repoRoot 'research_runs'),
-    (Join-Path $repoRoot 'published'),
-    (Join-Path $repoRoot 'docs\published'),
-    (Join-Path $repoRoot 'docs\research'),
-    (Join-Path $repoRoot 'web\public\research'),
-    'C:\TP',
-    'C:\Users\xodobrox'
-) | Where-Object { Test-Path $_ } | Select-Object -Unique
 
 function Match-Training {
     param([string]$Path)
@@ -103,7 +74,6 @@ function Add-Evidence {
     $training = Match-Training $File.FullName
     if ($null -eq $training) { return }
 
-    # Never export likely secrets even when they happen to be text/json files.
     if ($File.Name -match '(?i)(token|secret|credential|\.env|private[_-]?key)') { return }
 
     $sha = (Get-FileHash -LiteralPath $File.FullName -Algorithm SHA256).Hash.ToUpperInvariant()
@@ -116,12 +86,14 @@ function Add-Evidence {
     New-Item -ItemType Directory -Force -Path $destRoot | Out-Null
 
     $relative = $File.FullName
-    if ($File.FullName.StartsWith($repoRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
-        $relative = $File.FullName.Substring($repoRoot.Length).TrimStart('\')
-    } else {
-        $relative = $File.FullName.TrimStart('\').Replace(':','')
+    foreach ($rootCandidate in $repoCandidates) {
+        $resolvedCandidate = (Resolve-Path $rootCandidate).Path
+        if ($File.FullName.StartsWith($resolvedCandidate, [System.StringComparison]::OrdinalIgnoreCase)) {
+            $relative = $File.FullName.Substring($resolvedCandidate.Length).TrimStart('\')
+            break
+        }
     }
-    $safeRelative = $relative -replace '[<>:"/\\|?*]', '_'
+    $safeRelative = $relative.TrimStart('\').Replace(':','') -replace '[<>:"/\\|?*]', '_'
     $dest = Join-Path $destRoot $safeRelative
     Copy-Item -LiteralPath $File.FullName -Destination $dest -Force
 
@@ -140,31 +112,33 @@ function Add-Evidence {
 
 Write-Host 'TERRA LOG EXPORT - Training #1 to Training #4' -ForegroundColor Cyan
 Write-Host 'Training #4 = two 60-minute L4 sessions (120 minutes total). There is no Training #5.' -ForegroundColor Yellow
-Write-Host "Repository: $repoRoot" -ForegroundColor Cyan
 Write-Host "Destination: $OutputDir" -ForegroundColor Cyan
 
-foreach ($root in $searchRoots) {
-    Write-Host "Scanning $root" -ForegroundColor DarkCyan
+# Fast default: scan only the known Polar repositories on this exact L4 machine.
+foreach ($root in $repoCandidates) {
+    $resolvedRoot = (Resolve-Path $root).Path
+    Write-Host "Scanning $resolvedRoot" -ForegroundColor DarkCyan
     foreach ($pattern in $allowedNames) {
-        Get-ChildItem -LiteralPath $root -Recurse -File -Filter $pattern -ErrorAction SilentlyContinue |
+        Get-ChildItem -LiteralPath $resolvedRoot -Recurse -File -Filter $pattern -ErrorAction SilentlyContinue |
             ForEach-Object { Add-Evidence $_ }
     }
 }
 
-# Preserve PowerShell command history as auxiliary evidence. It is NOT console output.
+# Preserve PowerShell command history as auxiliary evidence. It contains commands only, not console output.
 try {
     $historyPath = (Get-PSReadLineOption).HistorySavePath
     if ($historyPath -and (Test-Path $historyPath)) {
         $historyDest = Join-Path $OutputDir 'auxiliary-powershell-command-history.txt'
         Copy-Item -LiteralPath $historyPath -Destination $historyDest -Force
+        $historyFile = Get-Item $historyPath
         $inventory.Add([pscustomobject]@{
             training_id = 'auxiliary'
             training_label = 'PowerShell command history - commands only, not stdout/stderr'
             original_path = $historyPath
             copied_path = $historyDest
-            file_name = [System.IO.Path]::GetFileName($historyPath)
-            size_bytes = (Get-Item $historyPath).Length
-            modified_utc = (Get-Item $historyPath).LastWriteTimeUtc.ToString('o')
+            file_name = $historyFile.Name
+            size_bytes = $historyFile.Length
+            modified_utc = $historyFile.LastWriteTimeUtc.ToString('o')
             sha256 = (Get-FileHash $historyPath -Algorithm SHA256).Hash.ToUpperInvariant()
             verification = 'AUXILIARY-COMMAND-HISTORY'
         })
@@ -179,7 +153,7 @@ $inventoryArray | ConvertTo-Json -Depth 8 | Set-Content -Encoding UTF8 (Join-Pat
 
 $status = foreach ($def in $trainingDefinitions) {
     $items = @($inventoryArray | Where-Object { $_.training_id -eq $def.Id })
-    $rawLogs = @($items | Where-Object { $_.file_name -match '(?i)(FULL-CONSOLE|TRANSCRIPT|\.log$)' })
+    $rawLogs = @($items | Where-Object { $_.file_name -match '(?i)(FULL-CONSOLE|POWERSHELL-TRANSCRIPT|TRANSCRIPT|\.log$)' })
     $fullArchives = @($items | Where-Object { $_.file_name -match '(?i)(FULL_LOGS|FULL-ARTIFACTS).*\.zip$' })
     $knownMatches = @($items | Where-Object { $_.verification -eq 'KNOWN-SHA256-MATCH' })
     [pscustomobject]@{
@@ -199,24 +173,23 @@ $readme = @"
 TERRA OBSERVATION SYSTEM - TRAINING LOG RECOVERY PACKAGE
 =======================================================
 Generated UTC: $((Get-Date).ToUniversalTime().ToString('o'))
-Source L4 Windows repository: $repoRoot
+Primary L4 repository: $repoRoot
 
-Numbering rule:
+Numbering:
 - Training #1
 - Training #2
 - Training #3
-- Training #4 = TWO 60-minute NVIDIA L4 sessions executed on 2026-08-28, 120 minutes total.
+- Training #4 = TWO 60-minute NVIDIA L4 sessions on 2026-08-28, 120 minutes total.
 - There is no Training #5 in this sequence.
 
-Integrity rule:
+Integrity:
 Every copied file is indexed with SHA-256. Known historical FULL_LOGS archives are marked
-KNOWN-SHA256-MATCH only when they exactly match the previously published hash.
+KNOWN-SHA256-MATCH only when the recovered bytes exactly match the previously published hash.
 
 Important limitation:
-A raw console transcript can only be recovered if it was actually persisted by the original run
-(Tee-Object, Start-Transcript, redirected stdout/stderr, archive, or another saved file).
-PowerShell command history contains commands only and is included as auxiliary evidence; it is not
-presented as missing console output.
+A raw console transcript can only be recovered when it was actually persisted by the original run
+(Tee-Object, Start-Transcript, redirected stdout/stderr, archive or another saved file).
+PowerShell command history is commands only and is never presented as missing stdout/stderr.
 
 See TRAINING-1-4-STATUS.txt and TRAINING-LOG-INVENTORY.csv for the exact recovery result.
 "@
@@ -237,9 +210,9 @@ $zipSha = (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash.ToLowerInvaria
 "$zipSha  $([System.IO.Path]::GetFileName($zip))" | Set-Content -Encoding ASCII "$zip.sha256.txt"
 
 Write-Host ''
-Write-Host 'DONE - FULL TRAINING LOG EXPORT FINISHED' -ForegroundColor Green
+Write-Host 'DONE - TRAINING #1-#4 LOG EXPORT FINISHED' -ForegroundColor Green
 $status | Format-Table -AutoSize
 Write-Host "ZIP=$zip" -ForegroundColor Green
 Write-Host "ZIP_SHA256=$zipSha" -ForegroundColor Green
 Write-Host "HASH_FILE=$zip.sha256.txt" -ForegroundColor Green
-Write-Host 'Do not delete the original L4 files until this ZIP has been copied off the VM and its hash verified.' -ForegroundColor Yellow
+Write-Host 'Do not delete original L4 files until this ZIP is copied off the VM and its SHA-256 is verified.' -ForegroundColor Yellow
