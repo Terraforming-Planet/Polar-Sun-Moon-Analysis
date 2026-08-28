@@ -7,6 +7,7 @@
 <title>Training #4 — Terra Observation System</title>
 <style>
 :root{font-family:Inter,system-ui,sans-serif;color:#ecf8ff;background:#020812;--muted:#9eb4c7;--cyan:#45dcff;--green:#68f0ad;--line:rgba(132,203,235,.18)}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0,rgba(26,112,150,.24),transparent 32%),#020812;line-height:1.6}.wrap{max-width:1120px;margin:auto;padding:42px 20px 80px}a{color:var(--cyan)}.eyebrow{color:var(--cyan);font-size:12px;font-weight:900;letter-spacing:.16em}.hero{padding:30px 0}.hero h1{font-size:clamp(38px,7vw,76px);line-height:1;margin:10px 0 18px}.hero p{max-width:920px;color:#c7dbe8;font-size:18px}.ok{color:var(--green)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:24px 0}.card{border:1px solid var(--line);background:#071522;border-radius:14px;padding:18px}.card b{display:block;color:#7bedbc;font-size:28px;line-height:1.2;margin-top:6px}.card span{color:var(--muted);font-size:12px}.panel{border:1px solid var(--line);background:#071522;border-radius:16px;padding:22px;margin-top:18px}.panel p,.panel li{color:var(--muted)}code{color:#a6ecff;word-break:break-all}.warn{border-left:4px solid #ffd166}.back{display:inline-block;margin-bottom:20px;text-decoration:none}</style>
+    <meta name="terra-evidence-api" content="https://terra-observation-evidence-explainer.xodobrox.workers.dev" />
 </head>
 <body><main class="wrap">
 <a class="back" href="../">← Research / About</a>
@@ -29,4 +30,5 @@
 <section class="panel"><h2>Scientific provenance</h2><ul><li>Generated satellite pixels: <strong>False</strong></li><li>Environmental ground-truth claim: <strong>False</strong></li><li>TEST001 leakage: <strong>False</strong></li><li>Benchmark leakage: <strong>False</strong></li><li>Mission leakage: <strong>False</strong></li><li>Provenance records: <strong>95</strong></li></ul></section>
 <section class="panel warn"><h2>Interpretation</h2><p><strong>1223808</strong> training exposures are optimization exposures over <strong>95</strong> real scientific temporal pairs. They must not be presented as the same number of independent satellite observations. Training metrics demonstrate optimization behaviour; they do not by themselves establish a causal environmental finding.</p></section>
 <section class="panel"><h2>Checkpoint integrity</h2><p>SHA-256:</p><code>a8962b45fcf848c1b35d527b421a1ed92f642a06b603c87c834f690aea4a8051</code><p>The model checkpoint and full local artifact ZIP are intentionally not committed to GitHub Pages. The public report contains reproducible metadata and integrity hashes without bloating the repository.</p><p><a href="summary.json">Public machine-readable summary.json</a></p></section>
-</main></body></html>
+</main>    <script src="/Polar-Sun-Moon-Analysis/contest-runtime.js" defer></script>
+</body></html>
