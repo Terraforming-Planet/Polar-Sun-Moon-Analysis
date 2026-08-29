@@ -1,102 +1,89 @@
-name: ForgeMCP native integration one-shot
+name: Codex ForgeMCP Terra Integration
 
 on:
   push:
-    branches: [forgemcp-native-integration]
+    branches: ["forgemcp-native-integration"]
+    paths:
+      - ".github/workflows/forgemcp-native-one-shot.yml"
+  workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: codex-forgemcp-terra-integration
+  cancel-in-progress: true
+
 jobs:
-  integrate:
+  execute:
     runs-on: ubuntu-latest
+    timeout-minutes: 50
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout integration branch
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v5
+          ref: forgemcp-native-integration
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
         with:
-          python-version: '3.12'
-      - name: Apply ForgeMCP integration
+          node-version: "22"
+
+      - name: Normalize and mask OpenAI API key
         shell: bash
+        env:
+          RAW_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
+          set -euo pipefail
           python - <<'PY'
+          import os
           from pathlib import Path
-
-          main_path = Path('web/src/main.tsx')
-          text = main_path.read_text(encoding='utf-8')
-          if "'forgemcp'" not in text.split('\n', 20)[11]:
-              old = "type Tab = 'control' | 'ai' | 'agentic' | 'earth' | 'floods' | 'fires' | 'water' | 'north' | 'south' | 'solar' | 'sources'"
-              new = "type Tab = 'control' | 'ai' | 'agentic' | 'forgemcp' | 'earth' | 'floods' | 'fires' | 'water' | 'north' | 'south' | 'solar' | 'sources'"
-              if old not in text:
-                  raise SystemExit('Terra Tab type anchor not found')
-              text = text.replace(old, new, 1)
-
-          tabs_anchor = "    ['agentic', 'Agentic EO'],\n"
-          if "['forgemcp', 'ForgeMCP']" not in text:
-              if tabs_anchor not in text:
-                  raise SystemExit('Terra tabs anchor not found')
-              text = text.replace(tabs_anchor, tabs_anchor + "    ['forgemcp', 'ForgeMCP'],\n", 1)
-
-          panel_marker = "{tab === 'forgemcp' &&"
-          if panel_marker not in text:
-              earth_anchor = "      {tab === 'earth' &&"
-              if earth_anchor not in text:
-                  raise SystemExit('Terra earth panel anchor not found')
-              panel = """      {tab === 'forgemcp' && <section className=\"workspace\"><div className=\"workspace-head\"><div><small>WEBMCP CHALLENGE 2026 · HUMAN + AGENTS + REAL APPLICATION</small><h1>ForgeMCP — Multi-Agent Research & Game Studio</h1></div><EvidenceBadge kind=\"observation\">WEBMCP FOUNDATION IMPLEMENTED</EvidenceBadge></div><p className=\"notice\"><b>Challenge transparency:</b> Terra Observation System is a pre-existing Earth-observation laboratory. ForgeMCP is the new WebMCP Challenge integration layer that exposes controlled capabilities to specialized agents without replacing real data, deterministic analysis, provenance or human verification.</p><div className=\"cards\"><article><h2>Observe the real world</h2><p>Human → ForgeMCP Coordinator → specialist agents → WebMCP tools → Terra Observation System → real data / deterministic analysis → verification → human decision.</p></article><article><h2>Current WebMCP status</h2><p><b>CONNECTED:</b> ForgeMCP runtime detection and the real <code>document.modelContext.registerTool(...)</code> registration path where supported. <b>PARTIAL:</b> <code>search_location</code> using OpenStreetMap Nominatim and <code>find_observations</code> using NASA EONET with provenance. Further Terra domain tools are being connected incrementally.</p></article><article><h2>Scientific boundary</h2><p>Results remain classified as OBSERVATION, ANOMALY, HYPOTHESIS, PRELIMINARY RISK ALERT, VERIFIED FINDING or INSUFFICIENT DATA. A preliminary alert is not ground truth and requires independent or field verification where appropriate.</p></article></div><div className=\"cards\"><article><h2>Research Station Builder</h2><p>The target workflow coordinates AOI selection, source scouting, observation retrieval, hydrology/terrain inspection, hazard analysis, evidence verification and a reproducible research report.</p></article><article><h2>Human control</h2><p>Agent proposals do not silently overwrite scientific truth. Operations that modify state remain bounded and human-controlled, while measurements and provenance stay authoritative.</p></article><article><h2>Two real laboratories</h2><p>ForgeMCP connects Terra for real-world observation and Cube Chess 512 for learning, competition and agent-assisted creation.</p></article></div><div className=\"hero-actions\"><a className=\"button-link\" href=\"https://github.com/Terraforming-Planet/ForgeMCP-Multi-Agent-Research---Game-Studio\" target=\"_blank\" rel=\"noreferrer\">Open ForgeMCP repository ↗</a><a className=\"button-link\" href={`${base}forgemcp/`}>Open ForgeMCP project page</a><a className=\"button-link\" href=\"https://teslaeco.github.io/Cube-Chess-512-AI-Open-Source-3D-Chess-Engine-Autonomous-AI-Game-Developer/\" target=\"_blank\" rel=\"noreferrer\">Open Cube Chess 512 ↗</a></div></section>}\n"""
-              text = text.replace(earth_anchor, panel + earth_anchor, 1)
-
-          main_path.write_text(text, encoding='utf-8')
-
-          readme = Path('README.md')
-          r = readme.read_text(encoding='utf-8')
-          marker = '## ForgeMCP — Multi-Agent Research & Game Studio'
-          if marker not in r:
-              anchor = '**Public repository:** <https://github.com/Terraforming-Planet/Polar-Sun-Moon-Analysis>\n'
-              if anchor not in r:
-                  raise SystemExit('Terra README anchor not found')
-              section = """
-
-## ForgeMCP — Multi-Agent Research & Game Studio
-
-Terra Observation System is one of the two real laboratories used by **ForgeMCP** for the **OpenAI WebMCP Challenge 2026**. Terra itself predates the Challenge; the new Challenge work is the WebMCP integration, agent-facing tool layer, orchestration, verification flow and explicit human-control boundary.
-
-ForgeMCP does **not** replace Terra. Real scientific data, provenance, deterministic analysis and verification remain authoritative. Specialized agents can coordinate controlled application functions through WebMCP, but unverified model output is never promoted into scientific ground truth.
-
-- **ForgeMCP repository:** <https://github.com/Terraforming-Planet/ForgeMCP-Multi-Agent-Research---Game-Studio>
-- **Terra ForgeMCP page:** <https://terraforming-planet.github.io/Polar-Sun-Moon-Analysis/forgemcp/>
-- **Cube Chess 512 laboratory:** <https://teslaeco.github.io/Cube-Chess-512-AI-Open-Source-3D-Chess-Engine-Autonomous-AI-Game-Developer/>
-
-The Terra WebMCP path is built around a simple rule: **agents coordinate; real data and deterministic analysis remain the source of truth; humans retain control of consequential actions.**
-"""
-              r = r.replace(anchor, anchor + section, 1)
-              readme.write_text(r, encoding='utf-8')
-
-          page = Path('web/public/forgemcp/index.html')
-          if page.exists():
-              p = page.read_text(encoding='utf-8')
-              cross_marker = 'data-forgemcp-crosslinks'
-              if cross_marker not in p:
-                  links = """<section data-forgemcp-crosslinks style=\"margin-top:2rem\"><h2>Connected laboratories</h2><p><a href=\"../\">Terra Observation System</a> · <a href=\"https://github.com/Terraforming-Planet/ForgeMCP-Multi-Agent-Research---Game-Studio\" target=\"_blank\" rel=\"noreferrer\">ForgeMCP repository</a> · <a href=\"https://teslaeco.github.io/Cube-Chess-512-AI-Open-Source-3D-Chess-Engine-Autonomous-AI-Game-Developer/\" target=\"_blank\" rel=\"noreferrer\">Cube Chess 512</a></p></section>"""
-                  if '</main>' in p:
-                      p = p.replace('</main>', links + '\n</main>', 1)
-                  else:
-                      p += links
-                  page.write_text(p, encoding='utf-8')
-
-          wf = Path('.github/workflows/forgemcp-native-one-shot.yml')
-          if wf.exists():
-              wf.unlink()
+          raw = os.environ.get("RAW_OPENAI_API_KEY", "")
+          clean = raw.replace("\r", "").replace("\n", "").strip(" \t")
+          if not clean:
+              raise SystemExit("Missing OPENAI_API_KEY repository secret.")
+          print(f"::add-mask::{clean}")
+          with Path(os.environ["GITHUB_ENV"]).open("a", encoding="utf-8") as handle:
+              handle.write(f"OPENAI_API_KEY={clean}\n")
           PY
-      - name: Commit integration
+
+      - name: Install Codex
         shell: bash
         run: |
-          git config user.name "ForgeMCP Automation"
-          git config user.email "actions@users.noreply.github.com"
+          set -euo pipefail
+          npm install -g @openai/codex@latest
+          codex --version
+          printf '%s' "$OPENAI_API_KEY" | codex login --with-api-key
+          codex login status
+
+      - name: Execute Codex task
+        shell: bash
+        run: |
+          set -euo pipefail
+          PROTECTED_BRIEF='CODEX_FORGEMCP_NATIVE_INTEGRATION.md'
+          PROTECTED_WORKFLOW='.github/workflows/forgemcp-native-one-shot.yml'
+          env -u OPENAI_API_KEY codex exec --sandbox danger-full-access "$(cat "$PROTECTED_BRIEF")"
+          git diff --exit-code -- "$PROTECTED_BRIEF" "$PROTECTED_WORKFLOW"
+
+      - name: Validate implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd web
+          npm ci
+          npm run build
+          cd ..
+          if [ -f scripts/ci/scan_tracked_secrets.py ]; then python scripts/ci/scan_tracked_secrets.py; fi
+
+      - name: Commit validated implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -f CODEX_FORGEMCP_NATIVE_INTEGRATION.md .github/workflows/forgemcp-native-one-shot.yml
           git add -A
-          if git diff --cached --quiet; then
-            echo "No changes required"
-            exit 0
-          fi
-          git commit -m "feat: add native ForgeMCP Terra integration"
+          git diff --cached --quiet && { echo 'Codex produced no changes'; exit 1; }
+          git commit -m 'feat: complete native ForgeMCP Terra integration'
           git push origin HEAD:forgemcp-native-integration
