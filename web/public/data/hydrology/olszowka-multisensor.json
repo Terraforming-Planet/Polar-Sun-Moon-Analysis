@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-08-27T21:02:41.006899+00:00",
+  "generated_at_utc": "2026-08-29T07:52:45.520388+00:00",
   "aoi": {
     "id": "olszowka-gardeja-water-testbed",
     "label": "Olszówka · Gardeja · lokalny poligon hydrologiczny",
@@ -15,6 +15,27 @@
     ]
   },
   "observations": [
+    {
+      "id": "S1C_IW_GRDH_1SDV_20260828T163510_20260828T163535_009198_012467_7535_COG",
+      "collection": "sentinel-1-grd",
+      "datetime_utc": "2026-08-28T16:35:10.112862Z",
+      "platform": "sentinel-1c",
+      "constellation": "sentinel-1",
+      "instrument": [
+        "sar"
+      ],
+      "cloud_cover_percent": null,
+      "bbox": [
+        15.498904,
+        52.200657,
+        19.883074,
+        54.112801
+      ],
+      "preview_url": "https://datahub.creodias.eu/odata/v1/Assets(3158c6be-0a05-4036-a5a4-953d4d8cd80b)/$value",
+      "product_url": "https://stac.dataspace.copernicus.eu/v1/collections/sentinel-1-grd/items/S1C_IW_GRDH_1SDV_20260828T163510_20260828T163535_009198_012467_7535_COG",
+      "evidence_class": "satellite_observation_metadata",
+      "synthetic": false
+    },
     {
       "id": "S2B_MSIL2A_20260827T100019_N0512_R122_T34UCE_20260827T135233",
       "collection": "sentinel-2-l2a",
@@ -329,27 +350,6 @@
       "product_url": "https://stac.dataspace.copernicus.eu/v1/collections/sentinel-1-grd/items/S1D_IW_GRDH_1SDV_20260819T045939_20260819T050004_004190_007AD1_9ED5_COG",
       "evidence_class": "satellite_observation_metadata",
       "synthetic": false
-    },
-    {
-      "id": "S1D_IW_GRDH_1SDV_20260817T162715_20260817T162740_004168_007A0E_033E_COG",
-      "collection": "sentinel-1-grd",
-      "datetime_utc": "2026-08-17T16:27:15.173472Z",
-      "platform": "sentinel-1d",
-      "constellation": "sentinel-1",
-      "instrument": [
-        "sar"
-      ],
-      "cloud_cover_percent": null,
-      "bbox": [
-        17.438145,
-        52.590145,
-        21.835773,
-        54.499809
-      ],
-      "preview_url": "https://datahub.creodias.eu/odata/v1/Assets(c3c1b820-fcc7-467d-a0e3-2f18ed39ccff)/$value",
-      "product_url": "https://stac.dataspace.copernicus.eu/v1/collections/sentinel-1-grd/items/S1D_IW_GRDH_1SDV_20260817T162715_20260817T162740_004168_007A0E_033E_COG",
-      "evidence_class": "satellite_observation_metadata",
-      "synthetic": false
     }
   ],
   "sources": [
@@ -417,10 +417,5 @@
       }
     ]
   },
-  "errors": [
-    {
-      "collection": "sentinel-1-grd",
-      "error": "The read operation timed out"
-    }
-  ]
+  "errors": []
 }
