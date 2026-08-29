@@ -16,6 +16,13 @@
 **Live demo:** <https://terraforming-planet.github.io/Polar-Sun-Moon-Analysis/>  
 **Public repository:** <https://github.com/Terraforming-Planet/Polar-Sun-Moon-Analysis>
 
+## ForgeMCP — Multi-Agent Research & Game Studio
+
+Terra Observation System predates the WebMCP Challenge. The new Challenge work is the **ForgeMCP** integration: WebMCP runtime support, controlled agent-facing tools, multi-agent orchestration, verification and human control. Terra's real data, recorded provenance and deterministic analysis remain authoritative; an agent explanation or preliminary signal does not replace that evidence.
+
+- **ForgeMCP repository:** <https://github.com/Terraforming-Planet/ForgeMCP-Multi-Agent-Research---Game-Studio>
+- **Public Terra ForgeMCP page:** <https://terraforming-planet.github.io/Polar-Sun-Moon-Analysis/forgemcp/>
+
 ## Agentic EO — multi-agent Earth-observation research
 
 Terra Observation System now includes a **real provenance-first multi-agent EO research coordinator** built with the **OpenAI Agents SDK**. It is designed to coordinate specialist agents and deterministic tools while keeping scientific claims tied to repository-backed evidence rather than model memory.
