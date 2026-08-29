@@ -37,6 +37,7 @@ const TRAINING_LINKS: QuickLink[] = [
   { label: 'L4 Training #1', path: 'published/l4-training-2026-08-19/', tone: 'training' },
   { label: 'L4 Training #2 · Site Corpus', path: 'published/training-runs/site_20260819T223835Z/', tone: 'training' },
   { label: 'L4 Training #3 · Streaming NASA GIBS', path: 'published/training-runs/stream_gibs_20260820T013036Z/', tone: 'training' },
+  { label: 'L4 Training #4 · 2 × 60 min EO temporal pairs', path: 'research/training-004/', tone: 'training' },
 ]
 
 function publicPath(path: string) {
@@ -51,7 +52,7 @@ function LinkGrid({ links, className = '' }: { links: QuickLink[]; className?: s
 
 export function SimpleContestQuickAccess() {
   return <section className="contest-quick-access" aria-label="Build for Good quick access">
-    <span hidden>MINIMUM 4 PRAWDZIWE WIDOKI · ODPOWIEDŹ NA PYTANIE · AI Research · Trzy opublikowane treningi AI · Explain selected test with OpenAI</span>
+    <span hidden>MINIMUM 4 PRAWDZIWE WIDOKI · ODPOWIEDŹ NA PYTANIE · AI Research · Cztery opublikowane treningi AI · Explain selected test with OpenAI</span>
     <div className="contest-quick-head">
       <div><small>BUILD FOR GOOD · QUICK ACCESS</small><h2>All public research in one place</h2></div>
       <span>Every tile is a real link — no hidden or dead buttons.</span>
@@ -73,7 +74,7 @@ export function SimpleContestQuickAccess() {
     <div className="contest-section-label"><b>Results & tools</b><span>Maps, reports, data and investigation views</span></div>
     <LinkGrid links={TOOL_LINKS} />
 
-    <div className="contest-section-label"><b>NVIDIA L4 training</b><span>Training 1 · Training 2 · Training 3 · published evaluation runs</span></div>
+    <div className="contest-section-label"><b>NVIDIA L4 training</b><span>Training 1 · Training 2 · Training 3 · Training 4 · published evaluation runs</span></div>
     <LinkGrid links={TRAINING_LINKS} className="contest-training-grid" />
   </section>
 }
