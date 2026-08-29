@@ -10,6 +10,10 @@
     <style>
       html,body,#root{min-height:100%;max-width:100%;margin:0;overflow-x:hidden}
       body{background:#020711;color:#edf8ff;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+      .forgemcp-project-tab{position:fixed;right:14px;bottom:14px;z-index:10000;display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid rgba(94,234,212,.48);border-radius:999px;background:rgba(2,7,17,.92);color:#d8fffb;text-decoration:none;font:700 13px/1.2 Inter,system-ui,sans-serif;box-shadow:0 10px 28px rgba(0,0,0,.35);backdrop-filter:blur(12px)}
+      .forgemcp-project-tab:hover,.forgemcp-project-tab:focus-visible{border-color:#5eead4;background:#08211f;outline:none}
+      .forgemcp-project-tab span{color:#5eead4;font-size:10px;letter-spacing:.08em}
+      @media(max-width:640px){.forgemcp-project-tab{right:10px;bottom:10px;padding:9px 12px;font-size:12px}}
     </style>
     <link rel="stylesheet" href="./brand-hero.css" />
     <script type="module" crossorigin src="/Polar-Sun-Moon-Analysis/assets/index-C44LQfN-.js"></script>
@@ -17,6 +21,7 @@
   </head>
   <body>
     <div id="root"></div>
+    <a class="forgemcp-project-tab" href="./forgemcp/" aria-label="Open ForgeMCP Multi-Agent Research and Game Studio project page"><span>WEBMCP</span> ForgeMCP</a>
     <script src="./contest-runtime.js" defer></script>
     <script src="./simple-agentic-entry-v2.js" defer></script>
   </body>
