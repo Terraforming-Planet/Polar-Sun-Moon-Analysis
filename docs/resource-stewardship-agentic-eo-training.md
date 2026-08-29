@@ -16,6 +16,8 @@ Long-term public-good questions include:
 
 This training must never claim that a satellite image alone proves a physical cause, that a former river channel can safely be reopened, or that the system can predict the exact time/place of an earthquake.
 
+Experiment logging and provenance are governed by `docs/TRAINING_EVIDENCE_POLICY.md`. A long training process that finishes without its required evidence package is not considered a complete research run.
+
 ## Core evidence classes
 
 Every case should distinguish at least:
@@ -134,14 +136,37 @@ Minimum goals:
 - modelled-vs-observed confusion: 0 accepted;
 - explicit missing-data handling: required;
 - reproducible case manifest: required;
-- human decision boundary: required for every intervention-oriented case.
+- human decision boundary: required for every intervention-oriented case;
+- long-run experiment evidence completeness: required.
+
+## Mandatory experiment-recording standard
+
+For every future long-running training, adaptation or benchmark job:
+
+1. Create the run/session identity and evidence directory before compute starts.
+2. Start stdout/stderr capture and shell transcript before the training process starts.
+3. Record exact Git SHA/ref, exact command, arguments, machine, GPU/CPU, framework/CUDA and dependencies.
+4. Run and verify a short smoke test on the same path.
+5. Block the long run when evidence capture or smoke validation fails.
+6. Preserve periodic metrics, failures, retries, fallbacks, OOM/batch changes, manifests and final status.
+7. Hash model/checkpoint artifacts and the complete evidence package.
+8. Copy the evidence off cloud/ephemeral compute and verify the copied SHA-256 before destroying the instance/disk.
+9. Publish missing evidence and limitations explicitly; never silently fill a gap with a reconstruction.
+
+For Windows NVIDIA L4 recovery/export, use `scripts/export_all_training_logs_l4.ps1`.
 
 ## Relationship to Training #4
 
-Training #4 focuses on high-throughput multi-sensor observation and agentic evidence handling. Resource Stewardship is the downstream reasoning curriculum: it should use verified evidence packages produced by that pipeline rather than creating a second uncontrolled data path.
+Training #4 is one training stage consisting of **two 60-minute NVIDIA L4 sessions, 120 minutes total**. They are sessions of the same Training #4. There is no Training #5 in this sequence.
+
+Training #4 focuses on real spectral-temporal EO learning/evidence handling and related high-throughput processing. Resource Stewardship is the downstream reasoning curriculum: it should use verified evidence packages produced by that pipeline rather than creating a second uncontrolled data path.
+
+Historical evidence must retain its actual class (`RAW_VERIFIED`, `RAW_FOUND_UNVERIFIED`, `DERIVED_EVIDENCE`, `RECOVERED_EVIDENCE` or `MISSING`). A recovered console reconstruction must never be described as an original transcript.
 
 Do not merge experimental results into benchmark truth. Freeze benchmark cases before adaptation and keep a final untouched holdout.
 
 ## Long-term outcome
 
 The desired system is a scientific decision-support layer that can help researchers, communities and authorities understand planetary resources and hazards faster. In the future it may help identify where restoration, retention, flood protection or conservation studies deserve attention — while keeping real-world interventions under qualified human, legal and environmental review.
+
+The public-good objective does not reduce the evidence standard; it raises it. If the system may eventually support work around floods, water, glaciers, fires, infrastructure or ecosystems, its observations and model behavior need to be traceable enough that qualified people can decide what to trust and what must be checked next.
