@@ -1,5 +1,5 @@
 {
-  "generatedUtc": "2026-08-30T17:06:30.546718Z",
+  "generatedUtc": "2026-08-30T19:50:06.963055Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
@@ -647,33 +647,6 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23451",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_23206",
-      "title": "Tropical Storm Moke",
-      "categories": [
-        "Severe Storms"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 30.0,
-        "magnitudeUnit": "kts",
-        "date": "2026-08-25T06:00:00Z",
-        "type": "Point",
-        "coordinates": [
-          -163.5,
-          16.2
-        ]
-      },
-      "sources": [
-        {
-          "id": "JTWC",
-          "url": "https://www.metoc.navy.mil/jtwc/products/cp0226.tcw"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23206",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
@@ -5401,6 +5374,33 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21410",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_21579",
+      "title": "Wildfire Burnt Creek, Wallowa, Oregon",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 2530.0,
+        "magnitudeUnit": "acres",
+        "date": "2026-07-17T17:00:00Z",
+        "type": "Point",
+        "coordinates": [
+          -117.25321,
+          45.76802
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-ORWWF-000342"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21579",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -6096,35 +6096,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-MTFNF-000393"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_23206",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -163.5,
-          16.2
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Tropical Storm Moke",
-        "categories": [
-          "Severe Storms"
-        ],
-        "observationUtc": "2026-08-25T06:00:00Z",
-        "observation_time": "2026-08-25T06:00:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23206",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23206",
-        "sources": [
-          {
-            "id": "JTWC",
-            "url": "https://www.metoc.navy.mil/jtwc/products/cp0226.tcw"
           }
         ]
       }
@@ -11200,6 +11171,35 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-ORPRD-000511"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_21579",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.25321,
+          45.76802
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Wildfire Burnt Creek, Wallowa, Oregon",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-07-17T17:00:00Z",
+        "observation_time": "2026-07-17T17:00:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21579",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21579",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-ORWWF-000342"
           }
         ]
       }
