@@ -1,5 +1,5 @@
 {
-  "generatedUtc": "2026-08-31T06:12:10.795633Z",
+  "generatedUtc": "2026-08-31T13:47:04.163711Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
@@ -10,13 +10,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 110.0,
+        "magnitudeValue": 120.0,
         "magnitudeUnit": "kts",
-        "date": "2026-08-31T00:00:00Z",
+        "date": "2026-08-31T06:00:00Z",
         "type": "Point",
         "coordinates": [
-          -123.3,
-          17.1
+          -124,
+          17.2
         ]
       },
       "sources": [
@@ -37,13 +37,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 45.0,
+        "magnitudeValue": 50.0,
         "magnitudeUnit": "kts",
-        "date": "2026-08-31T00:00:00Z",
+        "date": "2026-08-31T06:00:00Z",
         "type": "Point",
         "coordinates": [
-          -142.8,
-          13.2
+          -143.7,
+          13
         ]
       },
       "sources": [
@@ -1511,33 +1511,6 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22614",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_22560",
-      "title": "Tropical Storm Cristobal",
-      "categories": [
-        "Severe Storms"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 25.0,
-        "magnitudeUnit": "kts",
-        "date": "2026-08-13T15:00:00Z",
-        "type": "Point",
-        "coordinates": [
-          -36.8,
-          39.4
-        ]
-      },
-      "sources": [
-        {
-          "id": "NOAA_NHC",
-          "url": "https://www.nhc.noaa.gov/archive/2026/CRISTOBAL.shtml"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22560",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
@@ -5401,6 +5374,33 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22126",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_21410",
+      "title": "Incident Complex HAY CREEK COMPLEX, Gilliam, Oregon",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 92211.0,
+        "magnitudeUnit": "acres",
+        "date": "2026-07-17T17:16:00Z",
+        "type": "Point",
+        "coordinates": [
+          -120.435846,
+          45.26602
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-ORPRD-000511"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21410",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -5410,8 +5410,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.3,
-          17.1
+          -124,
+          17.2
         ]
       },
       "properties": {
@@ -5421,8 +5421,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-08-31T00:00:00Z",
-        "observation_time": "2026-08-31T00:00:00Z",
+        "observationUtc": "2026-08-31T06:00:00Z",
+        "observation_time": "2026-08-31T06:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23611",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23611",
         "sources": [
@@ -5439,8 +5439,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -142.8,
-          13.2
+          -143.7,
+          13
         ]
       },
       "properties": {
@@ -5450,8 +5450,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-08-31T00:00:00Z",
-        "observation_time": "2026-08-31T00:00:00Z",
+        "observationUtc": "2026-08-31T06:00:00Z",
+        "observation_time": "2026-08-31T06:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23612",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23612",
         "sources": [
@@ -7024,35 +7024,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-CASLU-012768"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_22560",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -36.8,
-          39.4
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Tropical Storm Cristobal",
-        "categories": [
-          "Severe Storms"
-        ],
-        "observationUtc": "2026-08-13T15:00:00Z",
-        "observation_time": "2026-08-13T15:00:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22560",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22560",
-        "sources": [
-          {
-            "id": "NOAA_NHC",
-            "url": "https://www.nhc.noaa.gov/archive/2026/CRISTOBAL.shtml"
           }
         ]
       }
@@ -11200,6 +11171,35 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-WASES-020344"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_21410",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.435846,
+          45.26602
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Incident Complex HAY CREEK COMPLEX, Gilliam, Oregon",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-07-17T17:16:00Z",
+        "observation_time": "2026-07-17T17:16:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21410",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21410",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-ORPRD-000511"
           }
         ]
       }
