@@ -47,6 +47,7 @@ type Speed = 'hour' | 'day' | 'month' | 'year'
 type HazardCategory = 'all' | 'fire' | 'flood'
 
 const base = import.meta.env.BASE_URL
+const labMcpUrl = import.meta.env.VITE_LABMCP_URL?.trim() || 'https://terraforming-planet.github.io/ForgeMCP-Multi-Agent-Research---Game-Studio/#/labmcp'
 const isoInput = (value: string) => value ? new Date(value).toISOString().slice(0, 16) : ''
 const formatUtc = (value?: string) => value ? new Date(value).toLocaleString('en-GB', { timeZone: 'UTC' }) + ' UTC' : 'no data'
 const hoursBetween = (a: string, b: string) => Math.abs(new Date(a).getTime() - new Date(b).getTime()) / 3_600_000
@@ -277,6 +278,7 @@ function WelcomeGate({ onChoose }: { onChoose: (mode: 'simple' | 'advanced') => 
       <div className="entry-gate-options">
         <button type="button" className="entry-mode-button primary" onClick={() => onChoose('simple')}><em>RECOMMENDED FOR QUICK USE</em><b>Simple view</b><span>Search any place, inspect the high-resolution 3D Earth view, run a basic satellite analysis and ask the assistant.</span></button>
         <button type="button" className="entry-mode-button" onClick={() => onChoose('advanced')}><em>FULL RESEARCH CONSOLE</em><b>Advanced view</b><span>Open AI Research, Agentic EO, 3D Earth, floods, fires, hydrology, polar observatories, Sun/Moon tools, data sources and the global UTC timeline.</span></button>
+        <a className="entry-mode-button labmcp" href={labMcpUrl}><em>EXPERIMENTAL RESEARCH · FORGEMCP WEBMCP</em><b>LabMCP</b><span>Open the separate TEST 001 workbench for the forest pond near Lake Kuchnia: recorded evidence, Toruń reference resolution, global hydrology analogues and an explicit verification gate.</span></a>
       </div>
       <p className="entry-gate-foot">Privacy: user question text is not published or written into research archives. Saved assistant answers and evidence records require an explicit save action.</p>
     </section>
