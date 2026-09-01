@@ -12,6 +12,8 @@ describe('LabMCP welcome entry', () => {
     expect(advancedPosition).toBeGreaterThan(simplePosition)
     expect(labPosition).toBeGreaterThan(advancedPosition)
     expect(mainSource).toContain('className="entry-mode-button labmcp"')
+    expect(mainSource).toContain('Select or type any region')
+    expect(mainSource).toContain('TEST 001 remains a ready preset')
     expect(mainSource).toContain("ForgeMCP-Multi-Agent-Research---Game-Studio/#/labmcp")
     expect(mainSource).toContain('VITE_LABMCP_URL')
   })
