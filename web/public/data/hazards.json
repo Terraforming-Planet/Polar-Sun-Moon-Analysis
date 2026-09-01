@@ -1,14 +1,14 @@
 {
   "type": "FeatureCollection",
-  "generated_at_utc": "2026-09-01T00:09:15.120992Z",
-  "generatedUtc": "2026-09-01T00:09:15.120992Z",
+  "generated_at_utc": "2026-09-01T05:21:52.228610Z",
+  "generatedUtc": "2026-09-01T05:21:52.228610Z",
   "notice": "Balanced 3D layer with fires, floods, storms, earthquakes and other official detections.",
   "feature_count": 600,
   "summary": {
-    "earthquake": 240,
+    "earthquake": 197,
+    "fire": 612,
     "storm": 29,
-    "fire": 610,
-    "ice": 3,
+    "ice": 1,
     "volcano": 7,
     "flood": 82,
     "other": 7,
@@ -17,14 +17,278 @@
     "industrial_accident": 1
   },
   "rendered_summary": {
-    "fire": 260,
+    "fire": 291,
     "flood": 82,
     "storm": 29,
-    "earthquake": 220,
+    "earthquake": 189,
     "volcano": 7,
     "landslide": 2
   },
   "features": [
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_23656",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -119.69069,
+          45.253405
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Ruggs, Morrow, Oregon",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-31T15:38:00Z",
+        "source_observation_time": "2026-08-31T15:38:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23656",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23656"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_23658",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.07646449,
+          33.05632251
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Harris, Throckmorton, Texas",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-31T14:22:00Z",
+        "source_observation_time": "2026-08-31T14:22:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23658",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23658"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_23685",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.7205,
+          34.6084
+        ]
+      },
+      "properties": {
+        "title": "Wildfire SOUTH RAILROAD, Comanche, Oklahoma",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-30T09:40:00Z",
+        "source_observation_time": "2026-08-30T09:40:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23685",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23685"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_23673",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -95.2966667,
+          34.4777778
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Alexander Trail Fire, Pushmataha, Oklahoma",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-30T09:04:00Z",
+        "source_observation_time": "2026-08-30T09:04:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23673",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23673"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_23683",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -104.295,
+          35.535
+        ]
+      },
+      "properties": {
+        "title": "Wildfire 4V, San Miguel, New Mexico",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-29T19:02:00Z",
+        "source_observation_time": "2026-08-29T19:02:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23683",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23683"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_23674",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -96.1149,
+          35.224667
+        ]
+      },
+      "properties": {
+        "title": "Wildfire WRIGHT, Hughes, Oklahoma",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-29T18:05:00Z",
+        "source_observation_time": "2026-08-29T18:05:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23674",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23674"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_23676",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.7205,
+          34.6084
+        ]
+      },
+      "properties": {
+        "title": "Wildfire RAILROAD SOUTH, Comanche, Oklahoma",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-29T16:31:00Z",
+        "source_observation_time": "2026-08-29T16:31:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23676",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23676"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_23666",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.3149,
+          30.18416667
+        ]
+      },
+      "properties": {
+        "title": "Wildfire McKee Draw, Edwards, Texas",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-29T14:17:00Z",
+        "source_observation_time": "2026-08-29T14:17:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23666",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23666"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_23664",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.1516574,
+          30.36872624
+        ]
+      },
+      "properties": {
+        "title": "Wildfire West Fork, Sutton, Texas",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-28T19:23:00Z",
+        "source_observation_time": "2026-08-28T19:23:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23664",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23664"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_23669",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -112.77825,
+          44.921867
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Roe 2, Beaverhead, Montana",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-27T19:48:00Z",
+        "source_observation_time": "2026-08-27T19:48:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23669",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23669"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_23668",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -112.4795,
+          41.288667
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Brushy Canyon, Box Elder, Utah",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-27T01:42:00Z",
+        "source_observation_time": "2026-08-27T01:42:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23668",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23668"
+      }
+    },
     {
       "type": "Feature",
       "id": "eonet-EONET_23453",
@@ -47,6 +311,54 @@
         "severity": "moderate",
         "status": "open",
         "event_id": "eonet-EONET_23453"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_23672",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -115.920767,
+          47.539417
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Dudley, Shoshone, Idaho",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-26T16:46:00Z",
+        "source_observation_time": "2026-08-26T16:46:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23672",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23672"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_23681",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.4125,
+          35.905667
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Plaskett, Monterey, California",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-26T12:46:00Z",
+        "source_observation_time": "2026-08-26T12:46:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23681",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23681"
       }
     },
     {
@@ -123,6 +435,78 @@
     },
     {
       "type": "Feature",
+      "id": "eonet-EONET_23663",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.69345,
+          39.751733
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Blue Eagle, Churchill, Nevada",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-25T14:39:00Z",
+        "source_observation_time": "2026-08-25T14:39:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23663",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23663"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_23682",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -109.649486,
+          33.620704
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Paddy Creek, Apache, Arizona",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-25T11:13:00Z",
+        "source_observation_time": "2026-08-25T11:13:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23682",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23682"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_23677",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -95.6938889,
+          34.4980556
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Buck Creek, Pushmataha, Oklahoma",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-25T10:34:00Z",
+        "source_observation_time": "2026-08-25T10:34:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23677",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23677"
+      }
+    },
+    {
+      "type": "Feature",
       "id": "eonet-EONET_23462",
       "geometry": {
         "type": "Point",
@@ -147,6 +531,54 @@
     },
     {
       "type": "Feature",
+      "id": "eonet-EONET_23667",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -116.822,
+          42.882167
+        ]
+      },
+      "properties": {
+        "title": "Wildfire FLINT, Owyhee, Idaho",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-24T17:48:00Z",
+        "source_observation_time": "2026-08-24T17:48:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23667",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23667"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_23659",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -115.036467,
+          41.445417
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Forleen, Elko, Nevada",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-24T17:28:00Z",
+        "source_observation_time": "2026-08-24T17:28:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23659",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23659"
+      }
+    },
+    {
+      "type": "Feature",
       "id": "eonet-EONET_23457",
       "geometry": {
         "type": "Point",
@@ -167,6 +599,30 @@
         "severity": "moderate",
         "status": "open",
         "event_id": "eonet-EONET_23457"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_23671",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.12037,
+          31.49444497
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Rio Escondido, Hamilton, Texas",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-24T15:31:00Z",
+        "source_observation_time": "2026-08-24T15:31:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23671",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23671"
       }
     },
     {
@@ -339,6 +795,30 @@
     },
     {
       "type": "Feature",
+      "id": "eonet-EONET_23661",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -113.924333,
+          46.1535
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Nature Grove, Ravalli, Montana",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-23T19:42:00Z",
+        "source_observation_time": "2026-08-23T19:42:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23661",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23661"
+      }
+    },
+    {
+      "type": "Feature",
       "id": "eonet-EONET_23225",
       "geometry": {
         "type": "Point",
@@ -359,6 +839,78 @@
         "severity": "moderate",
         "status": "open",
         "event_id": "eonet-EONET_23225"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_23665",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -116.6247,
+          48.870133
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Parker Lake, Boundary, Idaho",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-23T16:30:00Z",
+        "source_observation_time": "2026-08-23T16:30:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23665",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23665"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_23662",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -113.10128,
+          34.6253
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Campwood, Yavapai, Arizona",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-23T15:34:00Z",
+        "source_observation_time": "2026-08-23T15:34:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23662",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23662"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_23680",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -116.660283,
+          48.628867
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Silver, Boundary, Idaho",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-23T14:02:00Z",
+        "source_observation_time": "2026-08-23T14:02:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23680",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23680"
       }
     },
     {
@@ -411,6 +963,30 @@
     },
     {
       "type": "Feature",
+      "id": "eonet-EONET_23679",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.052783,
+          47.458917
+        ]
+      },
+      "properties": {
+        "title": "Wildfire GOAT, Kittitas, Washington",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-22T21:06:00Z",
+        "source_observation_time": "2026-08-22T21:06:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23679",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23679"
+      }
+    },
+    {
+      "type": "Feature",
       "id": "eonet-EONET_23219",
       "geometry": {
         "type": "Point",
@@ -431,6 +1007,30 @@
         "severity": "moderate",
         "status": "open",
         "event_id": "eonet-EONET_23219"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_23684",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.0287,
+          48.549617
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Thunder Creek, Skagit, Washington",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-08-22T19:27:00Z",
+        "source_observation_time": "2026-08-22T19:27:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23684",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_23684"
       }
     },
     {
@@ -5667,606 +6267,6 @@
     },
     {
       "type": "Feature",
-      "id": "eonet-EONET_21390",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -94.39675,
-          46.27013333
-        ]
-      },
-      "properties": {
-        "title": "Prescribed Fire RX Leach Impact Area, Morrison, Minnesota",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-13T15:46:00Z",
-        "source_observation_time": "2026-07-13T15:46:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21390",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21390"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21380",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -108.22355,
-          39.87355
-        ]
-      },
-      "properties": {
-        "title": "Wildfire P-L Gulch, Rio Blanco, Colorado",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-13T15:02:00Z",
-        "source_observation_time": "2026-07-13T15:02:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21380",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21380"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21322",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -94.39545,
-          46.24695
-        ]
-      },
-      "properties": {
-        "title": "Prescribed Fire RX Infantry Platoon Battle Course, Morrison, Minnesota",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-13T11:54:00Z",
-        "source_observation_time": "2026-07-13T11:54:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21322",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21322"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21323",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -94.40005,
-          46.24651667
-        ]
-      },
-      "properties": {
-        "title": "Prescribed Fire RX IPBC, Morrison, Minnesota",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-13T11:09:00Z",
-        "source_observation_time": "2026-07-13T11:09:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21323",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21323"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21324",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -94.44528333,
-          46.16198333
-        ]
-      },
-      "properties": {
-        "title": "Prescribed Fire RX Center Range South, Morrison, Minnesota",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-13T11:07:00Z",
-        "source_observation_time": "2026-07-13T11:07:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21324",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21324"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21320",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -114.267333,
-          41.564667
-        ]
-      },
-      "properties": {
-        "title": "Wildfire 18 Mile, Elko, Nevada",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-12T21:45:00Z",
-        "source_observation_time": "2026-07-12T21:45:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21320",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21320"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21318",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -108.146,
-          46.44166
-        ]
-      },
-      "properties": {
-        "title": "Wildfire Heavy Timber, Musselshell, Montana",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-12T21:00:00Z",
-        "source_observation_time": "2026-07-12T21:00:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21318",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21318"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21328",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -112.947187,
-          42.11216
-        ]
-      },
-      "properties": {
-        "title": "Wildfire Cow Canyon, Oneida, Idaho",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-12T16:15:00Z",
-        "source_observation_time": "2026-07-12T16:15:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21328",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21328"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21332",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -120.193167,
-          39.710833
-        ]
-      },
-      "properties": {
-        "title": "Wildfire ELEPHANT, Plumas, California",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-11T16:35:00Z",
-        "source_observation_time": "2026-07-11T16:35:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21332",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21332"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21329",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -121.154667,
-          40.965833
-        ]
-      },
-      "properties": {
-        "title": "Wildfire LOOMIS, Lassen, California",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-11T15:03:00Z",
-        "source_observation_time": "2026-07-11T15:03:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21329",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21329"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21336",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -119.04432,
-          46.122786
-        ]
-      },
-      "properties": {
-        "title": "Wildfire NINE CANYON, Benton, Washington",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-11T14:41:00Z",
-        "source_observation_time": "2026-07-11T14:41:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21336",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21336"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21331",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -112.560267,
-          40.1499
-        ]
-      },
-      "properties": {
-        "title": "Wildfire Stookey, Tooele, Utah",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-10T19:51:00Z",
-        "source_observation_time": "2026-07-10T19:51:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21331",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21331"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21325",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.0018333,
-          42.60395
-        ]
-      },
-      "properties": {
-        "title": "Wildfire E Evans Creek Rd 18000, Jackson, Oregon",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-10T18:13:00Z",
-        "source_observation_time": "2026-07-10T18:13:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21325",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21325"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21333",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -117.68601,
-          34.45499
-        ]
-      },
-      "properties": {
-        "title": "Wildfire SUMMIT, Los Angeles, California",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-10T15:49:00Z",
-        "source_observation_time": "2026-07-10T15:49:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21333",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21333"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21436",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -150.25392,
-          67.447423
-        ]
-      },
-      "properties": {
-        "title": "Wildfire Nutmeg, Yukon-Koyukuk, Alaska",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-10T01:44:00Z",
-        "source_observation_time": "2026-07-10T01:44:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21436",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21436"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21327",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -119.605515,
-          48.352694
-        ]
-      },
-      "properties": {
-        "title": "Wildfire B AND O, Okanogan, Washington",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-09T18:09:00Z",
-        "source_observation_time": "2026-07-09T18:09:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21327",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21327"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21337",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -95.99093333,
-          45.12691667
-        ]
-      },
-      "properties": {
-        "title": "Prescribed Fire RX Chippewa Prairie TNC, Chippewa, Minnesota",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-09T17:06:00Z",
-        "source_observation_time": "2026-07-09T17:06:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21337",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21337"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21338",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -96.01538333,
-          45.10605
-        ]
-      },
-      "properties": {
-        "title": "Prescribed Fire RX Terpstra W413-20-01, Lac qui Parle, Minnesota",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-09T17:03:00Z",
-        "source_observation_time": "2026-07-09T17:03:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21338",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21338"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21382",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -92.282167,
-          48.1855
-        ]
-      },
-      "properties": {
-        "title": "Wildfire Wolfpack, St. Louis, Minnesota",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-09T16:14:00Z",
-        "source_observation_time": "2026-07-09T16:14:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21382",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21382"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21339",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -94.44471667,
-          46.16963333
-        ]
-      },
-      "properties": {
-        "title": "Prescribed Fire RX Center Range North, Morrison, Minnesota",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-09T15:40:00Z",
-        "source_observation_time": "2026-07-09T15:40:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21339",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21339"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21340",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -94.39906667,
-          46.2736
-        ]
-      },
-      "properties": {
-        "title": "Prescribed Fire RX Leach Impact Area, Morrison, Minnesota",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-09T15:27:00Z",
-        "source_observation_time": "2026-07-09T15:27:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21340",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21340"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21858",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -107.354823,
-          38.124188
-        ]
-      },
-      "properties": {
-        "title": "Wildfire Elk, Hinsdale, Colorado",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-09T13:50:00Z",
-        "source_observation_time": "2026-07-09T13:50:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21858",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21858"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21383",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -92.223926,
-          48.153119
-        ]
-      },
-      "properties": {
-        "title": "Wildfire Sioux, St. Louis, Minnesota",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-09T12:37:00Z",
-        "source_observation_time": "2026-07-09T12:37:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21383",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21383"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21233",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -78.0655556,
-          34.805
-        ]
-      },
-      "properties": {
-        "title": "Wildfire Rose Hill Bay, Duplin, North Carolina",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-09T11:59:00Z",
-        "source_observation_time": "2026-07-09T11:59:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21233",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21233"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_21235",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -96.24231667,
-          45.21431667
-        ]
-      },
-      "properties": {
-        "title": "Prescribed Fire RX Agassiz W413-21-20, Lac qui Parle, Minnesota",
-        "categories": [
-          "fire"
-        ],
-        "observation_time": "2026-07-09T11:14:00Z",
-        "source_observation_time": "2026-07-09T11:14:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21235",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_21235"
-      }
-    },
-    {
-      "type": "Feature",
       "id": "cems-EMSR927",
       "geometry": {
         "type": "Point",
@@ -8239,8 +8239,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -125.4,
-          17.4
+          -126.3,
+          17.7
         ]
       },
       "properties": {
@@ -8248,8 +8248,8 @@
         "categories": [
           "storm"
         ],
-        "observation_time": "2026-08-31T18:00:00Z",
-        "source_observation_time": "2026-08-31T18:00:00Z",
+        "observation_time": "2026-09-01T00:00:00Z",
+        "source_observation_time": "2026-09-01T00:00:00Z",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23611",
         "source": "NASA EONET",
         "severity": "moderate",
@@ -8263,8 +8263,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -146.0,
-          12.8
+          -147.0,
+          12.9
         ]
       },
       "properties": {
@@ -8272,8 +8272,8 @@
         "categories": [
           "storm"
         ],
-        "observation_time": "2026-08-31T18:00:00Z",
-        "source_observation_time": "2026-08-31T18:00:00Z",
+        "observation_time": "2026-09-01T00:00:00Z",
+        "source_observation_time": "2026-09-01T00:00:00Z",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23612",
         "source": "NASA EONET",
         "severity": "moderate",
@@ -8359,8 +8359,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          121.0,
-          28.1
+          112.9,
+          19.5
         ]
       },
       "properties": {
@@ -8368,8 +8368,8 @@
         "categories": [
           "storm"
         ],
-        "observation_time": "2026-08-28T00:00:00Z",
-        "source_observation_time": "2026-08-28T00:00:00Z",
+        "observation_time": "2026-09-01T00:00:00Z",
+        "source_observation_time": "2026-09-01T00:00:00Z",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22926",
         "source": "NASA EONET",
         "severity": "moderate",
@@ -8931,6 +8931,654 @@
     },
     {
       "type": "Feature",
+      "id": "usgs-ci41540040",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.081166666667,
+          35.6855
+        ]
+      },
+      "properties": {
+        "title": "M 0.6 - 25 km W of Inyokern, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T05:14:24.420000Z",
+        "source_observation_time": "2026-09-01T05:14:24.420000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41540040",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-ci41540040"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-nc75428057",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.049499511719,
+          36.0234985351562
+        ]
+      },
+      "properties": {
+        "title": "M 1.5 - 12 km SSW of San Lucas, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T05:10:08.630000Z",
+        "source_observation_time": "2026-09-01T05:10:08.630000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75428057",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-nc75428057"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-tx2026relbek",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -104.458,
+          31.637
+        ]
+      },
+      "properties": {
+        "title": "M 2.2 - 60 km S of Whites City, New Mexico",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T04:49:18.513000Z",
+        "source_observation_time": "2026-09-01T04:49:18.513000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026relbek",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-tx2026relbek"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-ci41540032",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.387666666667,
+          34.1718333333333
+        ]
+      },
+      "properties": {
+        "title": "M 1.6 - 4 km WNW of Muscoy, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T04:33:04.340000Z",
+        "source_observation_time": "2026-09-01T04:33:04.340000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41540032",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-ci41540032"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-nc75428047",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.750335693359,
+          38.7868347167969
+        ]
+      },
+      "properties": {
+        "title": "M 1.0 - 1 km NNE of The Geysers, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T04:21:23.080000Z",
+        "source_observation_time": "2026-09-01T04:21:23.080000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75428047",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-nc75428047"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-ci41540024",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.560666666667,
+          35.652
+        ]
+      },
+      "properties": {
+        "title": "M 0.9 - 11 km ENE of Ridgecrest, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T04:12:22.920000Z",
+        "source_observation_time": "2026-09-01T04:12:22.920000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41540024",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-ci41540024"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-ci41540016",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -116.778,
+          33.6755
+        ]
+      },
+      "properties": {
+        "title": "M 0.4 - 9 km SW of Idyllwild, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T04:02:55.820000Z",
+        "source_observation_time": "2026-09-01T04:02:55.820000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41540016",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-ci41540016"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-aka2026rhdczj",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -153.012,
+          59.382
+        ]
+      },
+      "properties": {
+        "title": "M 2.0 - 62 km W of Nanwalek, Alaska",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T03:54:46.590000Z",
+        "source_observation_time": "2026-09-01T03:54:46.590000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026rhdczj",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-aka2026rhdczj"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-aka2026rhcvxp",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -143.519,
+          62.844
+        ]
+      },
+      "properties": {
+        "title": "M 2.2 - 15 km SE of Mentasta Lake, Alaska",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T03:45:49.635000Z",
+        "source_observation_time": "2026-09-01T03:45:49.635000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026rhcvxp",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-aka2026rhcvxp"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-ci41540008",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.840166666667,
+          36.0621666666667
+        ]
+      },
+      "properties": {
+        "title": "M 0.6 - 10 km E of Coso Junction, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T03:41:38.510000Z",
+        "source_observation_time": "2026-09-01T03:41:38.510000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41540008",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-ci41540008"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-tx2026reisxb",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -101.934,
+          32.102
+        ]
+      },
+      "properties": {
+        "title": "M 1.6 - 14 km WSW of Stanton, Texas",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T03:39:20.702000Z",
+        "source_observation_time": "2026-09-01T03:39:20.702000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026reisxb",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-tx2026reisxb"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-ci41540000",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -116.889833333333,
+          33.9405
+        ]
+      },
+      "properties": {
+        "title": "M 0.7 - 2 km NW of Banning, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T03:16:54.130000Z",
+        "source_observation_time": "2026-09-01T03:16:54.130000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41540000",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-ci41540000"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-aka2026rhbdip",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -146.928,
+          64.481
+        ]
+      },
+      "properties": {
+        "title": "M 1.5 - 4 km SSW of Salcha, Alaska",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T02:54:24.898000Z",
+        "source_observation_time": "2026-09-01T02:54:24.898000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026rhbdip",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-aka2026rhbdip"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-us7000td94",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -161.1496,
+          55.9965
+        ]
+      },
+      "properties": {
+        "title": "M 3.3 - 3 km E of Nelson Lagoon, Alaska",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T02:22:48.557000Z",
+        "source_observation_time": "2026-09-01T02:22:48.557000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000td94",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-us7000td94"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-ci41539992",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -116.215,
+          33.325
+        ]
+      },
+      "properties": {
+        "title": "M 1.0 - 17 km ENE of Borrego Springs, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T02:22:21.770000Z",
+        "source_observation_time": "2026-09-01T02:22:21.770000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41539992",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-ci41539992"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-ci41539984",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.5715,
+          34.0451666666667
+        ]
+      },
+      "properties": {
+        "title": "M 1.1 - 5 km E of Ontario, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T02:20:11.540000Z",
+        "source_observation_time": "2026-09-01T02:20:11.540000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41539984",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-ci41539984"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-ci41539968",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.859,
+          36.064
+        ]
+      },
+      "properties": {
+        "title": "M 1.1 - 8 km ENE of Coso Junction, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T01:54:16.480000Z",
+        "source_observation_time": "2026-09-01T01:54:16.480000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41539968",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-ci41539968"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-aka2026rgzckd",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -151.2,
+          62.574
+        ]
+      },
+      "properties": {
+        "title": "M 2.1 - 23 km WNW of Petersville, Alaska",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T01:53:26.628000Z",
+        "source_observation_time": "2026-09-01T01:53:26.628000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026rgzckd",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-aka2026rgzckd"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-aka2026rgyzki",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -156.368,
+          58.136
+        ]
+      },
+      "properties": {
+        "title": "M 1.7 - 59 km E of Egegik, Alaska",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T01:49:54.873000Z",
+        "source_observation_time": "2026-09-01T01:49:54.873000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026rgyzki",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-aka2026rgyzki"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-ci41539960",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.597833333333,
+          35.7793333333333
+        ]
+      },
+      "properties": {
+        "title": "M 1.5 - 18 km W of Searles Valley, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T01:48:14.320000Z",
+        "source_observation_time": "2026-09-01T01:48:14.320000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41539960",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-ci41539960"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-us7000td8u",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -177.994,
+          -20.4066
+        ]
+      },
+      "properties": {
+        "title": "M 4.8 - 292 km WNW of Houma, Tonga",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T01:29:10.774000Z",
+        "source_observation_time": "2026-09-01T01:29:10.774000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000td8u",
+        "source": "USGS",
+        "severity": "moderate",
+        "status": "reviewed",
+        "event_id": "usgs-us7000td8u"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-hv75027577",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -155.358169555664,
+          19.0435009002686
+        ]
+      },
+      "properties": {
+        "title": "M 2.1 - 21 km SE of Pāhala, Hawaii",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T01:23:01.510000Z",
+        "source_observation_time": "2026-09-01T01:23:01.510000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75027577",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-hv75027577"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-nc75428012",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.760330200195,
+          38.7898330688477
+        ]
+      },
+      "properties": {
+        "title": "M 1.1 - 1 km NNW of The Geysers, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T01:10:33.050000Z",
+        "source_observation_time": "2026-09-01T01:10:33.050000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75428012",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-nc75428012"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-nc75428002",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -124.547836303711,
+          40.2879981994629
+        ]
+      },
+      "properties": {
+        "title": "M 2.5 - 23 km W of Petrolia, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T01:07:07.840000Z",
+        "source_observation_time": "2026-09-01T01:07:07.840000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75428002",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-nc75428002"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-nc75427992",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.104331970215,
+          41.3646659851074
+        ]
+      },
+      "properties": {
+        "title": "M 2.0 - 12 km NNE of McCloud, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T00:44:39.540000Z",
+        "source_observation_time": "2026-09-01T00:44:39.540000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75427992",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-nc75427992"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-nc75427987",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.160499572754,
+          36.568000793457
+        ]
+      },
+      "properties": {
+        "title": "M 1.3 - 4 km NNW of Pinnacles, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T00:39:46.840000Z",
+        "source_observation_time": "2026-09-01T00:39:46.840000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75427987",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-nc75427987"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-nc75427982",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.807167053223,
+          38.8250007629395
+        ]
+      },
+      "properties": {
+        "title": "M 0.8 - 7 km NW of The Geysers, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-09-01T00:36:18.460000Z",
+        "source_observation_time": "2026-09-01T00:36:18.460000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75427982",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-nc75427982"
+      }
+    },
+    {
+      "type": "Feature",
       "id": "usgs-aka2026rgulso",
       "geometry": {
         "type": "Point",
@@ -9191,6 +9839,54 @@
         "severity": "low",
         "status": "automatic",
         "event_id": "usgs-tx2026rdxlft"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-av94411718",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -166.6475,
+          53.8963333333333
+        ]
+      },
+      "properties": {
+        "title": "M 0.2 - 6 km W of Dutch Harbor, Alaska",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-08-31T21:46:22.640000Z",
+        "source_observation_time": "2026-08-31T21:46:22.640000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94411718",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-av94411718"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-av93066409",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -166.64,
+          53.8898333333333
+        ]
+      },
+      "properties": {
+        "title": "M 0.9 - 6 km W of Dutch Harbor, Alaska",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-08-31T21:46:12.880000Z",
+        "source_observation_time": "2026-08-31T21:46:12.880000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av93066409",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-av93066409"
       }
     },
     {
@@ -9503,6 +10199,30 @@
         "severity": "low",
         "status": "automatic",
         "event_id": "usgs-hv75027467"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-av94411693",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -168.247166666667,
+          53.3813333333333
+        ]
+      },
+      "properties": {
+        "title": "M 0.5 - 64 km NE of Nikolski, Alaska",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-08-31T21:06:33.410000Z",
+        "source_observation_time": "2026-08-31T21:06:33.410000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94411693",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-av94411693"
       }
     },
     {
@@ -9983,6 +10703,30 @@
         "severity": "low",
         "status": "reviewed",
         "event_id": "usgs-tx2026rdpaod"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-av93066404",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -174.0915,
+          52.4015
+        ]
+      },
+      "properties": {
+        "title": "M 0.6 - 24 km NNE of Atka, Alaska",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-08-31T17:42:33.790000Z",
+        "source_observation_time": "2026-08-31T17:42:33.790000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av93066404",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-av93066404"
       }
     },
     {
@@ -10583,6 +11327,222 @@
         "severity": "low",
         "status": "automatic",
         "event_id": "usgs-aka2026rgbuxg"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_20710",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.378,
+          -36.868
+        ]
+      },
+      "properties": {
+        "title": "Nevados del Chillan Volcano, Chile",
+        "categories": [
+          "volcano"
+        ],
+        "observation_time": "2026-06-15T00:00:00Z",
+        "source_observation_time": "2026-06-15T00:00:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20710",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_20710"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_20409",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.84,
+          12.606
+        ]
+      },
+      "properties": {
+        "title": "Telica Volcano, Nicaragua",
+        "categories": [
+          "volcano"
+        ],
+        "observation_time": "2026-05-30T00:00:00Z",
+        "source_observation_time": "2026-05-30T00:00:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20409",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_20409"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_20392",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.6762,
+          45.7593
+        ]
+      },
+      "properties": {
+        "title": "Ivao Group Volcano, Russia",
+        "categories": [
+          "volcano"
+        ],
+        "observation_time": "2026-05-29T00:00:00Z",
+        "source_observation_time": "2026-05-29T00:00:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20392",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_20392"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_20395",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          147.78,
+          -3.03
+        ]
+      },
+      "properties": {
+        "title": "Titan Ridge Volcano, Papua New Guinea",
+        "categories": [
+          "volcano"
+        ],
+        "observation_time": "2026-05-28T00:00:00Z",
+        "source_observation_time": "2026-05-28T00:00:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20395",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_20395"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_20411",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          130.305,
+          30.793
+        ]
+      },
+      "properties": {
+        "title": "Kikai Volcano, Japan",
+        "categories": [
+          "volcano"
+        ],
+        "observation_time": "2026-05-17T00:00:00Z",
+        "source_observation_time": "2026-05-17T00:00:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20411",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_20411"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_20410",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          160.595,
+          55.972
+        ]
+      },
+      "properties": {
+        "title": "Bezymianny Volcano, Russia",
+        "categories": [
+          "volcano"
+        ],
+        "observation_time": "2026-05-16T00:00:00Z",
+        "source_observation_time": "2026-05-16T00:00:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20410",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_20410"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cems-EMSR912",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -90.90488258150785,
+          14.467714085412526
+        ]
+      },
+      "properties": {
+        "title": "Volcano eruption in Guatemala",
+        "categories": [
+          "volcano"
+        ],
+        "observation_time": "2026-08-02T23:00:00",
+        "source_observation_time": "2026-08-02T23:00:00",
+        "source_url": "https://mapping.emergency.copernicus.eu/activations/EMSR912",
+        "source": "Copernicus EMS",
+        "severity": "moderate",
+        "status": "closed",
+        "event_id": "cems-EMSR912"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cems-EMSR751",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.524994,
+          40.964583
+        ]
+      },
+      "properties": {
+        "title": "Mass movement in Campania Region, Italy",
+        "categories": [
+          "landslide"
+        ],
+        "observation_time": "2024-08-27T12:00:00",
+        "source_observation_time": "2024-08-27T12:00:00",
+        "source_url": "https://mapping.emergency.copernicus.eu/activations/EMSR751",
+        "source": "Copernicus EMS",
+        "severity": "moderate",
+        "status": "closed",
+        "event_id": "cems-EMSR751"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cems-EMSR691",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.25532,
+          46.087352
+        ]
+      },
+      "properties": {
+        "title": "Landslide in western Slovenia",
+        "categories": [
+          "landslide"
+        ],
+        "observation_time": "2023-08-06T00:30:00",
+        "source_observation_time": "2023-08-06T00:30:00",
+        "source_url": "https://mapping.emergency.copernicus.eu/activations/EMSR691",
+        "source": "Copernicus EMS",
+        "severity": "moderate",
+        "status": "closed",
+        "event_id": "cems-EMSR691"
       }
     },
     {
@@ -11327,222 +12287,6 @@
         "severity": "low",
         "status": "automatic",
         "event_id": "usgs-ci41539648"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_20710",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -71.378,
-          -36.868
-        ]
-      },
-      "properties": {
-        "title": "Nevados del Chillan Volcano, Chile",
-        "categories": [
-          "volcano"
-        ],
-        "observation_time": "2026-06-15T00:00:00Z",
-        "source_observation_time": "2026-06-15T00:00:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20710",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_20710"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_20409",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -86.84,
-          12.606
-        ]
-      },
-      "properties": {
-        "title": "Telica Volcano, Nicaragua",
-        "categories": [
-          "volcano"
-        ],
-        "observation_time": "2026-05-30T00:00:00Z",
-        "source_observation_time": "2026-05-30T00:00:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20409",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_20409"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_20392",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          149.6762,
-          45.7593
-        ]
-      },
-      "properties": {
-        "title": "Ivao Group Volcano, Russia",
-        "categories": [
-          "volcano"
-        ],
-        "observation_time": "2026-05-29T00:00:00Z",
-        "source_observation_time": "2026-05-29T00:00:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20392",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_20392"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_20395",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          147.78,
-          -3.03
-        ]
-      },
-      "properties": {
-        "title": "Titan Ridge Volcano, Papua New Guinea",
-        "categories": [
-          "volcano"
-        ],
-        "observation_time": "2026-05-28T00:00:00Z",
-        "source_observation_time": "2026-05-28T00:00:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20395",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_20395"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_20411",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          130.305,
-          30.793
-        ]
-      },
-      "properties": {
-        "title": "Kikai Volcano, Japan",
-        "categories": [
-          "volcano"
-        ],
-        "observation_time": "2026-05-17T00:00:00Z",
-        "source_observation_time": "2026-05-17T00:00:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20411",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_20411"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "eonet-EONET_20410",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          160.595,
-          55.972
-        ]
-      },
-      "properties": {
-        "title": "Bezymianny Volcano, Russia",
-        "categories": [
-          "volcano"
-        ],
-        "observation_time": "2026-05-16T00:00:00Z",
-        "source_observation_time": "2026-05-16T00:00:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20410",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_20410"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "cems-EMSR912",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -90.90488258150785,
-          14.467714085412526
-        ]
-      },
-      "properties": {
-        "title": "Volcano eruption in Guatemala",
-        "categories": [
-          "volcano"
-        ],
-        "observation_time": "2026-08-02T23:00:00",
-        "source_observation_time": "2026-08-02T23:00:00",
-        "source_url": "https://mapping.emergency.copernicus.eu/activations/EMSR912",
-        "source": "Copernicus EMS",
-        "severity": "moderate",
-        "status": "closed",
-        "event_id": "cems-EMSR912"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "cems-EMSR751",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          14.524994,
-          40.964583
-        ]
-      },
-      "properties": {
-        "title": "Mass movement in Campania Region, Italy",
-        "categories": [
-          "landslide"
-        ],
-        "observation_time": "2024-08-27T12:00:00",
-        "source_observation_time": "2024-08-27T12:00:00",
-        "source_url": "https://mapping.emergency.copernicus.eu/activations/EMSR751",
-        "source": "Copernicus EMS",
-        "severity": "moderate",
-        "status": "closed",
-        "event_id": "cems-EMSR751"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "cems-EMSR691",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          14.25532,
-          46.087352
-        ]
-      },
-      "properties": {
-        "title": "Landslide in western Slovenia",
-        "categories": [
-          "landslide"
-        ],
-        "observation_time": "2023-08-06T00:30:00",
-        "source_observation_time": "2023-08-06T00:30:00",
-        "source_url": "https://mapping.emergency.copernicus.eu/activations/EMSR691",
-        "source": "Copernicus EMS",
-        "severity": "moderate",
-        "status": "closed",
-        "event_id": "cems-EMSR691"
       }
     },
     {
@@ -12939,1490 +13683,746 @@
     },
     {
       "type": "Feature",
-      "id": "usgs-av94410498",
+      "id": "eonet-EONET_21390",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          179.6105,
-          51.8665
+          -94.39675,
+          46.27013333
         ]
       },
       "properties": {
-        "title": "M 1.2 - 258 km W of Adak, Alaska",
+        "title": "Prescribed Fire RX Leach Impact Area, Morrison, Minnesota",
         "categories": [
-          "earthquake"
+          "fire"
         ],
-        "observation_time": "2026-08-31T05:12:25.970000Z",
-        "source_observation_time": "2026-08-31T05:12:25.970000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94410498",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-av94410498"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-uw714092261",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.0575,
-          47.4011666666667
-        ]
-      },
-      "properties": {
-        "title": "M 0.9 - 1 km NW of Maple Valley, Washington",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T05:09:33.840000Z",
-        "source_observation_time": "2026-08-31T05:09:33.840000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uw714092261",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-uw714092261"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-uu80152521",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -112.8935,
-          38.5093333333333
-        ]
-      },
-      "properties": {
-        "title": "M 2.1 - 16 km NE of Milford, Utah",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T04:59:35.920000Z",
-        "source_observation_time": "2026-08-31T04:59:35.920000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80152521",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-uu80152521"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-tx2026rcpram",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -102.094,
-          32.359
-        ]
-      },
-      "properties": {
-        "title": "M 0.7 - 38 km NW of Stanton, Texas",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T04:59:26.648000Z",
-        "source_observation_time": "2026-08-31T04:59:26.648000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026rcpram",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-tx2026rcpram"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-ci41539544",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -117.257833333333,
-          34.0546666666667
-        ]
-      },
-      "properties": {
-        "title": "M 0.7 - 1 km NNE of Loma Linda, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T04:48:48Z",
-        "source_observation_time": "2026-08-31T04:48:48Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41539544",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-ci41539544"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026rfiulb",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -142.663,
-          60.623
-        ]
-      },
-      "properties": {
-        "title": "M 1.5 - 91 km S of McCarthy, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T04:44:45.689000Z",
-        "source_observation_time": "2026-08-31T04:44:45.689000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026rfiulb",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-aka2026rfiulb"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-us7000td2f",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          179.8021,
-          -25.2065
-        ]
-      },
-      "properties": {
-        "title": "M 4.5 - south of the Fiji Islands",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T04:38:22.200000Z",
-        "source_observation_time": "2026-08-31T04:38:22.200000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000td2f",
-        "source": "USGS",
+        "observation_time": "2026-07-13T15:46:00Z",
+        "source_observation_time": "2026-07-13T15:46:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21390",
+        "source": "NASA EONET",
         "severity": "moderate",
-        "status": "reviewed",
-        "event_id": "usgs-us7000td2f"
+        "status": "open",
+        "event_id": "eonet-EONET_21390"
       }
     },
     {
       "type": "Feature",
-      "id": "usgs-uu80152506",
+      "id": "eonet-EONET_21380",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -111.002833333333,
-          44.7665
+          -108.22355,
+          39.87355
         ]
       },
       "properties": {
-        "title": "M 0.3 - 14 km NE of West Yellowstone, Montana",
+        "title": "Wildfire P-L Gulch, Rio Blanco, Colorado",
         "categories": [
-          "earthquake"
+          "fire"
         ],
-        "observation_time": "2026-08-31T04:29:34.400000Z",
-        "source_observation_time": "2026-08-31T04:29:34.400000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80152506",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-uu80152506"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-av94410478",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -155.480666666667,
-          57.948
-        ]
-      },
-      "properties": {
-        "title": "M 0.4 - 74 km NW of Karluk, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T04:20:31.960000Z",
-        "source_observation_time": "2026-08-31T04:20:31.960000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94410478",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-av94410478"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-ci41539536",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -117.844333333333,
-          36.0691666666667
-        ]
-      },
-      "properties": {
-        "title": "M 0.9 - 10 km ENE of Coso Junction, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T04:19:03.620000Z",
-        "source_observation_time": "2026-08-31T04:19:03.620000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41539536",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-ci41539536"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-hv75027092",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -155.362333333333,
-          19.0636666666667
-        ]
-      },
-      "properties": {
-        "title": "M 2.1 - 19 km SE of Pāhala, Hawaii",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T04:14:47.740000Z",
-        "source_observation_time": "2026-08-31T04:14:47.740000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75027092",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-hv75027092"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-ci41539528",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -117.842166666667,
-          36.0718333333333
-        ]
-      },
-      "properties": {
-        "title": "M 0.7 - 10 km ENE of Coso Junction, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T04:14:37.930000Z",
-        "source_observation_time": "2026-08-31T04:14:37.930000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41539528",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-ci41539528"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-uu80152501",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -112.890833333333,
-          38.5151666666667
-        ]
-      },
-      "properties": {
-        "title": "M 1.2 - 16 km NE of Milford, Utah",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T04:07:01.280000Z",
-        "source_observation_time": "2026-08-31T04:07:01.280000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80152501",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-uu80152501"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-us7000td2c",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          126.1362,
-          9.6408
-        ]
-      },
-      "properties": {
-        "title": "M 4.9 - 13 km SSE of Union, Philippines",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T04:04:34.127000Z",
-        "source_observation_time": "2026-08-31T04:04:34.127000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000td2c",
-        "source": "USGS",
+        "observation_time": "2026-07-13T15:02:00Z",
+        "source_observation_time": "2026-07-13T15:02:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21380",
+        "source": "NASA EONET",
         "severity": "moderate",
-        "status": "reviewed",
-        "event_id": "usgs-us7000td2c"
+        "status": "open",
+        "event_id": "eonet-EONET_21380"
       }
     },
     {
       "type": "Feature",
-      "id": "usgs-aka2026rfhheo",
+      "id": "eonet-EONET_21322",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -166.368,
-          52.876
+          -94.39545,
+          46.24695
         ]
       },
       "properties": {
-        "title": "M 2.6 - 111 km S of Unalaska, Alaska",
+        "title": "Prescribed Fire RX Infantry Platoon Battle Course, Morrison, Minnesota",
         "categories": [
-          "earthquake"
+          "fire"
         ],
-        "observation_time": "2026-08-31T03:59:33.782000Z",
-        "source_observation_time": "2026-08-31T03:59:33.782000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026rfhheo",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-aka2026rfhheo"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026rfhdlp",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -147.604,
-          61.237
-        ]
-      },
-      "properties": {
-        "title": "M 1.4 Ice Quake - 63 km S of Glacier View, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T03:55:10.508000Z",
-        "source_observation_time": "2026-08-31T03:55:10.508000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026rfhdlp",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-aka2026rfhdlp"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026rfgzhg",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -150.12,
-          62.231
-        ]
-      },
-      "properties": {
-        "title": "M 1.5 - 10 km S of Talkeetna, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T03:50:23.286000Z",
-        "source_observation_time": "2026-08-31T03:50:23.286000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026rfgzhg",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-aka2026rfgzhg"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-pr71530418",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -66.9381666666667,
-          18.0028333333333
-        ]
-      },
-      "properties": {
-        "title": "M 1.8 - 2 km NW of Fuig, Puerto Rico",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T03:49:54.800000Z",
-        "source_observation_time": "2026-08-31T03:49:54.800000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/pr71530418",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-pr71530418"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-av94410448",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -177.829333333333,
-          51.8641666666667
-        ]
-      },
-      "properties": {
-        "title": "M 1.1 - 82 km W of Adak, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T03:49:52.030000Z",
-        "source_observation_time": "2026-08-31T03:49:52.030000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94410448",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-av94410448"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-nc75427522",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.807502746582,
-          38.8358345031738
-        ]
-      },
-      "properties": {
-        "title": "M 0.2 - 7 km WNW of Cobb, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T03:49:29.050000Z",
-        "source_observation_time": "2026-08-31T03:49:29.050000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75427522",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-nc75427522"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026rfgtql",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -147.478,
-          60.979
-        ]
-      },
-      "properties": {
-        "title": "M 1.3 - 45 km WNW of Tatitlek, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T03:43:51.940000Z",
-        "source_observation_time": "2026-08-31T03:43:51.940000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026rfgtql",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-aka2026rfgtql"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026rfgrdq",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -156.819,
-          54.778
-        ]
-      },
-      "properties": {
-        "title": "M 3.1 - 194 km SE of Perryville, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T03:40:39.509000Z",
-        "source_observation_time": "2026-08-31T03:40:39.509000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026rfgrdq",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-aka2026rfgrdq"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-pr71530413",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -66.4453333333333,
-          18.549
-        ]
-      },
-      "properties": {
-        "title": "M 2.8 - 10 km NNE of Tierras Nuevas Poniente, Puerto Rico",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T03:39:35.110000Z",
-        "source_observation_time": "2026-08-31T03:39:35.110000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/pr71530413",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-pr71530413"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-nc75427512",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.802833557129,
-          38.8236656188965
-        ]
-      },
-      "properties": {
-        "title": "M 0.7 - 7 km NW of The Geysers, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T03:35:30.890000Z",
-        "source_observation_time": "2026-08-31T03:35:30.890000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75427512",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-nc75427512"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-ci41539520",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -117.248333333333,
-          34.0655
-        ]
-      },
-      "properties": {
-        "title": "M 1.0 - 2 km NNE of Loma Linda, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T03:32:13.190000Z",
-        "source_observation_time": "2026-08-31T03:32:13.190000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41539520",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-ci41539520"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-ci41539512",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -116.642666666667,
-          33.4193333333333
-        ]
-      },
-      "properties": {
-        "title": "M 0.1 - 15 km N of Warner Springs, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T03:30:18.260000Z",
-        "source_observation_time": "2026-08-31T03:30:18.260000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41539512",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-ci41539512"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-uu80152466",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -112.8915,
-          38.5133333333333
-        ]
-      },
-      "properties": {
-        "title": "M 1.1 - 16 km NE of Milford, Utah",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T03:29:39.360000Z",
-        "source_observation_time": "2026-08-31T03:29:39.360000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80152466",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-uu80152466"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-ci41539504",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -117.7425,
-          36.1036666666667
-        ]
-      },
-      "properties": {
-        "title": "M 0.9 - 20 km ENE of Coso Junction, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T03:10:50.500000Z",
-        "source_observation_time": "2026-08-31T03:10:50.500000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41539504",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-ci41539504"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-uw714092241",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.1555,
-          46.2058333333333
-        ]
-      },
-      "properties": {
-        "title": "M 0.7 - 39 km NE of Amboy, Washington",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T03:08:58.260000Z",
-        "source_observation_time": "2026-08-31T03:08:58.260000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uw714092241",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-uw714092241"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-uu80152431",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -112.893833333333,
-          38.5143333333333
-        ]
-      },
-      "properties": {
-        "title": "M 1.9 - 16 km NE of Milford, Utah",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T02:58:17.230000Z",
-        "source_observation_time": "2026-08-31T02:58:17.230000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80152431",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-uu80152431"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-av94410423",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -152.3235,
-          61.1636666666667
-        ]
-      },
-      "properties": {
-        "title": "M 0.3 - 64 km W of Tyonek, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T02:57:51.100000Z",
-        "source_observation_time": "2026-08-31T02:57:51.100000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94410423",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-av94410423"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026rfeyok",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -176.227,
-          51.249
-        ]
-      },
-      "properties": {
-        "title": "M 2.8 - 75 km SSE of Adak, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T02:49:37.935000Z",
-        "source_observation_time": "2026-08-31T02:49:37.935000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026rfeyok",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-aka2026rfeyok"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-uu80152426",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -111.027,
-          44.4465
-        ]
-      },
-      "properties": {
-        "title": "M 1.5 - 24 km SSE of West Yellowstone, Montana",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T02:46:51.200000Z",
-        "source_observation_time": "2026-08-31T02:46:51.200000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80152426",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-uu80152426"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-tx2026rclfaz",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -103.758,
-          31.789
-        ]
-      },
-      "properties": {
-        "title": "M 1.0 - 17 km WNW of Mentone, Texas",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T02:44:55.761000Z",
-        "source_observation_time": "2026-08-31T02:44:55.761000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026rclfaz",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-tx2026rclfaz"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-uu80152416",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -111.016333333333,
-          44.4588333333333
-        ]
-      },
-      "properties": {
-        "title": "M 1.4 - 23 km SSE of West Yellowstone, Montana",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T02:44:19.540000Z",
-        "source_observation_time": "2026-08-31T02:44:19.540000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80152416",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-uu80152416"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-uu80152411",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -110.994,
-          44.4626666666667
-        ]
-      },
-      "properties": {
-        "title": "M 1.0 - 23 km SSE of West Yellowstone, Montana",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T02:44:00.040000Z",
-        "source_observation_time": "2026-08-31T02:44:00.040000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80152411",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-uu80152411"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-uu80152421",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -111.002833333333,
-          44.4595
-        ]
-      },
-      "properties": {
-        "title": "M 1.1 - 23 km SSE of West Yellowstone, Montana",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T02:44:00.010000Z",
-        "source_observation_time": "2026-08-31T02:44:00.010000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80152421",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-uu80152421"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-hv75027062",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -155.352493286133,
-          19.0348339080811
-        ]
-      },
-      "properties": {
-        "title": "M 1.8 - 22 km SE of Pāhala, Hawaii",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T02:43:30.220000Z",
-        "source_observation_time": "2026-08-31T02:43:30.220000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75027062",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-hv75027062"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026rfepeh",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -149.324,
-          62.034
-        ]
-      },
-      "properties": {
-        "title": "M 1.7 - 30 km ESE of Susitna North, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T02:38:43.452000Z",
-        "source_observation_time": "2026-08-31T02:38:43.452000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026rfepeh",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-aka2026rfepeh"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026rfeovr",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -155.301,
-          58.156
-        ]
-      },
-      "properties": {
-        "title": "M 0.9 - 82 km NW of Karluk, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T02:38:21.308000Z",
-        "source_observation_time": "2026-08-31T02:38:21.308000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026rfeovr",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-aka2026rfeovr"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-av94410403",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -153.063166666667,
-          60.0425
-        ]
-      },
-      "properties": {
-        "title": "M -0.3 - 64 km ENE of Pedro Bay, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T02:34:26.370000Z",
-        "source_observation_time": "2026-08-31T02:34:26.370000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94410403",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-av94410403"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-ci41539496",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -117.558,
-          35.651
-        ]
-      },
-      "properties": {
-        "title": "M 1.0 - 11 km ENE of Ridgecrest, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T02:30:54.210000Z",
-        "source_observation_time": "2026-08-31T02:30:54.210000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41539496",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-ci41539496"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026rfecwp",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -155.737,
-          56.961
-        ]
-      },
-      "properties": {
-        "title": "M 2.2 - 95 km W of Akhiok, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T02:24:35.397000Z",
-        "source_observation_time": "2026-08-31T02:24:35.397000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026rfecwp",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-aka2026rfecwp"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-uw714092231",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.3675,
-          46.2066666666667
-        ]
-      },
-      "properties": {
-        "title": "M 0.8 - 33 km N of Amboy, Washington",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T02:19:11.800000Z",
-        "source_observation_time": "2026-08-31T02:19:11.800000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uw714092231",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-uw714092231"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-ci41539488",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -115.208166666667,
-          32.3705
-        ]
-      },
-      "properties": {
-        "title": "M 2.7 - 2 km NW of Delta, B.C., MX",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T02:16:31.340000Z",
-        "source_observation_time": "2026-08-31T02:16:31.340000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41539488",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-ci41539488"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026rfduyp",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -149.048,
-          62.839
-        ]
-      },
-      "properties": {
-        "title": "M 1.5 - 61 km S of Cantwell, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T02:15:24.807000Z",
-        "source_observation_time": "2026-08-31T02:15:24.807000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026rfduyp",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-aka2026rfduyp"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-tx2026rcjxpp",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -102.044,
-          32.396
-        ]
-      },
-      "properties": {
-        "title": "M 0.6 - 34 km WSW of Ackerly, Texas",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T02:06:09.995000Z",
-        "source_observation_time": "2026-08-31T02:06:09.995000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026rcjxpp",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-tx2026rcjxpp"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-uu80152381",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -112.891666666667,
-          38.5141666666667
-        ]
-      },
-      "properties": {
-        "title": "M 1.1 - 16 km NE of Milford, Utah",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T01:56:44.980000Z",
-        "source_observation_time": "2026-08-31T01:56:44.980000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80152381",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-uu80152381"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-ci41539480",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -117.679666666667,
-          35.9525
-        ]
-      },
-      "properties": {
-        "title": "M 0.9 - 21 km E of Little Lake, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T01:54:43.870000Z",
-        "source_observation_time": "2026-08-31T01:54:43.870000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41539480",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-ci41539480"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026rfcwxb",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -151.729,
-          60.481
-        ]
-      },
-      "properties": {
-        "title": "M 1.7 - 25 km WNW of Kalifornsky, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T01:47:39.648000Z",
-        "source_observation_time": "2026-08-31T01:47:39.648000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026rfcwxb",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-aka2026rfcwxb"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-tx2026rcjgpb",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -102.091,
-          32.092
-        ]
-      },
-      "properties": {
-        "title": "M 0.5 - 10 km N of Midland, Texas",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T01:46:16.636000Z",
-        "source_observation_time": "2026-08-31T01:46:16.636000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026rcjgpb",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-tx2026rcjgpb"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026rfctfq",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -141.161,
-          60.261
-        ]
-      },
-      "properties": {
-        "title": "M 1.4 - 112 km NW of Yakutat, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T01:43:26.045000Z",
-        "source_observation_time": "2026-08-31T01:43:26.045000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026rfctfq",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-aka2026rfctfq"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026rfcmpi",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -152.763,
-          62.192
-        ]
-      },
-      "properties": {
-        "title": "M 1.4 - 74 km WNW of Skwentna, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T01:35:46.432000Z",
-        "source_observation_time": "2026-08-31T01:35:46.432000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026rfcmpi",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-aka2026rfcmpi"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-ci41539472",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -117.593333333333,
-          35.7676666666667
-        ]
-      },
-      "properties": {
-        "title": "M 1.5 - 17 km W of Searles Valley, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T01:35:24.290000Z",
-        "source_observation_time": "2026-08-31T01:35:24.290000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41539472",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-ci41539472"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-hv75027032",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -155.489333333333,
-          19.1796666666667
-        ]
-      },
-      "properties": {
-        "title": "M 1.5 - 2 km SSW of Pāhala, Hawaii",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T01:24:44.370000Z",
-        "source_observation_time": "2026-08-31T01:24:44.370000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75027032",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-hv75027032"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026rfccva",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -156.756,
-          58.007
-        ]
-      },
-      "properties": {
-        "title": "M 2.1 - 43 km ESE of Egegik, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T01:24:33.378000Z",
-        "source_observation_time": "2026-08-31T01:24:33.378000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026rfccva",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-aka2026rfccva"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-hv75027027",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -155.500503540039,
-          19.13450050354
-        ]
-      },
-      "properties": {
-        "title": "M 1.8 - 7 km SSW of Pāhala, Hawaii",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T01:24:18.180000Z",
-        "source_observation_time": "2026-08-31T01:24:18.180000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75027027",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-hv75027027"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026rfbxsl",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -152.331,
-          62.241
-        ]
-      },
-      "properties": {
-        "title": "M 2.0 - 56 km WNW of Skwentna, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T01:18:37.868000Z",
-        "source_observation_time": "2026-08-31T01:18:37.868000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026rfbxsl",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-aka2026rfbxsl"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-us7000td1g",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -79.0145,
-          -9.6152
-        ]
-      },
-      "properties": {
-        "title": "M 4.5 - 71 km WSW of Puerto Casma, Peru",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-08-31T01:08:05.874000Z",
-        "source_observation_time": "2026-08-31T01:08:05.874000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000td1g",
-        "source": "USGS",
+        "observation_time": "2026-07-13T11:54:00Z",
+        "source_observation_time": "2026-07-13T11:54:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21322",
+        "source": "NASA EONET",
         "severity": "moderate",
-        "status": "reviewed",
-        "event_id": "usgs-us7000td1g"
+        "status": "open",
+        "event_id": "eonet-EONET_21322"
       }
     },
     {
       "type": "Feature",
-      "id": "usgs-av93066374",
+      "id": "eonet-EONET_21323",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -169.486,
-          52.7233333333333
+          -94.40005,
+          46.24651667
         ]
       },
       "properties": {
-        "title": "M 1.6 - 48 km WSW of Nikolski, Alaska",
+        "title": "Prescribed Fire RX IPBC, Morrison, Minnesota",
         "categories": [
-          "earthquake"
+          "fire"
         ],
-        "observation_time": "2026-08-31T01:00:46.630000Z",
-        "source_observation_time": "2026-08-31T01:00:46.630000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av93066374",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-av93066374"
+        "observation_time": "2026-07-13T11:09:00Z",
+        "source_observation_time": "2026-07-13T11:09:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21323",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21323"
       }
     },
     {
       "type": "Feature",
-      "id": "usgs-ci10251166",
+      "id": "eonet-EONET_21324",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -117.676333333333,
-          35.9506666666667
+          -94.44528333,
+          46.16198333
         ]
       },
       "properties": {
-        "title": "M 0.5 - 21 km E of Little Lake, CA",
+        "title": "Prescribed Fire RX Center Range South, Morrison, Minnesota",
         "categories": [
-          "earthquake"
+          "fire"
         ],
-        "observation_time": "2026-08-31T01:00:35.490000Z",
-        "source_observation_time": "2026-08-31T01:00:35.490000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci10251166",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-ci10251166"
+        "observation_time": "2026-07-13T11:07:00Z",
+        "source_observation_time": "2026-07-13T11:07:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21324",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21324"
       }
     },
     {
       "type": "Feature",
-      "id": "usgs-ci10251110",
+      "id": "eonet-EONET_21320",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -117.847166666667,
-          36.0681666666667
+          -114.267333,
+          41.564667
         ]
       },
       "properties": {
-        "title": "M 0.9 - 9 km ENE of Coso Junction, CA",
+        "title": "Wildfire 18 Mile, Elko, Nevada",
         "categories": [
-          "earthquake"
+          "fire"
         ],
-        "observation_time": "2026-08-31T00:59:37.910000Z",
-        "source_observation_time": "2026-08-31T00:59:37.910000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci10251110",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-ci10251110"
+        "observation_time": "2026-07-12T21:45:00Z",
+        "source_observation_time": "2026-07-12T21:45:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21320",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21320"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21318",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -108.146,
+          46.44166
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Heavy Timber, Musselshell, Montana",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-12T21:00:00Z",
+        "source_observation_time": "2026-07-12T21:00:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21318",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21318"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21328",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -112.947187,
+          42.11216
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Cow Canyon, Oneida, Idaho",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-12T16:15:00Z",
+        "source_observation_time": "2026-07-12T16:15:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21328",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21328"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21332",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.193167,
+          39.710833
+        ]
+      },
+      "properties": {
+        "title": "Wildfire ELEPHANT, Plumas, California",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-11T16:35:00Z",
+        "source_observation_time": "2026-07-11T16:35:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21332",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21332"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21329",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.154667,
+          40.965833
+        ]
+      },
+      "properties": {
+        "title": "Wildfire LOOMIS, Lassen, California",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-11T15:03:00Z",
+        "source_observation_time": "2026-07-11T15:03:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21329",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21329"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21336",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -119.04432,
+          46.122786
+        ]
+      },
+      "properties": {
+        "title": "Wildfire NINE CANYON, Benton, Washington",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-11T14:41:00Z",
+        "source_observation_time": "2026-07-11T14:41:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21336",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21336"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21331",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -112.560267,
+          40.1499
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Stookey, Tooele, Utah",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-10T19:51:00Z",
+        "source_observation_time": "2026-07-10T19:51:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21331",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21331"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21325",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0018333,
+          42.60395
+        ]
+      },
+      "properties": {
+        "title": "Wildfire E Evans Creek Rd 18000, Jackson, Oregon",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-10T18:13:00Z",
+        "source_observation_time": "2026-07-10T18:13:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21325",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21325"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21333",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.68601,
+          34.45499
+        ]
+      },
+      "properties": {
+        "title": "Wildfire SUMMIT, Los Angeles, California",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-10T15:49:00Z",
+        "source_observation_time": "2026-07-10T15:49:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21333",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21333"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21436",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -150.25392,
+          67.447423
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Nutmeg, Yukon-Koyukuk, Alaska",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-10T01:44:00Z",
+        "source_observation_time": "2026-07-10T01:44:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21436",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21436"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21327",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -119.605515,
+          48.352694
+        ]
+      },
+      "properties": {
+        "title": "Wildfire B AND O, Okanogan, Washington",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-09T18:09:00Z",
+        "source_observation_time": "2026-07-09T18:09:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21327",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21327"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21337",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -95.99093333,
+          45.12691667
+        ]
+      },
+      "properties": {
+        "title": "Prescribed Fire RX Chippewa Prairie TNC, Chippewa, Minnesota",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-09T17:06:00Z",
+        "source_observation_time": "2026-07-09T17:06:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21337",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21337"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21338",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -96.01538333,
+          45.10605
+        ]
+      },
+      "properties": {
+        "title": "Prescribed Fire RX Terpstra W413-20-01, Lac qui Parle, Minnesota",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-09T17:03:00Z",
+        "source_observation_time": "2026-07-09T17:03:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21338",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21338"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21382",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -92.282167,
+          48.1855
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Wolfpack, St. Louis, Minnesota",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-09T16:14:00Z",
+        "source_observation_time": "2026-07-09T16:14:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21382",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21382"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21339",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -94.44471667,
+          46.16963333
+        ]
+      },
+      "properties": {
+        "title": "Prescribed Fire RX Center Range North, Morrison, Minnesota",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-09T15:40:00Z",
+        "source_observation_time": "2026-07-09T15:40:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21339",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21339"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21340",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -94.39906667,
+          46.2736
+        ]
+      },
+      "properties": {
+        "title": "Prescribed Fire RX Leach Impact Area, Morrison, Minnesota",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-09T15:27:00Z",
+        "source_observation_time": "2026-07-09T15:27:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21340",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21340"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21858",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -107.354823,
+          38.124188
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Elk, Hinsdale, Colorado",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-09T13:50:00Z",
+        "source_observation_time": "2026-07-09T13:50:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21858",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21858"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21383",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -92.223926,
+          48.153119
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Sioux, St. Louis, Minnesota",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-09T12:37:00Z",
+        "source_observation_time": "2026-07-09T12:37:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21383",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21383"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21233",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.0655556,
+          34.805
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Rose Hill Bay, Duplin, North Carolina",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-09T11:59:00Z",
+        "source_observation_time": "2026-07-09T11:59:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21233",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21233"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21235",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -96.24231667,
+          45.21431667
+        ]
+      },
+      "properties": {
+        "title": "Prescribed Fire RX Agassiz W413-21-20, Lac qui Parle, Minnesota",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-09T11:14:00Z",
+        "source_observation_time": "2026-07-09T11:14:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21235",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21235"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21237",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -95.5,
+          45.38
+        ]
+      },
+      "properties": {
+        "title": "Prescribed Fire RX Loen, Swift, Minnesota",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-09T10:44:00Z",
+        "source_observation_time": "2026-07-09T10:44:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21237",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21237"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21238",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -95.5,
+          45.38
+        ]
+      },
+      "properties": {
+        "title": "Prescribed Fire RX Loen, Swift, Minnesota",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-09T10:43:00Z",
+        "source_observation_time": "2026-07-09T10:43:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21238",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21238"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21239",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -96.01343333,
+          45.13898333
+        ]
+      },
+      "properties": {
+        "title": "Prescribed Fire RX Chippewa Prairie Unit 7 W413-20-28, Chippewa, Minnesota",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-09T10:39:00Z",
+        "source_observation_time": "2026-07-09T10:39:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21239",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21239"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21317",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -153.849167,
+          66.664667
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Hogatza, Yukon-Koyukuk, Alaska",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-08T22:46:00Z",
+        "source_observation_time": "2026-07-08T22:46:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21317",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21317"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21243",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.0208,
+          46.949083
+        ]
+      },
+      "properties": {
+        "title": "Wildfire RYEGRASS COULEE, Kittitas, Washington",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-08T20:13:00Z",
+        "source_observation_time": "2026-07-08T20:13:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21243",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21243"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "eonet-EONET_21231",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.6149183,
+          33.44265
+        ]
+      },
+      "properties": {
+        "title": "Wildfire Getaway Pens, Dickens, Texas",
+        "categories": [
+          "fire"
+        ],
+        "observation_time": "2026-07-08T18:12:00Z",
+        "source_observation_time": "2026-07-08T18:12:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21231",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_21231"
       }
     }
   ],
