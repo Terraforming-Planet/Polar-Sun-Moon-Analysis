@@ -451,6 +451,7 @@ export async function handleAreaAnalysisV2(request, env = {}) {
       period: { start_date: parsed.startDate, end_date: parsed.endDate },
       depth: parsed.depth,
       preview_images: previews.map(item => ({ date: item.date, source: item.source, url: item.url })),
+      analysis_images: analysisVisuals.map(item => ({ date: item.date, source: item.source, url: item.url })),
       ai_visual_image_count: analysisVisuals.length,
       visual_preflight_warnings: galleryPreflight.warnings,
       landsat_catalog: landsat,

@@ -68,17 +68,26 @@ function imageAssetScore(key, asset) {
   const title = String(asset?.title ?? '').toLowerCase()
   const roles = Array.isArray(asset?.roles) ? asset.roles.map(role => String(role).toLowerCase()) : []
   let score = 0
-  if (lowerKey.includes('thumbnail')) score += 120
-  if (lowerKey.includes('browse')) score += 110
-  if (lowerKey.includes('preview')) score += 100
-  if (roles.includes('thumbnail')) score += 90
-  if (roles.includes('overview')) score += 80
-  if (title.includes('full resolution browse')) score += 75
-  if (title.includes('browse')) score += 65
-  if (title.includes('thumbnail')) score += 60
+  if (title.includes('full resolution browse')) score += 320
+  if (lowerKey.includes('browse')) score += 220
+  if (title.includes('browse')) score += 180
+  if (roles.includes('overview')) score += 140
+  if (lowerKey.includes('preview')) score += 110
+  if (lowerKey.includes('thumbnail')) score += 45
+  if (roles.includes('thumbnail')) score += 35
+  if (title.includes('thumbnail')) score += 25
   if (type === 'image/jpeg' || type === 'image/jpg') score += 55
   if (type === 'image/png' || type === 'image/webp') score += 45
   return score
+}
+
+function imageAssetKind(key, asset) {
+  const lowerKey = String(key ?? '').toLowerCase()
+  const title = String(asset?.title ?? '').toLowerCase()
+  const roles = Array.isArray(asset?.roles) ? asset.roles.map(role => String(role).toLowerCase()) : []
+  if (lowerKey.includes('thumbnail') || title.includes('thumbnail') || roles.includes('thumbnail')) return 'CATALOGUE_THUMBNAIL'
+  if (title.includes('full resolution browse') || lowerKey.includes('browse') || title.includes('browse') || roles.includes('overview')) return 'FULL_RESOLUTION_BROWSE'
+  return 'CATALOGUE_THUMBNAIL'
 }
 
 function safeRasterImageUrl(value) {
@@ -101,7 +110,7 @@ export function extractLandsatBrowseImage(item) {
       const href = safeRasterImageUrl(asset?.href)
       if (!href) continue
       const score = imageAssetScore(key, asset)
-      if (score > 0) candidates.push({ href, score })
+      if (score > 0) candidates.push({ href, score, asset_kind: imageAssetKind(key, asset) })
     }
   }
   if (Array.isArray(item.links)) {
@@ -109,7 +118,7 @@ export function extractLandsatBrowseImage(item) {
       const rel = String(link?.rel ?? '').toLowerCase()
       if (!['preview', 'thumbnail'].includes(rel)) continue
       const href = safeRasterImageUrl(link?.href)
-      if (href) candidates.push({ href, score: rel === 'thumbnail' ? 95 : 85 })
+      if (href) candidates.push({ href, score: rel === 'thumbnail' ? 40 : 100, asset_kind: 'CATALOGUE_THUMBNAIL' })
     }
   }
   candidates.sort((a, b) => b.score - a.score)
@@ -118,14 +127,22 @@ export function extractLandsatBrowseImage(item) {
 
   const platform = typeof item?.properties?.platform === 'string' ? item.properties.platform : 'Landsat'
   const cloudCover = typeof item?.properties?.['eo:cloud_cover'] === 'number' ? item.properties['eo:cloud_cover'] : null
+  const fullBrowse = selected.asset_kind === 'FULL_RESOLUTION_BROWSE'
   return {
     date,
-    source: `USGS Landsat Collection 2 · ${platform} · Full Resolution Browse`,
+    source: `USGS Landsat Collection 2 · ${platform} · ${fullBrowse ? 'Full Resolution Browse' : 'Catalogue Thumbnail'}`,
     url: selected.href,
     original_url: selected.href,
     scene_id: id,
     cloud_cover: cloudCover,
-    provenance_note: `Official USGS STAC browse/thumbnail for scene ${id}; intended for image selection and visual interpretation.`,
+    asset_kind: selected.asset_kind,
+    render_kind: 'CATALOGUE_BROWSE',
+    aoi_cropped: false,
+    analysis_eligible: false,
+    quality_note: fullBrowse
+      ? 'Official full-scene browse. It is not an AOI crop and is catalogue context only.'
+      : 'Official catalogue thumbnail; it may be only 300×300 and is not suitable for small-object interpretation.',
+    provenance_note: `Official USGS STAC ${fullBrowse ? 'full-scene browse' : 'catalogue thumbnail'} for scene ${id}; catalogue context only, not an AOI analysis input.`,
   }
 }
 
@@ -217,6 +234,11 @@ function nasaFallbackImage(body, year) {
     original_url: url,
     cloud_cover: null,
     cloud_preference_met: false,
+    asset_kind: 'NASA_GIBS_AOI_FALLBACK',
+    render_kind: 'NATURAL_COLOR_RGB',
+    aoi_cropped: true,
+    analysis_eligible: false,
+    quality_note: '1100×1100 AOI rendering for human catalogue comparison; it is not claimed as a model input.',
     provenance_note: 'NASA GIBS fallback for a year where a browser-renderable Landsat browse image was not returned. GIBS does not provide the same per-scene cloud-cover metadata.',
   }
 }
@@ -322,6 +344,11 @@ async function gallerySlot(request, body, year) {
         scene_id: proxied.scene_id ?? null,
         cloud_cover: proxied.cloud_cover ?? null,
         cloud_preference_met: proxied.cloud_preference_met,
+        asset_kind: proxied.asset_kind,
+        render_kind: proxied.render_kind,
+        aoi_cropped: proxied.aoi_cropped,
+        analysis_eligible: proxied.analysis_eligible,
+        quality_note: proxied.quality_note,
       },
     }
   } catch (error) {
@@ -340,6 +367,11 @@ async function gallerySlot(request, body, year) {
           scene_id: null,
           cloud_cover: null,
           cloud_preference_met: false,
+          asset_kind: proxied.asset_kind,
+          render_kind: proxied.render_kind,
+          aoi_cropped: proxied.aoi_cropped,
+          analysis_eligible: proxied.analysis_eligible,
+          quality_note: proxied.quality_note,
         },
         warning: error instanceof Error && error.name === 'AbortError' ? 'USGS timeout; NASA GIBS fallback used.' : 'USGS query failed; NASA GIBS fallback used.',
       }
