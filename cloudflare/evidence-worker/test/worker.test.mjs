@@ -23,7 +23,7 @@ const expectedCases = [
   'test-015-himalaya-tibet',
 ]
 
-const expectedTrainings = ['training_1', 'training_2', 'training_3']
+const expectedTrainings = ['training_1', 'training_2', 'training_3', 'training_4']
 
 test('public endpoint exposes only registered published case IDs', () => {
   assert.deepEqual(Object.keys(PUBLIC_CASES), expectedCases)
@@ -82,7 +82,7 @@ test('health route never returns the OpenAI secret and lists all cases and train
   assert.equal(JSON.stringify(payload).includes('test-secret-not-real'), false)
 })
 
-test('cases route publishes TEST 001 plus all three L4 training summaries', async () => {
+test('cases route publishes TEST 001 plus all four L4 training summaries', async () => {
   const response = await handleRequest(new Request('https://worker.example/cases', {
     headers: { Origin: 'https://terraforming-planet.github.io' },
   }), { OPENAI_API_KEY: 'test-secret-not-real' })
@@ -93,12 +93,14 @@ test('cases route publishes TEST 001 plus all three L4 training summaries', asyn
   assert.equal(payload.cases.find(item => item.case_id === 'test-001-forest-pond-kuchnia').record_count, 73)
   assert.equal(payload.cases.find(item => item.case_id === 'test-013-grays-harbor').accepted_count, 71)
   assert.equal(payload.cases.find(item => item.case_id === 'test-015-himalaya-tibet').accepted_count, 65)
-  assert.equal(payload.training_context.length, 3)
+  assert.equal(payload.training_context.length, 4)
   assert.deepEqual(payload.training_context.map(item => item.training_id), expectedTrainings)
   assert.match(payload.training_context[0].summary, /704,232 sampled patches/)
   assert.equal(JSON.stringify(payload).includes('test-secret-not-real'), false)
   assert.equal(listPublicCases().length, 5)
-  assert.equal(listTrainingContext().length, 3)
+  assert.match(payload.training_context[3].summary, /95 real temporal pairs/)
+  assert.match(payload.training_context[3].summary, /checkpoint not loaded by Worker/)
+  assert.equal(listTrainingContext().length, 4)
 })
 
 test('root route is a human-readable backend status page', async () => {
@@ -128,7 +130,7 @@ test('TEST 001 preserves supported satellite state change but keeps field causat
   assert.match(bundle.evidence.author_field_report.observations.join(' '), /Starostwo Powiatowe in Kwidzyn/)
 })
 
-test('all published cases receive all three L4 contexts without turning training into ground truth', async () => {
+test('all published cases receive all four L4 contexts without turning training into ground truth', async () => {
   const originalFetch = globalThis.fetch
   globalThis.fetch = async () => {
     throw new Error('network access should not be needed to load bundled evidence')
@@ -143,6 +145,11 @@ test('all published cases receive all three L4 contexts without turning training
       assert.equal(bundle.l4_research_context.training_2.ground_truth_claim, false)
       assert.equal(bundle.l4_research_context.training_3.ground_truth_claim, false)
       assert.equal(bundle.l4_research_context.training_3.streamed_windows, 200016)
+      assert.equal(bundle.l4_research_context.training_4.ground_truth_claim, false)
+      assert.equal(bundle.l4_research_context.training_4.unique_real_scientific_pairs, 95)
+      assert.equal(bundle.l4_research_context.training_4.validation_pairs, 9)
+      assert.equal(bundle.l4_research_context.training_4.steps, 9561)
+      assert.equal(bundle.l4_research_context.training_4.checkpoint_loaded_by_worker, false)
     }
   } finally {
     globalThis.fetch = originalFetch

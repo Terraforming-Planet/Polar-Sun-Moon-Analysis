@@ -70,6 +70,15 @@ export type AreaAnalysisResult = {
   what_is_visible: string
   change_over_time: string
   water_assessment: string
+  hydrology_screening?: {
+    water_change_state: 'VISIBLE_WATER_REDUCTION_CANDIDATE' | 'VISIBLE_WATER_INCREASE_CANDIDATE' | 'NO_VISIBLE_CHANGE_ESTABLISHED' | 'INSUFFICIENT_EVIDENCE'
+    temporal_basis: string
+    inflow_outflow_status: 'VISIBLE_CANDIDATES' | 'NO_CANDIDATE_VISIBLE' | 'INSUFFICIENT_EVIDENCE'
+    candidate_features: string[]
+    main_and_tributary_context: string
+    required_checks: string[]
+    cause_status: 'NOT_ESTABLISHED_FROM_SUPPLIED_EVIDENCE'
+  }
   notable_features: string[]
   confidence: { level: 'low' | 'medium' | 'high'; reason: string }
   limitations: string[]
@@ -88,7 +97,13 @@ export type AreaAnalysisResponse = {
   period: { start_date: string; end_date: string }
   depth: 'quick' | 'deep'
   preview_images: Array<{ date: string; source: string; url: string }>
+  analysis_images?: Array<{ date: string; source: string; url: string }>
   ai_visual_image_count: number
+  analysis_protocol?: {
+    usage: string
+    training_3: { streamed_windows: number; research_region_count: number; environmental_ground_truth: false }
+    training_4: { unique_real_scientific_pairs: number; validation_pairs: number; steps: number; checkpoint_loaded_by_worker: false; environmental_ground_truth: false }
+  }
   landsat_catalog: {
     matched: number
     returned: number

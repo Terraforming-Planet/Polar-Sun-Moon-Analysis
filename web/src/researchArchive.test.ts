@@ -137,6 +137,19 @@ describe('researchArchive', () => {
     expect(parsed[0].id).toBe(finding.id)
   })
 
+  it('rejects a partial finding that would crash the archive after its delayed load', () => {
+    const partial = {
+      schema: 'terra-research-finding/v1',
+      id: 'partial-finding',
+      title: 'Incomplete old record',
+      privacy_note: 'raw-chat-not-included',
+      source_images: [],
+      conclusion: {},
+    }
+
+    expect(parseLocalResearchFindings(JSON.stringify([partial]))).toEqual([])
+  })
+
   it('stores an assistant answer without ever storing the matching user prompt', () => {
     const record = buildAssistantAnswerRecord({
       answer: 'The assistant found two candidate channels that require DEM verification.',

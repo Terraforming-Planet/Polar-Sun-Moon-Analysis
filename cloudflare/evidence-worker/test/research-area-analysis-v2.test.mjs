@@ -16,6 +16,15 @@ function validAnalysis() {
     what_is_visible: 'The supplied images show terrain, water and differences in surface cover.',
     change_over_time: 'Dated NASA samples show differences between years; Copernicus provides newer higher-detail context.',
     water_assessment: 'Visible water requires matched-season comparison before claiming a persistent change.',
+    hydrology_screening: {
+      water_change_state: 'INSUFFICIENT_EVIDENCE',
+      temporal_basis: 'The supplied dates are not a complete matched-season series.',
+      inflow_outflow_status: 'VISIBLE_CANDIDATES',
+      candidate_features: ['water channel candidate near the visible waterbody'],
+      main_and_tributary_context: 'The main waterbody is visible, but tributary connectivity and flow direction are not established.',
+      required_checks: ['Verify official hydrography and DEM flow direction.', 'Measure inlet and outlet discharge in the field.'],
+      cause_status: 'NOT_ESTABLISHED_FROM_SUPPLIED_EVIDENCE',
+    },
     notable_features: ['water channel', 'exposed sediment', 'vegetation differences'],
     confidence: { level: 'medium', reason: 'Several dated images and the Landsat catalogue are available, but a complete matched-season series is not.' },
     limitations: ['Optical imagery can be affected by cloud cover.', 'Sentinel WMS request window is not an asserted exact acquisition time.'],
@@ -47,6 +56,11 @@ test('production research analyze route preflights official imagery and sends va
       assert.match(body.instructions, /substantially detailed answer/)
       assert.match(body.instructions, /three evidence classes/i)
       assert.match(body.instructions, /Respond in English/)
+      assert.match(body.instructions, /main channel or waterbody together with side tributaries/i)
+      assert.ok(body.text.format.schema.required.includes('hydrology_screening'))
+      const metadataText = body.input[0].content.find(item => item.type === 'input_text').text
+      assert.match(metadataText, /unique_real_scientific_pairs/)
+      assert.match(metadataText, /AUDIT_PROTOCOL_ONLY_NOT_RUNTIME_CHECKPOINT/)
       const images = body.input[0].content.filter(item => item.type === 'input_image')
       assert.ok(images.length >= 2)
       assert.ok(images.length <= 4)
@@ -82,6 +96,9 @@ test('production research analyze route preflights official imagery and sends va
     assert.match(payload.evidence_policy, /Worker image preflight/)
     assert.equal(payload.gallery_policy.simple_display_limit, 4)
     assert.equal(payload.gallery_policy.advanced_display_limit, 8)
+    assert.equal(payload.analysis.hydrology_screening.cause_status, 'NOT_ESTABLISHED_FROM_SUPPLIED_EVIDENCE')
+    assert.equal(payload.analysis_protocol.training_4.unique_real_scientific_pairs, 95)
+    assert.equal(payload.analysis_protocol.training_4.checkpoint_loaded_by_worker, false)
     assert.equal(JSON.stringify(payload).includes('test-secret-not-real'), false)
     assert.equal(upstreams.filter(item => item === 'https://api.openai.com/v1/responses').length, 1)
 

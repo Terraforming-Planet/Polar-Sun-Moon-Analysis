@@ -84,6 +84,102 @@ export const LOCAL_ASSISTANT_ANSWERS_KEY = 'terra-ai-assistant-answers-v1'
 const ASSISTANT_ANSWER_KEYS = new Set(['schema', 'id', 'saved_at_utc', 'place', 'model', 'answer', 'privacy_note'])
 const ASSISTANT_PLACE_KEYS = new Set(['label', 'latitude', 'longitude'])
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value && typeof value === 'object' && !Array.isArray(value))
+}
+
+function isFiniteNumber(value: unknown, minimum = Number.NEGATIVE_INFINITY, maximum = Number.POSITIVE_INFINITY) {
+  return typeof value === 'number' && Number.isFinite(value) && value >= minimum && value <= maximum
+}
+
+function isStringArray(value: unknown) {
+  return Array.isArray(value) && value.every(item => typeof item === 'string')
+}
+
+function isDateText(value: unknown) {
+  return typeof value === 'string' && value.length >= 10 && Number.isFinite(Date.parse(value))
+}
+
+function isResearchArea(value: unknown) {
+  if (!isRecord(value)) return false
+  return (value.place_name === null || typeof value.place_name === 'string')
+    && isFiniteNumber(value.latitude, -90, 90)
+    && isFiniteNumber(value.longitude, -180, 180)
+    && isFiniteNumber(value.radius_km, 0, 2500)
+}
+
+function isPeriod(value: unknown) {
+  return isRecord(value)
+    && isDateText(value.start_date)
+    && isDateText(value.end_date)
+    && String(value.start_date) <= String(value.end_date)
+}
+
+function isAnalysisConclusion(value: unknown) {
+  if (!isRecord(value) || !isRecord(value.confidence)) return false
+  const hydrology = value.hydrology_screening
+  const hydrologyValid = hydrology === undefined || (
+    isRecord(hydrology)
+    && ['VISIBLE_WATER_REDUCTION_CANDIDATE', 'VISIBLE_WATER_INCREASE_CANDIDATE', 'NO_VISIBLE_CHANGE_ESTABLISHED', 'INSUFFICIENT_EVIDENCE'].includes(String(hydrology.water_change_state))
+    && typeof hydrology.temporal_basis === 'string'
+    && ['VISIBLE_CANDIDATES', 'NO_CANDIDATE_VISIBLE', 'INSUFFICIENT_EVIDENCE'].includes(String(hydrology.inflow_outflow_status))
+    && isStringArray(hydrology.candidate_features)
+    && typeof hydrology.main_and_tributary_context === 'string'
+    && isStringArray(hydrology.required_checks)
+    && hydrology.cause_status === 'NOT_ESTABLISHED_FROM_SUPPLIED_EVIDENCE'
+  )
+  return hydrologyValid
+    && typeof value.headline === 'string'
+    && typeof value.what_is_visible === 'string'
+    && typeof value.change_over_time === 'string'
+    && typeof value.water_assessment === 'string'
+    && isStringArray(value.notable_features)
+    && ['low', 'medium', 'high'].includes(String(value.confidence.level))
+    && typeof value.confidence.reason === 'string'
+    && isStringArray(value.limitations)
+    && typeof value.recommended_next_step === 'string'
+}
+
+function isSourceImage(value: unknown) {
+  return isRecord(value)
+    && isDateText(value.date)
+    && typeof value.source === 'string'
+    && typeof value.url === 'string'
+    && /^https:\/\//.test(value.url)
+}
+
+function isLandsatScene(value: unknown) {
+  return isRecord(value)
+    && typeof value.id === 'string'
+    && (value.date === null || isDateText(value.date))
+    && (value.platform === null || typeof value.platform === 'string')
+    && (value.cloud_cover === null || isFiniteNumber(value.cloud_cover, 0, 100))
+}
+
+function isLandsatArchive(value: unknown) {
+  return isRecord(value)
+    && isFiniteNumber(value.matched, 0)
+    && Array.isArray(value.scenes)
+    && value.scenes.every(isLandsatScene)
+    && (value.full_catalog_url === null || (typeof value.full_catalog_url === 'string' && /^https:\/\//.test(value.full_catalog_url)))
+}
+
+function safeLocalStorageRead(key: string) {
+  try {
+    return window.localStorage.getItem(key)
+  } catch {
+    return null
+  }
+}
+
+function safeLocalStorageWrite(key: string, value: unknown) {
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value))
+  } catch {
+    throw new Error('Local research archive is unavailable, blocked or full.')
+  }
+}
+
 function finiteNumber(value: number, label: string) {
   if (!Number.isFinite(value)) throw new Error(`${label} must be a number.`)
   return value
@@ -161,6 +257,13 @@ export function buildResearchFindingRecord(analysis: AreaAnalysisResponse, now =
       notable_features: [...analysis.analysis.notable_features],
       limitations: [...analysis.analysis.limitations],
       confidence: { ...analysis.analysis.confidence },
+      ...(analysis.analysis.hydrology_screening ? {
+        hydrology_screening: {
+          ...analysis.analysis.hydrology_screening,
+          candidate_features: [...analysis.analysis.hydrology_screening.candidate_features],
+          required_checks: [...analysis.analysis.hydrology_screening.required_checks],
+        },
+      } : {}),
     },
     evidence_policy: analysis.evidence_policy,
     privacy_note: 'raw-chat-not-included',
@@ -196,13 +299,22 @@ export function parseLocalResearchArchive(raw: string | null): ResearchManifest[
     const parsed = JSON.parse(raw) as unknown
     if (!Array.isArray(parsed)) return []
     return parsed.filter((item): item is ResearchManifest => {
-      if (!item || typeof item !== 'object') return false
-      const candidate = item as Partial<ResearchManifest>
-      return candidate.schema === 'terra-research-manifest/v1'
-        && typeof candidate.id === 'string'
-        && typeof candidate.title === 'string'
-        && candidate.status === 'draft'
-        && candidate.evidence_policy === 'official-public-only'
+      if (!isRecord(item) || !isRecord(item.area) || !isRecord(item.temporal_scope)) return false
+      return item.schema === 'terra-research-manifest/v1'
+        && typeof item.id === 'string'
+        && typeof item.created_at_utc === 'string'
+        && typeof item.title === 'string'
+        && item.status === 'draft'
+        && item.evidence_policy === 'official-public-only'
+        && item.area.type === 'point-radius'
+        && isFiniteNumber(item.area.latitude, -90, 90)
+        && isFiniteNumber(item.area.longitude, -180, 180)
+        && isFiniteNumber(item.area.radius_km, 0, 2500)
+        && isDateText(item.temporal_scope.start_date)
+        && isDateText(item.temporal_scope.end_date)
+        && String(item.temporal_scope.start_date) <= String(item.temporal_scope.end_date)
+        && isStringArray(item.analyses)
+        && typeof item.notes === 'string'
     })
   } catch {
     return []
@@ -215,14 +327,20 @@ export function parseLocalResearchFindings(raw: string | null): ResearchFindingR
     const parsed = JSON.parse(raw) as unknown
     if (!Array.isArray(parsed)) return []
     return parsed.filter((item): item is ResearchFindingRecord => {
-      if (!item || typeof item !== 'object') return false
-      const candidate = item as Partial<ResearchFindingRecord>
-      return candidate.schema === 'terra-research-finding/v1'
-        && candidate.privacy_note === 'raw-chat-not-included'
-        && typeof candidate.id === 'string'
-        && typeof candidate.title === 'string'
-        && Array.isArray(candidate.source_images)
-        && Boolean(candidate.conclusion)
+      if (!isRecord(item)) return false
+      return item.schema === 'terra-research-finding/v1'
+        && item.privacy_note === 'raw-chat-not-included'
+        && typeof item.id === 'string'
+        && isDateText(item.saved_at_utc)
+        && typeof item.title === 'string'
+        && isResearchArea(item.area)
+        && isPeriod(item.period)
+        && ['quick', 'deep'].includes(String(item.depth))
+        && Array.isArray(item.source_images)
+        && item.source_images.every(isSourceImage)
+        && isLandsatArchive(item.landsat_catalog)
+        && isAnalysisConclusion(item.conclusion)
+        && typeof item.evidence_policy === 'string'
     })
   } catch {
     return []
@@ -269,53 +387,53 @@ export function parseLocalAssistantAnswers(raw: string | null): ResearchAssistan
 
 export function loadLocalResearchArchive(): ResearchManifest[] {
   if (typeof window === 'undefined') return []
-  return parseLocalResearchArchive(window.localStorage.getItem(LOCAL_RESEARCH_ARCHIVE_KEY))
+  return parseLocalResearchArchive(safeLocalStorageRead(LOCAL_RESEARCH_ARCHIVE_KEY))
 }
 
 export function loadLocalResearchFindings(): ResearchFindingRecord[] {
   if (typeof window === 'undefined') return []
-  return parseLocalResearchFindings(window.localStorage.getItem(LOCAL_RESEARCH_FINDINGS_KEY))
+  return parseLocalResearchFindings(safeLocalStorageRead(LOCAL_RESEARCH_FINDINGS_KEY))
 }
 
 export function loadLocalAssistantAnswers(): ResearchAssistantAnswerRecord[] {
   if (typeof window === 'undefined') return []
-  return parseLocalAssistantAnswers(window.localStorage.getItem(LOCAL_ASSISTANT_ANSWERS_KEY))
+  return parseLocalAssistantAnswers(safeLocalStorageRead(LOCAL_ASSISTANT_ANSWERS_KEY))
 }
 
 export function saveResearchManifestLocally(manifest: ResearchManifest) {
   if (typeof window === 'undefined') return
   const current = loadLocalResearchArchive().filter(item => item.id !== manifest.id)
-  window.localStorage.setItem(LOCAL_RESEARCH_ARCHIVE_KEY, JSON.stringify([manifest, ...current]))
+  safeLocalStorageWrite(LOCAL_RESEARCH_ARCHIVE_KEY, [manifest, ...current].slice(0, 50))
 }
 
 export function saveResearchFindingLocally(finding: ResearchFindingRecord) {
   if (typeof window === 'undefined') return
   const current = loadLocalResearchFindings().filter(item => item.id !== finding.id)
-  window.localStorage.setItem(LOCAL_RESEARCH_FINDINGS_KEY, JSON.stringify([finding, ...current].slice(0, 30)))
+  safeLocalStorageWrite(LOCAL_RESEARCH_FINDINGS_KEY, [finding, ...current].slice(0, 30))
 }
 
 export function saveAssistantAnswerLocally(answer: ResearchAssistantAnswerRecord) {
   if (typeof window === 'undefined') return
   const current = loadLocalAssistantAnswers().filter(item => item.id !== answer.id)
-  window.localStorage.setItem(LOCAL_ASSISTANT_ANSWERS_KEY, JSON.stringify([answer, ...current].slice(0, 50)))
+  safeLocalStorageWrite(LOCAL_ASSISTANT_ANSWERS_KEY, [answer, ...current].slice(0, 50))
 }
 
 export function deleteResearchManifestLocally(id: string) {
   if (typeof window === 'undefined') return
   const next = loadLocalResearchArchive().filter(item => item.id !== id)
-  window.localStorage.setItem(LOCAL_RESEARCH_ARCHIVE_KEY, JSON.stringify(next))
+  safeLocalStorageWrite(LOCAL_RESEARCH_ARCHIVE_KEY, next)
 }
 
 export function deleteResearchFindingLocally(id: string) {
   if (typeof window === 'undefined') return
   const next = loadLocalResearchFindings().filter(item => item.id !== id)
-  window.localStorage.setItem(LOCAL_RESEARCH_FINDINGS_KEY, JSON.stringify(next))
+  safeLocalStorageWrite(LOCAL_RESEARCH_FINDINGS_KEY, next)
 }
 
 export function deleteAssistantAnswerLocally(id: string) {
   if (typeof window === 'undefined') return
   const next = loadLocalAssistantAnswers().filter(item => item.id !== id)
-  window.localStorage.setItem(LOCAL_ASSISTANT_ANSWERS_KEY, JSON.stringify(next))
+  safeLocalStorageWrite(LOCAL_ASSISTANT_ANSWERS_KEY, next)
 }
 
 function downloadJson(filename: string, value: unknown) {

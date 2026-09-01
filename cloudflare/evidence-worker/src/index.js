@@ -76,6 +76,32 @@ const COMMON_L4_CONTEXT = {
     ground_truth_claim: false,
     causal_environmental_claim: false,
   },
+  training_4: {
+    run_id: 'training-004-20260828',
+    title: 'NVIDIA L4 Multi-Sensor Temporal Pair Training',
+    short_label: 'L4 Training #4',
+    public_page: `${UI_URL}research/training-004/`,
+    source_path: 'web/public/research/training-004/summary.json',
+    evidence_class: 'DERIVED_VALUE',
+    schema: 'terra-training-004-public-evidence-v1',
+    gpu: 'NVIDIA L4',
+    backend: 'cuda',
+    objective: 'masked eight-channel before/after reconstruction plus derived change head',
+    unique_real_scientific_pairs: 95,
+    training_exposures: 1223808,
+    validation_pairs: 9,
+    steps: 9561,
+    elapsed_seconds: 3600.281,
+    checkpoint_sha256: 'a8962b45fcf848c1b35d527b421a1ed92f642a06b603c87c834f690aea4a8051',
+    checkpoint_loaded_by_worker: false,
+    training_completed: true,
+    generated_satellite_pixels: false,
+    environmental_ground_truth: false,
+    ground_truth_claim: false,
+    scientific_finding_claim: false,
+    causal_environmental_claim: false,
+    note: 'Repeated augmented exposures are not independent satellite observations. The Worker uses this run as protocol context only and does not load its checkpoint.',
+  },
 }
 
 function integrityEvidence({ test, area, extent, acceptedCount, sourceRef, sourcePath, extra = {} }) {
@@ -349,6 +375,8 @@ export function listTrainingContext() {
       summary = `${item.samples_seen.toLocaleString('en-US')} sampled patches · ${item.source_images} source images · ${Math.round(item.elapsed_seconds / 60)} min · best loss ${item.loss_best}`
     } else if (trainingId === 'training_2') {
       summary = `${item.unique_images} unique images · ${item.gpu_audited_images} GPU-audited · ${item.unreadable_images} unreadable`
+    } else if (trainingId === 'training_4') {
+      summary = `${item.unique_real_scientific_pairs} real temporal pairs · ${item.validation_pairs} validation pairs · ${item.steps.toLocaleString('en-US')} optimization steps · checkpoint not loaded by Worker`
     } else {
       summary = `${item.streamed_windows.toLocaleString('en-US')} streamed windows · ${item.unique_content_sha256.toLocaleString('en-US')} unique content hashes · ${item.research_region_count} regions`
     }

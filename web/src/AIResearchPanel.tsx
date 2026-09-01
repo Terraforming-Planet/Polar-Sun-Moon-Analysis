@@ -5,6 +5,7 @@ import './research-findings.css'
 import './simple-mode-resources.css'
 import { AdvancedLegacyPanel } from './AdvancedLegacyPanel'
 import { EvidenceExplainer } from './EvidenceExplainer'
+import { ResearchArchiveErrorBoundary } from './ResearchArchiveErrorBoundary'
 import { ResearchArchivePanel } from './ResearchArchivePanel'
 import { ResearchAreaBuilder } from './ResearchAreaBuilder'
 import { SatelliteTimeSelector } from './SatelliteTimeSelector'
@@ -108,31 +109,33 @@ export function AIResearchPanel({ simpleOnly = false }: { simpleOnly?: boolean }
       <div className="research-policy-strip">
         <span><b>Published tests:</b> 16</span>
         <span><b>OpenAI evidence:</b> {cases.length || 'loading…'}</span>
-        <span><b>NVIDIA L4:</b> Training #1 + #2 + #3</span>
+        <span><b>NVIDIA L4:</b> Training #1 + #2 + #3 + #4</span>
         <span><b>Rule:</b> evidence before claims</span>
       </div>
 
       <details className="research-training-context">
-        <summary><span><small>NVIDIA L4 · PUBLIC RESEARCH CONTEXT</small><b>Three published AI training runs</b></span><em>Training ≠ ground truth · expand</em></summary>
-        <p className="muted">Each approved test analysis receives the shared context of the three published NVIDIA L4 training runs. Training metrics describe learning and data pipelines; they are not automatically evidence of environmental change.</p>
+        <summary><span><small>NVIDIA L4 · PUBLIC RESEARCH CONTEXT</small><b>Four published AI training runs</b></span><em>Training ≠ ground truth · expand</em></summary>
+        <p className="muted">Each approved test analysis receives the shared context of four published NVIDIA L4 training runs. Training metrics describe learning and data pipelines; they are not automatically evidence of environmental change.</p>
         <div className="research-training-list">
           {trainings.map(item => <article key={item.training_id}>
             <span className="evidence-badge derived">{item.short_label}</span>
             <div><h3>{item.title}</h3><p>{item.gpu} · {item.summary}</p></div>
             <a className="button-link compact" href={item.public_page}>Report</a>
           </article>)}
-          {!trainings.length && endpoint && !error && <p className="muted">Loading Training #1, #2 and #3…</p>}
+          {!trainings.length && endpoint && !error && <p className="muted">Loading Training #1, #2, #3 and #4…</p>}
         </div>
         <span className="evidence-badge derived">TRAINING ≠ GROUND TRUTH</span>
       </details>
     </>}
 
-    {activeView === 'archive' && <ResearchArchivePanel
-      aiCaseIds={aiCaseIds}
-      selectedAiCaseId={selectedId}
-      onSelectAiCase={setSelectedId}
-      onOpenExplainer={() => setActiveView('explain')}
-    />}
+    {activeView === 'archive' && <ResearchArchiveErrorBoundary>
+      <ResearchArchivePanel
+        aiCaseIds={aiCaseIds}
+        selectedAiCaseId={selectedId}
+        onSelectAiCase={setSelectedId}
+        onOpenExplainer={() => setActiveView('explain')}
+      />
+    </ResearchArchiveErrorBoundary>}
 
     {activeView === 'explain' && <section className="research-explainer-view">
       <div className="research-section-head">

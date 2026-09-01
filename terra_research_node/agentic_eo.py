@@ -13,6 +13,9 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 SOURCE_REGISTRY_PATH = REPO_ROOT / "terra_hazards" / "data_sources.json"
 
 EVIDENCE_CASES = {
+    "test-001-forest-pond-kuchnia": (
+        REPO_ROOT / "docs" / "evidence" / "test-001-forest-pond-kuchnia.json"
+    ),
     "vistula-test-014": REPO_ROOT / "docs" / "evidence" / "test-014-vistula-real-data-context.json",
 }
 
@@ -24,6 +27,9 @@ TRAINING_CONTEXTS = {
         / "training-runs"
         / "stream_gibs_20260820T013036Z"
         / "analysis.json"
+    ),
+    "training-004-20260828": (
+        REPO_ROOT / "web" / "public" / "research" / "training-004" / "summary.json"
     ),
 }
 
@@ -61,6 +67,27 @@ def select_vistula_sources_data() -> list[dict[str, Any]]:
             if isinstance(source_id, str):
                 selected[source_id] = source
     return list(selected.values())
+
+
+def select_water_system_sources_data() -> list[dict[str, Any]]:
+    """Select complementary sources for water extent, flow context and water balance."""
+    selected: dict[str, dict[str, Any]] = {}
+    for phenomenon in (
+        "surface_water",
+        "water_extent",
+        "river_channel",
+        "water_surface_elevation",
+        "surface_soil_moisture",
+        "terrestrial_water_storage",
+        "groundwater_anomaly",
+    ):
+        for source in search_eo_sources_data(phenomenon):
+            source_id = source.get("id")
+            if isinstance(source_id, str):
+                selected[source_id] = source
+    matches = list(selected.values())
+    validate_registry_provenance(matches)
+    return matches
 
 
 def validate_registry_provenance(matches: list[dict[str, Any]]) -> None:
@@ -144,7 +171,52 @@ def load_training_context_data(context_id: str) -> dict[str, Any]:
         "failure_log_lines": cross_checks.get("failure_log_lines"),
         "earliest_observation_date": coverage.get("earliest_observation_date"),
         "latest_observation_date": coverage.get("latest_observation_date"),
+        "unique_real_scientific_pairs": payload.get("unique_real_scientific_pairs"),
+        "validation_pairs": payload.get("validation_pairs"),
+        "optimization_steps": payload.get("steps"),
+        "objective": payload.get("objective"),
+        "environmental_ground_truth": payload.get("environmental_ground_truth") is True,
+        "checkpoint_loaded_by_runtime": False,
         "findings": payload.get("findings", []),
+    }
+
+
+def build_water_system_investigation_plan_data(case_id: str) -> dict[str, Any]:
+    """Build a claim-safe plan for main channels, tributaries, inflows and outflows."""
+    evidence = load_evidence_case_data(case_id)
+    verification = verify_evidence_case_data(case_id)
+    hydrology = evidence.get("hydrology_investigation", {})
+    if not isinstance(hydrology, dict):
+        hydrology = {}
+    sources = select_water_system_sources_data()
+    training_3 = load_training_context_data("stream-gibs-20260820")
+    training_4 = load_training_context_data("training-004-20260828")
+    return {
+        "case_id": case_id,
+        "evidence_class": "INVESTIGATION_PLAN",
+        "state_change_supported": bool(
+            isinstance(evidence.get("satellite_result"), dict)
+            and evidence["satellite_result"].get("state_change_supported") is True
+        ),
+        "water_loss_claim": verification["water_loss_claim"],
+        "causal_claim": verification["causal_claim"],
+        "flow_topology_status": hydrology.get("topology_status", "UNVERIFIED"),
+        "network_priority": hydrology.get(
+            "priority",
+            "Trace main channels, tributaries, inflows and outflows before assigning a cause.",
+        ),
+        "required_checks": hydrology.get("required_checks", []),
+        "registry_source_ids": [source["id"] for source in sources],
+        "training_protocol_context": {
+            "training_3_streamed_windows": training_3["streamed_windows"],
+            "training_4_unique_real_scientific_pairs": training_4[
+                "unique_real_scientific_pairs"
+            ],
+            "training_4_validation_pairs": training_4["validation_pairs"],
+            "runtime_checkpoint_loaded": False,
+            "environmental_ground_truth": False,
+        },
+        "cause": "UNKNOWN until official hydrology, measurements and field verification agree",
     }
 
 
@@ -185,7 +257,8 @@ def load_evidence_case(case_id: str) -> str:
     """Load a real repository-backed EO evidence case with provenance and claim flags.
 
     Args:
-        case_id: Stable case identifier. Currently supported: vistula-test-014.
+        case_id: Stable case identifier. Supported: test-001-forest-pond-kuchnia and
+            vistula-test-014.
     """
     return json.dumps(load_evidence_case_data(case_id), ensure_ascii=False, sort_keys=True)
 
@@ -195,7 +268,8 @@ def verify_evidence_case(case_id: str) -> str:
     """Verify which scientific claims a repository-backed evidence case actually supports.
 
     Args:
-        case_id: Stable case identifier. Currently supported: vistula-test-014.
+        case_id: Stable case identifier. Supported: test-001-forest-pond-kuchnia and
+            vistula-test-014.
     """
     return json.dumps(verify_evidence_case_data(case_id), ensure_ascii=False, sort_keys=True)
 
@@ -207,7 +281,8 @@ def load_training_context(context_id: str) -> str:
     The tool preserves claim flags and never treats training as environmental ground truth.
 
     Args:
-        context_id: Stable training context. Currently supported: stream-gibs-20260820.
+        context_id: Stable training context. Supported: stream-gibs-20260820 and
+            training-004-20260828.
     """
     return json.dumps(load_training_context_data(context_id), ensure_ascii=False, sort_keys=True)
 
@@ -227,6 +302,23 @@ def compare_surface_water_areas(before_km2: float, after_km2: float) -> str:
     )
 
 
+@tool
+def build_water_system_investigation_plan(case_id: str) -> str:
+    """Build a deterministic water-loss investigation plan for a registered evidence case.
+
+    The plan prioritizes the main channel, tributaries, inflows, outflows, ditches, culverts,
+    matched-season water extent, DEM context and field measurements without assigning a cause.
+
+    Args:
+        case_id: Stable repository-backed evidence case identifier.
+    """
+    return json.dumps(
+        build_water_system_investigation_plan_data(case_id),
+        ensure_ascii=False,
+        sort_keys=True,
+    )
+
+
 def build_agentic_eo_system(model: str | None = None) -> Agent:
     """Build a manager-style multi-agent EO research system."""
     resolved_model = model or DEFAULT_AGENT_MODEL
@@ -238,7 +330,9 @@ def build_agentic_eo_system(model: str | None = None) -> Agent:
             "You are a conservative Earth-observation data-source specialist. "
             "The search_eo_sources deterministic registry is the authoritative catalogue for "
             "named source recommendations in this demonstration. Search surface_water, "
-            "water_extent and river_channel when those concepts are relevant. Prefer and name "
+            "water_extent, river_channel, water_surface_elevation, surface_soil_moisture, "
+            "terrestrial_water_storage and groundwater_anomaly when those concepts are "
+            "relevant. Prefer and name "
             "only returned registry sources. If an additional source is scientifically useful, "
             "label it explicitly as an additional non-registry suggestion. "
             "Explain sensor limitations and access requirements. Never claim that a documented "
@@ -254,10 +348,18 @@ def build_agentic_eo_system(model: str | None = None) -> Agent:
             "You verify repository-backed Earth-observation evidence. For project cases, load the "
             "case and then verify its claim flags before making any scientific statement. Training "
             "or optimization metrics are not environmental ground truth. A visible morphology "
-            "candidate is not proof of hydrological cause. If a claim flag is false, say clearly "
+            "candidate is not proof of hydrological cause. For TEST 001 or another registered "
+            "water-loss case, build the deterministic water-system plan and keep the main river, "
+            "tributaries, inflows, outflows, ditches and culverts explicit. If a claim flag "
+            "is false, say clearly "
             "that the corresponding claim is not established."
         ),
-        tools=[load_evidence_case, verify_evidence_case, load_training_context],
+        tools=[
+            load_evidence_case,
+            verify_evidence_case,
+            load_training_context,
+            build_water_system_investigation_plan,
+        ],
     )
 
     coordinator = Agent(
@@ -270,7 +372,10 @@ def build_agentic_eo_system(model: str | None = None) -> Agent:
             "case is relevant. Use deterministic calculations for numeric mapped-area comparisons. "
             "Never invent observations, source IDs, dates, measurements, causes, confidence values "
             "or alerts. Separate OBSERVATION, DERIVED_VALUE, MODEL_ESTIMATE, HYPOTHESIS and "
-            "UNKNOWN. Your final answer must contain: Research question; Tool/agent actions; "
+            "UNKNOWN. For water loss, require a directed network check covering the main channel, "
+            "side tributaries, inflows, outflows, ditches, culverts and upstream/downstream "
+            "measurements before discussing a cause. Your final answer must contain: Research "
+            "question; Tool/agent actions; "
             "Evidence; Uncertainty; Recommended next checks. State explicitly when the available "
             "evidence does not establish an environmental finding or causal mechanism. For named "
             "mission recommendations, prefer the specialist's deterministic registry matches and "
@@ -296,6 +401,7 @@ def build_agentic_eo_system(model: str | None = None) -> Agent:
                 max_turns=5,
             ),
             compare_surface_water_areas,
+            build_water_system_investigation_plan,
         ],
     )
     return coordinator

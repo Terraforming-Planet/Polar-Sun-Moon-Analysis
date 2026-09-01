@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { ResearchDataPreview } from './ResearchDataPreview'
 import {
@@ -34,18 +34,18 @@ export function ResearchArchivePanel({
 }) {
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('all')
-  const [localArchive, setLocalArchive] = useState<ResearchManifest[]>([])
-  const [findings, setFindings] = useState<ResearchFindingRecord[]>([])
-  const [assistantAnswers, setAssistantAnswers] = useState<ResearchAssistantAnswerRecord[]>([])
+  const [localArchive, setLocalArchive] = useState<ResearchManifest[]>(() => loadLocalResearchArchive())
+  const [findings, setFindings] = useState<ResearchFindingRecord[]>(() => loadLocalResearchFindings())
+  const [assistantAnswers, setAssistantAnswers] = useState<ResearchAssistantAnswerRecord[]>(() => loadLocalAssistantAnswers())
   const [expandedLocalId, setExpandedLocalId] = useState<string | null>(null)
   const [expandedFindingId, setExpandedFindingId] = useState<string | null>(null)
+  const [archiveError, setArchiveError] = useState('')
 
   const refreshLocalArchive = () => {
     setLocalArchive(loadLocalResearchArchive())
     setFindings(loadLocalResearchFindings())
     setAssistantAnswers(loadLocalAssistantAnswers())
   }
-  useEffect(refreshLocalArchive, [])
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLocaleLowerCase('en')
@@ -57,20 +57,35 @@ export function ResearchArchivePanel({
   }, [category, query])
 
   const removeLocal = (id: string) => {
-    deleteResearchManifestLocally(id)
-    if (expandedLocalId === id) setExpandedLocalId(null)
-    refreshLocalArchive()
+    try {
+      deleteResearchManifestLocally(id)
+      if (expandedLocalId === id) setExpandedLocalId(null)
+      setArchiveError('')
+      refreshLocalArchive()
+    } catch (reason) {
+      setArchiveError(reason instanceof Error ? reason.message : String(reason))
+    }
   }
 
   const removeFinding = (id: string) => {
-    deleteResearchFindingLocally(id)
-    if (expandedFindingId === id) setExpandedFindingId(null)
-    refreshLocalArchive()
+    try {
+      deleteResearchFindingLocally(id)
+      if (expandedFindingId === id) setExpandedFindingId(null)
+      setArchiveError('')
+      refreshLocalArchive()
+    } catch (reason) {
+      setArchiveError(reason instanceof Error ? reason.message : String(reason))
+    }
   }
 
   const removeAssistantAnswer = (id: string) => {
-    deleteAssistantAnswerLocally(id)
-    refreshLocalArchive()
+    try {
+      deleteAssistantAnswerLocally(id)
+      setArchiveError('')
+      refreshLocalArchive()
+    } catch (reason) {
+      setArchiveError(reason instanceof Error ? reason.message : String(reason))
+    }
   }
 
   return <section className="research-archive" aria-label="Terra Observation research archive">
@@ -79,6 +94,7 @@ export function ResearchArchivePanel({
       <span className="evidence-badge observation">16 PUBLISHED TESTS</span>
     </div>
     <p className="muted">Each published test has a stable number and public report. The OpenAI registry is intentionally narrower: only tests with an approved evidence package can be sent to the Explainer.</p>
+    {archiveError && <p className="notice" role="alert"><b>Local archive:</b> {archiveError}</p>}
 
     <div className="research-archive-toolbar">
       <label className="research-field">Search<input value={query} onChange={event => setQuery(event.target.value)} placeholder="e.g. Vistula, lake, Himalayas…" /></label>
@@ -158,6 +174,7 @@ export function ResearchArchivePanel({
               <article><small>CHANGE</small><p>{item.conclusion.change_over_time}</p></article>
               <article><small>WATER / TERRAIN</small><p>{item.conclusion.water_assessment}</p></article>
               <article><small>CONFIDENCE</small><p>{item.conclusion.confidence.level} · {item.conclusion.confidence.reason}</p></article>
+              {item.conclusion.hydrology_screening && <article><small>INFLOWS / OUTFLOWS</small><p><b>{item.conclusion.hydrology_screening.water_change_state}</b><br />{item.conclusion.hydrology_screening.main_and_tributary_context}</p></article>}
             </div>
             {item.source_images.length > 0 && <div className="research-finding-images">{item.source_images.map(image => <figure key={`${image.date}-${image.source}`}><a href={image.url} target="_blank" rel="noreferrer"><img src={image.url} alt={`${image.source} ${image.date}`} loading="lazy" /></a><figcaption><b>{image.date}</b><span>{image.source}</span></figcaption></figure>)}</div>}
             <p className="muted"><b>Privacy:</b> {item.privacy_note === 'raw-chat-not-included' ? 'raw chat and user prompts were not stored.' : item.privacy_note}</p>
