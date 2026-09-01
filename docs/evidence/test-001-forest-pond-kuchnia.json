@@ -1,0 +1,59 @@
+{
+  "schema": "terra-test001-agent-evidence-v1",
+  "case_id": "test-001-forest-pond-kuchnia",
+  "area": "Forest pond near Lake Kuchnia / Olszowka-Gardeja study area, Poland",
+  "temporal_scope": {
+    "start_year": 1990,
+    "end_year": 2026,
+    "seasons": ["spring", "autumn"]
+  },
+  "integrity": {
+    "record_count": 73,
+    "accepted_count": 73,
+    "per_record_provenance_fields": [
+      "year",
+      "season",
+      "date",
+      "platform",
+      "item_id",
+      "source_scene_key",
+      "sha256"
+    ]
+  },
+  "satellite_result": {
+    "evidence_class": "DERIVED_VALUE",
+    "state_change_supported": true,
+    "historical_persistent_footprint_m2": 17722.2,
+    "historical_persistent_footprint_ha": 1.7722,
+    "repeat_supported_range_m2": [16269.3, 21642.0],
+    "broad_historical_upper_envelope_m2": 23978.3,
+    "exact_2026_open_water_area_published": false,
+    "exact_loss_percent_published": false,
+    "cause_established": false
+  },
+  "hydrology_investigation": {
+    "topology_status": "UNVERIFIED",
+    "priority": "Trace the pond and Lake Kuchnia through verified main channels, side tributaries, inflows, outflows, ditches, culverts and water-management structures before assigning a cause.",
+    "candidate_public_chain": "Lake Kuchnia -> Gardega -> Osa",
+    "candidate_chain_status": "public description pending official geometry, elevation and flow-direction verification",
+    "required_checks": [
+      "Load official Hydroportal or equivalent public hydrography for the AOI.",
+      "Build a directed graph of the main river, tributaries, lake inlets, lake outlets, ditches, culverts and control structures.",
+      "Use DEM profiles only as flow-direction context and verify low-relief areas in the field.",
+      "Compare matched-season water extent across years with sensor harmonization and uncertainty.",
+      "Check discharge or stage upstream and downstream together with precipitation, evapotranspiration, groundwater and soil moisture.",
+      "Inspect suspected restrictions or damaged drainage structures in the field before assigning causation."
+    ]
+  },
+  "evidence_class": "MIXED_SATELLITE_AND_AUTHOR_FIELD_CONTEXT",
+  "environmental_finding_claim": true,
+  "water_loss_claim": false,
+  "causal_claim": false,
+  "scientific_finding_claim": true,
+  "limitations": [
+    "The satellite record supports a state change of the historically persistent visible pond footprint, not a published exact 2026 open-water area or loss percentage.",
+    "The visible state change does not establish whether inflow loss, outflow change, obstruction, groundwater, precipitation, evapotranspiration, vegetation or another process caused it.",
+    "Training metrics and optimization losses are not environmental ground truth.",
+    "Official hydrological geometry, field measurements and independently verified infrastructure records are still required."
+  ]
+}

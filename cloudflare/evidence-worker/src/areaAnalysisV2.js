@@ -20,6 +20,27 @@ const ALLOWED_FIELDS = new Set(['latitude', 'longitude', 'radius_km', 'start_dat
 const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp'])
 const DEFAULT_CDSE_INSTANCE = 'd708f736-b553-4328-9b5e-39bdb444790c'
 
+export const L4_WATER_PROTOCOL_CONTEXT = {
+  usage: 'AUDIT_PROTOCOL_ONLY_NOT_RUNTIME_CHECKPOINT_OR_ENVIRONMENTAL_GROUND_TRUTH',
+  training_3: {
+    run_id: 'stream_gibs_20260820T013036Z',
+    streamed_windows: 200016,
+    research_region_count: 75,
+    contribution: 'large-scale temporal/source pipeline coverage and provenance checks',
+    environmental_ground_truth: false,
+  },
+  training_4: {
+    schema: 'terra-training-004-public-evidence-v1',
+    unique_real_scientific_pairs: 95,
+    validation_pairs: 9,
+    steps: 9561,
+    objective: 'masked eight-channel before/after reconstruction plus derived change head',
+    contribution: 'before/after comparison protocol and leakage-aware validation requirements',
+    checkpoint_loaded_by_worker: false,
+    environmental_ground_truth: false,
+  },
+}
+
 const ANALYSIS_SCHEMA = {
   type: 'object',
   additionalProperties: false,
@@ -28,6 +49,34 @@ const ANALYSIS_SCHEMA = {
     what_is_visible: { type: 'string' },
     change_over_time: { type: 'string' },
     water_assessment: { type: 'string' },
+    hydrology_screening: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        water_change_state: {
+          type: 'string',
+          enum: [
+            'VISIBLE_WATER_REDUCTION_CANDIDATE',
+            'VISIBLE_WATER_INCREASE_CANDIDATE',
+            'NO_VISIBLE_CHANGE_ESTABLISHED',
+            'INSUFFICIENT_EVIDENCE',
+          ],
+        },
+        temporal_basis: { type: 'string' },
+        inflow_outflow_status: {
+          type: 'string',
+          enum: ['VISIBLE_CANDIDATES', 'NO_CANDIDATE_VISIBLE', 'INSUFFICIENT_EVIDENCE'],
+        },
+        candidate_features: { type: 'array', items: { type: 'string' }, maxItems: 8 },
+        main_and_tributary_context: { type: 'string' },
+        required_checks: { type: 'array', items: { type: 'string' }, maxItems: 10 },
+        cause_status: { type: 'string', enum: ['NOT_ESTABLISHED_FROM_SUPPLIED_EVIDENCE'] },
+      },
+      required: [
+        'water_change_state', 'temporal_basis', 'inflow_outflow_status',
+        'candidate_features', 'main_and_tributary_context', 'required_checks', 'cause_status',
+      ],
+    },
     notable_features: { type: 'array', items: { type: 'string' }, maxItems: 8 },
     confidence: {
       type: 'object',
@@ -42,7 +91,7 @@ const ANALYSIS_SCHEMA = {
     recommended_next_step: { type: 'string' },
   },
   required: [
-    'headline', 'what_is_visible', 'change_over_time', 'water_assessment',
+    'headline', 'what_is_visible', 'change_over_time', 'water_assessment', 'hydrology_screening',
     'notable_features', 'confidence', 'limitations', 'recommended_next_step',
   ],
 }
@@ -58,6 +107,9 @@ NASA GIBS imagery is used for temporal continuity; recent VIIRS is generally mor
 Pre-2000 Landsat catalogue metadata can establish archive availability but is not itself visual inspection. Do not pretend metadata-only years were visually inspected.
 If the metadata says that zero images passed the Worker preflight, explicitly say that no satellite image was visually inspected in this run and keep confidence low.
 When comparing water, distinguish visible water present, visible water reduced/absent in supplied samples, and insufficient evidence. Never claim permanent drying from a small sample.
+For hydrology screening, explicitly inspect the visible main channel or waterbody together with side tributaries, possible inflows, possible outflows, ditches, culverts and road crossings. Compare their visible continuity across supplied dates. Never infer flow direction from colour alone.
+Return a structured hydrology_screening result. Use VISIBLE_WATER_REDUCTION_CANDIDATE only when comparable supplied images visibly support reduction; otherwise use NO_VISIBLE_CHANGE_ESTABLISHED or INSUFFICIENT_EVIDENCE. A candidate inlet, outlet or obstruction remains a visible candidate until DEM, official hydrography, discharge/stage data and field inspection verify it.
+The supplied L4 Training #3 and #4 summaries inform the audit protocol only. This Worker does not load their checkpoint and those training metrics are not environmental ground truth.
 If the imagery is too cloudy, coarse, seasonally mismatched or sparse, say so and lower confidence.
 For the recommended next step, be concrete: suggest matched-season scenes, Sentinel-2/Landsat original products, DEM profiles, hydrology/river-network layers, precipitation/groundwater data, or field verification as appropriate.`
 
@@ -348,6 +400,7 @@ function buildOpenAIRequest(parsed, visuals, landsat, env, visualWarnings = []) 
     landsat_matched_scene_count: landsat.matched,
     landsat_returned_scene_metadata: landsat.scenes,
     pre_2000_visual_limitation: parsed.startDate < GIBS_START,
+    l4_water_protocol_context: L4_WATER_PROTOCOL_CONTEXT,
   }
   return {
     model: typeof env.OPENAI_MODEL === 'string' && env.OPENAI_MODEL.trim() ? env.OPENAI_MODEL.trim() : DEFAULT_MODEL,
@@ -456,6 +509,7 @@ export async function handleAreaAnalysisV2(request, env = {}) {
       visual_preflight_warnings: galleryPreflight.warnings,
       landsat_catalog: landsat,
       analysis,
+      analysis_protocol: L4_WATER_PROTOCOL_CONTEXT,
       gallery_policy: {
         simple_display_limit: 4,
         advanced_display_limit: 8,

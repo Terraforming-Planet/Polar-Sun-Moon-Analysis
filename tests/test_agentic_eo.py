@@ -5,10 +5,12 @@ import pytest
 from terra_research_node.agentic_eo import (
     PublicTraceHooks,
     build_public_trace,
+    build_water_system_investigation_plan_data,
     compare_surface_water_areas_data,
     load_evidence_case_data,
     load_training_context_data,
     search_eo_sources_data,
+    select_water_system_sources_data,
     select_vistula_sources_data,
     specialist_consultations,
     validate_registry_provenance,
@@ -27,6 +29,18 @@ def test_vistula_registry_selection_includes_three_complementary_sources() -> No
     ids = {item["id"] for item in matches}
     assert {"esa-sentinel-1", "esa-sentinel-2", "usgs-landsat"} <= ids
     validate_registry_provenance(matches)
+
+
+def test_water_system_registry_selection_covers_extent_flow_balance_and_storage() -> None:
+    ids = {item["id"] for item in select_water_system_sources_data()}
+    assert {
+        "esa-sentinel-1",
+        "esa-sentinel-2",
+        "usgs-landsat",
+        "nasa-cnes-swot",
+        "nasa-smap",
+        "nasa-grace-fo",
+    } <= ids
 
 
 def test_sentinel_2_registry_metadata_is_scientifically_qualified() -> None:
@@ -107,12 +121,35 @@ def test_vistula_verifier_does_not_promote_unproven_claims() -> None:
     assert report["accepted_count"] == 72
 
 
+def test_test001_plan_prioritizes_inflows_outflows_and_keeps_cause_unknown() -> None:
+    report = build_water_system_investigation_plan_data("test-001-forest-pond-kuchnia")
+    assert report["state_change_supported"] is True
+    assert report["water_loss_claim"] is False
+    assert report["causal_claim"] is False
+    assert report["flow_topology_status"] == "UNVERIFIED"
+    checks = " ".join(report["required_checks"]).lower()
+    assert "main river" in checks
+    assert "tributaries" in checks
+    assert "inlets" in checks
+    assert "outlets" in checks
+    assert report["training_protocol_context"]["training_3_streamed_windows"] == 200016
+    assert report["training_protocol_context"]["training_4_unique_real_scientific_pairs"] == 95
+    assert report["training_protocol_context"]["runtime_checkpoint_loaded"] is False
+
+
 def test_training_context_is_not_ground_truth() -> None:
     report = load_training_context_data("stream-gibs-20260820")
     assert report["streamed_windows"] == 200016
     assert report["scientific_finding_claim"] is False
     assert report["ground_truth_claim"] is False
     assert report["causal_environmental_claim"] is False
+
+    training_4 = load_training_context_data("training-004-20260828")
+    assert training_4["unique_real_scientific_pairs"] == 95
+    assert training_4["validation_pairs"] == 9
+    assert training_4["optimization_steps"] == 9561
+    assert training_4["environmental_ground_truth"] is False
+    assert training_4["checkpoint_loaded_by_runtime"] is False
 
 
 def test_surface_water_change_is_transparent_and_non_causal() -> None:
