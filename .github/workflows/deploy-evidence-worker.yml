@@ -126,7 +126,7 @@ jobs:
               'vistula-test-014',
               'test-015-himalaya-tibet',
           }
-          expected_trainings = {'training_1', 'training_2', 'training_3'}
+          expected_trainings = {'training_1', 'training_2', 'training_3', 'training_4'}
 
           health = json.loads(Path('/tmp/health.json').read_text(encoding='utf-8'))
           assert health.get('service') == 'terra-observation-evidence-explainer'
@@ -141,8 +141,8 @@ jobs:
           assert expected_trainings == trainings
           test001 = next(item for item in payload['cases'] if item.get('case_id') == 'test-001-forest-pond-kuchnia')
           assert test001.get('record_count') == 73
-          assert len(payload.get('training_context', [])) == 3
-          print('Worker health, five-case registry and all three NVIDIA L4 contexts passed; no secret values printed.')
+          assert len(payload.get('training_context', [])) == 4
+          print('Worker health, five-case registry and all four NVIDIA L4 contexts passed; no secret values printed.')
           PY
 
       - name: Verify real OpenAI TEST 001 explanation
@@ -266,7 +266,7 @@ jobs:
             echo '## Terra OpenAI Evidence Worker'
             echo
             echo "- Worker: ${WORKER_URL%/}"
-            echo '- Health + five-case registry + L4 Training #1/#2/#3: passed'
+            echo '- Health + five-case registry + L4 Training #1/#2/#3/#4: passed'
             echo '- Live TEST 001 /explain OpenAI call: passed'
             echo '- OPENAI_API_KEY: stored as Worker secret; value not exposed'
             echo '- Public Worker URL: persisted in config/evidence-worker-url.txt'
