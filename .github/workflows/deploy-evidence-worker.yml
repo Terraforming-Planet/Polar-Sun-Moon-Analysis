@@ -243,9 +243,9 @@ jobs:
                 "https://terraforming-planet.github.io${asset_path}?evidence=${nonce}" > /tmp/site-app.js; then
                 if grep -Fq "$worker_url" /tmp/site-app.js \
                   && grep -Fq 'AI Research' /tmp/site-app.js \
-                  && grep -Fq 'Trzy opublikowane treningi AI' /tmp/site-app.js \
+                  && grep -Fq 'Cztery opublikowane treningi AI' /tmp/site-app.js \
                   && grep -Fq 'Explain selected test with OpenAI' /tmp/site-app.js; then
-                  echo "Public Pages contains exact source revision $expected, TEST registry and three-training AI Research UI."
+                  echo "Public Pages contains exact source revision $expected, TEST registry and four-training AI Research UI."
                   exit 0
                 fi
               fi
