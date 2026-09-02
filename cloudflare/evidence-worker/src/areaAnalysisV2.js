@@ -9,6 +9,8 @@ const HLS_S30_START = '2015-11-28'
 const CMR_GRANULES_URL = 'https://cmr.earthdata.nasa.gov/search/granules.json'
 const MAX_REQUEST_BYTES = 4096
 const MAX_RADIUS_KM = 500
+const MIN_FOCUS_RADIUS_KM = 0.1
+const MAX_FOCUS_RADIUS_KM = 50
 const QUICK_NASA_LIMIT = 7
 const DEEP_NASA_LIMIT = 20
 const QUICK_OPENAI_IMAGE_LIMIT = 4
@@ -23,7 +25,10 @@ const MAX_VISUAL_BYTES = 24 * 1024 * 1024
 const CATALOG_FETCH_TIMEOUT_MS = 25_000
 const VISUAL_FETCH_TIMEOUT_MS = 25_000
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
-const ALLOWED_FIELDS = new Set(['latitude', 'longitude', 'radius_km', 'start_date', 'end_date', 'depth', 'place_name', 'season'])
+const ALLOWED_FIELDS = new Set([
+  'latitude', 'longitude', 'radius_km', 'start_date', 'end_date', 'depth', 'place_name', 'season',
+  'case_id', 'focus_latitude', 'focus_longitude', 'focus_radius_km',
+])
 const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp'])
 const SEASON_WINDOWS = {
   all: ['01-01', '12-31'],
@@ -35,6 +40,70 @@ const SEASON_WINDOWS = {
 const SEASON_REFERENCE = { all: '07-15', spring: '04-15', summer: '07-15', autumn: '10-15', winter: '01-15' }
 const WELD_MONTHLY_YEARS = [1984, 1985, 1986, 1989, 1990, 1991, 1999, 2000, 2001]
 const WELD_MONTH_BY_SEASON = { all: '07-01', spring: '04-01', summer: '07-01', autumn: '10-01', winter: '01-01' }
+const TEST001_CASE_ID = 'test-001-forest-pond-kuchnia'
+const TEST001_EVIDENCE_REVISION = 'b139209dea2aa07414891597ac8aa59a450e1d2d'
+const TEST001_EVIDENCE_ROOT = `https://raw.githubusercontent.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/${TEST001_EVIDENCE_REVISION}/experiments/experiment_001_pond_forest_kuchnia`
+const TEST001_FOCUS = {
+  latitude: 53.594595,
+  longitude: 19.000140,
+  radiusKm: 0.25,
+  requestedFrameWidthM: 500,
+  evidenceCropWidthM: 468.75,
+}
+
+const TEST001_RECORDED_FINDING = {
+  case_id: TEST001_CASE_ID,
+  evidence_revision: TEST001_EVIDENCE_REVISION,
+  target: {
+    name: 'small forest pond west of Lake Kuchnia',
+    latitude: TEST001_FOCUS.latitude,
+    longitude: TEST001_FOCUS.longitude,
+    requested_frame_width_m: TEST001_FOCUS.requestedFrameWidthM,
+    evidence_crop_width_m: TEST001_FOCUS.evidenceCropWidthM,
+    registration: 'SAME_FIXED_GEOGRAPHIC_TARGET',
+  },
+  historical_visible_footprint: {
+    central_m2: 17722.2,
+    central_ha: 1.7722,
+    repeat_supported_range_m2: [16269.3, 21642.0],
+    repeat_supported_range_ha: [1.6269, 2.1642],
+    broad_union_upper_m2: 23978.3,
+    overlap_1990_with_central_consensus_percent: 92.528,
+  },
+  recorded_year_ranking: {
+    most_visible_historical_component_year: 2008,
+    most_visible_historical_component_m2: 20780.8,
+    most_visible_historical_component_ha: 2.0781,
+    least_visible_endpoint_year: 2026,
+    interpretation: '2008 is the largest measured clear historical component in the seven-year fixed-crop series; 2026 is the least-visible endpoint because no comparable persistent dark-water footprint is visible, but its exact residual area is not published.',
+  },
+  state_change: {
+    status: 'NEAR_TOTAL_HISTORICAL_OPEN_WATER_STATE_TRANSITION_STRONGLY_SUPPORTED',
+    approximate_disappeared_historical_footprint_m2: 17722.2,
+    approximate_disappeared_historical_footprint_ha: 1.7722,
+    exact_2026_open_water_area_m2: null,
+    exact_loss_percent: null,
+    cause_status: 'NOT_ESTABLISHED',
+  },
+  alert: {
+    status: 'HIGH_PRIORITY_MONITORING_ANOMALY_REQUIRES_INVESTIGATION',
+    delivery: 'NOT_SENT',
+    field_verification_required: true,
+  },
+  comparison_images: [
+    {
+      year: 2000,
+      role: 'HISTORICAL_FIXED_CROP_WITH_CONSENSUS_OVERLAY',
+      url: `${TEST001_EVIDENCE_ROOT}/measurements_visible_pond_consensus/2000_historical_consensus_overlay.png`,
+    },
+    {
+      year: 2026,
+      role: 'RECENT_FIXED_CROP_WITH_HISTORICAL_CONSENSUS_OVERLAY',
+      url: `${TEST001_EVIDENCE_ROOT}/measurements_visible_pond_consensus/2026_historical_consensus_on_recent_basin.png`,
+    },
+  ],
+  method: 'Deterministic visible-footprint consensus on the same fixed crop; no generative filling or AI super-resolution.',
+}
 
 export const L4_WATER_PROTOCOL_CONTEXT = {
   usage: 'AUDIT_PROTOCOL_ONLY_NOT_RUNTIME_CHECKPOINT_OR_ENVIRONMENTAL_GROUND_TRUTH',
@@ -185,6 +254,8 @@ NASA GIBS imagery is used for temporal continuity; recent VIIRS is generally mor
 Pre-2000 Landsat catalogue metadata can establish archive availability but is not itself visual inspection. Do not pretend metadata-only years were visually inspected.
 If the metadata says that zero images passed the Worker preflight, explicitly say that no satellite image was visually inspected in this run and keep confidence low.
 When comparing water, distinguish visible water present, visible water reduced/absent in supplied samples, and insufficient evidence. Never claim permanent drying from a small sample.
+When a visual_focus is supplied, register every detailed comparison to that exact target and do not substitute a larger nearby lake, river or dark feature. Treat broad MODIS/VIIRS images as regional context only. A smaller display frame improves target framing but never increases the native sensor resolution.
+For CURATED_TEST001_FIXED_CROP images, compare the same approximately 469 m crop around the corrected pond seed. The red polygon is the historical multi-year consensus footprint; it is an overlay, not a current-water mask. The recorded finding may support a near-total state transition while exact 2026 residual area, exact loss percentage and cause remain unknown.
 For hydrology screening, explicitly inspect the visible main channel or waterbody together with side tributaries, possible inflows, possible outflows, ditches, culverts and road crossings. Compare their visible continuity across supplied dates. Never infer flow direction from colour alone.
 Return a structured hydrology_screening result. Use VISIBLE_WATER_REDUCTION_CANDIDATE only when comparable supplied images visibly support reduction; otherwise use NO_VISIBLE_CHANGE_ESTABLISHED or INSUFFICIENT_EVIDENCE. A candidate inlet, outlet or obstruction remains a visible candidate until DEM, official hydrography, discharge/stage data and field inspection verify it.
 Return visible_water_extrema for the exact visually supplied images. Use ESTABLISHED only when the same waterbody is interpretable in at least two genuinely comparable, distinct years. Then report the year with the most and least visible open-water extent among compared_years. This is a qualitative ranking, never an area, volume, depth or causal measurement. If imagery is too coarse, cloudy, seasonally mismatched, sensor-incompatible, or the waterbody cannot be delineated, return INSUFFICIENT_EVIDENCE, null years and explain why. Never use catalogue-only years. For a small forest pond, MODIS/VIIRS alone is insufficient; require native or AOI-rendered Sentinel-2, Landsat or comparable high-resolution evidence.
@@ -269,10 +340,38 @@ function parsePayload(value) {
   const placeName = typeof value.place_name === 'string' ? value.place_name.trim().slice(0, 160) : ''
   const season = value.season === undefined ? inferSeason(start.value, requestedEnd.value) : String(value.season)
   if (!SEASON_WINDOWS[season]) throw new Error('season must be all, spring, summer, autumn or winter.')
+  const caseId = value.case_id === undefined ? null : String(value.case_id)
+  if (caseId !== null && caseId !== TEST001_CASE_ID) throw new Error('case_id is invalid.')
+
+  const requestedFocusLatitude = value.focus_latitude === undefined ? null : Number(value.focus_latitude)
+  const requestedFocusLongitude = value.focus_longitude === undefined ? null : Number(value.focus_longitude)
+  if ((requestedFocusLatitude === null) !== (requestedFocusLongitude === null)) {
+    throw new Error('focus_latitude and focus_longitude must be supplied together.')
+  }
+  if (requestedFocusLatitude !== null && (!Number.isFinite(requestedFocusLatitude) || requestedFocusLatitude < -90 || requestedFocusLatitude > 90)) {
+    throw new Error('focus_latitude is outside WGS84 bounds.')
+  }
+  if (requestedFocusLongitude !== null && (!Number.isFinite(requestedFocusLongitude) || requestedFocusLongitude < -180 || requestedFocusLongitude > 180)) {
+    throw new Error('focus_longitude is outside WGS84 bounds.')
+  }
+  const requestedFocusRadius = value.focus_radius_km === undefined ? null : Number(value.focus_radius_km)
+  if (requestedFocusRadius !== null && (!Number.isFinite(requestedFocusRadius) || requestedFocusRadius < MIN_FOCUS_RADIUS_KM || requestedFocusRadius > MAX_FOCUS_RADIUS_KM)) {
+    throw new Error(`focus_radius_km must be from ${MIN_FOCUS_RADIUS_KM} to ${MAX_FOCUS_RADIUS_KM}.`)
+  }
+
+  const caseFocus = caseId === TEST001_CASE_ID ? TEST001_FOCUS : null
+  const focusLatitude = caseFocus?.latitude ?? requestedFocusLatitude ?? latitude
+  const focusLongitude = caseFocus?.longitude ?? requestedFocusLongitude ?? longitude
+  const focusRadiusKm = caseFocus?.radiusKm ?? requestedFocusRadius ?? radiusKm
   return {
     latitude,
     longitude,
     radiusKm,
+    caseId,
+    focusLatitude,
+    focusLongitude,
+    focusRadiusKm,
+    focusFrameWidthM: focusRadiusKm * 2000,
     startDate: start.value,
     requestedEndDate: requestedEnd.value,
     endDate: end.value,
@@ -388,7 +487,7 @@ function seasonalRange(parsed, year, minimumDate = null) {
 }
 
 function gibsAoiImageUrl(parsed, layer, date, size, format = 'image/jpeg') {
-  const bounds = researchBounds(parsed.latitude, parsed.longitude, Math.max(parsed.radiusKm, 2))
+  const bounds = researchBounds(parsed.focusLatitude, parsed.focusLongitude, parsed.focusRadiusKm)
   const params = new URLSearchParams({
     SERVICE: 'WMS', REQUEST: 'GetMap', VERSION: '1.1.1', LAYERS: layer, STYLES: '',
     FORMAT: format, TRANSPARENT: 'FALSE', SRS: 'EPSG:4326',
@@ -398,8 +497,35 @@ function gibsAoiImageUrl(parsed, layer, date, size, format = 'image/jpeg') {
   return `https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?${params.toString()}`
 }
 
+function test001CuratedFocusImages(parsed) {
+  if (parsed.caseId !== TEST001_CASE_ID) return []
+  const base = `${TEST001_EVIDENCE_ROOT}/measurements_visible_pond_consensus`
+  return [
+    {
+      date: '2000-09-18',
+      source: 'Terra TEST 001 · Landsat-5 fixed-crop historical consensus overlay',
+      url: `${base}/2000_historical_consensus_overlay.png`,
+      high_resolution_aoi: true,
+      evidence_role: 'CURATED_TEST001_FIXED_CROP_HISTORICAL_OVERLAY',
+      nominal_resolution_m: 30,
+      cloud_cover: null,
+      provenance_note: 'Immutable public evidence asset. Same approximately 469 m fixed geographic crop. The red polygon is the multi-year historical consensus footprint, not a current-water classification.',
+    },
+    {
+      date: '2026-08-07',
+      source: 'Terra TEST 001 · Sentinel-2B fixed-crop recent-basin overlay',
+      url: `${base}/2026_historical_consensus_on_recent_basin.png`,
+      high_resolution_aoi: true,
+      evidence_role: 'CURATED_TEST001_FIXED_CROP_RECENT_OVERLAY',
+      nominal_resolution_m: 10,
+      cloud_cover: null,
+      provenance_note: 'Immutable public evidence asset. Same approximately 469 m fixed geographic crop. The red polygon transfers the historical consensus footprint onto the 2026 basin; it does not claim that the polygon is current water.',
+    },
+  ]
+}
+
 function cmrHlsUrl(parsed, range) {
-  const bounds = researchBounds(parsed.latitude, parsed.longitude, parsed.radiusKm)
+  const bounds = researchBounds(parsed.focusLatitude, parsed.focusLongitude, parsed.focusRadiusKm)
   const params = new URLSearchParams({
     short_name: 'HLSS30',
     version: '2.0',
@@ -581,11 +707,13 @@ function selectEvenly(visuals, limit) {
 function selectVisualCandidates(visuals, depth) {
   const limit = depth === 'deep' ? DEEP_OPENAI_IMAGE_LIMIT : QUICK_OPENAI_IMAGE_LIMIT
   if (visuals.length <= limit) return [...visuals]
+  const fixedCropEvidence = visuals.filter(item => String(item.evidence_role ?? '').startsWith('CURATED_TEST001_FIXED_CROP'))
   const highResolution = visuals.filter(item => item.high_resolution_aoi === true)
   const continuity = visuals.filter(item => item.high_resolution_aoi !== true)
-  const primaryHighResolution = highResolution.filter(item => item.evidence_role !== 'WATER_CLASSIFICATION')
+  const primaryHighResolution = highResolution.filter(item => item.evidence_role !== 'WATER_CLASSIFICATION' && !fixedCropEvidence.includes(item))
   const classificationCompanions = highResolution.filter(item => item.evidence_role === 'WATER_CLASSIFICATION')
-  const selected = [...selectEvenly(primaryHighResolution, Math.min(primaryHighResolution.length, limit))]
+  const selected = [...fixedCropEvidence.slice(0, limit)]
+  if (selected.length < limit) selected.push(...selectEvenly(primaryHighResolution, Math.min(primaryHighResolution.length, limit - selected.length)))
   if (selected.length < limit) selected.push(...selectEvenly(classificationCompanions, limit - selected.length))
   if (selected.length < limit) selected.push(...selectEvenly(continuity, limit - selected.length))
   return selected.sort((left, right) => left.date.localeCompare(right.date))
@@ -659,8 +787,18 @@ async function prepareVisualInputs(visuals, depth) {
 function buildOpenAIRequest(parsed, visuals, landsat, env, visualWarnings = []) {
   const metadata = {
     place_name: parsed.placeName || null,
+    case_id: parsed.caseId,
     center_wgs84: [parsed.latitude, parsed.longitude],
     radius_km: parsed.radiusKm,
+    visual_focus: {
+      center_wgs84: [parsed.focusLatitude, parsed.focusLongitude],
+      radius_km: parsed.focusRadiusKm,
+      frame_width_m: parsed.focusFrameWidthM,
+      target_registration: parsed.caseId === TEST001_CASE_ID
+        ? 'Exact corrected forest-pond target; do not substitute Lake Kuchnia or another waterbody.'
+        : 'User-selected detailed-image target within the regional AOI.',
+      native_resolution_warning: 'The crop changes framing only; it does not create spatial detail beyond the source sensor.',
+    },
     requested_period: [parsed.startDate, parsed.endDate],
     requested_season: parsed.season,
     analysis_depth: parsed.depth,
@@ -681,6 +819,7 @@ function buildOpenAIRequest(parsed, visuals, landsat, env, visualWarnings = []) 
     pre_2000_visual_limitation: parsed.startDate < GIBS_START,
     l4_water_protocol_context: L4_WATER_PROTOCOL_CONTEXT,
     tp26_water_extrema_protocol: TP26_WATER_EXTREMA_PROTOCOL,
+    recorded_case_evidence: parsed.caseId === TEST001_CASE_ID ? TEST001_RECORDED_FINDING : null,
   }
   return {
     model: typeof env.OPENAI_MODEL === 'string' && env.OPENAI_MODEL.trim() ? env.OPENAI_MODEL.trim() : DEFAULT_MODEL,
@@ -750,6 +889,32 @@ function enforceWaterExtremaGate(analysis, visuals) {
       basis: String(candidate.basis),
     }
   }
+  return analysis
+}
+
+function applyRecordedTest001Finding(analysis, parsed) {
+  if (parsed.caseId !== TEST001_CASE_ID || !analysis || typeof analysis !== 'object') return analysis
+  const hydrology = analysis.hydrology_screening
+  const modelTemporalBasis = typeof hydrology?.temporal_basis === 'string' ? hydrology.temporal_basis.trim() : ''
+  const modelWaterAssessment = typeof analysis.water_assessment === 'string' ? analysis.water_assessment.trim() : ''
+
+  analysis.headline = 'TEST 001: near-total disappearance of the historical persistent open-water-type footprint is strongly supported.'
+  analysis.change_over_time = 'The same fixed approximately 469 m crop shows the historical persistent pond footprint in the older record and a visibly changed, drier basin without a comparable persistent dark-water footprint in 2026. The central historical consensus footprint is about 1.77 ha (repeat-supported range about 1.63–2.16 ha).'
+  analysis.water_assessment = `Recorded fixed-crop evidence supports an approximate disappearance of the historical 1.77 ha footprint, but it does not establish exact 2026 residual open-water area, exact loss percentage or cause.${modelWaterAssessment ? ` Live visual note: ${modelWaterAssessment}` : ''}`
+  if (hydrology && typeof hydrology === 'object') {
+    hydrology.water_change_state = 'VISIBLE_WATER_REDUCTION_CANDIDATE'
+    hydrology.temporal_basis = `Recorded fixed-target evidence: 1990 overlaps 92.53% of the central historical consensus; repeated clear historical images support a 1.77 ha persistent footprint; the 2026 endpoint has no comparable persistent dark-water footprint. Exact residual area and percentage remain uncertainty-gated.${modelTemporalBasis ? ` Model comparison note: ${modelTemporalBasis}` : ''}`
+    hydrology.cause_status = 'NOT_ESTABLISHED_FROM_SUPPLIED_EVIDENCE'
+  }
+  const recordedFeature = 'Fixed-crop TEST 001 anomaly: near-total historical open-water state transition strongly supported; exact residual area and cause are not established.'
+  analysis.notable_features = [recordedFeature, ...(Array.isArray(analysis.notable_features) ? analysis.notable_features : [])]
+    .filter((value, index, values) => typeof value === 'string' && values.indexOf(value) === index)
+    .slice(0, 8)
+  const precisionLimitation = 'The approximately 500 m frame improves registration, not native resolution: historical Landsat detail remains about 30 m and the recent Sentinel-2 evidence about 10 m.'
+  analysis.limitations = [precisionLimitation, ...(Array.isArray(analysis.limitations) ? analysis.limitations : [])]
+    .filter((value, index, values) => typeof value === 'string' && values.indexOf(value) === index)
+    .slice(0, 8)
+  analysis.recommended_next_step = 'Treat this as a high-priority monitoring anomaly: verify the corrected pond basin and every candidate inlet/outlet, ditch, culvert and groundwater connection in official hydrography/DEM and in the field; do not assign a cause before those checks.'
   return analysis
 }
 
@@ -824,6 +989,7 @@ export async function handleAreaAnalysisV2(request, env = {}) {
     const requestedVisuals = [
       ...nasaDates.map(date => nasaImage(date, parsed)),
       ...highResolution.images,
+      ...test001CuratedFocusImages(parsed),
     ].sort((left, right) => left.date.localeCompare(right.date))
 
     let landsat
@@ -835,7 +1001,7 @@ export async function handleAreaAnalysisV2(request, env = {}) {
     const analysisVisuals = selectVisualCandidates(galleryPreflight.prepared, parsed.depth)
     const visualWarnings = [...highResolution.warnings, ...galleryPreflight.warnings]
     const rawAnalysis = await analyzeWithOpenAI(parsed, analysisVisuals, landsat, env, visualWarnings)
-    const analysis = enforceWaterExtremaGate(rawAnalysis, analysisVisuals)
+    const analysis = applyRecordedTest001Finding(enforceWaterExtremaGate(rawAnalysis, analysisVisuals), parsed)
     const previews = [...galleryPreflight.prepared].sort((a, b) => a.date.localeCompare(b.date)).slice(-MAX_GALLERY_IMAGES)
     const highResolutionImageCount = analysisVisuals.filter(item => item.high_resolution_aoi === true).length
     const highResolutionYearCount = new Set(analysisVisuals
@@ -845,6 +1011,14 @@ export async function handleAreaAnalysisV2(request, env = {}) {
       service: 'terra-observation-area-analysis-v2',
       generated_at_utc: new Date().toISOString(),
       area: { place_name: parsed.placeName || null, latitude: parsed.latitude, longitude: parsed.longitude, radius_km: parsed.radiusKm },
+      visual_focus: {
+        latitude: parsed.focusLatitude,
+        longitude: parsed.focusLongitude,
+        radius_km: parsed.focusRadiusKm,
+        frame_width_m: parsed.focusFrameWidthM,
+        purpose: parsed.caseId === TEST001_CASE_ID ? 'EXACT_TEST001_POND_REGISTRATION' : 'DETAILED_AOI_FRAMING',
+        native_resolution_unchanged: true,
+      },
       period: { start_date: parsed.startDate, end_date: parsed.endDate },
       depth: parsed.depth,
       preview_images: previews.map(item => ({ date: item.date, source: item.source, url: item.url, high_resolution_aoi: item.high_resolution_aoi === true, evidence_role: item.evidence_role ?? null, nominal_resolution_m: item.nominal_resolution_m ?? null, cloud_cover: item.cloud_cover ?? null })),
@@ -853,11 +1027,12 @@ export async function handleAreaAnalysisV2(request, env = {}) {
       visual_preflight_warnings: visualWarnings,
       landsat_catalog: landsat,
       analysis,
+      test001_focus_evidence: parsed.caseId === TEST001_CASE_ID ? TEST001_RECORDED_FINDING : null,
       analysis_protocol: L4_WATER_PROTOCOL_CONTEXT,
       tp26_protocol: TP26_WATER_EXTREMA_PROTOCOL,
       water_extrema_readiness: {
         status: highResolutionYearCount < 2 ? 'INSUFFICIENT_RANKING_ELIGIBLE_YEARS' : 'MODEL_COMPARABILITY_GATE_APPLIED',
-        small_waterbody_mode: parsed.radiusKm <= 5,
+        small_waterbody_mode: parsed.focusRadiusKm <= 2.5,
         requires_high_resolution_aoi: true,
         high_resolution_aoi_images: highResolutionImageCount,
         high_resolution_aoi_years: highResolutionYearCount,

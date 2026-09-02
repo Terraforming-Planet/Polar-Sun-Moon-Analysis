@@ -9,6 +9,10 @@ const imageResponse = () => new Response(new Uint8Array([0xff, 0xd8, 0xff, 0xd9]
   status: 200,
   headers: { 'Content-Type': 'image/jpeg' },
 })
+const pngResponse = () => new Response(new Uint8Array([0x89, 0x50, 0x4e, 0x47]), {
+  status: 200,
+  headers: { 'Content-Type': 'image/png' },
+})
 
 function cmrResponseFor(target, { empty = false } = {}) {
   const temporal = new URL(target).searchParams.get('temporal') ?? ''
@@ -378,6 +382,92 @@ test('HLS Sentinel-2 sampling omits a 2015 spring window that predates HLS S30 c
     assert.equal(response.status, 200)
     assert.equal(cmrRequests.length, 1)
     assert.match(new URL(cmrRequests[0]).searchParams.get('temporal'), /^2016-/)
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('TEST 001 uses the corrected 500 m frame and pins the same-target evidence pair', async () => {
+  const originalFetch = globalThis.fetch
+  const upstreams = []
+  globalThis.fetch = async (url, options = {}) => {
+    const target = String(url)
+    upstreams.push(target)
+    if (target.startsWith('https://landsatlook.usgs.gov/')) {
+      return new Response(JSON.stringify({ numberMatched: 73, features: [] }), { status: 200 })
+    }
+    if (target.startsWith('https://cmr.earthdata.nasa.gov/')) return cmrResponseFor(target, { empty: true })
+    if (target.startsWith('https://gibs.earthdata.nasa.gov/')) return imageResponse()
+    if (target.startsWith('https://raw.githubusercontent.com/Terraforming-Planet/Polar-Sun-Moon-Analysis/')) return pngResponse()
+    if (target === 'https://api.openai.com/v1/responses') {
+      const body = JSON.parse(options.body)
+      const metadataText = body.input[0].content.find(item => item.type === 'input_text').text
+      assert.match(metadataText, /EXACT corrected forest-pond target/i)
+      assert.match(metadataText, /CURATED_TEST001_FIXED_CROP_HISTORICAL_OVERLAY/)
+      assert.match(metadataText, /NEAR_TOTAL_HISTORICAL_OPEN_WATER_STATE_TRANSITION_STRONGLY_SUPPORTED/)
+      const images = body.input[0].content.filter(item => item.type === 'input_image')
+      assert.ok(images.length >= 2)
+      assert.ok(images.length <= 8)
+      return new Response(JSON.stringify({ output_text: JSON.stringify(validAnalysis()) }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+    }
+    throw new Error(`unexpected upstream ${target}`)
+  }
+
+  try {
+    const response = await handleWorkerRequest(new Request('https://worker.example/research/analyze', {
+      method: 'POST',
+      headers: { Origin: allowedOrigin, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        latitude: 53.5914,
+        longitude: 19.010717,
+        radius_km: 2,
+        focus_latitude: 53.594595,
+        focus_longitude: 19.00014,
+        focus_radius_km: 0.25,
+        case_id: 'test-001-forest-pond-kuchnia',
+        start_date: '1990-09-01',
+        end_date: '2026-09-01',
+        depth: 'deep',
+        season: 'autumn',
+        place_name: 'TEST 001',
+      }),
+    }), env)
+    const payload = await response.json()
+    assert.equal(response.status, 200, JSON.stringify(payload))
+    assert.deepEqual(payload.visual_focus, {
+      latitude: 53.594595,
+      longitude: 19.00014,
+      radius_km: 0.25,
+      frame_width_m: 500,
+      purpose: 'EXACT_TEST001_POND_REGISTRATION',
+      native_resolution_unchanged: true,
+    })
+    assert.equal(payload.test001_focus_evidence.historical_visible_footprint.central_ha, 1.7722)
+    assert.equal(payload.test001_focus_evidence.recorded_year_ranking.most_visible_historical_component_year, 2008)
+    assert.equal(payload.test001_focus_evidence.recorded_year_ranking.least_visible_endpoint_year, 2026)
+    assert.equal(payload.test001_focus_evidence.state_change.exact_2026_open_water_area_m2, null)
+    assert.equal(payload.test001_focus_evidence.state_change.cause_status, 'NOT_ESTABLISHED')
+    assert.match(payload.analysis.headline, /near-total disappearance/i)
+    assert.equal(payload.analysis.hydrology_screening.water_change_state, 'VISIBLE_WATER_REDUCTION_CANDIDATE')
+    assert.ok(payload.analysis_images.some(item => item.evidence_role === 'CURATED_TEST001_FIXED_CROP_HISTORICAL_OVERLAY'))
+    assert.ok(payload.analysis_images.some(item => item.evidence_role === 'CURATED_TEST001_FIXED_CROP_RECENT_OVERLAY'))
+    assert.equal(upstreams.filter(item => item.includes('2000_historical_consensus_overlay.png')).length, 1)
+    assert.equal(upstreams.filter(item => item.includes('2026_historical_consensus_on_recent_basin.png')).length, 1)
+
+    const detailedWmsRequests = upstreams.filter(item => {
+      if (!item.startsWith('https://gibs.earthdata.nasa.gov/')) return false
+      return /^(?:HLS_S30|Landsat_WELD|OPERA_L3)/.test(new URL(item).searchParams.get('LAYERS') ?? '')
+    })
+    assert.ok(detailedWmsRequests.length > 0)
+    for (const item of detailedWmsRequests) {
+      const [west, south, east, north] = (new URL(item).searchParams.get('BBOX') ?? '').split(',').map(Number)
+      const widthKm = (east - west) * 111.32 * Math.cos(53.594595 * Math.PI / 180)
+      const heightKm = (north - south) * 111.32
+      assert.ok(Math.abs(widthKm - 0.5) < 0.01)
+      assert.ok(Math.abs(heightKm - 0.5) < 0.01)
+      assert.ok(Math.abs(((west + east) / 2) - 19.00014) < 0.000001)
+      assert.ok(Math.abs(((south + north) / 2) - 53.594595) < 0.000001)
+    }
   } finally {
     globalThis.fetch = originalFetch
   }
