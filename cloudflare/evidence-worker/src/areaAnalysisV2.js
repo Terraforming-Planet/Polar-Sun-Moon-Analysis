@@ -12,6 +12,8 @@ const QUICK_NASA_LIMIT = 7
 const DEEP_NASA_LIMIT = 20
 const QUICK_OPENAI_IMAGE_LIMIT = 4
 const DEEP_OPENAI_IMAGE_LIMIT = 8
+const QUICK_SENTINEL_IMAGE_LIMIT = 2
+const DEEP_SENTINEL_IMAGE_LIMIT = 4
 const MAX_GALLERY_IMAGES = 8
 const MAX_IMAGE_BYTES = 6 * 1024 * 1024
 const MAX_VISUAL_BYTES = 24 * 1024 * 1024
@@ -39,6 +41,38 @@ export const L4_WATER_PROTOCOL_CONTEXT = {
     checkpoint_loaded_by_worker: false,
     environmental_ground_truth: false,
   },
+}
+
+export const TP26_WATER_EXTREMA_PROTOCOL = {
+  schema: 'tp26-multisensor-water-extrema-v1',
+  role: 'EVIDENCE_ORCHESTRATION_PROTOCOL_NOT_A_SATELLITE_OR_RUNTIME_CHECKPOINT',
+  source_ladder: [
+    {
+      source: 'Copernicus Sentinel-2 L2A',
+      role: 'matched-season optical water and land-cover delineation',
+      nominal_resolution: '10 m / 20 m band dependent',
+      runtime_state: 'AOI_IMAGES_REQUESTED_WHEN_PUBLIC_WMS_PREFLIGHT_PASSES',
+    },
+    {
+      source: 'Copernicus Sentinel-1 GRD',
+      role: 'cloud-independent radar cross-check for water extent and flooding',
+      nominal_resolution: 'mode and product dependent; commonly about 10 m for IW products',
+      runtime_state: 'RECOMMENDED_CROSS_CHECK_NOT_FETCHED_BY_THIS_ROUTE',
+    },
+    {
+      source: 'USGS Landsat Collection 2 Level-2',
+      role: 'long historical multispectral baseline',
+      nominal_resolution: 'commonly 30 m multispectral',
+      runtime_state: 'CATALOGUE_METADATA_HERE; BROWSE_IMAGES_USE_SEPARATE_GALLERY_ROUTE',
+    },
+    {
+      source: 'NASA GIBS MODIS / VIIRS',
+      role: 'broad temporal continuity and visual context only for small waterbodies',
+      nominal_resolution: 'sensor and layer dependent; too coarse to rank a small forest pond reliably',
+      runtime_state: 'AOI_IMAGES_REQUESTED_AND_PREFLIGHTED',
+    },
+  ],
+  extrema_gate: 'At least two interpretable, ranking-eligible AOI images from distinct years are required before a most/least visible-water year may be reported. Coarse continuity imagery and catalogue thumbnails are excluded regardless of the selected AOI radius.',
 }
 
 const ANALYSIS_SCHEMA = {
@@ -71,10 +105,27 @@ const ANALYSIS_SCHEMA = {
         main_and_tributary_context: { type: 'string' },
         required_checks: { type: 'array', items: { type: 'string' }, maxItems: 10 },
         cause_status: { type: 'string', enum: ['NOT_ESTABLISHED_FROM_SUPPLIED_EVIDENCE'] },
+        visible_water_extrema: {
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            status: { type: 'string', enum: ['ESTABLISHED', 'INSUFFICIENT_EVIDENCE'] },
+            most_visible_water_year: { type: ['integer', 'null'] },
+            least_visible_water_year: { type: ['integer', 'null'] },
+            compared_years: { type: 'array', items: { type: 'integer' }, maxItems: 8 },
+            method: { type: 'string', enum: ['QUALITATIVE_VISUAL_RANKING_OF_SUPPLIED_IMAGES'] },
+            basis: { type: 'string' },
+          },
+          required: [
+            'status', 'most_visible_water_year', 'least_visible_water_year',
+            'compared_years', 'method', 'basis',
+          ],
+        },
       },
       required: [
         'water_change_state', 'temporal_basis', 'inflow_outflow_status',
         'candidate_features', 'main_and_tributary_context', 'required_checks', 'cause_status',
+        'visible_water_extrema',
       ],
     },
     notable_features: { type: 'array', items: { type: 'string' }, maxItems: 8 },
@@ -109,7 +160,9 @@ If the metadata says that zero images passed the Worker preflight, explicitly sa
 When comparing water, distinguish visible water present, visible water reduced/absent in supplied samples, and insufficient evidence. Never claim permanent drying from a small sample.
 For hydrology screening, explicitly inspect the visible main channel or waterbody together with side tributaries, possible inflows, possible outflows, ditches, culverts and road crossings. Compare their visible continuity across supplied dates. Never infer flow direction from colour alone.
 Return a structured hydrology_screening result. Use VISIBLE_WATER_REDUCTION_CANDIDATE only when comparable supplied images visibly support reduction; otherwise use NO_VISIBLE_CHANGE_ESTABLISHED or INSUFFICIENT_EVIDENCE. A candidate inlet, outlet or obstruction remains a visible candidate until DEM, official hydrography, discharge/stage data and field inspection verify it.
+Return visible_water_extrema for the exact visually supplied images. Use ESTABLISHED only when the same waterbody is interpretable in at least two genuinely comparable, distinct years. Then report the year with the most and least visible open-water extent among compared_years. This is a qualitative ranking, never an area, volume, depth or causal measurement. If imagery is too coarse, cloudy, seasonally mismatched, sensor-incompatible, or the waterbody cannot be delineated, return INSUFFICIENT_EVIDENCE, null years and explain why. Never use catalogue-only years. For a small forest pond, MODIS/VIIRS alone is insufficient; require native or AOI-rendered Sentinel-2, Landsat or comparable high-resolution evidence.
 The supplied L4 Training #3 and #4 summaries inform the audit protocol only. This Worker does not load their checkpoint and those training metrics are not environmental ground truth.
+TP26 is the project's multisensor evidence-orchestration protocol, not a satellite and not proof of a finding. Apply its source ladder and evidence gate without claiming provider affiliation or privileged access.
 If the imagery is too cloudy, coarse, seasonally mismatched or sparse, say so and lower confidence.
 For the recommended next step, be concrete: suggest matched-season scenes, Sentinel-2/Landsat original products, DEM profiles, hydrology/river-network layers, precipitation/groundwater data, or field verification as appropriate.`
 
@@ -261,25 +314,38 @@ function nasaImage(requestedDate, parsed) {
   }
 }
 
-function sentinelImage(parsed, env) {
-  if (parsed.endDate < SENTINEL2_START) return null
+function sentinelImages(parsed, env) {
+  if (parsed.endDate < SENTINEL2_START) return []
   const bounds = researchBounds(parsed.latitude, parsed.longitude, Math.max(parsed.radiusKm, 2))
   const instance = typeof env.CDSE_INSTANCE_ID === 'string' && env.CDSE_INSTANCE_ID.trim() ? env.CDSE_INSTANCE_ID.trim() : DEFAULT_CDSE_INSTANCE
   const layer = typeof env.CDSE_TRUE_COLOR_LAYER === 'string' && env.CDSE_TRUE_COLOR_LAYER.trim() ? env.CDSE_TRUE_COLOR_LAYER.trim() : 'NATURAL-COLOR'
-  const start = daysBefore(parsed.endDate, parsed.depth === 'deep' ? 30 : 14)
   const size = parsed.depth === 'deep' ? 2048 : 1600
-  const params = new URLSearchParams({
-    SERVICE: 'WMS', REQUEST: 'GetMap', VERSION: '1.1.1', LAYERS: layer, STYLES: '',
-    FORMAT: 'image/jpeg', TRANSPARENT: 'FALSE', SRS: 'EPSG:4326',
-    BBOX: `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`,
-    WIDTH: String(size), HEIGHT: String(size), TIME: `${start}/${parsed.endDate}`, MAXCC: '35', SHOWLOGO: 'false',
+  const startYear = Math.max(Number(parsed.startDate.slice(0, 4)), Number(SENTINEL2_START.slice(0, 4)))
+  const endYear = Number(parsed.endDate.slice(0, 4))
+  const limit = parsed.depth === 'deep' ? DEEP_SENTINEL_IMAGE_LIMIT : QUICK_SENTINEL_IMAGE_LIMIT
+  const monthDay = parsed.endDate.slice(5)
+  const minimumDate = parsed.startDate > SENTINEL2_START ? parsed.startDate : SENTINEL2_START
+  const firstCandidateDate = validDateForYear(startYear, Number(monthDay.slice(0, 2)), Number(monthDay.slice(3, 5)))
+  const firstEligibleYear = firstCandidateDate < minimumDate ? startYear + 1 : startYear
+  return sampleYears(firstEligibleYear, endYear, limit).map(year => {
+    let requestEnd = validDateForYear(year, Number(monthDay.slice(0, 2)), Number(monthDay.slice(3, 5)))
+    if (requestEnd > parsed.endDate) requestEnd = parsed.endDate
+    const candidateStart = daysBefore(requestEnd, parsed.depth === 'deep' ? 30 : 14)
+    const start = candidateStart < minimumDate ? minimumDate : candidateStart
+    const params = new URLSearchParams({
+      SERVICE: 'WMS', REQUEST: 'GetMap', VERSION: '1.1.1', LAYERS: layer, STYLES: '',
+      FORMAT: 'image/jpeg', TRANSPARENT: 'FALSE', SRS: 'EPSG:4326',
+      BBOX: `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`,
+      WIDTH: String(size), HEIGHT: String(size), TIME: `${start}/${requestEnd}`, MAXCC: '35', SHOWLOGO: 'false',
+    })
+    return {
+      date: requestEnd,
+      source: 'Copernicus Data Space · Sentinel-2 L2A true-colour WMS',
+      url: `https://sh.dataspace.copernicus.eu/ogc/wms/${instance}?${params.toString()}`,
+      high_resolution_aoi: true,
+      provenance_note: `request window ${start}..${requestEnd}; may be a mosaic/latest usable optical observation, not an asserted exact sensing date`,
+    }
   })
-  return {
-    date: parsed.endDate,
-    source: 'Copernicus Data Space · Sentinel-2 L2A true-colour WMS',
-    url: `https://sh.dataspace.copernicus.eu/ogc/wms/${instance}?${params.toString()}`,
-    provenance_note: `request window ${start}..${parsed.endDate}; may be a mosaic/latest usable optical observation, not an asserted exact sensing date`,
-  }
 }
 
 function landsatSceneSummary(item) {
@@ -316,8 +382,7 @@ function extractOutputText(payload) {
   throw new Error('OpenAI response did not contain complete output text.')
 }
 
-function selectVisualCandidates(visuals, depth) {
-  const limit = depth === 'deep' ? DEEP_OPENAI_IMAGE_LIMIT : QUICK_OPENAI_IMAGE_LIMIT
+function selectEvenly(visuals, limit) {
   if (visuals.length <= limit) return [...visuals]
   const selected = []
   const seen = new Set()
@@ -331,6 +396,17 @@ function selectVisualCandidates(visuals, depth) {
     }
   }
   return selected
+}
+
+function selectVisualCandidates(visuals, depth) {
+  const limit = depth === 'deep' ? DEEP_OPENAI_IMAGE_LIMIT : QUICK_OPENAI_IMAGE_LIMIT
+  if (visuals.length <= limit) return [...visuals]
+  const highResolution = visuals.filter(item => item.high_resolution_aoi === true)
+  const continuity = visuals.filter(item => item.high_resolution_aoi !== true)
+  const highResolutionLimit = Math.min(highResolution.length, Math.max(2, Math.ceil(limit / 2)))
+  const selected = [...selectEvenly(highResolution, highResolutionLimit)]
+  selected.push(...selectEvenly(continuity, limit - selected.length))
+  return selected.sort((left, right) => left.date.localeCompare(right.date))
 }
 
 function bytesToBase64(bytes) {
@@ -394,13 +470,14 @@ function buildOpenAIRequest(parsed, visuals, landsat, env, visualWarnings = []) 
     radius_km: parsed.radiusKm,
     requested_period: [parsed.startDate, parsed.endDate],
     analysis_depth: parsed.depth,
-    visually_supplied_images: visuals.map(item => ({ date_or_request_end: item.date, source: item.source, provenance_note: item.provenance_note })),
+    visually_supplied_images: visuals.map((item, index) => ({ visual_order: index + 1, date_or_request_end: item.date, source: item.source, high_resolution_aoi: item.high_resolution_aoi === true, provenance_note: item.provenance_note })),
     visual_preflight_warnings: visualWarnings,
     landsat_catalog_source: 'USGS Landsat Collection 2 Surface Reflectance STAC',
     landsat_matched_scene_count: landsat.matched,
     landsat_returned_scene_metadata: landsat.scenes,
     pre_2000_visual_limitation: parsed.startDate < GIBS_START,
     l4_water_protocol_context: L4_WATER_PROTOCOL_CONTEXT,
+    tp26_water_extrema_protocol: TP26_WATER_EXTREMA_PROTOCOL,
   }
   return {
     model: typeof env.OPENAI_MODEL === 'string' && env.OPENAI_MODEL.trim() ? env.OPENAI_MODEL.trim() : DEFAULT_MODEL,
@@ -415,6 +492,62 @@ function buildOpenAIRequest(parsed, visuals, landsat, env, visualWarnings = []) 
     max_output_tokens: parsed.depth === 'deep' ? 7000 : 5000,
     text: { format: { type: 'json_schema', name: 'terra_area_analysis_v2', strict: true, schema: ANALYSIS_SCHEMA } },
   }
+}
+
+function insufficientWaterExtrema(basis, comparedYears = []) {
+  return {
+    status: 'INSUFFICIENT_EVIDENCE',
+    most_visible_water_year: null,
+    least_visible_water_year: null,
+    compared_years: comparedYears,
+    method: 'QUALITATIVE_VISUAL_RANKING_OF_SUPPLIED_IMAGES',
+    basis,
+  }
+}
+
+function enforceWaterExtremaGate(analysis, visuals) {
+  const hydrology = analysis?.hydrology_screening
+  if (!hydrology || typeof hydrology !== 'object') return analysis
+  const highResolutionYears = [...new Set(visuals.filter(item => item.high_resolution_aoi === true).map(item => Number(String(item.date).slice(0, 4))).filter(Number.isInteger))]
+  const candidate = hydrology.visible_water_extrema
+  const allowedRankingYears = highResolutionYears
+  const comparedYears = Array.isArray(candidate?.compared_years)
+    ? [...new Set(candidate.compared_years.filter(year => Number.isInteger(year) && allowedRankingYears.includes(year)))].slice(0, 8)
+    : []
+  const rankingInputGateFailed = highResolutionYears.length < 2
+  const yearsValid = candidate?.status === 'ESTABLISHED'
+    && Number.isInteger(candidate.most_visible_water_year)
+    && Number.isInteger(candidate.least_visible_water_year)
+    && candidate.most_visible_water_year !== candidate.least_visible_water_year
+    && comparedYears.length >= 2
+    && comparedYears.includes(candidate.most_visible_water_year)
+    && comparedYears.includes(candidate.least_visible_water_year)
+
+  if (rankingInputGateFailed) {
+    hydrology.visible_water_extrema = insufficientWaterExtrema(
+      `TP26 gate: this AOI has ${highResolutionYears.length} preflighted ranking-eligible high-resolution year(s). At least two distinct years are required; coarse continuity imagery and catalogue thumbnails are not enough regardless of the selected AOI radius.`,
+      highResolutionYears,
+    )
+  } else if (!yearsValid) {
+    hydrology.visible_water_extrema = insufficientWaterExtrema(
+      candidate?.status === 'ESTABLISHED'
+        ? 'TP26 gate: every compared, maximum and minimum year must come from the preflighted ranking-eligible high-resolution AOI inputs. Coarse MODIS/VIIRS continuity images cannot supply the ranking.'
+        : typeof candidate?.basis === 'string' && candidate.basis.trim()
+          ? candidate.basis
+          : 'The supplied images do not support a defensible most/least visible-water year.',
+      comparedYears,
+    )
+  } else {
+    hydrology.visible_water_extrema = {
+      status: 'ESTABLISHED',
+      most_visible_water_year: candidate.most_visible_water_year,
+      least_visible_water_year: candidate.least_visible_water_year,
+      compared_years: comparedYears,
+      method: 'QUALITATIVE_VISUAL_RANKING_OF_SUPPLIED_IMAGES',
+      basis: String(candidate.basis),
+    }
+  }
+  return analysis
 }
 
 const sleep = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -484,9 +617,10 @@ export async function handleAreaAnalysisV2(request, env = {}) {
   try {
     const parsed = parsePayload(await readSmallJson(request))
     const nasaDates = representativeNasaDates(parsed.startDate, parsed.endDate, parsed.depth)
-    const requestedVisuals = nasaDates.map(date => nasaImage(date, parsed))
-    const sentinel = sentinelImage(parsed, env)
-    if (sentinel) requestedVisuals.push(sentinel)
+    const requestedVisuals = [
+      ...nasaDates.map(date => nasaImage(date, parsed)),
+      ...sentinelImages(parsed, env),
+    ].sort((left, right) => left.date.localeCompare(right.date))
 
     let landsat
     try { landsat = await fetchLandsatContext(parsed) } catch (error) {
@@ -495,21 +629,35 @@ export async function handleAreaAnalysisV2(request, env = {}) {
 
     const galleryPreflight = await prepareVisualInputs(requestedVisuals, 'deep')
     const analysisVisuals = selectVisualCandidates(galleryPreflight.prepared, parsed.depth)
-    const analysis = await analyzeWithOpenAI(parsed, analysisVisuals, landsat, env, galleryPreflight.warnings)
+    const rawAnalysis = await analyzeWithOpenAI(parsed, analysisVisuals, landsat, env, galleryPreflight.warnings)
+    const analysis = enforceWaterExtremaGate(rawAnalysis, analysisVisuals)
     const previews = [...galleryPreflight.prepared].sort((a, b) => a.date.localeCompare(b.date)).slice(-MAX_GALLERY_IMAGES)
+    const highResolutionImageCount = analysisVisuals.filter(item => item.high_resolution_aoi === true).length
+    const highResolutionYearCount = new Set(analysisVisuals
+      .filter(item => item.high_resolution_aoi === true)
+      .map(item => String(item.date).slice(0, 4))).size
     return jsonResponse({
       service: 'terra-observation-area-analysis-v2',
       generated_at_utc: new Date().toISOString(),
       area: { place_name: parsed.placeName || null, latitude: parsed.latitude, longitude: parsed.longitude, radius_km: parsed.radiusKm },
       period: { start_date: parsed.startDate, end_date: parsed.endDate },
       depth: parsed.depth,
-      preview_images: previews.map(item => ({ date: item.date, source: item.source, url: item.url })),
-      analysis_images: analysisVisuals.map(item => ({ date: item.date, source: item.source, url: item.url })),
+      preview_images: previews.map(item => ({ date: item.date, source: item.source, url: item.url, high_resolution_aoi: item.high_resolution_aoi === true })),
+      analysis_images: analysisVisuals.map(item => ({ date: item.date, source: item.source, url: item.url, high_resolution_aoi: item.high_resolution_aoi === true })),
       ai_visual_image_count: analysisVisuals.length,
       visual_preflight_warnings: galleryPreflight.warnings,
       landsat_catalog: landsat,
       analysis,
       analysis_protocol: L4_WATER_PROTOCOL_CONTEXT,
+      tp26_protocol: TP26_WATER_EXTREMA_PROTOCOL,
+      water_extrema_readiness: {
+        status: highResolutionYearCount < 2 ? 'INSUFFICIENT_RANKING_ELIGIBLE_YEARS' : 'MODEL_COMPARABILITY_GATE_APPLIED',
+        small_waterbody_mode: parsed.radiusKm <= 5,
+        requires_high_resolution_aoi: true,
+        high_resolution_aoi_images: highResolutionImageCount,
+        high_resolution_aoi_years: highResolutionYearCount,
+        visually_supplied_images: analysisVisuals.length,
+      },
       gallery_policy: {
         simple_display_limit: 4,
         advanced_display_limit: 8,

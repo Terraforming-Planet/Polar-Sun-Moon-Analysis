@@ -24,6 +24,14 @@ function validAnalysis() {
       main_and_tributary_context: 'The main waterbody is visible, but tributary connectivity and flow direction are not established.',
       required_checks: ['Verify official hydrography and DEM flow direction.', 'Measure inlet and outlet discharge in the field.'],
       cause_status: 'NOT_ESTABLISHED_FROM_SUPPLIED_EVIDENCE',
+      visible_water_extrema: {
+        status: 'INSUFFICIENT_EVIDENCE',
+        most_visible_water_year: null,
+        least_visible_water_year: null,
+        compared_years: [],
+        method: 'QUALITATIVE_VISUAL_RANKING_OF_SUPPLIED_IMAGES',
+        basis: 'The supplied dates are not sufficiently comparable to rank visible water.',
+      },
     },
     notable_features: ['water channel', 'exposed sediment', 'vegetation differences'],
     confidence: { level: 'medium', reason: 'Several dated images and the Landsat catalogue are available, but a complete matched-season series is not.' },
@@ -57,7 +65,10 @@ test('production research analyze route preflights official imagery and sends va
       assert.match(body.instructions, /three evidence classes/i)
       assert.match(body.instructions, /Respond in English/)
       assert.match(body.instructions, /main channel or waterbody together with side tributaries/i)
+      assert.match(body.instructions, /most and least visible open-water extent/i)
+      assert.match(body.instructions, /TP26 is the project's multisensor evidence-orchestration protocol/i)
       assert.ok(body.text.format.schema.required.includes('hydrology_screening'))
+      assert.ok(body.text.format.schema.properties.hydrology_screening.required.includes('visible_water_extrema'))
       const metadataText = body.input[0].content.find(item => item.type === 'input_text').text
       assert.match(metadataText, /unique_real_scientific_pairs/)
       assert.match(metadataText, /AUDIT_PROTOCOL_ONLY_NOT_RUNTIME_CHECKPOINT/)
@@ -97,6 +108,9 @@ test('production research analyze route preflights official imagery and sends va
     assert.equal(payload.gallery_policy.simple_display_limit, 4)
     assert.equal(payload.gallery_policy.advanced_display_limit, 8)
     assert.equal(payload.analysis.hydrology_screening.cause_status, 'NOT_ESTABLISHED_FROM_SUPPLIED_EVIDENCE')
+    assert.equal(payload.analysis.hydrology_screening.visible_water_extrema.status, 'INSUFFICIENT_EVIDENCE')
+    assert.equal(payload.tp26_protocol.schema, 'tp26-multisensor-water-extrema-v1')
+    assert.equal(payload.tp26_protocol.source_ladder.find(item => item.source.includes('Sentinel-1')).runtime_state, 'RECOMMENDED_CROSS_CHECK_NOT_FETCHED_BY_THIS_ROUTE')
     assert.equal(payload.analysis_protocol.training_4.unique_real_scientific_pairs, 95)
     assert.equal(payload.analysis_protocol.training_4.checkpoint_loaded_by_worker, false)
     assert.equal(JSON.stringify(payload).includes('test-secret-not-real'), false)
@@ -109,12 +123,14 @@ test('production research analyze route preflights official imagery and sends va
       assert.equal(parsed.searchParams.get('WIDTH'), '1400')
       assert.equal(parsed.searchParams.get('HEIGHT'), '1400')
     }
-    const sentinelRequest = upstreams.find(item => item.startsWith('https://sh.dataspace.copernicus.eu/ogc/wms/'))
-    assert.ok(sentinelRequest)
-    const sentinelUrl = new URL(sentinelRequest)
-    assert.equal(sentinelUrl.searchParams.get('WIDTH'), '1600')
-    assert.equal(sentinelUrl.searchParams.get('HEIGHT'), '1600')
-    assert.match(sentinelUrl.searchParams.get('TIME'), /^2026-08-06\/2026-08-20$/)
+    const sentinelRequests = upstreams.filter(item => item.startsWith('https://sh.dataspace.copernicus.eu/ogc/wms/'))
+    assert.equal(sentinelRequests.length, 2)
+    assert.ok(sentinelRequests.some(item => new URL(item).searchParams.get('TIME') === '2026-08-06/2026-08-20'))
+    for (const item of sentinelRequests) {
+      const sentinelUrl = new URL(item)
+      assert.equal(sentinelUrl.searchParams.get('WIDTH'), '1600')
+      assert.equal(sentinelUrl.searchParams.get('HEIGHT'), '1600')
+    }
   } finally {
     globalThis.fetch = originalFetch
   }
@@ -149,11 +165,13 @@ test('deep analysis keeps a bounded high-detail validated image set and larger o
     assert.equal(response.status, 200)
     assert.equal(payload.ai_visual_image_count, 8)
     assert.ok(payload.preview_images.length <= 8)
-    const sentinelRequest = upstreams.find(item => item.startsWith('https://sh.dataspace.copernicus.eu/ogc/wms/'))
-    assert.ok(sentinelRequest)
-    const parsed = new URL(sentinelRequest)
-    assert.equal(parsed.searchParams.get('WIDTH'), '2048')
-    assert.equal(parsed.searchParams.get('HEIGHT'), '2048')
+    const sentinelRequests = upstreams.filter(item => item.startsWith('https://sh.dataspace.copernicus.eu/ogc/wms/'))
+    assert.equal(sentinelRequests.length, 4)
+    for (const item of sentinelRequests) {
+      const parsed = new URL(item)
+      assert.equal(parsed.searchParams.get('WIDTH'), '2048')
+      assert.equal(parsed.searchParams.get('HEIGHT'), '2048')
+    }
   } finally {
     globalThis.fetch = originalFetch
   }
@@ -189,6 +207,158 @@ test('invalid Copernicus WMS content is skipped without breaking NASA-backed are
     assert.ok(payload.ai_visual_image_count > 0)
     assert.ok(payload.visual_preflight_warnings.some(item => item.includes('Copernicus Data Space')))
     assert.equal(payload.preview_images.some(item => item.source.includes('Copernicus Data Space')), false)
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('TP26 gate refuses small-waterbody extrema when high-resolution years are unavailable', async () => {
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = async (url, options = {}) => {
+    const target = String(url)
+    if (target.startsWith('https://landsatlook.usgs.gov/')) return new Response(JSON.stringify({ numberMatched: 10, features: [] }), { status: 200 })
+    if (target.startsWith('https://gibs.earthdata.nasa.gov/')) return imageResponse()
+    if (target.startsWith('https://sh.dataspace.copernicus.eu/')) {
+      return new Response('<ServiceException>Authentication required</ServiceException>', { status: 200, headers: { 'Content-Type': 'text/xml' } })
+    }
+    if (target === 'https://api.openai.com/v1/responses') {
+      const analysis = validAnalysis()
+      analysis.hydrology_screening.visible_water_extrema = {
+        status: 'ESTABLISHED',
+        most_visible_water_year: 2020,
+        least_visible_water_year: 2025,
+        compared_years: [2020, 2025],
+        method: 'QUALITATIVE_VISUAL_RANKING_OF_SUPPLIED_IMAGES',
+        basis: 'The coarse images appear different.',
+      }
+      return new Response(JSON.stringify({ output_text: JSON.stringify(analysis) }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+    }
+    throw new Error(`unexpected upstream ${target}`)
+  }
+
+  try {
+    const response = await handleWorkerRequest(new Request('https://worker.example/research/analyze', {
+      method: 'POST',
+      headers: { Origin: allowedOrigin, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ latitude: 53.5914, longitude: 19.010717, radius_km: 2, start_date: '2020-09-01', end_date: '2026-09-01', depth: 'quick', place_name: 'TEST 001' }),
+    }), env)
+    const payload = await response.json()
+    assert.equal(response.status, 200)
+    assert.equal(payload.water_extrema_readiness.status, 'INSUFFICIENT_RANKING_ELIGIBLE_YEARS')
+    assert.equal(payload.analysis.hydrology_screening.visible_water_extrema.status, 'INSUFFICIENT_EVIDENCE')
+    assert.equal(payload.analysis.hydrology_screening.visible_water_extrema.most_visible_water_year, null)
+    assert.equal(payload.analysis.hydrology_screening.visible_water_extrema.least_visible_water_year, null)
+    assert.match(payload.analysis.hydrology_screening.visible_water_extrema.basis, /TP26 gate/)
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('TP26 gate refuses a coarse-image year regardless of the selected AOI radius', async () => {
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = async (url) => {
+    const target = String(url)
+    if (target.startsWith('https://landsatlook.usgs.gov/')) return new Response(JSON.stringify({ numberMatched: 10, features: [] }), { status: 200 })
+    if (target.startsWith('https://gibs.earthdata.nasa.gov/') || target.startsWith('https://sh.dataspace.copernicus.eu/')) return imageResponse()
+    if (target === 'https://api.openai.com/v1/responses') {
+      const analysis = validAnalysis()
+      analysis.hydrology_screening.visible_water_extrema = {
+        status: 'ESTABLISHED',
+        most_visible_water_year: 2000,
+        least_visible_water_year: 2026,
+        compared_years: [2000, 2015, 2026],
+        method: 'QUALITATIVE_VISUAL_RANKING_OF_SUPPLIED_IMAGES',
+        basis: 'The model included a coarse continuity year.',
+      }
+      return new Response(JSON.stringify({ output_text: JSON.stringify(analysis) }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+    }
+    throw new Error(`unexpected upstream ${target}`)
+  }
+
+  try {
+    const response = await handleWorkerRequest(new Request('https://worker.example/research/analyze', {
+      method: 'POST',
+      headers: { Origin: allowedOrigin, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ latitude: 53.5914, longitude: 19.010717, radius_km: 12, start_date: '2000-09-01', end_date: '2026-09-01', depth: 'deep', place_name: 'TEST 001' }),
+    }), env)
+    const payload = await response.json()
+    assert.equal(response.status, 200)
+    assert.equal(payload.analysis.hydrology_screening.visible_water_extrema.status, 'INSUFFICIENT_EVIDENCE')
+    assert.equal(payload.analysis.hydrology_screening.visible_water_extrema.most_visible_water_year, null)
+    assert.equal(payload.analysis.hydrology_screening.visible_water_extrema.least_visible_water_year, null)
+    assert.ok(payload.analysis.hydrology_screening.visible_water_extrema.compared_years.every(year => year >= 2015))
+    assert.match(payload.analysis.hydrology_screening.visible_water_extrema.basis, /Coarse MODIS\/VIIRS/)
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('TP26 gate retains a valid ranking from two high-resolution AOI years', async () => {
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = async (url) => {
+    const target = String(url)
+    if (target.startsWith('https://landsatlook.usgs.gov/')) return new Response(JSON.stringify({ numberMatched: 10, features: [] }), { status: 200 })
+    if (target.startsWith('https://gibs.earthdata.nasa.gov/') || target.startsWith('https://sh.dataspace.copernicus.eu/')) return imageResponse()
+    if (target === 'https://api.openai.com/v1/responses') {
+      const analysis = validAnalysis()
+      analysis.hydrology_screening.visible_water_extrema = {
+        status: 'ESTABLISHED',
+        most_visible_water_year: 2020,
+        least_visible_water_year: 2026,
+        compared_years: [2020, 2026],
+        method: 'QUALITATIVE_VISUAL_RANKING_OF_SUPPLIED_IMAGES',
+        basis: 'The same waterbody is interpretable in the two matched-season Sentinel-2 AOI images.',
+      }
+      return new Response(JSON.stringify({ output_text: JSON.stringify(analysis) }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+    }
+    throw new Error(`unexpected upstream ${target}`)
+  }
+
+  try {
+    const response = await handleWorkerRequest(new Request('https://worker.example/research/analyze', {
+      method: 'POST',
+      headers: { Origin: allowedOrigin, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ latitude: 53.5914, longitude: 19.010717, radius_km: 2, start_date: '2020-09-01', end_date: '2026-09-01', depth: 'quick', place_name: 'TEST 001' }),
+    }), env)
+    const payload = await response.json()
+    assert.equal(response.status, 200)
+    assert.equal(payload.water_extrema_readiness.status, 'MODEL_COMPARABILITY_GATE_APPLIED')
+    assert.equal(payload.water_extrema_readiness.high_resolution_aoi_years, 2)
+    assert.equal(payload.analysis.hydrology_screening.visible_water_extrema.status, 'ESTABLISHED')
+    assert.equal(payload.analysis.hydrology_screening.visible_water_extrema.most_visible_water_year, 2020)
+    assert.equal(payload.analysis.hydrology_screening.visible_water_extrema.least_visible_water_year, 2026)
+    assert.deepEqual(payload.analysis.hydrology_screening.visible_water_extrema.compared_years, [2020, 2026])
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('Sentinel sampling omits a 2015 seasonal window that predates the mission', async () => {
+  const originalFetch = globalThis.fetch
+  const sentinelRequests = []
+  globalThis.fetch = async (url) => {
+    const target = String(url)
+    if (target.startsWith('https://landsatlook.usgs.gov/')) return new Response(JSON.stringify({ numberMatched: 10, features: [] }), { status: 200 })
+    if (target.startsWith('https://sh.dataspace.copernicus.eu/')) {
+      sentinelRequests.push(target)
+      return imageResponse()
+    }
+    if (target.startsWith('https://gibs.earthdata.nasa.gov/')) return imageResponse()
+    if (target === 'https://api.openai.com/v1/responses') {
+      return new Response(JSON.stringify({ output_text: JSON.stringify(validAnalysis()) }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+    }
+    throw new Error(`unexpected upstream ${target}`)
+  }
+
+  try {
+    const response = await handleWorkerRequest(new Request('https://worker.example/research/analyze', {
+      method: 'POST',
+      headers: { Origin: allowedOrigin, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ latitude: 53.5914, longitude: 19.010717, radius_km: 2, start_date: '2015-03-01', end_date: '2016-05-31', depth: 'quick', place_name: 'TEST 001' }),
+    }), env)
+    assert.equal(response.status, 200)
+    assert.equal(sentinelRequests.length, 1)
+    assert.match(new URL(sentinelRequests[0]).searchParams.get('TIME'), /^2016-/)
   } finally {
     globalThis.fetch = originalFetch
   }
