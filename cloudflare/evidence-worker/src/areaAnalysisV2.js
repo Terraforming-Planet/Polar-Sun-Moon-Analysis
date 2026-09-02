@@ -60,6 +60,20 @@ const TEST001_FOCUS = {
   evidenceCropWidthM: 468.75,
 }
 
+const ORIGINAL_SATELLITE_PRODUCT = 'ORIGINAL_OFFICIAL_SATELLITE_PRODUCT'
+const DERIVED_ANALYTICAL_PRODUCT = 'DERIVED_ANALYTICAL_PRODUCT'
+
+function isOriginalSatelliteProduct(image) {
+  return image?.image_authenticity === ORIGINAL_SATELLITE_PRODUCT && image?.ai_generated === false
+}
+
+function assertOriginalModelInputs(images) {
+  const rejected = images.filter(image => !isOriginalSatelliteProduct(image))
+  if (rejected.length) {
+    throw new Error(`Original-satellite-only gate rejected ${rejected.length} non-original model input(s).`)
+  }
+}
+
 const TEST001_RECORDED_FINDING = {
   case_id: TEST001_CASE_ID,
   evidence_revision: TEST001_EVIDENCE_REVISION,
@@ -104,14 +118,42 @@ const TEST001_RECORDED_FINDING = {
       year: 2000,
       role: 'HISTORICAL_FIXED_CROP_WITH_CONSENSUS_OVERLAY',
       url: `${TEST001_EVIDENCE_ROOT}/measurements_visible_pond_consensus/2000_historical_consensus_overlay.png`,
+      image_authenticity: DERIVED_ANALYTICAL_PRODUCT,
+      product_kind: 'RESEARCH_CONSENSUS_OVERLAY',
+      ai_generated: false,
+      used_as_model_input: false,
     },
     {
       year: 2026,
       role: 'RECENT_FIXED_CROP_WITH_HISTORICAL_CONSENSUS_OVERLAY',
       url: `${TEST001_EVIDENCE_ROOT}/measurements_visible_pond_consensus/2026_historical_consensus_on_recent_basin.png`,
+      image_authenticity: DERIVED_ANALYTICAL_PRODUCT,
+      product_kind: 'RESEARCH_CONSENSUS_OVERLAY',
+      ai_generated: false,
+      used_as_model_input: false,
     },
   ],
-  method: 'Deterministic visible-footprint consensus on the same fixed crop; no generative filling or AI super-resolution.',
+  source_original_images: [
+    {
+      year: 2000,
+      role: 'ORIGINAL_HISTORICAL_SATELLITE_SOURCE',
+      url: `${TEST001_EVIDENCE_ROOT}/seasonal_evidence/autumn/images/2000_2000-09-18_landsat-5_30m_2km_native.png`,
+      image_authenticity: ORIGINAL_SATELLITE_PRODUCT,
+      product_kind: 'PINNED_NATIVE_AOI_EXPORT',
+      ai_generated: false,
+      used_as_model_input: false,
+    },
+    {
+      year: 2026,
+      role: 'ORIGINAL_RECENT_SATELLITE_SOURCE',
+      url: `${TEST001_EVIDENCE_ROOT}/seasonal_evidence/late_summer_2026_proxy/images/2026_2026-08-07_Sentinel-2B_10m_2km_native.png`,
+      image_authenticity: ORIGINAL_SATELLITE_PRODUCT,
+      product_kind: 'PINNED_NATIVE_AOI_EXPORT',
+      ai_generated: false,
+      used_as_model_input: false,
+    },
+  ],
+  method: 'Deterministic visible-footprint consensus measured from the pinned original satellite series. Consensus overlays are derived human-review products, are not AI-generated, and are never model image inputs.',
 }
 
 export const L4_WATER_PROTOCOL_CONTEXT = {
@@ -153,9 +195,9 @@ export const TP26_WATER_EXTREMA_PROTOCOL = {
     },
     {
       source: 'NASA OPERA DSWx-HLS',
-      role: 'water-classification companion for selected HLS dates',
+      role: 'derived water-classification companion for human review only; never an original model image input',
       nominal_resolution: '30 m',
-      runtime_state: 'AOI_CLASSIFICATION_REQUESTED_WHEN_DATE_COVERAGE_EXISTS',
+      runtime_state: 'AOI_CLASSIFICATION_DISPLAY_ONLY_NOT_MODEL_INPUT',
     },
     {
       source: 'Copernicus Sentinel-1 GRD',
@@ -305,7 +347,8 @@ Pre-2000 Landsat catalogue metadata can establish archive availability but is no
 If the metadata says that zero images passed the Worker preflight, explicitly say that no satellite image was visually inspected in this run and keep confidence low.
 When comparing water, distinguish visible water present, visible water reduced/absent in supplied samples, and insufficient evidence. Never claim permanent drying from a small sample.
 When a visual_focus is supplied, register every detailed comparison to that exact target and do not substitute a larger nearby lake, river or dark feature. Treat broad MODIS/VIIRS images as regional context only. A smaller display frame improves target framing but never increases the native sensor resolution.
-For CURATED_TEST001_FIXED_CROP images, compare the same approximately 469 m crop around the corrected pond seed. The red polygon is the historical multi-year consensus footprint; it is an overlay, not a current-water mask. The recorded finding may support a near-total state transition while exact 2026 residual area, exact loss percentage and cause remain unknown.
+Every supplied model image is marked ORIGINAL_OFFICIAL_SATELLITE_PRODUCT and ai_generated=false. Never treat a derived overlay, classification, mask, index, synthetic image or AI-generated image as a visually inspected original. Derived records may be described only as separate analytical context with their method and limitations.
+For TEST 001, the recorded consensus measurement is derived analytical context from an original satellite series, not a live model image. It may support a near-total state transition while exact 2026 residual area, exact loss percentage and cause remain unknown.
 For hydrology screening, explicitly inspect the visible main channel or waterbody together with side tributaries, possible inflows, possible outflows, ditches, culverts and road crossings. Compare their visible continuity across supplied dates. Never infer flow direction from colour alone.
 When REGIONAL_PATROL_TILE images are supplied, they are sparse, spatially stratified samples from one recent HLS date. Inspect every supplied patrol tile and return one regional_patrol_assessment.tile_findings entry for every valid patrol_tile_id. Cite patrol_tile_id in candidate_features or notable_features when reporting a visible candidate, and distinguish open water, wet sediment/vegetation, cloud/shadow and no-data whenever possible. Do not claim that the patrol covers the full circular AOI, do not treat one-date patrol tiles as a temporal change series, and do not clear uninspected gaps. A 1 km frame improves localisation but does not improve the native 30 m HLS resolution. When no patrol tile is supplied, return NOT_REQUESTED with empty patrol arrays.
 Return a structured hydrology_screening result. Use VISIBLE_WATER_REDUCTION_CANDIDATE only when comparable supplied images visibly support reduction; otherwise use NO_VISIBLE_CHANGE_ESTABLISHED or INSUFFICIENT_EVIDENCE. A candidate inlet, outlet or obstruction remains a visible candidate until DEM, official hydrography, discharge/stage data and field inspection verify it.
@@ -534,6 +577,9 @@ function nasaImage(requestedDate, parsed) {
     date,
     source,
     url: `https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?${params.toString()}`,
+    image_authenticity: ORIGINAL_SATELLITE_PRODUCT,
+    product_kind: 'DAILY_TRUE_COLOR_SATELLITE_RENDER',
+    ai_generated: false,
     provenance_note: requestedDate === date
       ? 'single requested UTC day; visual layer from NASA GIBS'
       : `requested ${requestedDate}; displayed ${date}, the latest stable public GIBS day used to avoid an incomplete newest daily layer`,
@@ -578,6 +624,9 @@ function test001CuratedFocusImages(parsed) {
       evidence_role: 'CURATED_TEST001_FIXED_CROP_HISTORICAL_OVERLAY',
       nominal_resolution_m: 30,
       cloud_cover: null,
+      image_authenticity: DERIVED_ANALYTICAL_PRODUCT,
+      product_kind: 'RESEARCH_CONSENSUS_OVERLAY',
+      ai_generated: false,
       provenance_note: 'Immutable public evidence asset. Same approximately 469 m fixed geographic crop. The red polygon is the multi-year historical consensus footprint, not a current-water classification.',
     },
     {
@@ -588,6 +637,9 @@ function test001CuratedFocusImages(parsed) {
       evidence_role: 'CURATED_TEST001_FIXED_CROP_RECENT_OVERLAY',
       nominal_resolution_m: 10,
       cloud_cover: null,
+      image_authenticity: DERIVED_ANALYTICAL_PRODUCT,
+      product_kind: 'RESEARCH_CONSENSUS_OVERLAY',
+      ai_generated: false,
       provenance_note: 'Immutable public evidence asset. Same approximately 469 m fixed geographic crop. The red polygon transfers the historical consensus footprint onto the 2026 basin; it does not claim that the polygon is current water.',
     },
   ]
@@ -654,6 +706,9 @@ async function fetchHlsS30Image(parsed, year) {
     evidence_role: 'OPTICAL_RGB',
     nominal_resolution_m: 30,
     cloud_cover: selected.cloud_cover,
+    image_authenticity: ORIGINAL_SATELLITE_PRODUCT,
+    product_kind: 'SINGLE_ACQUISITION_SURFACE_REFLECTANCE',
+    ai_generated: false,
     catalogue_url: catalogueUrl,
     provenance_note: `NASA CMR selected ${selected.granule_id || selected.concept_id || 'an HLS S30 granule'} on ${selected.date}; tile cloud metadata ${selected.cloud_cover ?? 'not reported'}%; GIBS AOI rendering of harmonized Sentinel-2 surface reflectance at nominal 30 m`,
   }
@@ -673,6 +728,9 @@ function operaWaterClassificationImage(parsed, opticalImage) {
     evidence_role: 'WATER_CLASSIFICATION',
     nominal_resolution_m: 30,
     cloud_cover: opticalImage.cloud_cover,
+    image_authenticity: DERIVED_ANALYTICAL_PRODUCT,
+    product_kind: 'PROVIDER_DERIVED_WATER_CLASSIFICATION',
+    ai_generated: false,
     provenance_note: 'Classification companion for the selected HLS date. Legend: blue=open water, light blue=partial surface water, cyan=snow/ice, grey=cloud, white=not water. It is a classified product, not true-colour imagery or causal proof.',
   }
 }
@@ -714,6 +772,9 @@ function weldHighResolutionImages(parsed) {
     evidence_role: 'OPTICAL_RGB_HISTORICAL_COMPOSITE',
     nominal_resolution_m: 30,
     cloud_cover: null,
+    image_authenticity: ORIGINAL_SATELLITE_PRODUCT,
+    product_kind: 'MONTHLY_SATELLITE_COMPOSITE',
+    ai_generated: false,
     provenance_note: `Official 30 m Global WELD monthly composite for ${item.date.slice(0, 7)} rendered to the AOI. A monthly composite is not one exact acquisition and cross-sensor comparability must still be assessed.`,
   }))
 }
@@ -770,6 +831,9 @@ function regionalPatrolImages(parsed, highResolutionVisuals) {
     tile_center_latitude: point.latitude,
     tile_center_longitude: point.longitude,
     tile_frame_width_km: parsed.patrolFrameWidthKm,
+    image_authenticity: ORIGINAL_SATELLITE_PRODUCT,
+    product_kind: 'SINGLE_ACQUISITION_SURFACE_REFLECTANCE_CROP',
+    ai_generated: false,
     provenance_note: `${point.tileId}: deterministic spatially stratified ${parsed.patrolFrameWidthKm.toFixed(1)} km frame from the same HLS date as the regional patrol. The crop improves framing only; native source resolution remains ${sourceImage.nominal_resolution_m ?? 30} m.`,
   }))
 }
@@ -825,18 +889,16 @@ function selectEvenly(visuals, limit) {
 }
 
 function selectVisualCandidates(visuals, depth, patrolLimit = 0) {
+  assertOriginalModelInputs(visuals)
   const patrol = visuals.filter(item => item.evidence_role === 'REGIONAL_PATROL_TILE').slice(0, patrolLimit)
   const limit = patrol.length ? QUICK_OPENAI_IMAGE_LIMIT : depth === 'deep' ? DEEP_OPENAI_IMAGE_LIMIT : QUICK_OPENAI_IMAGE_LIMIT
   const coreVisuals = visuals.filter(item => item.evidence_role !== 'REGIONAL_PATROL_TILE')
   if (coreVisuals.length <= limit) return [...patrol, ...coreVisuals]
-  const fixedCropEvidence = coreVisuals.filter(item => String(item.evidence_role ?? '').startsWith('CURATED_TEST001_FIXED_CROP'))
   const highResolution = coreVisuals.filter(item => item.high_resolution_aoi === true)
   const continuity = coreVisuals.filter(item => item.high_resolution_aoi !== true)
-  const primaryHighResolution = highResolution.filter(item => item.evidence_role !== 'WATER_CLASSIFICATION' && !fixedCropEvidence.includes(item))
-  const classificationCompanions = highResolution.filter(item => item.evidence_role === 'WATER_CLASSIFICATION')
-  const selected = [...fixedCropEvidence.slice(0, limit)]
+  const selected = []
+  const primaryHighResolution = highResolution
   if (selected.length < limit) selected.push(...selectEvenly(primaryHighResolution, Math.min(primaryHighResolution.length, limit - selected.length)))
-  if (selected.length < limit) selected.push(...selectEvenly(classificationCompanions, limit - selected.length))
   if (selected.length < limit) selected.push(...selectEvenly(continuity, limit - selected.length))
   return [...patrol, ...selected.sort((left, right) => left.date.localeCompare(right.date))]
 }
@@ -979,6 +1041,7 @@ function buildRegionalPatrolSummary(parsed, patrolCandidates, analysisVisuals) {
 }
 
 function buildOpenAIRequest(parsed, visuals, landsat, env, visualWarnings = []) {
+  assertOriginalModelInputs(visuals)
   const metadata = {
     place_name: parsed.placeName || null,
     case_id: parsed.caseId,
@@ -1008,6 +1071,10 @@ function buildOpenAIRequest(parsed, visuals, landsat, env, visualWarnings = []) 
       date_or_request_end: item.date,
       source: item.source,
       evidence_role: item.evidence_role ?? 'TEMPORAL_CONTEXT',
+      image_authenticity: item.image_authenticity,
+      product_kind: item.product_kind,
+      ai_generated: false,
+      used_as_model_input: true,
       high_resolution_aoi: item.high_resolution_aoi === true,
       nominal_resolution_m: item.nominal_resolution_m ?? null,
       cloud_cover_metadata: item.cloud_cover ?? null,
@@ -1017,6 +1084,12 @@ function buildOpenAIRequest(parsed, visuals, landsat, env, visualWarnings = []) 
       provenance_note: item.provenance_note,
     })),
     visual_preflight_warnings: visualWarnings,
+    model_image_policy: {
+      rule: 'ORIGINAL_OFFICIAL_SATELLITE_PRODUCTS_ONLY',
+      original_model_inputs: visuals.length,
+      derived_model_inputs: 0,
+      ai_generated_model_inputs: 0,
+    },
     landsat_catalog_source: 'USGS Landsat Collection 2 Surface Reflectance STAC',
     landsat_matched_scene_count: landsat.matched,
     landsat_returned_scene_metadata: landsat.scenes,
@@ -1273,12 +1346,16 @@ export async function handleAreaAnalysisV2(request, env = {}) {
     const nasaDates = representativeNasaDates(parsed.startDate, parsed.endDate, parsed.depth)
     const highResolution = await highResolutionImages(parsed)
     const patrolCandidates = regionalPatrolImages(parsed, highResolution.images)
+    const derivedDisplayVisuals = [
+      ...highResolution.images.filter(item => !isOriginalSatelliteProduct(item)),
+      ...test001CuratedFocusImages(parsed),
+    ].sort((left, right) => left.date.localeCompare(right.date))
     const requestedVisuals = [
       ...nasaDates.map(date => nasaImage(date, parsed)),
-      ...highResolution.images,
-      ...test001CuratedFocusImages(parsed),
+      ...highResolution.images.filter(isOriginalSatelliteProduct),
       ...patrolCandidates,
     ].sort((left, right) => left.date.localeCompare(right.date))
+    assertOriginalModelInputs(requestedVisuals)
 
     let landsat
     try { landsat = await fetchLandsatContext(parsed) } catch (error) {
@@ -1318,7 +1395,7 @@ export async function handleAreaAnalysisV2(request, env = {}) {
       },
       period: { start_date: parsed.startDate, end_date: parsed.endDate },
       depth: parsed.depth,
-      preview_images: previews.map(item => ({ date: item.date, source: item.source, url: item.url, high_resolution_aoi: item.high_resolution_aoi === true, evidence_role: item.evidence_role ?? null, nominal_resolution_m: item.nominal_resolution_m ?? null, cloud_cover: item.cloud_cover ?? null })),
+      preview_images: previews.map(item => ({ date: item.date, source: item.source, url: item.url, high_resolution_aoi: item.high_resolution_aoi === true, evidence_role: item.evidence_role ?? null, nominal_resolution_m: item.nominal_resolution_m ?? null, cloud_cover: item.cloud_cover ?? null, image_authenticity: item.image_authenticity, product_kind: item.product_kind, ai_generated: false, used_as_model_input: analysisVisuals.some(visual => visual.url === item.url) })),
       analysis_images: analysisVisuals.map(item => ({
         date: item.date,
         source: item.source,
@@ -1331,8 +1408,34 @@ export async function handleAreaAnalysisV2(request, env = {}) {
         tile_center_latitude: item.tile_center_latitude ?? null,
         tile_center_longitude: item.tile_center_longitude ?? null,
         tile_frame_width_km: item.tile_frame_width_km ?? null,
+        image_authenticity: item.image_authenticity,
+        product_kind: item.product_kind,
+        ai_generated: false,
+        used_as_model_input: true,
+      })),
+      derived_images: derivedDisplayVisuals.map(item => ({
+        date: item.date,
+        source: item.source,
+        url: item.url,
+        high_resolution_aoi: item.high_resolution_aoi === true,
+        evidence_role: item.evidence_role ?? null,
+        nominal_resolution_m: item.nominal_resolution_m ?? null,
+        cloud_cover: item.cloud_cover ?? null,
+        image_authenticity: DERIVED_ANALYTICAL_PRODUCT,
+        product_kind: item.product_kind,
+        ai_generated: false,
+        used_as_model_input: false,
       })),
       ai_visual_image_count: analysisVisuals.length,
+      model_visual_image_count: analysisVisuals.length,
+      imagery_authenticity_policy: {
+        model_input_rule: 'ORIGINAL_OFFICIAL_SATELLITE_PRODUCTS_ONLY',
+        original_model_input_count: analysisVisuals.length,
+        derived_model_input_count: 0,
+        ai_generated_model_input_count: 0,
+        derived_display_only_count: derivedDisplayVisuals.length,
+        ai_generated_images_present: false,
+      },
       visual_preflight_warnings: visualWarnings,
       landsat_catalog: landsat,
       analysis,
@@ -1356,7 +1459,7 @@ export async function handleAreaAnalysisV2(request, env = {}) {
         ai_preflight_limit: (parsed.patrolTileCount ? QUICK_OPENAI_IMAGE_LIMIT : parsed.depth === 'deep' ? DEEP_OPENAI_IMAGE_LIMIT : QUICK_OPENAI_IMAGE_LIMIT) + parsed.patrolTileCount,
         patrol_tiles_inspected: regionalPatrol?.inspected_tiles ?? 0,
       },
-      evidence_policy: 'official-public-only; gallery and OpenAI imagery pass Worker image preflight; regional patrol is sparse one-date sampling and never a full-coverage or temporal-change claim; browser delivery uses the allowlisted provenance-preserving image stream',
+      evidence_policy: 'original official satellite products only are eligible as model image inputs; derived overlays and classifications are display-only and explicitly separated; AI-generated images are never evidence; gallery and model imagery pass Worker image preflight; regional patrol is sparse one-date sampling and never a full-coverage or temporal-change claim',
     }, 200, origin, env)
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Area analysis failed safely.'

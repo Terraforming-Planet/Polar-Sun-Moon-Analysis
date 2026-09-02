@@ -512,7 +512,20 @@ export async function handleYearlyGallery(request, env = {}) {
     return jsonResponse({ error: error instanceof Error ? error.message : 'Invalid yearly gallery request.' }, 400, origin, env)
   }
 
-  const slots = await Promise.all(body.years.map(year => gallerySlot(request, body, year)))
+  const slots = (await Promise.all(body.years.map(year => gallerySlot(request, body, year)))).map(slot => (
+    slot.status === 'image' && slot.image
+      ? {
+          ...slot,
+          image: {
+            ...slot.image,
+            image_authenticity: 'ORIGINAL_OFFICIAL_SATELLITE_PRODUCT',
+            product_kind: slot.image.asset_kind ?? 'OFFICIAL_SATELLITE_BROWSE',
+            ai_generated: false,
+            used_as_model_input: false,
+          },
+        }
+      : slot
+  ))
   return jsonResponse({
     service: 'terra-observation-yearly-gallery-v1',
     generated_at_utc: new Date().toISOString(),
@@ -521,6 +534,6 @@ export async function handleYearlyGallery(request, env = {}) {
     requested_years: body.years,
     returned_slots: slots.length,
     slots,
-    policy: 'One slot per requested year. Prefer official NASA HLS/WELD 30 m AOI renderings when the supported dated source exists; otherwise use a verified USGS browse or clearly-labelled NASA GIBS coarse fallback. Missing years remain explicit.',
+    policy: 'One slot per requested year. Every returned image is explicitly labelled as an original official satellite product and not AI-generated; these gallery images are not model inputs. Prefer official NASA HLS/WELD 30 m AOI renderings when the supported dated source exists; otherwise use a verified USGS browse or clearly-labelled NASA GIBS coarse fallback. Missing years remain explicit.',
   }, 200, origin, env, 'public, max-age=300')
 }
