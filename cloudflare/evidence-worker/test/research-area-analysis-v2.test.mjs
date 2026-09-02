@@ -10,11 +10,27 @@ const imageResponse = () => new Response(new Uint8Array([0xff, 0xd8, 0xff, 0xd9]
   headers: { 'Content-Type': 'image/jpeg' },
 })
 
+function cmrResponseFor(target, { empty = false } = {}) {
+  const temporal = new URL(target).searchParams.get('temporal') ?? ''
+  const date = temporal.slice(0, 10)
+  const year = Number(date.slice(0, 4))
+  return new Response(JSON.stringify({
+    feed: {
+      entry: empty ? [] : [{
+        producer_granule_id: `HLS.S30.TEST.${year}`,
+        time_start: `${date}T10:00:00Z`,
+        cloud_cover: '3',
+        id: `G-${year}-TEST`,
+      }],
+    },
+  }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+}
+
 function validAnalysis() {
   return {
     headline: 'Detailed test terrain analysis.',
     what_is_visible: 'The supplied images show terrain, water and differences in surface cover.',
-    change_over_time: 'Dated NASA samples show differences between years; Copernicus provides newer higher-detail context.',
+    change_over_time: 'Dated NASA samples show differences between years; HLS provides newer higher-detail context.',
     water_assessment: 'Visible water requires matched-season comparison before claiming a persistent change.',
     hydrology_screening: {
       water_change_state: 'INSUFFICIENT_EVIDENCE',
@@ -55,7 +71,8 @@ test('production research analyze route preflights official imagery and sends va
         }],
       }), { status: 200, headers: { 'Content-Type': 'application/geo+json' } })
     }
-    if (target.startsWith('https://gibs.earthdata.nasa.gov/') || target.startsWith('https://sh.dataspace.copernicus.eu/')) {
+    if (target.startsWith('https://cmr.earthdata.nasa.gov/')) return cmrResponseFor(target)
+    if (target.startsWith('https://gibs.earthdata.nasa.gov/')) {
       return imageResponse()
     }
     if (target === 'https://api.openai.com/v1/responses') {
@@ -75,7 +92,7 @@ test('production research analyze route preflights official imagery and sends va
       const images = body.input[0].content.filter(item => item.type === 'input_image')
       assert.ok(images.length >= 2)
       assert.ok(images.length <= 4)
-      assert.ok(images.every(item => item.image_url.startsWith('data:image/jpeg;base64,')))
+      assert.ok(images.every(item => /^data:image\/(?:jpeg|png);base64,/.test(item.image_url)))
       assert.ok(images.every(item => item.detail === 'auto'))
       return new Response(JSON.stringify({ output_text: JSON.stringify(validAnalysis()) }), { status: 200, headers: { 'Content-Type': 'application/json' } })
     }
@@ -103,7 +120,8 @@ test('production research analyze route preflights official imagery and sends va
     assert.ok(payload.ai_visual_image_count >= 2)
     assert.ok(payload.ai_visual_image_count <= 4)
     assert.ok(payload.preview_images.length <= 8)
-    assert.ok(payload.preview_images.some(item => item.source.includes('Copernicus Data Space')))
+    assert.ok(payload.preview_images.some(item => item.source.includes('HLS S30')))
+    assert.ok(payload.preview_images.some(item => item.source.includes('WELD')))
     assert.match(payload.evidence_policy, /Worker image preflight/)
     assert.equal(payload.gallery_policy.simple_display_limit, 4)
     assert.equal(payload.gallery_policy.advanced_display_limit, 8)
@@ -120,17 +138,13 @@ test('production research analyze route preflights official imagery and sends va
     assert.ok(nasaRequests.length > 0)
     for (const item of nasaRequests) {
       const parsed = new URL(item)
-      assert.equal(parsed.searchParams.get('WIDTH'), '1400')
-      assert.equal(parsed.searchParams.get('HEIGHT'), '1400')
+      const highResolution = /^(?:HLS_S30|Landsat_WELD|OPERA_L3)/.test(parsed.searchParams.get('LAYERS') ?? '')
+      assert.equal(parsed.searchParams.get('WIDTH'), highResolution ? '1500' : '1400')
+      assert.equal(parsed.searchParams.get('HEIGHT'), highResolution ? '1500' : '1400')
     }
-    const sentinelRequests = upstreams.filter(item => item.startsWith('https://sh.dataspace.copernicus.eu/ogc/wms/'))
-    assert.equal(sentinelRequests.length, 2)
-    assert.ok(sentinelRequests.some(item => new URL(item).searchParams.get('TIME') === '2026-08-06/2026-08-20'))
-    for (const item of sentinelRequests) {
-      const sentinelUrl = new URL(item)
-      assert.equal(sentinelUrl.searchParams.get('WIDTH'), '1600')
-      assert.equal(sentinelUrl.searchParams.get('HEIGHT'), '1600')
-    }
+    const cmrRequests = upstreams.filter(item => item.startsWith('https://cmr.earthdata.nasa.gov/'))
+    assert.equal(cmrRequests.length, 2)
+    assert.ok(cmrRequests.every(item => new URL(item).searchParams.get('short_name') === 'HLSS30'))
   } finally {
     globalThis.fetch = originalFetch
   }
@@ -143,14 +157,15 @@ test('deep analysis keeps a bounded high-detail validated image set and larger o
     const target = String(url)
     upstreams.push(target)
     if (target.startsWith('https://landsatlook.usgs.gov/')) return new Response(JSON.stringify({ numberMatched: 0, features: [] }), { status: 200 })
-    if (target.startsWith('https://gibs.earthdata.nasa.gov/') || target.startsWith('https://sh.dataspace.copernicus.eu/')) return imageResponse()
+    if (target.startsWith('https://cmr.earthdata.nasa.gov/')) return cmrResponseFor(target)
+    if (target.startsWith('https://gibs.earthdata.nasa.gov/')) return imageResponse()
     if (target === 'https://api.openai.com/v1/responses') {
       const body = JSON.parse(options.body)
       assert.equal(body.max_output_tokens, 7000)
       const images = body.input[0].content.filter(item => item.type === 'input_image')
       assert.equal(images.length, 8)
       assert.ok(images.every(item => item.detail === 'high'))
-      assert.ok(images.every(item => item.image_url.startsWith('data:image/jpeg;base64,')))
+      assert.ok(images.every(item => /^data:image\/(?:jpeg|png);base64,/.test(item.image_url)))
       return new Response(JSON.stringify({ output_text: JSON.stringify(validAnalysis()) }), { status: 200, headers: { 'Content-Type': 'application/json' } })
     }
     throw new Error(`unexpected upstream ${target}`)
@@ -165,27 +180,31 @@ test('deep analysis keeps a bounded high-detail validated image set and larger o
     assert.equal(response.status, 200)
     assert.equal(payload.ai_visual_image_count, 8)
     assert.ok(payload.preview_images.length <= 8)
-    const sentinelRequests = upstreams.filter(item => item.startsWith('https://sh.dataspace.copernicus.eu/ogc/wms/'))
-    assert.equal(sentinelRequests.length, 4)
-    for (const item of sentinelRequests) {
+    const cmrRequests = upstreams.filter(item => item.startsWith('https://cmr.earthdata.nasa.gov/'))
+    assert.equal(cmrRequests.length, 4)
+    const highResolutionRequests = upstreams.filter(item => {
+      if (!item.startsWith('https://gibs.earthdata.nasa.gov/')) return false
       const parsed = new URL(item)
-      assert.equal(parsed.searchParams.get('WIDTH'), '2048')
-      assert.equal(parsed.searchParams.get('HEIGHT'), '2048')
+      return /^(?:HLS_S30|Landsat_WELD|OPERA_L3)/.test(parsed.searchParams.get('LAYERS') ?? '')
+    })
+    assert.equal(highResolutionRequests.length, 7)
+    for (const item of highResolutionRequests) {
+      const parsed = new URL(item)
+      assert.equal(parsed.searchParams.get('WIDTH'), '1800')
+      assert.equal(parsed.searchParams.get('HEIGHT'), '1800')
     }
   } finally {
     globalThis.fetch = originalFetch
   }
 })
 
-test('invalid Copernicus WMS content is skipped without breaking NASA-backed area analysis', async () => {
+test('failed NASA CMR HLS discovery is reported without breaking coarse NASA fallback analysis', async () => {
   const originalFetch = globalThis.fetch
   globalThis.fetch = async (url, options = {}) => {
     const target = String(url)
     if (target.startsWith('https://landsatlook.usgs.gov/')) return new Response(JSON.stringify({ numberMatched: 0, features: [] }), { status: 200 })
+    if (target.startsWith('https://cmr.earthdata.nasa.gov/')) return new Response('temporarily unavailable', { status: 503 })
     if (target.startsWith('https://gibs.earthdata.nasa.gov/')) return imageResponse()
-    if (target.startsWith('https://sh.dataspace.copernicus.eu/')) {
-      return new Response('<ServiceException>Invalid instance</ServiceException>', { status: 200, headers: { 'Content-Type': 'text/xml' } })
-    }
     if (target === 'https://api.openai.com/v1/responses') {
       const body = JSON.parse(options.body)
       const images = body.input[0].content.filter(item => item.type === 'input_image')
@@ -205,8 +224,8 @@ test('invalid Copernicus WMS content is skipped without breaking NASA-backed are
     const payload = await response.json()
     assert.equal(response.status, 200)
     assert.ok(payload.ai_visual_image_count > 0)
-    assert.ok(payload.visual_preflight_warnings.some(item => item.includes('Copernicus Data Space')))
-    assert.equal(payload.preview_images.some(item => item.source.includes('Copernicus Data Space')), false)
+    assert.ok(payload.visual_preflight_warnings.some(item => item.includes('NASA CMR HLS')))
+    assert.equal(payload.preview_images.some(item => item.source.includes('HLS S30')), false)
   } finally {
     globalThis.fetch = originalFetch
   }
@@ -217,10 +236,8 @@ test('TP26 gate refuses small-waterbody extrema when high-resolution years are u
   globalThis.fetch = async (url, options = {}) => {
     const target = String(url)
     if (target.startsWith('https://landsatlook.usgs.gov/')) return new Response(JSON.stringify({ numberMatched: 10, features: [] }), { status: 200 })
+    if (target.startsWith('https://cmr.earthdata.nasa.gov/')) return cmrResponseFor(target, { empty: true })
     if (target.startsWith('https://gibs.earthdata.nasa.gov/')) return imageResponse()
-    if (target.startsWith('https://sh.dataspace.copernicus.eu/')) {
-      return new Response('<ServiceException>Authentication required</ServiceException>', { status: 200, headers: { 'Content-Type': 'text/xml' } })
-    }
     if (target === 'https://api.openai.com/v1/responses') {
       const analysis = validAnalysis()
       analysis.hydrology_screening.visible_water_extrema = {
@@ -259,7 +276,8 @@ test('TP26 gate refuses a coarse-image year regardless of the selected AOI radiu
   globalThis.fetch = async (url) => {
     const target = String(url)
     if (target.startsWith('https://landsatlook.usgs.gov/')) return new Response(JSON.stringify({ numberMatched: 10, features: [] }), { status: 200 })
-    if (target.startsWith('https://gibs.earthdata.nasa.gov/') || target.startsWith('https://sh.dataspace.copernicus.eu/')) return imageResponse()
+    if (target.startsWith('https://cmr.earthdata.nasa.gov/')) return cmrResponseFor(target, { empty: true })
+    if (target.startsWith('https://gibs.earthdata.nasa.gov/')) return imageResponse()
     if (target === 'https://api.openai.com/v1/responses') {
       const analysis = validAnalysis()
       analysis.hydrology_screening.visible_water_extrema = {
@@ -279,14 +297,14 @@ test('TP26 gate refuses a coarse-image year regardless of the selected AOI radiu
     const response = await handleWorkerRequest(new Request('https://worker.example/research/analyze', {
       method: 'POST',
       headers: { Origin: allowedOrigin, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ latitude: 53.5914, longitude: 19.010717, radius_km: 12, start_date: '2000-09-01', end_date: '2026-09-01', depth: 'deep', place_name: 'TEST 001' }),
+      body: JSON.stringify({ latitude: 53.5914, longitude: 19.010717, radius_km: 12, start_date: '2000-09-01', end_date: '2026-09-01', depth: 'deep', season: 'autumn', place_name: 'TEST 001' }),
     }), env)
     const payload = await response.json()
     assert.equal(response.status, 200)
     assert.equal(payload.analysis.hydrology_screening.visible_water_extrema.status, 'INSUFFICIENT_EVIDENCE')
     assert.equal(payload.analysis.hydrology_screening.visible_water_extrema.most_visible_water_year, null)
     assert.equal(payload.analysis.hydrology_screening.visible_water_extrema.least_visible_water_year, null)
-    assert.ok(payload.analysis.hydrology_screening.visible_water_extrema.compared_years.every(year => year >= 2015))
+    assert.deepEqual(payload.analysis.hydrology_screening.visible_water_extrema.compared_years, [2000])
     assert.match(payload.analysis.hydrology_screening.visible_water_extrema.basis, /Coarse MODIS\/VIIRS/)
   } finally {
     globalThis.fetch = originalFetch
@@ -298,7 +316,8 @@ test('TP26 gate retains a valid ranking from two high-resolution AOI years', asy
   globalThis.fetch = async (url) => {
     const target = String(url)
     if (target.startsWith('https://landsatlook.usgs.gov/')) return new Response(JSON.stringify({ numberMatched: 10, features: [] }), { status: 200 })
-    if (target.startsWith('https://gibs.earthdata.nasa.gov/') || target.startsWith('https://sh.dataspace.copernicus.eu/')) return imageResponse()
+    if (target.startsWith('https://cmr.earthdata.nasa.gov/')) return cmrResponseFor(target)
+    if (target.startsWith('https://gibs.earthdata.nasa.gov/')) return imageResponse()
     if (target === 'https://api.openai.com/v1/responses') {
       const analysis = validAnalysis()
       analysis.hydrology_screening.visible_water_extrema = {
@@ -333,15 +352,15 @@ test('TP26 gate retains a valid ranking from two high-resolution AOI years', asy
   }
 })
 
-test('Sentinel sampling omits a 2015 seasonal window that predates the mission', async () => {
+test('HLS Sentinel-2 sampling omits a 2015 spring window that predates HLS S30 coverage', async () => {
   const originalFetch = globalThis.fetch
-  const sentinelRequests = []
+  const cmrRequests = []
   globalThis.fetch = async (url) => {
     const target = String(url)
     if (target.startsWith('https://landsatlook.usgs.gov/')) return new Response(JSON.stringify({ numberMatched: 10, features: [] }), { status: 200 })
-    if (target.startsWith('https://sh.dataspace.copernicus.eu/')) {
-      sentinelRequests.push(target)
-      return imageResponse()
+    if (target.startsWith('https://cmr.earthdata.nasa.gov/')) {
+      cmrRequests.push(target)
+      return cmrResponseFor(target)
     }
     if (target.startsWith('https://gibs.earthdata.nasa.gov/')) return imageResponse()
     if (target === 'https://api.openai.com/v1/responses') {
@@ -357,8 +376,8 @@ test('Sentinel sampling omits a 2015 seasonal window that predates the mission',
       body: JSON.stringify({ latitude: 53.5914, longitude: 19.010717, radius_km: 2, start_date: '2015-03-01', end_date: '2016-05-31', depth: 'quick', place_name: 'TEST 001' }),
     }), env)
     assert.equal(response.status, 200)
-    assert.equal(sentinelRequests.length, 1)
-    assert.match(new URL(sentinelRequests[0]).searchParams.get('TIME'), /^2016-/)
+    assert.equal(cmrRequests.length, 1)
+    assert.match(new URL(cmrRequests[0]).searchParams.get('temporal'), /^2016-/)
   } finally {
     globalThis.fetch = originalFetch
   }

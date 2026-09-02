@@ -9,9 +9,12 @@ const MAX_QUERY_FEATURES = 25
 const MAX_GALLERY_BATCH_YEARS = 6
 const CLEAR_CLOUD_THRESHOLD = 20
 const GIBS_START = '2000-02-24'
+const HLS_L30_START = '2013-03-22'
 const LANDSAT_START_YEAR = 1972
 const UPSTREAM_TIMEOUT_MS = 6500
-const CANONICAL_FIELDS = new Set(['latitude', 'longitude', 'radius_km', 'start_date', 'end_date', 'depth', 'place_name'])
+const BROWSE_PREFLIGHT_TIMEOUT_MS = 4000
+const BROWSER_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp'])
+const CANONICAL_FIELDS = new Set(['latitude', 'longitude', 'radius_km', 'start_date', 'end_date', 'depth', 'place_name', 'season'])
 const GALLERY_FIELDS = new Set(['latitude', 'longitude', 'radius_km', 'years', 'season', 'cloud_mode'])
 const SEASON_REFERENCE = {
   all: '07-15',
@@ -27,6 +30,7 @@ const SEASON_WINDOWS = {
   autumn: ['09-01', '11-30'],
   winter: ['01-01', '02-28'],
 }
+const WELD_MONTHLY_YEARS = new Set([1984, 1985, 1986, 1989, 1990, 1991, 1999, 2000, 2001])
 
 function corsHeaders(origin, env = {}) {
   const headers = {
@@ -130,6 +134,7 @@ export function extractLandsatBrowseImage(item) {
   const fullBrowse = selected.asset_kind === 'FULL_RESOLUTION_BROWSE'
   return {
     date,
+    platform,
     source: `USGS Landsat Collection 2 · ${platform} · ${fullBrowse ? 'Full Resolution Browse' : 'Catalogue Thumbnail'}`,
     url: selected.href,
     original_url: selected.href,
@@ -204,6 +209,21 @@ async function fetchYearBrowseImages(body, year) {
   return extractLandsatBrowseImages(await response.json(), MAX_QUERY_FEATURES)
 }
 
+async function preflightBrowseImage(image) {
+  if (!image?.url) return false
+  try {
+    const response = await fetchWithTimeout(image.url, {
+      method: 'HEAD',
+      redirect: 'manual',
+      headers: { Accept: 'image/jpeg,image/png,image/webp,image/*;q=0.8' },
+    }, BROWSE_PREFLIGHT_TIMEOUT_MS)
+    const type = (response.headers.get('content-type') ?? '').split(';')[0].trim().toLowerCase()
+    return response.ok && BROWSER_IMAGE_TYPES.has(type)
+  } catch {
+    return false
+  }
+}
+
 function nasaFallbackImage(body, year) {
   if (year < Number(GIBS_START.slice(0, 4))) return null
   const season = String(body?.season ?? '')
@@ -240,6 +260,65 @@ function nasaFallbackImage(body, year) {
     analysis_eligible: false,
     quality_note: '1100×1100 AOI rendering for human catalogue comparison; it is not claimed as a model input.',
     provenance_note: 'NASA GIBS fallback for a year where a browser-renderable Landsat browse image was not returned. GIBS does not provide the same per-scene cloud-cover metadata.',
+  }
+}
+
+function gibsGalleryUrl(body, layer, date) {
+  const latitude = Number(body?.latitude)
+  const longitude = Number(body?.longitude)
+  const radiusKm = Number(body?.radius_km ?? 25)
+  const bounds = researchBounds(latitude, longitude, Math.max(radiusKm, 2))
+  const params = new URLSearchParams({
+    SERVICE: 'WMS', REQUEST: 'GetMap', VERSION: '1.1.1', LAYERS: layer, STYLES: '',
+    FORMAT: 'image/jpeg', TRANSPARENT: 'FALSE', SRS: 'EPSG:4326',
+    BBOX: `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`,
+    WIDTH: '1100', HEIGHT: '1100', TIME: date,
+  })
+  return `https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?${params.toString()}`
+}
+
+function weldGalleryImage(body, year) {
+  if (!WELD_MONTHLY_YEARS.has(year)) return null
+  const reference = SEASON_REFERENCE[String(body?.season ?? '')]
+  if (!reference) return null
+  const date = `${year}-${reference.slice(0, 2)}-01`
+  const url = gibsGalleryUrl(body, 'Landsat_WELD_CorrectedReflectance_TrueColor_Global_Monthly', date)
+  return {
+    year,
+    date,
+    source: 'NASA GIBS · Landsat WELD monthly true colour · 30 m',
+    url,
+    original_url: url,
+    scene_id: null,
+    cloud_cover: null,
+    cloud_preference_met: false,
+    asset_kind: 'NASA_WELD_30M_AOI',
+    render_kind: 'NATURAL_COLOR_RGB',
+    aoi_cropped: true,
+    analysis_eligible: false,
+    quality_note: 'Official 30 m monthly AOI composite for human comparison. It is not one exact acquisition and was not automatically inspected by the model.',
+    provenance_note: `NASA GIBS Global WELD monthly 30 m AOI rendering for ${date.slice(0, 7)}.`,
+  }
+}
+
+function hlsL30GalleryImage(body, chosen) {
+  if (!chosen || chosen.date < HLS_L30_START || !/^LANDSAT_[89]$/.test(chosen.platform ?? '')) return null
+  const url = gibsGalleryUrl(body, 'HLS_L30_Nadir_BRDF_Adjusted_Reflectance', chosen.date)
+  return {
+    year: Number(chosen.date.slice(0, 4)),
+    date: chosen.date,
+    source: `NASA HLS L30 · ${chosen.platform} · 30 m NBAR RGB`,
+    url,
+    original_url: url,
+    scene_id: chosen.scene_id,
+    cloud_cover: chosen.cloud_cover,
+    cloud_preference_met: Number.isFinite(chosen.cloud_cover) ? chosen.cloud_cover <= CLEAR_CLOUD_THRESHOLD : false,
+    asset_kind: 'NASA_HLS_L30_AOI',
+    render_kind: 'NATURAL_COLOR_RGB',
+    aoi_cropped: true,
+    analysis_eligible: false,
+    quality_note: 'Official 30 m HLS AOI rendering selected from Landsat catalogue metadata. This gallery image remains separate from model-inspected inputs.',
+    provenance_note: `NASA GIBS HLS L30 rendering for USGS scene metadata ${chosen.scene_id} on ${chosen.date}.`,
   }
 }
 
@@ -321,18 +400,46 @@ function parseGalleryPayload(value) {
 
 async function gallerySlot(request, body, year) {
   try {
+    const weld = weldGalleryImage(body, year)
+    if (weld) {
+      const proxiedWeld = proxiedImage(request, weld)
+      return {
+        year,
+        status: 'image',
+        image: {
+          year,
+          date: proxiedWeld.date,
+          source: proxiedWeld.source,
+          url: proxiedWeld.url,
+          original_url: proxiedWeld.original_url,
+          scene_id: null,
+          cloud_cover: null,
+          cloud_preference_met: false,
+          asset_kind: proxiedWeld.asset_kind,
+          render_kind: proxiedWeld.render_kind,
+          aoi_cropped: true,
+          analysis_eligible: false,
+          quality_note: proxiedWeld.quality_note,
+        },
+      }
+    }
     const images = await fetchYearBrowseImages(body, year)
+    const hlsCandidate = chooseYearBrowseImage(images.filter(image => /^LANDSAT_[89]$/.test(image.platform ?? '')), year, body.season, body.cloud_mode)
+    const hls = hlsL30GalleryImage(body, hlsCandidate)
     const chosen = chooseYearBrowseImage(images, year, body.season, body.cloud_mode)
-    const selected = chosen ?? nasaFallbackImage(body, year)
+    const chosenUsable = !hls && chosen ? await preflightBrowseImage(chosen) : false
+    const selected = hls ?? (chosenUsable ? chosen : nasaFallbackImage(body, year))
     if (!selected) {
-      return { year, status: 'missing', reason: 'No browser-renderable Landsat image and no NASA GIBS fallback are available for this year.' }
+      return { year, status: 'missing', reason: chosen
+        ? 'The official Landsat browse asset redirected or did not return an image, and no NASA GIBS fallback is available for this year.'
+        : 'No browser-renderable Landsat image and no NASA GIBS fallback are available for this year.' }
     }
     const proxied = proxiedImage(request, {
       ...selected,
       year,
       cloud_preference_met: Number.isFinite(selected.cloud_cover) ? selected.cloud_cover <= CLEAR_CLOUD_THRESHOLD : false,
     })
-    return {
+    const slot = {
       year,
       status: 'image',
       image: {
@@ -351,6 +458,8 @@ async function gallerySlot(request, body, year) {
         quality_note: proxied.quality_note,
       },
     }
+    if (!hls && chosen && !chosenUsable) slot.warning = 'The Landsat browse asset was not directly renderable; NASA GIBS fallback used.'
+    return slot
   } catch (error) {
     const fallback = nasaFallbackImage(body, year)
     if (fallback) {
@@ -408,6 +517,6 @@ export async function handleYearlyGallery(request, env = {}) {
     requested_years: body.years,
     returned_slots: slots.length,
     slots,
-    policy: 'One slot per requested year. Prefer official USGS Landsat browse imagery; use clearly-labelled NASA GIBS fallback when available. Missing years remain explicit.',
+    policy: 'One slot per requested year. Prefer official NASA HLS/WELD 30 m AOI renderings when the supported dated source exists; otherwise use a verified USGS browse or clearly-labelled NASA GIBS coarse fallback. Missing years remain explicit.',
   }, 200, origin, env, 'public, max-age=300')
 }
