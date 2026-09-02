@@ -5,22 +5,36 @@ export const AREA_ANALYSIS_V2_PATH = '/research/analyze'
 const OPENAI_RESPONSES_URL = 'https://api.openai.com/v1/responses'
 const DEFAULT_MODEL = 'gpt-5.6-terra'
 const GIBS_START = '2000-02-24'
-const SENTINEL2_START = '2015-06-23'
+const HLS_S30_START = '2015-11-28'
+const CMR_GRANULES_URL = 'https://cmr.earthdata.nasa.gov/search/granules.json'
 const MAX_REQUEST_BYTES = 4096
 const MAX_RADIUS_KM = 500
 const QUICK_NASA_LIMIT = 7
 const DEEP_NASA_LIMIT = 20
 const QUICK_OPENAI_IMAGE_LIMIT = 4
 const DEEP_OPENAI_IMAGE_LIMIT = 8
-const QUICK_SENTINEL_IMAGE_LIMIT = 2
-const DEEP_SENTINEL_IMAGE_LIMIT = 4
+const QUICK_HLS_YEAR_LIMIT = 2
+const DEEP_HLS_YEAR_LIMIT = 4
+const QUICK_WELD_YEAR_LIMIT = 1
+const DEEP_WELD_YEAR_LIMIT = 2
 const MAX_GALLERY_IMAGES = 8
 const MAX_IMAGE_BYTES = 6 * 1024 * 1024
 const MAX_VISUAL_BYTES = 24 * 1024 * 1024
+const CATALOG_FETCH_TIMEOUT_MS = 25_000
+const VISUAL_FETCH_TIMEOUT_MS = 25_000
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
-const ALLOWED_FIELDS = new Set(['latitude', 'longitude', 'radius_km', 'start_date', 'end_date', 'depth', 'place_name'])
+const ALLOWED_FIELDS = new Set(['latitude', 'longitude', 'radius_km', 'start_date', 'end_date', 'depth', 'place_name', 'season'])
 const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp'])
-const DEFAULT_CDSE_INSTANCE = 'd708f736-b553-4328-9b5e-39bdb444790c'
+const SEASON_WINDOWS = {
+  all: ['01-01', '12-31'],
+  spring: ['03-01', '05-31'],
+  summer: ['06-01', '08-31'],
+  autumn: ['09-01', '11-30'],
+  winter: ['01-01', '02-28'],
+}
+const SEASON_REFERENCE = { all: '07-15', spring: '04-15', summer: '07-15', autumn: '10-15', winter: '01-15' }
+const WELD_MONTHLY_YEARS = [1984, 1985, 1986, 1989, 1990, 1991, 1999, 2000, 2001]
+const WELD_MONTH_BY_SEASON = { all: '07-01', spring: '04-01', summer: '07-01', autumn: '10-01', winter: '01-01' }
 
 export const L4_WATER_PROTOCOL_CONTEXT = {
   usage: 'AUDIT_PROTOCOL_ONLY_NOT_RUNTIME_CHECKPOINT_OR_ENVIRONMENTAL_GROUND_TRUTH',
@@ -48,10 +62,22 @@ export const TP26_WATER_EXTREMA_PROTOCOL = {
   role: 'EVIDENCE_ORCHESTRATION_PROTOCOL_NOT_A_SATELLITE_OR_RUNTIME_CHECKPOINT',
   source_ladder: [
     {
-      source: 'Copernicus Sentinel-2 L2A',
-      role: 'matched-season optical water and land-cover delineation',
-      nominal_resolution: '10 m / 20 m band dependent',
-      runtime_state: 'AOI_IMAGES_REQUESTED_WHEN_PUBLIC_WMS_PREFLIGHT_PASSES',
+      source: 'NASA HLS S30 · ESA Sentinel-2 MSI',
+      role: 'matched-season optical water and land-cover delineation selected from public CMR metadata',
+      nominal_resolution: '30 m harmonized surface reflectance',
+      runtime_state: 'AOI_IMAGES_REQUESTED_AFTER_CMR_SCENE_SELECTION',
+    },
+    {
+      source: 'NASA GIBS · Landsat WELD monthly true colour',
+      role: 'historical 30 m AOI composite for supported archive years',
+      nominal_resolution: '30 m',
+      runtime_state: 'AOI_IMAGES_REQUESTED_FOR_SUPPORTED_YEARS',
+    },
+    {
+      source: 'NASA OPERA DSWx-HLS',
+      role: 'water-classification companion for selected HLS dates',
+      nominal_resolution: '30 m',
+      runtime_state: 'AOI_CLASSIFICATION_REQUESTED_WHEN_DATE_COVERAGE_EXISTS',
     },
     {
       source: 'Copernicus Sentinel-1 GRD',
@@ -153,7 +179,8 @@ Give a substantially detailed answer: describe visible terrain, water bodies/cha
 Never invent measurements, causes, dates, missing imagery, water depths, exact shoreline areas, hydrological mechanisms, model accuracy, or ground truth.
 A visual pattern is an observation candidate, not proof of physical causation. A suspected blocked channel, drainage change, watershed boundary or flow direction is a hypothesis unless supported by DEM/hydrological evidence supplied separately.
 Distinguish three evidence classes explicitly in your reasoning: (1) images visually inspected by the model, (2) catalogue metadata only, and (3) user annotations or hypotheses.
-Copernicus Sentinel-2 WMS can provide higher spatial detail but may represent a multi-day request window/mosaic rather than one exact acquisition. Do not invent an exact sensing time from a WMS request window.
+NASA HLS S30 supplies harmonized ESA Sentinel-2 surface reflectance at nominal 30 m after a dated granule is selected from public NASA CMR metadata. NASA GIBS WELD supplies historical 30 m monthly composites for supported archive years. Distinguish a single HLS acquisition date from a WELD monthly composite.
+NASA OPERA DSWx-HLS is a classified water product. Its legend is supplied in the image metadata; do not describe it as true colour, and do not turn a classified pattern into a causal claim.
 NASA GIBS imagery is used for temporal continuity; recent VIIRS is generally more spatially detailed than MODIS, while older dates may use MODIS. The public UI intentionally avoids the newest two UTC days for daily GIBS display because a daily layer may still be incomplete while upstream products are publishing.
 Pre-2000 Landsat catalogue metadata can establish archive availability but is not itself visual inspection. Do not pretend metadata-only years were visually inspected.
 If the metadata says that zero images passed the Worker preflight, explicitly say that no satellite image was visually inspected in this run and keep confidence low.
@@ -215,6 +242,15 @@ function stableGibsDate(value) {
   return value > latest ? latest : value
 }
 
+function inferSeason(startDate, requestedEndDate) {
+  const startSuffix = String(startDate).slice(5)
+  const endSuffix = String(requestedEndDate).slice(5)
+  for (const [season, [expectedStart, expectedEnd]] of Object.entries(SEASON_WINDOWS)) {
+    if (startSuffix === expectedStart && endSuffix === expectedEnd) return season
+  }
+  return 'all'
+}
+
 function parsePayload(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Request body must be one JSON object.')
   for (const key of Object.keys(value)) if (!ALLOWED_FIELDS.has(key)) throw new Error(`Unexpected field: ${key}.`)
@@ -231,7 +267,19 @@ function parsePayload(value) {
   if (start.timestamp > end.timestamp) throw new Error('start_date must not be later than the effective end_date.')
   const depth = value.depth === 'deep' ? 'deep' : 'quick'
   const placeName = typeof value.place_name === 'string' ? value.place_name.trim().slice(0, 160) : ''
-  return { latitude, longitude, radiusKm, startDate: start.value, endDate: end.value, depth, placeName }
+  const season = value.season === undefined ? inferSeason(start.value, requestedEnd.value) : String(value.season)
+  if (!SEASON_WINDOWS[season]) throw new Error('season must be all, spring, summer, autumn or winter.')
+  return {
+    latitude,
+    longitude,
+    radiusKm,
+    startDate: start.value,
+    requestedEndDate: requestedEnd.value,
+    endDate: end.value,
+    depth,
+    placeName,
+    season,
+  }
 }
 
 async function readSmallJson(request) {
@@ -240,6 +288,16 @@ async function readSmallJson(request) {
   const text = await request.text()
   if (new TextEncoder().encode(text).byteLength > MAX_REQUEST_BYTES) throw new Error('Request is too large.')
   return JSON.parse(text)
+}
+
+async function fetchWithTimeout(url, options = {}, timeoutMs = CATALOG_FETCH_TIMEOUT_MS) {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), timeoutMs)
+  try {
+    return await fetch(url, { ...options, signal: controller.signal })
+  } finally {
+    clearTimeout(timeout)
+  }
 }
 
 function researchBounds(latitude, longitude, radiusKm) {
@@ -272,6 +330,16 @@ function sampleYears(startYear, endYear, limit) {
   return [...selected].sort((a, b) => a - b).slice(0, limit)
 }
 
+function sampleValues(values, limit) {
+  if (values.length <= limit) return [...values]
+  const selected = new Set()
+  for (let index = 0; index < limit; index += 1) {
+    const position = Math.round((index * (values.length - 1)) / Math.max(1, limit - 1))
+    selected.add(values[position])
+  }
+  return [...selected]
+}
+
 function representativeNasaDates(startDate, endDate, depth) {
   const visualStart = startDate < GIBS_START ? GIBS_START : startDate
   if (visualStart > endDate) return []
@@ -283,12 +351,6 @@ function representativeNasaDates(startDate, endDate, depth) {
   return sampleYears(start.getUTCFullYear(), end.getUTCFullYear(), limit)
     .map(year => validDateForYear(year, month, day))
     .filter(date => date >= visualStart && date <= endDate)
-}
-
-function daysBefore(date, days) {
-  const value = new Date(`${date}T12:00:00Z`)
-  value.setUTCDate(value.getUTCDate() - days)
-  return value.toISOString().slice(0, 10)
 }
 
 function nasaImage(requestedDate, parsed) {
@@ -314,38 +376,156 @@ function nasaImage(requestedDate, parsed) {
   }
 }
 
-function sentinelImages(parsed, env) {
-  if (parsed.endDate < SENTINEL2_START) return []
+function seasonalRange(parsed, year, minimumDate = null) {
+  const [startSuffix, endSuffix] = SEASON_WINDOWS[parsed.season]
+  let start = `${year}-${startSuffix}`
+  let end = `${year}-${endSuffix}`
+  if (start < parsed.startDate) start = parsed.startDate
+  if (minimumDate && start < minimumDate) start = minimumDate
+  if (end > parsed.endDate) end = parsed.endDate
+  end = stableGibsDate(end)
+  return start <= end ? { start, end } : null
+}
+
+function gibsAoiImageUrl(parsed, layer, date, size, format = 'image/jpeg') {
   const bounds = researchBounds(parsed.latitude, parsed.longitude, Math.max(parsed.radiusKm, 2))
-  const instance = typeof env.CDSE_INSTANCE_ID === 'string' && env.CDSE_INSTANCE_ID.trim() ? env.CDSE_INSTANCE_ID.trim() : DEFAULT_CDSE_INSTANCE
-  const layer = typeof env.CDSE_TRUE_COLOR_LAYER === 'string' && env.CDSE_TRUE_COLOR_LAYER.trim() ? env.CDSE_TRUE_COLOR_LAYER.trim() : 'NATURAL-COLOR'
-  const size = parsed.depth === 'deep' ? 2048 : 1600
-  const startYear = Math.max(Number(parsed.startDate.slice(0, 4)), Number(SENTINEL2_START.slice(0, 4)))
-  const endYear = Number(parsed.endDate.slice(0, 4))
-  const limit = parsed.depth === 'deep' ? DEEP_SENTINEL_IMAGE_LIMIT : QUICK_SENTINEL_IMAGE_LIMIT
-  const monthDay = parsed.endDate.slice(5)
-  const minimumDate = parsed.startDate > SENTINEL2_START ? parsed.startDate : SENTINEL2_START
-  const firstCandidateDate = validDateForYear(startYear, Number(monthDay.slice(0, 2)), Number(monthDay.slice(3, 5)))
-  const firstEligibleYear = firstCandidateDate < minimumDate ? startYear + 1 : startYear
-  return sampleYears(firstEligibleYear, endYear, limit).map(year => {
-    let requestEnd = validDateForYear(year, Number(monthDay.slice(0, 2)), Number(monthDay.slice(3, 5)))
-    if (requestEnd > parsed.endDate) requestEnd = parsed.endDate
-    const candidateStart = daysBefore(requestEnd, parsed.depth === 'deep' ? 30 : 14)
-    const start = candidateStart < minimumDate ? minimumDate : candidateStart
-    const params = new URLSearchParams({
-      SERVICE: 'WMS', REQUEST: 'GetMap', VERSION: '1.1.1', LAYERS: layer, STYLES: '',
-      FORMAT: 'image/jpeg', TRANSPARENT: 'FALSE', SRS: 'EPSG:4326',
-      BBOX: `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`,
-      WIDTH: String(size), HEIGHT: String(size), TIME: `${start}/${requestEnd}`, MAXCC: '35', SHOWLOGO: 'false',
-    })
-    return {
-      date: requestEnd,
-      source: 'Copernicus Data Space · Sentinel-2 L2A true-colour WMS',
-      url: `https://sh.dataspace.copernicus.eu/ogc/wms/${instance}?${params.toString()}`,
-      high_resolution_aoi: true,
-      provenance_note: `request window ${start}..${requestEnd}; may be a mosaic/latest usable optical observation, not an asserted exact sensing date`,
-    }
+  const params = new URLSearchParams({
+    SERVICE: 'WMS', REQUEST: 'GetMap', VERSION: '1.1.1', LAYERS: layer, STYLES: '',
+    FORMAT: format, TRANSPARENT: 'FALSE', SRS: 'EPSG:4326',
+    BBOX: `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`,
+    WIDTH: String(size), HEIGHT: String(size), TIME: date,
   })
+  return `https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?${params.toString()}`
+}
+
+function cmrHlsUrl(parsed, range) {
+  const bounds = researchBounds(parsed.latitude, parsed.longitude, parsed.radiusKm)
+  const params = new URLSearchParams({
+    short_name: 'HLSS30',
+    version: '2.0',
+    bounding_box: `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`,
+    temporal: `${range.start}T00:00:00Z,${range.end}T23:59:59Z`,
+    page_size: '40',
+  })
+  return `${CMR_GRANULES_URL}?${params.toString()}`
+}
+
+function dateDistanceDays(date, reference) {
+  return Math.abs(Date.parse(`${date}T12:00:00Z`) - Date.parse(`${reference}T12:00:00Z`)) / 86_400_000
+}
+
+function bestHlsGranule(payload, year, season) {
+  const entries = Array.isArray(payload?.feed?.entry) ? payload.feed.entry : []
+  const byDate = new Map()
+  for (const entry of entries) {
+    const date = typeof entry?.time_start === 'string' ? entry.time_start.slice(0, 10) : null
+    if (!date || Number(date.slice(0, 4)) !== year) continue
+    const parsedCloud = entry.cloud_cover === null || entry.cloud_cover === undefined || entry.cloud_cover === ''
+      ? null
+      : Number(entry.cloud_cover)
+    const cloudCover = Number.isFinite(parsedCloud) ? parsedCloud : null
+    const candidate = {
+      date,
+      cloud_cover: cloudCover,
+      granule_id: String(entry?.producer_granule_id ?? entry?.title ?? '').slice(0, 220),
+      concept_id: String(entry?.id ?? '').slice(0, 160),
+    }
+    const existing = byDate.get(date)
+    const candidateCloud = cloudCover ?? 101
+    const existingCloud = existing?.cloud_cover ?? 101
+    if (!existing || candidateCloud < existingCloud) byDate.set(date, candidate)
+  }
+  const reference = `${year}-${SEASON_REFERENCE[season]}`
+  return [...byDate.values()].sort((left, right) => {
+    const cloudDelta = (left.cloud_cover ?? 101) - (right.cloud_cover ?? 101)
+    return cloudDelta || dateDistanceDays(left.date, reference) - dateDistanceDays(right.date, reference) || left.date.localeCompare(right.date)
+  })[0] ?? null
+}
+
+async function fetchHlsS30Image(parsed, year) {
+  const range = seasonalRange(parsed, year, HLS_S30_START)
+  if (!range) return null
+  const catalogueUrl = cmrHlsUrl(parsed, range)
+  const response = await fetchWithTimeout(catalogueUrl, { headers: { Accept: 'application/json' } })
+  if (!response.ok) throw new Error(`NASA CMR HLS catalogue returned HTTP ${response.status} for ${year}.`)
+  const selected = bestHlsGranule(await response.json(), year, parsed.season)
+  if (!selected) return null
+  const size = parsed.depth === 'deep' ? 1800 : 1500
+  return {
+    date: selected.date,
+    source: 'NASA HLS S30 · ESA Sentinel-2 MSI · 30 m NBAR RGB',
+    url: gibsAoiImageUrl(parsed, 'HLS_S30_Nadir_BRDF_Adjusted_Reflectance', selected.date, size),
+    high_resolution_aoi: true,
+    evidence_role: 'OPTICAL_RGB',
+    nominal_resolution_m: 30,
+    cloud_cover: selected.cloud_cover,
+    catalogue_url: catalogueUrl,
+    provenance_note: `NASA CMR selected ${selected.granule_id || selected.concept_id || 'an HLS S30 granule'} on ${selected.date}; tile cloud metadata ${selected.cloud_cover ?? 'not reported'}%; GIBS AOI rendering of harmonized Sentinel-2 surface reflectance at nominal 30 m`,
+  }
+}
+
+function operaCoverageIncludes(date) {
+  return (date >= '2016-01-07' && date <= '2018-08-16') || date >= '2023-01-01'
+}
+
+function operaWaterClassificationImage(parsed, opticalImage) {
+  const size = parsed.depth === 'deep' ? 1800 : 1500
+  return {
+    date: opticalImage.date,
+    source: 'NASA OPERA DSWx-HLS · 30 m water classification',
+    url: gibsAoiImageUrl(parsed, 'OPERA_L3_Dynamic_Surface_Water_Extent-HLS', opticalImage.date, size, 'image/png'),
+    high_resolution_aoi: true,
+    evidence_role: 'WATER_CLASSIFICATION',
+    nominal_resolution_m: 30,
+    cloud_cover: opticalImage.cloud_cover,
+    provenance_note: 'Classification companion for the selected HLS date. Legend: blue=open water, light blue=partial surface water, cyan=snow/ice, grey=cloud, white=not water. It is a classified product, not true-colour imagery or causal proof.',
+  }
+}
+
+async function hlsHighResolutionImages(parsed) {
+  const startYear = Math.max(Number(parsed.startDate.slice(0, 4)), Number(HLS_S30_START.slice(0, 4)))
+  const endYear = Number(parsed.endDate.slice(0, 4))
+  const limit = parsed.depth === 'deep' ? DEEP_HLS_YEAR_LIMIT : QUICK_HLS_YEAR_LIMIT
+  const eligibleYears = Array.from({ length: Math.max(0, endYear - startYear + 1) }, (_, index) => startYear + index)
+    .filter(year => seasonalRange(parsed, year, HLS_S30_START))
+  const substantialYears = eligibleYears.filter(year => {
+    const range = seasonalRange(parsed, year, HLS_S30_START)
+    return range && dateDistanceDays(range.start, range.end) >= 14
+  })
+  const years = sampleValues(substantialYears.length ? substantialYears : eligibleYears, limit)
+  const settled = await Promise.allSettled(years.map(year => fetchHlsS30Image(parsed, year)))
+  const images = settled.flatMap(item => item.status === 'fulfilled' && item.value ? [item.value] : [])
+  const warnings = settled.flatMap((item, index) => item.status === 'rejected'
+    ? [`NASA CMR HLS ${years[index]}: ${item.reason instanceof Error ? item.reason.message : 'catalogue request failed'}; high-resolution year skipped.`]
+    : [])
+  const companionLimit = parsed.depth === 'deep' ? 2 : 1
+  const companions = sampleValues(images.filter(item => operaCoverageIncludes(item.date)), companionLimit)
+    .map(item => operaWaterClassificationImage(parsed, item))
+  return { images: [...images, ...companions], warnings }
+}
+
+function weldHighResolutionImages(parsed) {
+  const suffix = WELD_MONTH_BY_SEASON[parsed.season]
+  const eligible = WELD_MONTHLY_YEARS
+    .map(year => ({ year, date: `${year}-${suffix}` }))
+    .filter(item => item.date >= parsed.startDate && item.date <= parsed.endDate)
+  const limit = parsed.depth === 'deep' ? DEEP_WELD_YEAR_LIMIT : QUICK_WELD_YEAR_LIMIT
+  const size = parsed.depth === 'deep' ? 1800 : 1500
+  return sampleValues(eligible, limit).map(item => ({
+    date: item.date,
+    source: 'NASA GIBS · Landsat WELD monthly true colour · 30 m',
+    url: gibsAoiImageUrl(parsed, 'Landsat_WELD_CorrectedReflectance_TrueColor_Global_Monthly', item.date, size),
+    high_resolution_aoi: true,
+    evidence_role: 'OPTICAL_RGB_HISTORICAL_COMPOSITE',
+    nominal_resolution_m: 30,
+    cloud_cover: null,
+    provenance_note: `Official 30 m Global WELD monthly composite for ${item.date.slice(0, 7)} rendered to the AOI. A monthly composite is not one exact acquisition and cross-sensor comparability must still be assessed.`,
+  }))
+}
+
+async function highResolutionImages(parsed) {
+  const hls = await hlsHighResolutionImages(parsed)
+  return { images: [...weldHighResolutionImages(parsed), ...hls.images], warnings: hls.warnings }
 }
 
 function landsatSceneSummary(item) {
@@ -361,7 +541,7 @@ async function fetchLandsatContext(parsed) {
   const bounds = researchBounds(parsed.latitude, parsed.longitude, parsed.radiusKm)
   const query = { bbox: [bounds.west, bounds.south, bounds.east, bounds.north], start: parsed.startDate, end: parsed.endDate, limit: 40 }
   const upstreamUrl = buildUsGsLandsatUrl(query)
-  const upstream = await fetch(upstreamUrl, { headers: { Accept: 'application/geo+json,application/json' } })
+  const upstream = await fetchWithTimeout(upstreamUrl, { headers: { Accept: 'application/geo+json,application/json' } })
   if (!upstream.ok) throw new Error(`USGS Landsat catalogue returned HTTP ${upstream.status}.`)
   const payload = await upstream.json()
   const matched = Number(payload?.numberMatched ?? payload?.context?.matched ?? payload?.features?.length ?? 0)
@@ -403,9 +583,11 @@ function selectVisualCandidates(visuals, depth) {
   if (visuals.length <= limit) return [...visuals]
   const highResolution = visuals.filter(item => item.high_resolution_aoi === true)
   const continuity = visuals.filter(item => item.high_resolution_aoi !== true)
-  const highResolutionLimit = Math.min(highResolution.length, Math.max(2, Math.ceil(limit / 2)))
-  const selected = [...selectEvenly(highResolution, highResolutionLimit)]
-  selected.push(...selectEvenly(continuity, limit - selected.length))
+  const primaryHighResolution = highResolution.filter(item => item.evidence_role !== 'WATER_CLASSIFICATION')
+  const classificationCompanions = highResolution.filter(item => item.evidence_role === 'WATER_CLASSIFICATION')
+  const selected = [...selectEvenly(primaryHighResolution, Math.min(primaryHighResolution.length, limit))]
+  if (selected.length < limit) selected.push(...selectEvenly(classificationCompanions, limit - selected.length))
+  if (selected.length < limit) selected.push(...selectEvenly(continuity, limit - selected.length))
   return selected.sort((left, right) => left.date.localeCompare(right.date))
 }
 
@@ -418,46 +600,57 @@ function bytesToBase64(bytes) {
   return btoa(binary)
 }
 
+async function fetchVisualInput(item) {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), VISUAL_FETCH_TIMEOUT_MS)
+  try {
+    const response = await fetch(item.url, {
+      signal: controller.signal,
+      headers: { Accept: 'image/jpeg,image/png,image/webp,image/*;q=0.8' },
+    })
+    if (!response.ok) return { warning: `${item.source} ${item.date}: HTTP ${response.status}; image skipped.` }
+    const mimeType = (response.headers.get('content-type') ?? '').split(';')[0].trim().toLowerCase()
+    if (!ALLOWED_IMAGE_TYPES.has(mimeType)) {
+      return { warning: `${item.source} ${item.date}: ${mimeType || 'unknown content type'}; image skipped.` }
+    }
+    const declaredBytes = Number(response.headers.get('content-length') ?? '0')
+    if (Number.isFinite(declaredBytes) && declaredBytes > MAX_IMAGE_BYTES) {
+      return { warning: `${item.source} ${item.date}: image exceeds per-image safety limit; skipped.` }
+    }
+    const bytes = new Uint8Array(await response.arrayBuffer())
+    if (!bytes.byteLength) return { warning: `${item.source} ${item.date}: empty image; skipped.` }
+    if (bytes.byteLength > MAX_IMAGE_BYTES) {
+      return { warning: `${item.source} ${item.date}: image exceeds per-image safety limit; skipped.` }
+    }
+    return { item, mimeType, bytes }
+  } catch {
+    return { warning: `${item.source} ${item.date}: image preflight failed or timed out; skipped.` }
+  } finally {
+    clearTimeout(timeout)
+  }
+}
+
 async function prepareVisualInputs(visuals, depth) {
   const prepared = []
   const warnings = []
   let totalBytes = 0
 
-  for (const item of selectVisualCandidates(visuals, depth)) {
-    try {
-      const response = await fetch(item.url, { headers: { Accept: 'image/jpeg,image/png,image/webp,image/*;q=0.8' } })
-      if (!response.ok) {
-        warnings.push(`${item.source} ${item.date}: HTTP ${response.status}; image skipped.`)
-        continue
-      }
-      const mimeType = (response.headers.get('content-type') ?? '').split(';')[0].trim().toLowerCase()
-      if (!ALLOWED_IMAGE_TYPES.has(mimeType)) {
-        warnings.push(`${item.source} ${item.date}: ${mimeType || 'unknown content type'}; image skipped.`)
-        continue
-      }
-      const declaredBytes = Number(response.headers.get('content-length') ?? '0')
-      if (Number.isFinite(declaredBytes) && declaredBytes > MAX_IMAGE_BYTES) {
-        warnings.push(`${item.source} ${item.date}: image exceeds per-image safety limit; skipped.`)
-        continue
-      }
-      const bytes = new Uint8Array(await response.arrayBuffer())
-      if (!bytes.byteLength) {
-        warnings.push(`${item.source} ${item.date}: empty image; skipped.`)
-        continue
-      }
-      if (bytes.byteLength > MAX_IMAGE_BYTES || totalBytes + bytes.byteLength > MAX_VISUAL_BYTES) {
-        warnings.push(`${item.source} ${item.date}: image exceeds analysis byte budget; skipped.`)
-        continue
-      }
-      totalBytes += bytes.byteLength
-      prepared.push({
-        ...item,
-        input_url: `data:${mimeType};base64,${bytesToBase64(bytes)}`,
-        byte_size: bytes.byteLength,
-      })
-    } catch {
-      warnings.push(`${item.source} ${item.date}: image preflight failed; skipped.`)
+  const results = await Promise.all(selectVisualCandidates(visuals, depth).map(item => fetchVisualInput(item)))
+  for (const result of results) {
+    if (result.warning) {
+      warnings.push(result.warning)
+      continue
     }
+    if (totalBytes + result.bytes.byteLength > MAX_VISUAL_BYTES) {
+      warnings.push(`${result.item.source} ${result.item.date}: image exceeds analysis byte budget; skipped.`)
+      continue
+    }
+    totalBytes += result.bytes.byteLength
+    prepared.push({
+      ...result.item,
+      input_url: `data:${result.mimeType};base64,${bytesToBase64(result.bytes)}`,
+      byte_size: result.bytes.byteLength,
+    })
   }
 
   return { prepared, warnings, totalBytes }
@@ -469,8 +662,18 @@ function buildOpenAIRequest(parsed, visuals, landsat, env, visualWarnings = []) 
     center_wgs84: [parsed.latitude, parsed.longitude],
     radius_km: parsed.radiusKm,
     requested_period: [parsed.startDate, parsed.endDate],
+    requested_season: parsed.season,
     analysis_depth: parsed.depth,
-    visually_supplied_images: visuals.map((item, index) => ({ visual_order: index + 1, date_or_request_end: item.date, source: item.source, high_resolution_aoi: item.high_resolution_aoi === true, provenance_note: item.provenance_note })),
+    visually_supplied_images: visuals.map((item, index) => ({
+      visual_order: index + 1,
+      date_or_request_end: item.date,
+      source: item.source,
+      evidence_role: item.evidence_role ?? 'TEMPORAL_CONTEXT',
+      high_resolution_aoi: item.high_resolution_aoi === true,
+      nominal_resolution_m: item.nominal_resolution_m ?? null,
+      cloud_cover_metadata: item.cloud_cover ?? null,
+      provenance_note: item.provenance_note,
+    })),
     visual_preflight_warnings: visualWarnings,
     landsat_catalog_source: 'USGS Landsat Collection 2 Surface Reflectance STAC',
     landsat_matched_scene_count: landsat.matched,
@@ -617,9 +820,10 @@ export async function handleAreaAnalysisV2(request, env = {}) {
   try {
     const parsed = parsePayload(await readSmallJson(request))
     const nasaDates = representativeNasaDates(parsed.startDate, parsed.endDate, parsed.depth)
+    const highResolution = await highResolutionImages(parsed)
     const requestedVisuals = [
       ...nasaDates.map(date => nasaImage(date, parsed)),
-      ...sentinelImages(parsed, env),
+      ...highResolution.images,
     ].sort((left, right) => left.date.localeCompare(right.date))
 
     let landsat
@@ -629,7 +833,8 @@ export async function handleAreaAnalysisV2(request, env = {}) {
 
     const galleryPreflight = await prepareVisualInputs(requestedVisuals, 'deep')
     const analysisVisuals = selectVisualCandidates(galleryPreflight.prepared, parsed.depth)
-    const rawAnalysis = await analyzeWithOpenAI(parsed, analysisVisuals, landsat, env, galleryPreflight.warnings)
+    const visualWarnings = [...highResolution.warnings, ...galleryPreflight.warnings]
+    const rawAnalysis = await analyzeWithOpenAI(parsed, analysisVisuals, landsat, env, visualWarnings)
     const analysis = enforceWaterExtremaGate(rawAnalysis, analysisVisuals)
     const previews = [...galleryPreflight.prepared].sort((a, b) => a.date.localeCompare(b.date)).slice(-MAX_GALLERY_IMAGES)
     const highResolutionImageCount = analysisVisuals.filter(item => item.high_resolution_aoi === true).length
@@ -642,10 +847,10 @@ export async function handleAreaAnalysisV2(request, env = {}) {
       area: { place_name: parsed.placeName || null, latitude: parsed.latitude, longitude: parsed.longitude, radius_km: parsed.radiusKm },
       period: { start_date: parsed.startDate, end_date: parsed.endDate },
       depth: parsed.depth,
-      preview_images: previews.map(item => ({ date: item.date, source: item.source, url: item.url, high_resolution_aoi: item.high_resolution_aoi === true })),
-      analysis_images: analysisVisuals.map(item => ({ date: item.date, source: item.source, url: item.url, high_resolution_aoi: item.high_resolution_aoi === true })),
+      preview_images: previews.map(item => ({ date: item.date, source: item.source, url: item.url, high_resolution_aoi: item.high_resolution_aoi === true, evidence_role: item.evidence_role ?? null, nominal_resolution_m: item.nominal_resolution_m ?? null, cloud_cover: item.cloud_cover ?? null })),
+      analysis_images: analysisVisuals.map(item => ({ date: item.date, source: item.source, url: item.url, high_resolution_aoi: item.high_resolution_aoi === true, evidence_role: item.evidence_role ?? null, nominal_resolution_m: item.nominal_resolution_m ?? null, cloud_cover: item.cloud_cover ?? null })),
       ai_visual_image_count: analysisVisuals.length,
-      visual_preflight_warnings: galleryPreflight.warnings,
+      visual_preflight_warnings: visualWarnings,
       landsat_catalog: landsat,
       analysis,
       analysis_protocol: L4_WATER_PROTOCOL_CONTEXT,
@@ -661,7 +866,7 @@ export async function handleAreaAnalysisV2(request, env = {}) {
       gallery_policy: {
         simple_display_limit: 4,
         advanced_display_limit: 8,
-        delivery: 'official allowlisted imagery via /research/image streaming proxy with direct-source fallback',
+        delivery: 'official NASA GIBS AOI imagery plus separate catalogue gallery; browser previews use /research/image only where needed',
         verified_gallery_images: previews.length,
         ai_preflight_limit: parsed.depth === 'deep' ? DEEP_OPENAI_IMAGE_LIMIT : QUICK_OPENAI_IMAGE_LIMIT,
       },
