@@ -53,6 +53,17 @@ function validAnalysis() {
         basis: 'The supplied dates are not sufficiently comparable to rank visible water.',
       },
     },
+    regional_patrol_assessment: {
+      status: 'NOT_REQUESTED',
+      overview: 'Regional patrol was not requested.',
+      inspected_tile_ids: [],
+      tiles_with_visible_open_water: [],
+      tiles_with_wetland_or_wet_soil: [],
+      tiles_with_possible_channel: [],
+      tiles_with_cloud_shadow_or_no_data: [],
+      tile_findings: [],
+      limitations: [],
+    },
     notable_features: ['water channel', 'exposed sediment', 'vegetation differences'],
     confidence: { level: 'medium', reason: 'Several dated images and the Landsat catalogue are available, but a complete matched-season series is not.' },
     limitations: ['Optical imagery can be affected by cloud cover.', 'Sentinel WMS request window is not an asserted exact acquisition time.'],
@@ -89,6 +100,7 @@ test('production research analyze route preflights official imagery and sends va
       assert.match(body.instructions, /most and least visible open-water extent/i)
       assert.match(body.instructions, /TP26 is the project's multisensor evidence-orchestration protocol/i)
       assert.ok(body.text.format.schema.required.includes('hydrology_screening'))
+      assert.ok(body.text.format.schema.required.includes('regional_patrol_assessment'))
       assert.ok(body.text.format.schema.properties.hydrology_screening.required.includes('visible_water_extrema'))
       const metadataText = body.input[0].content.find(item => item.type === 'input_text').text
       assert.match(metadataText, /unique_real_scientific_pairs/)
@@ -197,6 +209,93 @@ test('deep analysis keeps a bounded high-detail validated image set and larger o
       assert.equal(parsed.searchParams.get('WIDTH'), '1800')
       assert.equal(parsed.searchParams.get('HEIGHT'), '1800')
     }
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('regional patrol adds twenty truthful 1 km samples without claiming full 20 km AOI coverage', async () => {
+  const originalFetch = globalThis.fetch
+  const upstreams = []
+  globalThis.fetch = async (url, options = {}) => {
+    const target = String(url)
+    upstreams.push(target)
+    if (target.startsWith('https://landsatlook.usgs.gov/')) return new Response(JSON.stringify({ numberMatched: 120, features: [] }), { status: 200 })
+    if (target.startsWith('https://cmr.earthdata.nasa.gov/')) return cmrResponseFor(target)
+    if (target.startsWith('https://gibs.earthdata.nasa.gov/')) return imageResponse()
+    if (target === 'https://api.openai.com/v1/responses') {
+      const body = JSON.parse(options.body)
+      const metadataText = body.input[0].content.find(item => item.type === 'input_text').text
+      const images = body.input[0].content.filter(item => item.type === 'input_image')
+      assert.equal(body.max_output_tokens, 9000)
+      assert.equal(images.length, 24)
+      assert.match(metadataText, /regional_patrol_request/)
+      assert.match(metadataText, /REGIONAL_PATROL_TILE/)
+      assert.match(metadataText, /"patrol_tile_id":"P20"/)
+      assert.match(body.instructions, /do not clear uninspected gaps/i)
+      const analysis = validAnalysis()
+      const tileIds = Array.from({ length: 20 }, (_, index) => `P${String(index + 1).padStart(2, '0')}`)
+      analysis.regional_patrol_assessment = {
+        status: 'COMPLETE_TILE_REVIEW',
+        overview: 'All twenty supplied sparse patrol samples were reviewed.',
+        inspected_tile_ids: tileIds,
+        tiles_with_visible_open_water: ['P01'],
+        tiles_with_wetland_or_wet_soil: ['P02'],
+        tiles_with_possible_channel: ['P01', 'P02'],
+        tiles_with_cloud_shadow_or_no_data: [],
+        tile_findings: tileIds.map((tileId, index) => ({
+          tile_id: tileId,
+          surface_class: index === 0 ? 'OPEN_WATER' : 'VEGETATION',
+          hydrology_feature: index === 0 ? 'MAIN_WATERBODY' : 'NONE_VISIBLE',
+          observation: `${tileId} contains a visually screened surface sample.`,
+          confidence: 'medium',
+        })),
+        limitations: ['One-date sparse screening only.'],
+      }
+      return new Response(JSON.stringify({ output_text: JSON.stringify(analysis) }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+    }
+    throw new Error(`unexpected upstream ${target}`)
+  }
+
+  try {
+    const response = await handleWorkerRequest(new Request('https://worker.example/research/analyze', {
+      method: 'POST',
+      headers: { Origin: allowedOrigin, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        latitude: 12.775,
+        longitude: 17.564,
+        radius_km: 20,
+        start_date: '2000-01-01',
+        end_date: '2026-08-20',
+        depth: 'deep',
+        place_name: 'Lake Fitri',
+        spatial_mode: 'regional-patrol',
+        patrol_tile_count: 20,
+        patrol_frame_width_km: 1,
+      }),
+    }), env)
+    const payload = await response.json()
+    assert.equal(response.status, 200)
+    assert.equal(payload.regional_patrol.status, 'COMPLETE_SPARSE_SCREENING')
+    assert.equal(payload.regional_patrol.requested_tiles, 20)
+    assert.equal(payload.regional_patrol.inspected_tiles, 20)
+    assert.equal(payload.regional_patrol.frame_width_km, 1)
+    assert.equal(payload.regional_patrol.aoi_area_km2, 1256.64)
+    assert.equal(payload.regional_patrol.nominal_coverage_upper_bound_percent, 1.59)
+    assert.equal(payload.regional_patrol.full_coverage, false)
+    assert.equal(payload.regional_patrol.temporal_change_supported_by_patrol_alone, false)
+    assert.equal(payload.analysis.regional_patrol_assessment.status, 'COMPLETE_TILE_REVIEW')
+    assert.equal(payload.analysis.regional_patrol_assessment.tile_findings.length, 20)
+    assert.equal(payload.regional_patrol.tile_manifest.length, 20)
+    assert.ok(payload.regional_patrol.tile_manifest.every(item => item.status === 'INSPECTED_BY_MODEL'))
+    assert.equal(payload.analysis_images.filter(item => item.evidence_role === 'REGIONAL_PATROL_TILE').length, 20)
+
+    const patrolRequests = upstreams.filter(item => {
+      if (!item.startsWith('https://gibs.earthdata.nasa.gov/')) return false
+      const parsed = new URL(item)
+      return parsed.searchParams.get('WIDTH') === '640' && parsed.searchParams.get('LAYERS') === 'HLS_S30_Nadir_BRDF_Adjusted_Reflectance'
+    })
+    assert.equal(patrolRequests.length, 20)
   } finally {
     globalThis.fetch = originalFetch
   }
