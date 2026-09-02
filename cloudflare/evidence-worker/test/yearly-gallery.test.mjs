@@ -60,6 +60,10 @@ test('yearly gallery returns exactly one verified slot for every explicitly requ
     assert.ok(payload.slots.every(slot => slot.status === 'image'))
     assert.ok(payload.slots.every(slot => slot.image.cloud_cover === 4))
     assert.ok(payload.slots.every(slot => slot.image.url.startsWith('https://worker.example/research/image?')))
+    assert.ok(payload.slots.every(slot => slot.image.image_authenticity === 'ORIGINAL_OFFICIAL_SATELLITE_PRODUCT'))
+    assert.ok(payload.slots.every(slot => slot.image.ai_generated === false))
+    assert.ok(payload.slots.every(slot => slot.image.used_as_model_input === false))
+    assert.match(payload.policy, /not AI-generated/i)
   } finally {
     globalThis.fetch = originalFetch
   }
