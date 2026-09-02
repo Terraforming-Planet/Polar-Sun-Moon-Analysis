@@ -17,6 +17,7 @@ const BROWSER_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp'])
 const CANONICAL_FIELDS = new Set([
   'latitude', 'longitude', 'radius_km', 'start_date', 'end_date', 'depth', 'place_name', 'season',
   'case_id', 'focus_latitude', 'focus_longitude', 'focus_radius_km',
+  'spatial_mode', 'patrol_tile_count', 'patrol_frame_width_km',
 ])
 const GALLERY_FIELDS = new Set(['latitude', 'longitude', 'radius_km', 'years', 'season', 'cloud_mode'])
 const SEASON_REFERENCE = {

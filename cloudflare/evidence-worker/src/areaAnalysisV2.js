@@ -15,6 +15,14 @@ const QUICK_NASA_LIMIT = 7
 const DEEP_NASA_LIMIT = 20
 const QUICK_OPENAI_IMAGE_LIMIT = 4
 const DEEP_OPENAI_IMAGE_LIMIT = 8
+const MAX_REGIONAL_PATROL_TILES = 20
+const MIN_REGIONAL_PATROL_TILES = 4
+const DEFAULT_REGIONAL_PATROL_TILES = 20
+const MIN_PATROL_FRAME_WIDTH_KM = 0.5
+const MAX_PATROL_FRAME_WIDTH_KM = 2
+const DEFAULT_PATROL_FRAME_WIDTH_KM = 1
+const PATROL_IMAGE_SIZE = 640
+const VISUAL_FETCH_CONCURRENCY = 4
 const QUICK_HLS_YEAR_LIMIT = 2
 const DEEP_HLS_YEAR_LIMIT = 4
 const QUICK_WELD_YEAR_LIMIT = 1
@@ -28,6 +36,7 @@ const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
 const ALLOWED_FIELDS = new Set([
   'latitude', 'longitude', 'radius_km', 'start_date', 'end_date', 'depth', 'place_name', 'season',
   'case_id', 'focus_latitude', 'focus_longitude', 'focus_radius_km',
+  'spatial_mode', 'patrol_tile_count', 'patrol_frame_width_km',
 ])
 const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp'])
 const SEASON_WINDOWS = {
@@ -196,9 +205,9 @@ const ANALYSIS_SCHEMA = {
           type: 'string',
           enum: ['VISIBLE_CANDIDATES', 'NO_CANDIDATE_VISIBLE', 'INSUFFICIENT_EVIDENCE'],
         },
-        candidate_features: { type: 'array', items: { type: 'string' }, maxItems: 8 },
+        candidate_features: { type: 'array', items: { type: 'string' }, maxItems: 12 },
         main_and_tributary_context: { type: 'string' },
-        required_checks: { type: 'array', items: { type: 'string' }, maxItems: 10 },
+        required_checks: { type: 'array', items: { type: 'string' }, maxItems: 12 },
         cause_status: { type: 'string', enum: ['NOT_ESTABLISHED_FROM_SUPPLIED_EVIDENCE'] },
         visible_water_extrema: {
           type: 'object',
@@ -223,7 +232,48 @@ const ANALYSIS_SCHEMA = {
         'visible_water_extrema',
       ],
     },
-    notable_features: { type: 'array', items: { type: 'string' }, maxItems: 8 },
+    regional_patrol_assessment: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        status: { type: 'string', enum: ['NOT_REQUESTED', 'COMPLETE_TILE_REVIEW', 'PARTIAL_TILE_REVIEW', 'INSUFFICIENT_EVIDENCE'] },
+        overview: { type: 'string' },
+        inspected_tile_ids: { type: 'array', items: { type: 'string' }, maxItems: 20 },
+        tiles_with_visible_open_water: { type: 'array', items: { type: 'string' }, maxItems: 20 },
+        tiles_with_wetland_or_wet_soil: { type: 'array', items: { type: 'string' }, maxItems: 20 },
+        tiles_with_possible_channel: { type: 'array', items: { type: 'string' }, maxItems: 20 },
+        tiles_with_cloud_shadow_or_no_data: { type: 'array', items: { type: 'string' }, maxItems: 20 },
+        tile_findings: {
+          type: 'array',
+          maxItems: 20,
+          items: {
+            type: 'object',
+            additionalProperties: false,
+            properties: {
+              tile_id: { type: 'string' },
+              surface_class: {
+                type: 'string',
+                enum: ['OPEN_WATER', 'WETLAND_OR_WET_SOIL', 'VEGETATION', 'BARE_SOIL_OR_SEDIMENT', 'BUILT_OR_MODIFIED_TERRAIN', 'CLOUD_SHADOW_OR_NO_DATA', 'MIXED_OR_UNCERTAIN'],
+              },
+              hydrology_feature: {
+                type: 'string',
+                enum: ['NONE_VISIBLE', 'MAIN_WATERBODY', 'POSSIBLE_INFLOW', 'POSSIBLE_OUTFLOW', 'SIDE_CHANNEL_OR_DITCH', 'POSSIBLE_OBSTRUCTION_OR_CROSSING', 'UNRESOLVED'],
+              },
+              observation: { type: 'string' },
+              confidence: { type: 'string', enum: ['low', 'medium', 'high'] },
+            },
+            required: ['tile_id', 'surface_class', 'hydrology_feature', 'observation', 'confidence'],
+          },
+        },
+        limitations: { type: 'array', items: { type: 'string' }, maxItems: 8 },
+      },
+      required: [
+        'status', 'overview', 'inspected_tile_ids', 'tiles_with_visible_open_water',
+        'tiles_with_wetland_or_wet_soil', 'tiles_with_possible_channel',
+        'tiles_with_cloud_shadow_or_no_data', 'tile_findings', 'limitations',
+      ],
+    },
+    notable_features: { type: 'array', items: { type: 'string' }, maxItems: 12 },
     confidence: {
       type: 'object',
       additionalProperties: false,
@@ -233,11 +283,11 @@ const ANALYSIS_SCHEMA = {
       },
       required: ['level', 'reason'],
     },
-    limitations: { type: 'array', items: { type: 'string' }, maxItems: 8 },
+    limitations: { type: 'array', items: { type: 'string' }, maxItems: 12 },
     recommended_next_step: { type: 'string' },
   },
   required: [
-    'headline', 'what_is_visible', 'change_over_time', 'water_assessment', 'hydrology_screening',
+    'headline', 'what_is_visible', 'change_over_time', 'water_assessment', 'hydrology_screening', 'regional_patrol_assessment',
     'notable_features', 'confidence', 'limitations', 'recommended_next_step',
   ],
 }
@@ -257,6 +307,7 @@ When comparing water, distinguish visible water present, visible water reduced/a
 When a visual_focus is supplied, register every detailed comparison to that exact target and do not substitute a larger nearby lake, river or dark feature. Treat broad MODIS/VIIRS images as regional context only. A smaller display frame improves target framing but never increases the native sensor resolution.
 For CURATED_TEST001_FIXED_CROP images, compare the same approximately 469 m crop around the corrected pond seed. The red polygon is the historical multi-year consensus footprint; it is an overlay, not a current-water mask. The recorded finding may support a near-total state transition while exact 2026 residual area, exact loss percentage and cause remain unknown.
 For hydrology screening, explicitly inspect the visible main channel or waterbody together with side tributaries, possible inflows, possible outflows, ditches, culverts and road crossings. Compare their visible continuity across supplied dates. Never infer flow direction from colour alone.
+When REGIONAL_PATROL_TILE images are supplied, they are sparse, spatially stratified samples from one recent HLS date. Inspect every supplied patrol tile and return one regional_patrol_assessment.tile_findings entry for every valid patrol_tile_id. Cite patrol_tile_id in candidate_features or notable_features when reporting a visible candidate, and distinguish open water, wet sediment/vegetation, cloud/shadow and no-data whenever possible. Do not claim that the patrol covers the full circular AOI, do not treat one-date patrol tiles as a temporal change series, and do not clear uninspected gaps. A 1 km frame improves localisation but does not improve the native 30 m HLS resolution. When no patrol tile is supplied, return NOT_REQUESTED with empty patrol arrays.
 Return a structured hydrology_screening result. Use VISIBLE_WATER_REDUCTION_CANDIDATE only when comparable supplied images visibly support reduction; otherwise use NO_VISIBLE_CHANGE_ESTABLISHED or INSUFFICIENT_EVIDENCE. A candidate inlet, outlet or obstruction remains a visible candidate until DEM, official hydrography, discharge/stage data and field inspection verify it.
 Return visible_water_extrema for the exact visually supplied images. Use ESTABLISHED only when the same waterbody is interpretable in at least two genuinely comparable, distinct years. Then report the year with the most and least visible open-water extent among compared_years. This is a qualitative ranking, never an area, volume, depth or causal measurement. If imagery is too coarse, cloudy, seasonally mismatched, sensor-incompatible, or the waterbody cannot be delineated, return INSUFFICIENT_EVIDENCE, null years and explain why. Never use catalogue-only years. For a small forest pond, MODIS/VIIRS alone is insufficient; require native or AOI-rendered Sentinel-2, Landsat or comparable high-resolution evidence.
 The supplied L4 Training #3 and #4 summaries inform the audit protocol only. This Worker does not load their checkpoint and those training metrics are not environmental ground truth.
@@ -359,6 +410,17 @@ function parsePayload(value) {
     throw new Error(`focus_radius_km must be from ${MIN_FOCUS_RADIUS_KM} to ${MAX_FOCUS_RADIUS_KM}.`)
   }
 
+  const spatialMode = value.spatial_mode === undefined ? 'overview' : String(value.spatial_mode)
+  if (!['overview', 'regional-patrol'].includes(spatialMode)) throw new Error('spatial_mode must be overview or regional-patrol.')
+  const patrolTileCount = value.patrol_tile_count === undefined ? DEFAULT_REGIONAL_PATROL_TILES : Number(value.patrol_tile_count)
+  if (!Number.isInteger(patrolTileCount) || patrolTileCount < MIN_REGIONAL_PATROL_TILES || patrolTileCount > MAX_REGIONAL_PATROL_TILES) {
+    throw new Error(`patrol_tile_count must be an integer from ${MIN_REGIONAL_PATROL_TILES} to ${MAX_REGIONAL_PATROL_TILES}.`)
+  }
+  const patrolFrameWidthKm = value.patrol_frame_width_km === undefined ? DEFAULT_PATROL_FRAME_WIDTH_KM : Number(value.patrol_frame_width_km)
+  if (!Number.isFinite(patrolFrameWidthKm) || patrolFrameWidthKm < MIN_PATROL_FRAME_WIDTH_KM || patrolFrameWidthKm > MAX_PATROL_FRAME_WIDTH_KM) {
+    throw new Error(`patrol_frame_width_km must be from ${MIN_PATROL_FRAME_WIDTH_KM} to ${MAX_PATROL_FRAME_WIDTH_KM}.`)
+  }
+
   const caseFocus = caseId === TEST001_CASE_ID ? TEST001_FOCUS : null
   const focusLatitude = caseFocus?.latitude ?? requestedFocusLatitude ?? latitude
   const focusLongitude = caseFocus?.longitude ?? requestedFocusLongitude ?? longitude
@@ -372,6 +434,9 @@ function parsePayload(value) {
     focusLongitude,
     focusRadiusKm,
     focusFrameWidthM: focusRadiusKm * 2000,
+    spatialMode,
+    patrolTileCount: spatialMode === 'regional-patrol' ? patrolTileCount : 0,
+    patrolFrameWidthKm,
     startDate: start.value,
     requestedEndDate: requestedEnd.value,
     endDate: end.value,
@@ -486,8 +551,8 @@ function seasonalRange(parsed, year, minimumDate = null) {
   return start <= end ? { start, end } : null
 }
 
-function gibsAoiImageUrl(parsed, layer, date, size, format = 'image/jpeg') {
-  const bounds = researchBounds(parsed.focusLatitude, parsed.focusLongitude, parsed.focusRadiusKm)
+function gibsBoundsImageUrl(latitude, longitude, radiusKm, layer, date, size, format = 'image/jpeg') {
+  const bounds = researchBounds(latitude, longitude, radiusKm)
   const params = new URLSearchParams({
     SERVICE: 'WMS', REQUEST: 'GetMap', VERSION: '1.1.1', LAYERS: layer, STYLES: '',
     FORMAT: format, TRANSPARENT: 'FALSE', SRS: 'EPSG:4326',
@@ -495,6 +560,10 @@ function gibsAoiImageUrl(parsed, layer, date, size, format = 'image/jpeg') {
     WIDTH: String(size), HEIGHT: String(size), TIME: date,
   })
   return `https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?${params.toString()}`
+}
+
+function gibsAoiImageUrl(parsed, layer, date, size, format = 'image/jpeg') {
+  return gibsBoundsImageUrl(parsed.focusLatitude, parsed.focusLongitude, parsed.focusRadiusKm, layer, date, size, format)
 }
 
 function test001CuratedFocusImages(parsed) {
@@ -654,6 +723,57 @@ async function highResolutionImages(parsed) {
   return { images: [...weldHighResolutionImages(parsed), ...hls.images], warnings: hls.warnings }
 }
 
+function regionalPatrolPoints(parsed) {
+  if (parsed.spatialMode !== 'regional-patrol') return []
+  const frameHalfDiagonalKm = parsed.patrolFrameWidthKm / Math.sqrt(2)
+  const maximumOffsetKm = Math.max(0, parsed.radiusKm - frameHalfDiagonalKm)
+  const goldenAngle = Math.PI * (3 - Math.sqrt(5))
+  const longitudeScale = Math.max(0.15, Math.cos(parsed.latitude * Math.PI / 180))
+
+  return Array.from({ length: parsed.patrolTileCount }, (_, index) => {
+    const normalized = index === 0 ? 0 : (index - 0.5) / Math.max(1, parsed.patrolTileCount - 1)
+    const distanceKm = maximumOffsetKm * Math.sqrt(normalized)
+    const angle = index * goldenAngle
+    const latitude = parsed.latitude + (distanceKm * Math.sin(angle)) / 111.32
+    const longitude = parsed.longitude + (distanceKm * Math.cos(angle)) / (111.32 * longitudeScale)
+    return {
+      tileId: `P${String(index + 1).padStart(2, '0')}`,
+      latitude: Number(latitude.toFixed(6)),
+      longitude: Number(longitude.toFixed(6)),
+    }
+  })
+}
+
+function regionalPatrolImages(parsed, highResolutionVisuals) {
+  if (parsed.spatialMode !== 'regional-patrol') return []
+  const sourceImage = [...highResolutionVisuals]
+    .filter(item => item.evidence_role === 'OPTICAL_RGB' && item.source.includes('HLS S30'))
+    .sort((left, right) => right.date.localeCompare(left.date))[0]
+  if (!sourceImage) return []
+
+  return regionalPatrolPoints(parsed).map(point => ({
+    date: sourceImage.date,
+    source: `${sourceImage.source} · patrol ${point.tileId}`,
+    url: gibsBoundsImageUrl(
+      point.latitude,
+      point.longitude,
+      parsed.patrolFrameWidthKm / 2,
+      'HLS_S30_Nadir_BRDF_Adjusted_Reflectance',
+      sourceImage.date,
+      PATROL_IMAGE_SIZE,
+    ),
+    high_resolution_aoi: true,
+    evidence_role: 'REGIONAL_PATROL_TILE',
+    nominal_resolution_m: sourceImage.nominal_resolution_m ?? 30,
+    cloud_cover: sourceImage.cloud_cover ?? null,
+    patrol_tile_id: point.tileId,
+    tile_center_latitude: point.latitude,
+    tile_center_longitude: point.longitude,
+    tile_frame_width_km: parsed.patrolFrameWidthKm,
+    provenance_note: `${point.tileId}: deterministic spatially stratified ${parsed.patrolFrameWidthKm.toFixed(1)} km frame from the same HLS date as the regional patrol. The crop improves framing only; native source resolution remains ${sourceImage.nominal_resolution_m ?? 30} m.`,
+  }))
+}
+
 function landsatSceneSummary(item) {
   return {
     id: String(item?.id ?? '').slice(0, 180),
@@ -704,19 +824,21 @@ function selectEvenly(visuals, limit) {
   return selected
 }
 
-function selectVisualCandidates(visuals, depth) {
-  const limit = depth === 'deep' ? DEEP_OPENAI_IMAGE_LIMIT : QUICK_OPENAI_IMAGE_LIMIT
-  if (visuals.length <= limit) return [...visuals]
-  const fixedCropEvidence = visuals.filter(item => String(item.evidence_role ?? '').startsWith('CURATED_TEST001_FIXED_CROP'))
-  const highResolution = visuals.filter(item => item.high_resolution_aoi === true)
-  const continuity = visuals.filter(item => item.high_resolution_aoi !== true)
+function selectVisualCandidates(visuals, depth, patrolLimit = 0) {
+  const patrol = visuals.filter(item => item.evidence_role === 'REGIONAL_PATROL_TILE').slice(0, patrolLimit)
+  const limit = patrol.length ? QUICK_OPENAI_IMAGE_LIMIT : depth === 'deep' ? DEEP_OPENAI_IMAGE_LIMIT : QUICK_OPENAI_IMAGE_LIMIT
+  const coreVisuals = visuals.filter(item => item.evidence_role !== 'REGIONAL_PATROL_TILE')
+  if (coreVisuals.length <= limit) return [...patrol, ...coreVisuals]
+  const fixedCropEvidence = coreVisuals.filter(item => String(item.evidence_role ?? '').startsWith('CURATED_TEST001_FIXED_CROP'))
+  const highResolution = coreVisuals.filter(item => item.high_resolution_aoi === true)
+  const continuity = coreVisuals.filter(item => item.high_resolution_aoi !== true)
   const primaryHighResolution = highResolution.filter(item => item.evidence_role !== 'WATER_CLASSIFICATION' && !fixedCropEvidence.includes(item))
   const classificationCompanions = highResolution.filter(item => item.evidence_role === 'WATER_CLASSIFICATION')
   const selected = [...fixedCropEvidence.slice(0, limit)]
   if (selected.length < limit) selected.push(...selectEvenly(primaryHighResolution, Math.min(primaryHighResolution.length, limit - selected.length)))
   if (selected.length < limit) selected.push(...selectEvenly(classificationCompanions, limit - selected.length))
   if (selected.length < limit) selected.push(...selectEvenly(continuity, limit - selected.length))
-  return selected.sort((left, right) => left.date.localeCompare(right.date))
+  return [...patrol, ...selected.sort((left, right) => left.date.localeCompare(right.date))]
 }
 
 function bytesToBase64(bytes) {
@@ -758,12 +880,27 @@ async function fetchVisualInput(item) {
   }
 }
 
-async function prepareVisualInputs(visuals, depth) {
+async function mapWithConcurrency(values, concurrency, mapper) {
+  const results = new Array(values.length)
+  let nextIndex = 0
+  const workers = Array.from({ length: Math.min(concurrency, values.length) }, async () => {
+    while (nextIndex < values.length) {
+      const index = nextIndex
+      nextIndex += 1
+      results[index] = await mapper(values[index])
+    }
+  })
+  await Promise.all(workers)
+  return results
+}
+
+async function prepareVisualInputs(visuals, depth, patrolLimit = 0) {
   const prepared = []
   const warnings = []
   let totalBytes = 0
 
-  const results = await Promise.all(selectVisualCandidates(visuals, depth).map(item => fetchVisualInput(item)))
+  const selected = selectVisualCandidates(visuals, depth, patrolLimit)
+  const results = await mapWithConcurrency(selected, VISUAL_FETCH_CONCURRENCY, item => fetchVisualInput(item))
   for (const result of results) {
     if (result.warning) {
       warnings.push(result.warning)
@@ -784,6 +921,63 @@ async function prepareVisualInputs(visuals, depth) {
   return { prepared, warnings, totalBytes }
 }
 
+function rounded(value, digits = 2) {
+  return Number(value.toFixed(digits))
+}
+
+function buildRegionalPatrolSummary(parsed, patrolCandidates, analysisVisuals) {
+  if (parsed.spatialMode !== 'regional-patrol') return null
+  const plannedPoints = regionalPatrolPoints(parsed)
+  const inspectedIds = new Set(analysisVisuals
+    .filter(item => item.evidence_role === 'REGIONAL_PATROL_TILE' && item.patrol_tile_id)
+    .map(item => item.patrol_tile_id))
+  const inspectedTiles = inspectedIds.size
+  const aoiAreaKm2 = Math.PI * parsed.radiusKm * parsed.radiusKm
+  const nominalSampledUpperKm2 = Math.min(aoiAreaKm2, inspectedTiles * parsed.patrolFrameWidthKm * parsed.patrolFrameWidthKm)
+  const coverageUpperPercent = aoiAreaKm2 > 0 ? Math.min(100, (nominalSampledUpperKm2 / aoiAreaKm2) * 100) : 0
+  const sourceImage = patrolCandidates[0] ?? null
+  const status = patrolCandidates.length === 0
+    ? 'UNAVAILABLE_HIGH_RESOLUTION_SOURCE'
+    : inspectedTiles === parsed.patrolTileCount
+      ? 'COMPLETE_SPARSE_SCREENING'
+      : inspectedTiles > 0
+        ? 'PARTIAL_SPARSE_SCREENING'
+        : 'NO_TILE_PASSED_PREFLIGHT'
+
+  return {
+    status,
+    requested_tiles: parsed.patrolTileCount,
+    generated_tiles: patrolCandidates.length,
+    inspected_tiles: inspectedTiles,
+    frame_width_km: parsed.patrolFrameWidthKm,
+    source_date: sourceImage?.date ?? null,
+    source: sourceImage ? sourceImage.source.replace(/ · patrol P\d+$/, '') : null,
+    nominal_resolution_m: sourceImage?.nominal_resolution_m ?? null,
+    aoi_radius_km: parsed.radiusKm,
+    aoi_area_km2: rounded(aoiAreaKm2),
+    nominal_sampled_area_upper_bound_km2: rounded(nominalSampledUpperKm2),
+    nominal_coverage_upper_bound_percent: rounded(coverageUpperPercent),
+    uninspected_area_lower_bound_percent: rounded(Math.max(0, 100 - coverageUpperPercent)),
+    full_coverage: false,
+    selection_method: 'DETERMINISTIC_GOLDEN_ANGLE_SPATIAL_STRATIFICATION_NOT_HYDROGRAPHY_TARGETED',
+    temporal_scope: 'ONE_RECENT_HLS_DATE_SPATIAL_SCREENING',
+    temporal_change_supported_by_patrol_alone: false,
+    tile_manifest: plannedPoints.map(point => ({
+      tile_id: point.tileId,
+      latitude: point.latitude,
+      longitude: point.longitude,
+      status: inspectedIds.has(point.tileId) ? 'INSPECTED_BY_MODEL' : 'NOT_INSPECTED_PRECHECK_OR_BUDGET',
+    })),
+    limitations: [
+      'The percentage is an upper bound based on nominal non-overlapping square area; it is not a full-coverage map.',
+      'The patrol is not targeted to an official river network, inlet, outlet or tributary vector layer.',
+      'All patrol tiles use one HLS date, so they improve spatial screening but cannot establish multi-year change by themselves.',
+      'Cloud metadata comes from the selected HLS granule and is not an independent cloud score for every patrol tile.',
+      'A 1 km crop does not improve the native HLS S30 resolution of approximately 30 m.',
+    ],
+  }
+}
+
 function buildOpenAIRequest(parsed, visuals, landsat, env, visualWarnings = []) {
   const metadata = {
     place_name: parsed.placeName || null,
@@ -802,6 +996,13 @@ function buildOpenAIRequest(parsed, visuals, landsat, env, visualWarnings = []) 
     requested_period: [parsed.startDate, parsed.endDate],
     requested_season: parsed.season,
     analysis_depth: parsed.depth,
+    regional_patrol_request: parsed.spatialMode === 'regional-patrol' ? {
+      requested_tiles: parsed.patrolTileCount,
+      frame_width_km: parsed.patrolFrameWidthKm,
+      spatial_sampling_only: true,
+      full_coverage: false,
+      same_date_tiles_do_not_establish_temporal_change: true,
+    } : null,
     visually_supplied_images: visuals.map((item, index) => ({
       visual_order: index + 1,
       date_or_request_end: item.date,
@@ -810,6 +1011,9 @@ function buildOpenAIRequest(parsed, visuals, landsat, env, visualWarnings = []) 
       high_resolution_aoi: item.high_resolution_aoi === true,
       nominal_resolution_m: item.nominal_resolution_m ?? null,
       cloud_cover_metadata: item.cloud_cover ?? null,
+      patrol_tile_id: item.patrol_tile_id ?? null,
+      tile_center_wgs84: item.patrol_tile_id ? [item.tile_center_latitude, item.tile_center_longitude] : null,
+      tile_frame_width_km: item.tile_frame_width_km ?? null,
       provenance_note: item.provenance_note,
     })),
     visual_preflight_warnings: visualWarnings,
@@ -831,7 +1035,7 @@ function buildOpenAIRequest(parsed, visuals, landsat, env, visualWarnings = []) 
         ...visuals.map(item => ({ type: 'input_image', image_url: item.input_url, detail: parsed.depth === 'deep' ? 'high' : 'auto' })),
       ],
     }],
-    max_output_tokens: parsed.depth === 'deep' ? 7000 : 5000,
+    max_output_tokens: parsed.spatialMode === 'regional-patrol' ? 9000 : parsed.depth === 'deep' ? 7000 : 5000,
     text: { format: { type: 'json_schema', name: 'terra_area_analysis_v2', strict: true, schema: ANALYSIS_SCHEMA } },
   }
 }
@@ -850,7 +1054,10 @@ function insufficientWaterExtrema(basis, comparedYears = []) {
 function enforceWaterExtremaGate(analysis, visuals) {
   const hydrology = analysis?.hydrology_screening
   if (!hydrology || typeof hydrology !== 'object') return analysis
-  const highResolutionYears = [...new Set(visuals.filter(item => item.high_resolution_aoi === true).map(item => Number(String(item.date).slice(0, 4))).filter(Number.isInteger))]
+  const highResolutionYears = [...new Set(visuals
+    .filter(item => item.high_resolution_aoi === true && item.evidence_role !== 'REGIONAL_PATROL_TILE')
+    .map(item => Number(String(item.date).slice(0, 4)))
+    .filter(Number.isInteger))]
   const candidate = hydrology.visible_water_extrema
   const allowedRankingYears = highResolutionYears
   const comparedYears = Array.isArray(candidate?.compared_years)
@@ -888,6 +1095,85 @@ function enforceWaterExtremaGate(analysis, visuals) {
       method: 'QUALITATIVE_VISUAL_RANKING_OF_SUPPLIED_IMAGES',
       basis: String(candidate.basis),
     }
+  }
+  return analysis
+}
+
+const PATROL_SURFACE_CLASSES = new Set([
+  'OPEN_WATER', 'WETLAND_OR_WET_SOIL', 'VEGETATION', 'BARE_SOIL_OR_SEDIMENT',
+  'BUILT_OR_MODIFIED_TERRAIN', 'CLOUD_SHADOW_OR_NO_DATA', 'MIXED_OR_UNCERTAIN',
+])
+const PATROL_HYDROLOGY_FEATURES = new Set([
+  'NONE_VISIBLE', 'MAIN_WATERBODY', 'POSSIBLE_INFLOW', 'POSSIBLE_OUTFLOW',
+  'SIDE_CHANNEL_OR_DITCH', 'POSSIBLE_OBSTRUCTION_OR_CROSSING', 'UNRESOLVED',
+])
+
+function enforceRegionalPatrolAssessment(analysis, parsed, visuals) {
+  if (!analysis || typeof analysis !== 'object') return analysis
+  if (parsed.spatialMode !== 'regional-patrol') {
+    analysis.regional_patrol_assessment = {
+      status: 'NOT_REQUESTED',
+      overview: 'Regional patrol was not requested in this run.',
+      inspected_tile_ids: [],
+      tiles_with_visible_open_water: [],
+      tiles_with_wetland_or_wet_soil: [],
+      tiles_with_possible_channel: [],
+      tiles_with_cloud_shadow_or_no_data: [],
+      tile_findings: [],
+      limitations: [],
+    }
+    return analysis
+  }
+
+  const allowedIds = visuals
+    .filter(item => item.evidence_role === 'REGIONAL_PATROL_TILE' && item.patrol_tile_id)
+    .map(item => item.patrol_tile_id)
+  const allowed = new Set(allowedIds)
+  const candidate = analysis.regional_patrol_assessment && typeof analysis.regional_patrol_assessment === 'object'
+    ? analysis.regional_patrol_assessment
+    : {}
+  const uniqueFindings = new Map()
+  for (const item of Array.isArray(candidate.tile_findings) ? candidate.tile_findings : []) {
+    if (!item || typeof item !== 'object' || !allowed.has(item.tile_id) || uniqueFindings.has(item.tile_id)) continue
+    if (!PATROL_SURFACE_CLASSES.has(item.surface_class) || !PATROL_HYDROLOGY_FEATURES.has(item.hydrology_feature)) continue
+    if (typeof item.observation !== 'string' || !item.observation.trim() || !['low', 'medium', 'high'].includes(item.confidence)) continue
+    uniqueFindings.set(item.tile_id, {
+      tile_id: item.tile_id,
+      surface_class: item.surface_class,
+      hydrology_feature: item.hydrology_feature,
+      observation: item.observation.trim(),
+      confidence: item.confidence,
+    })
+  }
+  const tileFindings = allowedIds.flatMap(tileId => uniqueFindings.has(tileId) ? [uniqueFindings.get(tileId)] : [])
+  const inspectedTileIds = tileFindings.map(item => item.tile_id)
+  const tilesWithVisibleOpenWater = tileFindings.filter(item => item.surface_class === 'OPEN_WATER').map(item => item.tile_id)
+  const tilesWithWetlandOrWetSoil = tileFindings.filter(item => item.surface_class === 'WETLAND_OR_WET_SOIL').map(item => item.tile_id)
+  const tilesWithPossibleChannel = tileFindings.filter(item => [
+    'POSSIBLE_INFLOW', 'POSSIBLE_OUTFLOW', 'SIDE_CHANNEL_OR_DITCH', 'POSSIBLE_OBSTRUCTION_OR_CROSSING',
+  ].includes(item.hydrology_feature)).map(item => item.tile_id)
+  const tilesWithCloudShadowOrNoData = tileFindings.filter(item => item.surface_class === 'CLOUD_SHADOW_OR_NO_DATA').map(item => item.tile_id)
+  const complete = allowedIds.length > 0 && tileFindings.length === allowedIds.length && inspectedTileIds.length === allowedIds.length
+  const status = allowedIds.length === 0 ? 'INSUFFICIENT_EVIDENCE' : complete ? 'COMPLETE_TILE_REVIEW' : 'PARTIAL_TILE_REVIEW'
+  const missingCount = Math.max(0, allowedIds.length - tileFindings.length)
+  const limitations = [
+    ...(Array.isArray(candidate.limitations) ? candidate.limitations.filter(value => typeof value === 'string' && value.trim()).slice(0, 6) : []),
+    'Patrol tiles are sparse one-date samples and do not establish temporal change or full AOI coverage.',
+    ...(missingCount ? [`${missingCount} supplied patrol tile(s) did not receive a valid structured finding and remain unresolved.`] : []),
+  ].slice(0, 8)
+
+  analysis.regional_patrol_assessment = {
+    status,
+    overview: typeof candidate.overview === 'string' && candidate.overview.trim()
+      ? candidate.overview.trim()
+      : 'The structured regional patrol review was incomplete; no missing observation was invented.',
+    inspected_tile_ids: inspectedTileIds,
+    tiles_with_visible_open_water: tilesWithVisibleOpenWater,
+    tiles_with_wetland_or_wet_soil: tilesWithWetlandOrWetSoil,
+    tiles_with_possible_channel: tilesWithPossibleChannel,
+    tiles_with_cloud_shadow_or_no_data: tilesWithCloudShadowOrNoData,
+    tile_findings: tileFindings,
+    limitations,
   }
   return analysis
 }
@@ -986,10 +1272,12 @@ export async function handleAreaAnalysisV2(request, env = {}) {
     const parsed = parsePayload(await readSmallJson(request))
     const nasaDates = representativeNasaDates(parsed.startDate, parsed.endDate, parsed.depth)
     const highResolution = await highResolutionImages(parsed)
+    const patrolCandidates = regionalPatrolImages(parsed, highResolution.images)
     const requestedVisuals = [
       ...nasaDates.map(date => nasaImage(date, parsed)),
       ...highResolution.images,
       ...test001CuratedFocusImages(parsed),
+      ...patrolCandidates,
     ].sort((left, right) => left.date.localeCompare(right.date))
 
     let landsat
@@ -997,16 +1285,25 @@ export async function handleAreaAnalysisV2(request, env = {}) {
       landsat = { matched: 0, returned: 0, scenes: [], query_url: null, full_catalog_url: null, warning: error instanceof Error ? error.message : 'USGS catalogue unavailable.' }
     }
 
-    const galleryPreflight = await prepareVisualInputs(requestedVisuals, 'deep')
-    const analysisVisuals = selectVisualCandidates(galleryPreflight.prepared, parsed.depth)
-    const visualWarnings = [...highResolution.warnings, ...galleryPreflight.warnings]
+    const galleryPreflight = await prepareVisualInputs(requestedVisuals, 'deep', parsed.patrolTileCount)
+    const analysisVisuals = selectVisualCandidates(galleryPreflight.prepared, parsed.depth, parsed.patrolTileCount)
+    const patrolWarnings = parsed.spatialMode === 'regional-patrol' && patrolCandidates.length === 0
+      ? ['Regional patrol was requested, but no HLS S30 optical image passed catalogue discovery; no close-up tile was invented or replaced with coarse imagery.']
+      : []
+    const visualWarnings = [...highResolution.warnings, ...patrolWarnings, ...galleryPreflight.warnings]
     const rawAnalysis = await analyzeWithOpenAI(parsed, analysisVisuals, landsat, env, visualWarnings)
-    const analysis = applyRecordedTest001Finding(enforceWaterExtremaGate(rawAnalysis, analysisVisuals), parsed)
-    const previews = [...galleryPreflight.prepared].sort((a, b) => a.date.localeCompare(b.date)).slice(-MAX_GALLERY_IMAGES)
-    const highResolutionImageCount = analysisVisuals.filter(item => item.high_resolution_aoi === true).length
+    const patrolCheckedAnalysis = enforceRegionalPatrolAssessment(rawAnalysis, parsed, analysisVisuals)
+    const analysis = applyRecordedTest001Finding(enforceWaterExtremaGate(patrolCheckedAnalysis, analysisVisuals), parsed)
+    const previews = [...galleryPreflight.prepared]
+      .filter(item => item.evidence_role !== 'REGIONAL_PATROL_TILE')
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .slice(-MAX_GALLERY_IMAGES)
+    const rankingEligibleVisuals = analysisVisuals.filter(item => item.high_resolution_aoi === true && item.evidence_role !== 'REGIONAL_PATROL_TILE')
+    const highResolutionImageCount = rankingEligibleVisuals.length
     const highResolutionYearCount = new Set(analysisVisuals
-      .filter(item => item.high_resolution_aoi === true)
+      .filter(item => item.high_resolution_aoi === true && item.evidence_role !== 'REGIONAL_PATROL_TILE')
       .map(item => String(item.date).slice(0, 4))).size
+    const regionalPatrol = buildRegionalPatrolSummary(parsed, patrolCandidates, analysisVisuals)
     return jsonResponse({
       service: 'terra-observation-area-analysis-v2',
       generated_at_utc: new Date().toISOString(),
@@ -1022,7 +1319,19 @@ export async function handleAreaAnalysisV2(request, env = {}) {
       period: { start_date: parsed.startDate, end_date: parsed.endDate },
       depth: parsed.depth,
       preview_images: previews.map(item => ({ date: item.date, source: item.source, url: item.url, high_resolution_aoi: item.high_resolution_aoi === true, evidence_role: item.evidence_role ?? null, nominal_resolution_m: item.nominal_resolution_m ?? null, cloud_cover: item.cloud_cover ?? null })),
-      analysis_images: analysisVisuals.map(item => ({ date: item.date, source: item.source, url: item.url, high_resolution_aoi: item.high_resolution_aoi === true, evidence_role: item.evidence_role ?? null, nominal_resolution_m: item.nominal_resolution_m ?? null, cloud_cover: item.cloud_cover ?? null })),
+      analysis_images: analysisVisuals.map(item => ({
+        date: item.date,
+        source: item.source,
+        url: item.url,
+        high_resolution_aoi: item.high_resolution_aoi === true,
+        evidence_role: item.evidence_role ?? null,
+        nominal_resolution_m: item.nominal_resolution_m ?? null,
+        cloud_cover: item.cloud_cover ?? null,
+        patrol_tile_id: item.patrol_tile_id ?? null,
+        tile_center_latitude: item.tile_center_latitude ?? null,
+        tile_center_longitude: item.tile_center_longitude ?? null,
+        tile_frame_width_km: item.tile_frame_width_km ?? null,
+      })),
       ai_visual_image_count: analysisVisuals.length,
       visual_preflight_warnings: visualWarnings,
       landsat_catalog: landsat,
@@ -1038,14 +1347,16 @@ export async function handleAreaAnalysisV2(request, env = {}) {
         high_resolution_aoi_years: highResolutionYearCount,
         visually_supplied_images: analysisVisuals.length,
       },
+      regional_patrol: regionalPatrol,
       gallery_policy: {
         simple_display_limit: 4,
         advanced_display_limit: 8,
         delivery: 'official NASA GIBS AOI imagery plus separate catalogue gallery; browser previews use /research/image only where needed',
         verified_gallery_images: previews.length,
-        ai_preflight_limit: parsed.depth === 'deep' ? DEEP_OPENAI_IMAGE_LIMIT : QUICK_OPENAI_IMAGE_LIMIT,
+        ai_preflight_limit: (parsed.patrolTileCount ? QUICK_OPENAI_IMAGE_LIMIT : parsed.depth === 'deep' ? DEEP_OPENAI_IMAGE_LIMIT : QUICK_OPENAI_IMAGE_LIMIT) + parsed.patrolTileCount,
+        patrol_tiles_inspected: regionalPatrol?.inspected_tiles ?? 0,
       },
-      evidence_policy: 'official-public-only; gallery and OpenAI imagery pass Worker image preflight; browser delivery uses the allowlisted provenance-preserving image stream',
+      evidence_policy: 'official-public-only; gallery and OpenAI imagery pass Worker image preflight; regional patrol is sparse one-date sampling and never a full-coverage or temporal-change claim; browser delivery uses the allowlisted provenance-preserving image stream',
     }, 200, origin, env)
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Area analysis failed safely.'
