@@ -14,7 +14,10 @@ const LANDSAT_START_YEAR = 1972
 const UPSTREAM_TIMEOUT_MS = 6500
 const BROWSE_PREFLIGHT_TIMEOUT_MS = 4000
 const BROWSER_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp'])
-const CANONICAL_FIELDS = new Set(['latitude', 'longitude', 'radius_km', 'start_date', 'end_date', 'depth', 'place_name', 'season'])
+const CANONICAL_FIELDS = new Set([
+  'latitude', 'longitude', 'radius_km', 'start_date', 'end_date', 'depth', 'place_name', 'season',
+  'case_id', 'focus_latitude', 'focus_longitude', 'focus_radius_km',
+])
 const GALLERY_FIELDS = new Set(['latitude', 'longitude', 'radius_km', 'years', 'season', 'cloud_mode'])
 const SEASON_REFERENCE = {
   all: '07-15',
