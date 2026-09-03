@@ -5,6 +5,8 @@ const UI_URL = 'https://terraforming-planet.github.io/Polar-Sun-Moon-Analysis/'
 
 const DEFAULT_ALLOWED_ORIGINS = [
   'https://terraforming-planet.github.io',
+  'https://forgemcp-research-game-studio.terraformingplanet.chatgpt.site',
+  'https://forgemcp-research-game-studio.netlify.app',
   'http://localhost:5173',
   'http://127.0.0.1:5173',
 ]
