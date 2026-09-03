@@ -8,7 +8,7 @@ function gibsUrl(date) {
   const params = new URLSearchParams({
     SERVICE: 'WMS', VERSION: '1.3.0', REQUEST: 'GetMap', FORMAT: 'image/jpeg',
     TRANSPARENT: 'FALSE', LAYERS: NASA_LAYER, CRS: 'EPSG:4326', STYLES: '',
-    WIDTH: '2048', HEIGHT: '1024', BBOX: '-90,-180,90,180', TIME: date,
+    WIDTH: '4096', HEIGHT: '2048', BBOX: '-90,-180,90,180', TIME: date,
   })
   return `${NASA_GIBS}?${params}`
 }
@@ -40,6 +40,9 @@ function loadTexture(url) {
     loader.setCrossOrigin('anonymous')
     loader.load(url, texture => {
       texture.colorSpace = THREE.SRGBColorSpace
+      texture.minFilter = THREE.LinearMipmapLinearFilter
+      texture.magFilter = THREE.LinearFilter
+      texture.generateMipmaps = true
       resolve(texture)
     }, undefined, reject)
   })
@@ -54,17 +57,20 @@ async function buildEarthOnly(host) {
   camera.position.set(0, 0.35, 3.25)
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' })
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5))
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
   renderer.outputColorSpace = THREE.SRGBColorSpace
   host.replaceChildren(renderer.domElement)
 
   const controls = new OrbitControls(camera, renderer.domElement)
   controls.enableDamping = true
+  controls.dampingFactor = 0.07
   controls.enablePan = false
-  controls.minDistance = 1.55
+  controls.rotateSpeed = -0.72
+  controls.zoomSpeed = 0.85
+  controls.minDistance = 1.45
   controls.maxDistance = 8
 
-  scene.add(new THREE.AmbientLight(0xffffff, 1.1))
+  scene.add(new THREE.AmbientLight(0xffffff, 1.06))
   const sun = new THREE.DirectionalLight(0xffffff, 2.25)
   sun.position.set(4, 2, 5)
   scene.add(sun)
@@ -73,16 +79,18 @@ async function buildEarthOnly(host) {
   let texture
   try {
     texture = await loadTexture(textureInfo.url)
+    texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy())
+    texture.needsUpdate = true
   } catch (error) {
     console.warn('NASA texture failed; Earth will use a safe colour fallback.', error)
   }
 
   const earth = new THREE.Mesh(
-    new THREE.SphereGeometry(1, 96, 64),
+    new THREE.SphereGeometry(1, 144, 96),
     new THREE.MeshStandardMaterial({
       map: texture || null,
       color: texture ? 0xffffff : 0x2d78b7,
-      roughness: 0.92,
+      roughness: 0.9,
       metalness: 0,
     }),
   )
@@ -90,8 +98,8 @@ async function buildEarthOnly(host) {
   scene.add(earth)
 
   const atmosphere = new THREE.Mesh(
-    new THREE.SphereGeometry(1.015, 64, 48),
-    new THREE.MeshBasicMaterial({ color: 0x6fc7ff, transparent: true, opacity: 0.08, side: THREE.BackSide }),
+    new THREE.SphereGeometry(1.015, 96, 64),
+    new THREE.MeshBasicMaterial({ color: 0x6fc7ff, transparent: true, opacity: 0.075, side: THREE.BackSide }),
   )
   scene.add(atmosphere)
 
@@ -102,6 +110,7 @@ async function buildEarthOnly(host) {
   let spinning = true
   document.getElementById('std-play')?.addEventListener('click', () => { spinning = true })
   document.getElementById('std-stop')?.addEventListener('click', () => { spinning = false })
+  controls.addEventListener('start', () => { spinning = false })
 
   const resize = () => {
     const width = Math.max(host.clientWidth, 1)
