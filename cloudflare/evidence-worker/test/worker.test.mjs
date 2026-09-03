@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import test from 'node:test'
 
 import {
@@ -39,10 +40,23 @@ test('request payload cannot select prompt, model or source URL', () => {
   assert.equal(validateExplainPayload({ case_id: 'vistula-test-014', source_url: 'https://example.com' }).ok, false)
 })
 
-test('CORS allows Terraforming Planet and local development only by default', () => {
+test('CORS allows the exact ForgeMCP deployments and local development by default', () => {
   assert.ok(allowedOrigins({}).includes('https://terraforming-planet.github.io'))
   assert.equal(isAllowedOrigin('https://terraforming-planet.github.io', {}), true)
+  assert.equal(isAllowedOrigin('https://forgemcp-research-game-studio.terraformingplanet.chatgpt.site', {}), true)
+  assert.equal(isAllowedOrigin('https://forgemcp-research-game-studio.netlify.app', {}), true)
+  assert.equal(isAllowedOrigin('https://evil.terraformingplanet.chatgpt.site', {}), false)
   assert.equal(isAllowedOrigin('https://example.com', {}), false)
+})
+
+test('production CORS configuration contains the exact ForgeMCP origins without a wildcard', () => {
+  const config = JSON.parse(readFileSync(new URL('../wrangler.jsonc', import.meta.url), 'utf8'))
+  const env = { ALLOWED_ORIGINS: config.vars.ALLOWED_ORIGINS }
+
+  assert.equal(isAllowedOrigin('https://forgemcp-research-game-studio.terraformingplanet.chatgpt.site', env), true)
+  assert.equal(isAllowedOrigin('https://forgemcp-research-game-studio.netlify.app', env), true)
+  assert.equal(isAllowedOrigin('https://evil.terraformingplanet.chatgpt.site', env), false)
+  assert.equal(allowedOrigins(env).some(origin => origin.includes('*')), false)
 })
 
 test('OpenAI request uses server-side model, larger completion budget and strict structured output', () => {
