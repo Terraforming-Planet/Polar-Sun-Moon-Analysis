@@ -18,13 +18,14 @@ describe('English judge UI delivery', () => {
   })
 
   it('keeps English active for React rerenders and delayed content', () => {
-    expect(overlay).toContain("document.documentElement.lang = 'en'")
+    expect(overlay).toContain("doc.documentElement.lang = 'en'")
     expect(overlay).toContain('new MutationObserver')
     expect(overlay).toContain("attributeFilter: ATTRIBUTES")
   })
 
   it('injects the versioned overlay into every generated HTML page', () => {
     expect(postbuild).toContain('english-judge-overlay.js?v=20260904-en')
+    expect(postbuild).toContain("ensureRuntimeScript(updated, 'contest-runtime.js'")
     expect(postbuild).toContain("ensureDeferredScript(updated, 'english-judge-overlay.js'")
   })
 })
