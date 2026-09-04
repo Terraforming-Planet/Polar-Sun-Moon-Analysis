@@ -40,11 +40,15 @@ function ensureEvidenceMeta(source) {
   return /<\/head>/i.test(source) ? source.replace(/<\/head>/i, `${meta}</head>`) : source
 }
 
-function ensureDeferredScript(source, marker, src) {
+function ensureRuntimeScript(source, marker, src) {
   if (source.includes(marker)) return source
   const script = `    <script src="${src}" defer></script>\n`
   if (/<\/body>/i.test(source)) return source.replace(/<\/body>/i, `${script}</body>`)
   return `${source}\n${script}`
+}
+
+function ensureDeferredScript(source, marker, src) {
+  return ensureRuntimeScript(source, marker, src)
 }
 
 const htmlFiles = await listHtmlFiles(distDir)
@@ -53,7 +57,7 @@ for (const file of htmlFiles) {
   const original = await readFile(file, 'utf8')
   let updated = ensureEnglishHtml(original)
   updated = ensureEvidenceMeta(updated)
-  updated = ensureDeferredScript(updated, 'contest-runtime.js', runtimeSrc)
+  updated = ensureRuntimeScript(updated, 'contest-runtime.js', runtimeSrc)
   updated = ensureDeferredScript(updated, 'english-judge-overlay.js', englishOverlaySrc)
   if (updated === original) continue
   await writeFile(file, updated, 'utf8')
