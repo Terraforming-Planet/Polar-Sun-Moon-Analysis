@@ -1,11 +1,6 @@
-import { readFileSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
+import overlay from '../public/english-judge-overlay.js?raw'
+import postbuild from '../scripts/postbuild-contest-runtime.mjs?raw'
 import { describe, expect, it } from 'vitest'
-
-const overlayPath = fileURLToPath(new URL('../public/english-judge-overlay.js', import.meta.url))
-const postbuildPath = fileURLToPath(new URL('../scripts/postbuild-contest-runtime.mjs', import.meta.url))
-const overlay = readFileSync(overlayPath, 'utf8')
-const postbuild = readFileSync(postbuildPath, 'utf8')
 
 describe('English judge UI delivery', () => {
   it('translates the primary Simple and Advanced research surfaces', () => {
