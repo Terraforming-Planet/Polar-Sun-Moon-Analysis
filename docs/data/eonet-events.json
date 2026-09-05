@@ -1,5 +1,5 @@
 {
-  "generatedUtc": "2026-09-05T00:57:13.353103Z",
+  "generatedUtc": "2026-09-05T05:14:02.646817Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
@@ -524,33 +524,6 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23612",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_23613",
-      "title": "Tropical Storm Bang-Lang",
-      "categories": [
-        "Severe Storms"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 35.0,
-        "magnitudeUnit": "kts",
-        "date": "2026-08-30T12:00:00Z",
-        "type": "Point",
-        "coordinates": [
-          165.9,
-          34.1
-        ]
-      },
-      "sources": [
-        {
-          "id": "JTWC",
-          "url": "https://www.metoc.navy.mil/jtwc/products/wp2026.tcw"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23613",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
@@ -5413,6 +5386,33 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21845",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_21837",
+      "title": "Wildfire 0587 SHINGLE, Wheeler, Oregon",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 53976.0,
+        "magnitudeUnit": "acres",
+        "date": "2026-07-23T16:58:00Z",
+        "type": "Point",
+        "coordinates": [
+          -119.8976,
+          44.468717
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-OR953S-000587"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21837",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -5975,35 +5975,6 @@
           {
             "id": "NOAA_NHC",
             "url": "https://www.nhc.noaa.gov/archive/2026/LOWELL.shtml"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_23613",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          165.9,
-          34.1
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Tropical Storm Bang-Lang",
-        "categories": [
-          "Severe Storms"
-        ],
-        "observationUtc": "2026-08-30T12:00:00Z",
-        "observation_time": "2026-08-30T12:00:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23613",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23613",
-        "sources": [
-          {
-            "id": "JTWC",
-            "url": "https://www.metoc.navy.mil/jtwc/products/wp2026.tcw"
           }
         ]
       }
@@ -11224,6 +11195,35 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-ORWSA-000100"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_21837",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -119.8976,
+          44.468717
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Wildfire 0587 SHINGLE, Wheeler, Oregon",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-07-23T16:58:00Z",
+        "observation_time": "2026-07-23T16:58:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21837",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21837",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-OR953S-000587"
           }
         ]
       }
