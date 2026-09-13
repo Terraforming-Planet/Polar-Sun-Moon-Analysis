@@ -1,9 +1,14 @@
 {
   "$schema": "https://raw.githubusercontent.com/cloudflare/workers-sdk/main/packages/wrangler/config-schema.json",
   "name": "terra-observation-evidence-explainer",
-  "main": "src/entry.js",
+  "main": ".build/entry.js",
   "compatibility_date": "2026-08-20",
   "workers_dev": true,
+  "build": {
+    "command": "node scripts/build-english-worker.mjs",
+    "cwd": ".",
+    "watch_dir": ["src", "scripts"]
+  },
   "vars": {
     "OPENAI_MODEL": "gpt-5.6-luna",
     "ALLOWED_ORIGINS": "https://terraforming-planet.github.io,https://forgemcp-research-game-studio.terraformingplanet.chatgpt.site,https://forgemcp-research-game-studio.netlify.app,http://localhost:5173,http://127.0.0.1:5173"

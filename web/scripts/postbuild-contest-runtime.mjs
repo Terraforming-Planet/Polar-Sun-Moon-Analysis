@@ -5,7 +5,8 @@ const distDir = path.resolve('dist')
 const rawBase = (process.env.TERRA_PUBLIC_BASE || '/Polar-Sun-Moon-Analysis/').trim() || '/'
 const publicBase = rawBase.endsWith('/') ? rawBase : `${rawBase}/`
 const workerUrl = (process.env.VITE_EVIDENCE_API_URL || '').trim().replace(/\/+$/, '')
-const runtimeSrc = `${publicBase}contest-runtime.js`.replace(/\/+/g, '/')
+const runtimeSrc = `${publicBase}contest-runtime.js?v=20260904-en`.replace(/\/+/g, '/')
+const englishOverlaySrc = `${publicBase}english-judge-overlay.js?v=20260904-en`.replace(/\/+/g, '/')
 
 function escapeAttribute(value) {
   return value
@@ -39,11 +40,15 @@ function ensureEvidenceMeta(source) {
   return /<\/head>/i.test(source) ? source.replace(/<\/head>/i, `${meta}</head>`) : source
 }
 
-function ensureRuntimeScript(source) {
-  if (/contest-runtime\.js/i.test(source)) return source
-  const script = `    <script src="${runtimeSrc}" defer></script>\n`
+function ensureRuntimeScript(source, marker, src) {
+  if (source.includes(marker)) return source
+  const script = `    <script src="${src}" defer></script>\n`
   if (/<\/body>/i.test(source)) return source.replace(/<\/body>/i, `${script}</body>`)
   return `${source}\n${script}`
+}
+
+function ensureDeferredScript(source, marker, src) {
+  return ensureRuntimeScript(source, marker, src)
 }
 
 const htmlFiles = await listHtmlFiles(distDir)
@@ -52,10 +57,11 @@ for (const file of htmlFiles) {
   const original = await readFile(file, 'utf8')
   let updated = ensureEnglishHtml(original)
   updated = ensureEvidenceMeta(updated)
-  updated = ensureRuntimeScript(updated)
+  updated = ensureRuntimeScript(updated, 'contest-runtime.js', runtimeSrc)
+  updated = ensureDeferredScript(updated, 'english-judge-overlay.js', englishOverlaySrc)
   if (updated === original) continue
   await writeFile(file, updated, 'utf8')
   changed += 1
 }
 
-console.log(`Contest runtime post-build: ${changed}/${htmlFiles.length} HTML files updated; base=${publicBase}; worker=${workerUrl ? 'configured' : 'not-configured'}.`)
+console.log(`Contest runtime post-build: ${changed}/${htmlFiles.length} HTML files updated; base=${publicBase}; worker=${workerUrl ? 'configured' : 'not-configured'}; English overlay=enabled.`)
