@@ -1,5 +1,5 @@
 {
-  "generatedUtc": "2026-09-14T13:20:56.358655Z",
+  "generatedUtc": "2026-09-14T18:46:58.382442Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
@@ -12,11 +12,11 @@
       "latestGeometry": {
         "magnitudeValue": 35.0,
         "magnitudeUnit": "kts",
-        "date": "2026-09-14T06:00:00Z",
+        "date": "2026-09-14T12:00:00Z",
         "type": "Point",
         "coordinates": [
-          -135.8,
-          19.2
+          -137.1,
+          19.3
         ]
       },
       "sources": [
@@ -327,33 +327,6 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24098",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_23738",
-      "title": "Tropical Storm Krovanh",
-      "categories": [
-        "Severe Storms"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 25.0,
-        "magnitudeUnit": "kts",
-        "date": "2026-09-09T06:00:00Z",
-        "type": "Point",
-        "coordinates": [
-          135.9,
-          34.3
-        ]
-      },
-      "sources": [
-        {
-          "id": "JTWC",
-          "url": "https://www.metoc.navy.mil/jtwc/products/wp2226.tcw"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23738",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
@@ -5413,6 +5386,33 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21840",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_21841",
+      "title": "Wildfire Stubble, Harney, Oregon",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 15673.0,
+        "magnitudeUnit": "acres",
+        "date": "2026-07-23T18:23:00Z",
+        "type": "Point",
+        "coordinates": [
+          -118.92,
+          43.18
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-ORMAR-002683"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21841",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -5422,8 +5422,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -135.8,
-          19.2
+          -137.1,
+          19.3
         ]
       },
       "properties": {
@@ -5433,8 +5433,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-09-14T06:00:00Z",
-        "observation_time": "2026-09-14T06:00:00Z",
+        "observationUtc": "2026-09-14T12:00:00Z",
+        "observation_time": "2026-09-14T12:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24184",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24184",
         "sources": [
@@ -5764,35 +5764,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-NMN4S-000562"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_23738",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          135.9,
-          34.3
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Tropical Storm Krovanh",
-        "categories": [
-          "Severe Storms"
-        ],
-        "observationUtc": "2026-09-09T06:00:00Z",
-        "observation_time": "2026-09-09T06:00:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23738",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23738",
-        "sources": [
-          {
-            "id": "JTWC",
-            "url": "https://www.metoc.navy.mil/jtwc/products/wp2226.tcw"
           }
         ]
       }
@@ -11224,6 +11195,35 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-ORBUD-002687"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_21841",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.92,
+          43.18
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Wildfire Stubble, Harney, Oregon",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-07-23T18:23:00Z",
+        "observation_time": "2026-07-23T18:23:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21841",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21841",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-ORMAR-002683"
           }
         ]
       }
