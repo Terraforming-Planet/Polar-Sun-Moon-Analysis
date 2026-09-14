@@ -1,0 +1,95 @@
+name: Global quantitative water-area measurement
+
+on:
+  push:
+    branches:
+      - water-area-measurement-001-014
+    paths:
+      - 'terra_water/**'
+      - 'tools/build_water_area_measurements.py'
+      - 'tools/aggregate_water_area_measurements.py'
+      - 'config/water_measurement_targets.json'
+      - 'config/satellite_integrity_sources.json'
+      - '.github/workflows/global-water-area-measurement.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONPATH: ${{ github.workspace }}
+
+jobs:
+  measure:
+    name: Measure Test ${{ matrix.test }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      max-parallel: 14
+      matrix:
+        test: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+    steps:
+      - name: Checkout measurement code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install geospatial runtime
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy requests rasterio
+
+      - name: Measure fixed-AOI open surface water
+        env:
+          PYTHONUNBUFFERED: '1'
+        run: python tools/build_water_area_measurements.py --test ${{ matrix.test }}
+
+      - name: Upload Test measurement series
+        uses: actions/upload-artifact@v4
+        with:
+          name: WATER_MEASUREMENT_TEST_${{ matrix.test }}
+          path: water_measurements/test_*/
+          retention-days: 90
+
+  aggregate:
+    name: Aggregate rankings
+    needs: measure
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download all measurement artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: WATER_MEASUREMENT_TEST_*
+          path: water_measurements
+          merge-multiple: true
+      - name: Verify all 14 test results exist
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          missing=[]
+          for test in range(1,15):
+              path=Path('water_measurements')/f'test_{test:03d}'/'measurements.json'
+              if not path.exists(): missing.append(test)
+          if missing: raise SystemExit(f'missing measurement artifacts: {missing}')
+          print('ALL_TEST_MEASUREMENTS_PRESENT')
+          PY
+      - name: Aggregate seasonal changes and group-safe rankings
+        run: python tools/aggregate_water_area_measurements.py
+      - name: Upload global water-area report
+        uses: actions/upload-artifact@v4
+        with:
+          name: GLOBAL_WATER_AREA_CHANGE_REPORT
+          path: |
+            water_measurements/global/
+            water_measurements/test_*/measurements.json
+            water_measurements/test_*/measurements.csv
+          retention-days: 90

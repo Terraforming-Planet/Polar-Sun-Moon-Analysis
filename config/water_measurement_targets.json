@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "method": "fixed_AOI_MNDWI_surface_water",
+  "threshold": 0.0,
+  "sensitivity": 0.1,
+  "minimum_valid_fraction": 0.75,
+  "baseline_years": [1990, 1991, 1992, 1993, 1994],
+  "recent_years": [2022, 2023, 2024, 2025, 2026],
+  "notes": "Areas describe open surface water inside a fixed test AOI, not automatically the legal or cartographic boundary of a named lake. Spring is compared with spring and autumn with autumn. Large river/estuary/regional tests are ranked separately from local inland-water tests.",
+  "targets": [
+    {"test": 1, "name": "Forest Pond + Lake Kuchnia", "group": "local_inland", "lat": 53.5914, "lon": 19.010717, "width_m": 2000, "height_m": 2000, "resolution_m": 30},
+    {"test": 2, "name": "Czarne Dolne wetland", "group": "local_inland", "lat": 53.609856, "lon": 19.055751, "width_m": 2000, "height_m": 2000, "resolution_m": 30},
+    {"test": 3, "name": "Jezioro Nogat", "group": "local_inland", "lat": 53.578593, "lon": 19.068364, "width_m": 4000, "height_m": 6000, "resolution_m": 30},
+    {"test": 4, "name": "Kacze + Gleboczek cluster", "group": "local_inland", "lat": 53.611719, "lon": 18.882321, "width_m": 4000, "height_m": 4000, "resolution_m": 30},
+    {"test": 5, "name": "Jezioro Tarpno", "group": "local_inland", "lat": 53.49767, "lon": 18.822712, "width_m": 4000, "height_m": 5000, "resolution_m": 30},
+    {"test": 6, "name": "Jezioro Wieczno", "group": "local_inland", "lat": 53.270125, "lon": 18.789994, "width_m": 7000, "height_m": 9000, "resolution_m": 30},
+    {"test": 7, "name": "Karas / Ilawa regional", "group": "regional_inland", "lat": 53.5639201, "lon": 19.4706276, "width_m": 18000, "height_m": 24000, "resolution_m": 60},
+    {"test": 8, "name": "Jezioro Stelchno", "group": "local_inland", "lat": 53.525217, "lon": 18.46132, "width_m": 7000, "height_m": 9000, "resolution_m": 30},
+    {"test": 9, "name": "Jezioro Plowez", "group": "local_inland", "lat": 53.452516, "lon": 19.212111, "width_m": 7000, "height_m": 9000, "resolution_m": 30},
+    {"test": 10, "name": "Dolina Drwecy wetlands", "group": "regional_inland", "lat": 53.067318, "lon": 18.872006, "width_m": 8000, "height_m": 12000, "resolution_m": 30},
+    {"test": 11, "name": "Ilawa-Zalewo regional", "group": "regional_inland", "lat": 53.76, "lon": 19.59, "width_m": 65000, "height_m": 60000, "resolution_m": 90},
+    {"test": 12, "name": "Great Salt Lake", "group": "large_lake", "lat": 41.15, "lon": -112.6, "width_m": 120000, "height_m": 160000, "resolution_m": 120},
+    {"test": 13, "name": "Cosmopolis / Grays Harbor", "group": "estuary_tidal", "lat": 46.965781, "lon": -123.510786, "width_m": 80000, "height_m": 60000, "resolution_m": 90},
+    {"test": 14, "name": "Wisla Gniew-Grudziadz", "group": "river_regional", "lat": 53.66, "lon": 18.79, "width_m": 45000, "height_m": 70000, "resolution_m": 90}
+  ]
+}
