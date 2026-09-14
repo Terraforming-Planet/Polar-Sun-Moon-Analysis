@@ -1,5 +1,5 @@
 {
-  "generatedUtc": "2026-09-14T01:26:56.113905Z",
+  "generatedUtc": "2026-09-14T06:40:45.387547Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
@@ -10,13 +10,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 45.0,
+        "magnitudeValue": 40.0,
         "magnitudeUnit": "kts",
-        "date": "2026-09-13T18:00:00Z",
+        "date": "2026-09-14T00:00:00Z",
         "type": "Point",
         "coordinates": [
-          -133.4,
-          18.6
+          -134.6,
+          18.9
         ]
       },
       "sources": [
@@ -327,37 +327,6 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24098",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_23800",
-      "title": "Cyclone Marie",
-      "categories": [
-        "Severe Storms"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 35.0,
-        "magnitudeUnit": "kts",
-        "date": "2026-09-08T12:00:00Z",
-        "type": "Point",
-        "coordinates": [
-          -127.1,
-          25.5
-        ]
-      },
-      "sources": [
-        {
-          "id": "JTWC",
-          "url": "https://www.metoc.navy.mil/jtwc/products/ep1326.tcw"
-        },
-        {
-          "id": "NOAA_NHC",
-          "url": "https://www.nhc.noaa.gov/archive/2026/MARIE.shtml"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23800",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
@@ -5417,6 +5386,33 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21853",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_21840",
+      "title": "Wildfire Bald Mountain, Harney, Oregon",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 25992.0,
+        "magnitudeUnit": "acres",
+        "date": "2026-07-23T20:52:00Z",
+        "type": "Point",
+        "coordinates": [
+          -118.474267,
+          42.995608
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-ORBUD-002687"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21840",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -5426,8 +5422,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -133.4,
-          18.6
+          -134.6,
+          18.9
         ]
       },
       "properties": {
@@ -5437,8 +5433,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-09-13T18:00:00Z",
-        "observation_time": "2026-09-13T18:00:00Z",
+        "observationUtc": "2026-09-14T00:00:00Z",
+        "observation_time": "2026-09-14T00:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24184",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24184",
         "sources": [
@@ -5768,39 +5764,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-NMN4S-000562"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_23800",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -127.1,
-          25.5
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Cyclone Marie",
-        "categories": [
-          "Severe Storms"
-        ],
-        "observationUtc": "2026-09-08T12:00:00Z",
-        "observation_time": "2026-09-08T12:00:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23800",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23800",
-        "sources": [
-          {
-            "id": "JTWC",
-            "url": "https://www.metoc.navy.mil/jtwc/products/ep1326.tcw"
-          },
-          {
-            "id": "NOAA_NHC",
-            "url": "https://www.nhc.noaa.gov/archive/2026/MARIE.shtml"
           }
         ]
       }
@@ -11232,6 +11195,35 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-ORPRD-000567"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_21840",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.474267,
+          42.995608
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Wildfire Bald Mountain, Harney, Oregon",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-07-23T20:52:00Z",
+        "observation_time": "2026-07-23T20:52:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21840",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21840",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-ORBUD-002687"
           }
         ]
       }
