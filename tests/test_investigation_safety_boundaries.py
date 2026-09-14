@@ -3,6 +3,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PUBLISHED = ROOT / "docs" / "investigation" / "index.html"
 SOURCE = ROOT / "web" / "public" / "investigation" / "index.html"
+SOURCE_APP = ROOT / "web" / "public" / "investigation" / "app.js"
 
 
 def _read(path: Path) -> str:
@@ -30,6 +31,18 @@ def test_investigation_page_defines_rapid_emergency_authorization() -> None:
         assert "bezpośrednie zagrożenie" in text
         assert "celem operacyjnym systemu, nie obietnicą prawną" in text
         assert "nie może samodzielnie wybrać człowieka jako celu" in text
+
+
+def test_investigation_runtime_explains_fast_data_vs_fast_authorization() -> None:
+    text = _read(SOURCE_APP)
+    assert "EMERGENCY RESPONSE SLA · FAST DATA, FAST DECISION" in text
+    assert "co 3 sekundy, 15 sekund" in text
+    assert "Godzina dotyczy biurokracji i decyzji, nie długości obserwacji" in text
+    assert "faktyczną kadencję, opóźnienie, dostawcę i ograniczenia danych" in text
+    assert "minimalny pakiet decyzyjny" in text
+    assert "aktywnych oszustw telefonicznych lub internetowych" in text
+    assert "publiczna Terra Observation nie przechwytuje prywatnych rozmów" in text
+    assert "verify → authorize → observe → alert → expire → audit" in text
 
 
 def test_investigation_page_surfaces_requested_public_good_case_families() -> None:
