@@ -1,5 +1,5 @@
 {
-  "generatedUtc": "2026-09-16T12:58:47.765796Z",
+  "generatedUtc": "2026-09-16T17:30:16.060269Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
@@ -624,41 +624,6 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23669",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_23612",
-      "title": "Cyclone Lowell",
-      "categories": [
-        "Severe Storms"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 45.0,
-        "magnitudeUnit": "kts",
-        "date": "2026-09-11T00:00:00Z",
-        "type": "Point",
-        "coordinates": [
-          -169.5,
-          29
-        ]
-      },
-      "sources": [
-        {
-          "id": "EO",
-          "url": "https://science.nasa.gov/earth/earth-observatory/a-trio-of-tropical-cyclones-in-the-pacific/"
-        },
-        {
-          "id": "JTWC",
-          "url": "https://www.metoc.navy.mil/jtwc/products/ep1226.tcw"
-        },
-        {
-          "id": "NOAA_NHC",
-          "url": "https://www.nhc.noaa.gov/archive/2026/LOWELL.shtml"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23612",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
@@ -5413,6 +5378,33 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21841",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_21845",
+      "title": "Wildfire Bench, Jefferson, Oregon",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 20180.0,
+        "magnitudeUnit": "acres",
+        "date": "2026-07-23T18:13:00Z",
+        "type": "Point",
+        "coordinates": [
+          -121.350222,
+          44.631778
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-ORWSA-000100"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21845",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -6083,43 +6075,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-MTCES-266405"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_23612",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -169.5,
-          29
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Cyclone Lowell",
-        "categories": [
-          "Severe Storms"
-        ],
-        "observationUtc": "2026-09-11T00:00:00Z",
-        "observation_time": "2026-09-11T00:00:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23612",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23612",
-        "sources": [
-          {
-            "id": "EO",
-            "url": "https://science.nasa.gov/earth/earth-observatory/a-trio-of-tropical-cyclones-in-the-pacific/"
-          },
-          {
-            "id": "JTWC",
-            "url": "https://www.metoc.navy.mil/jtwc/products/ep1226.tcw"
-          },
-          {
-            "id": "NOAA_NHC",
-            "url": "https://www.nhc.noaa.gov/archive/2026/LOWELL.shtml"
           }
         ]
       }
@@ -11224,6 +11179,35 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-ORMAR-002683"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_21845",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.350222,
+          44.631778
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Wildfire Bench, Jefferson, Oregon",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-07-23T18:13:00Z",
+        "observation_time": "2026-07-23T18:13:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21845",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21845",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-ORWSA-000100"
           }
         ]
       }
