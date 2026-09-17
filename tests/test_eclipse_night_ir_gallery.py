@@ -30,7 +30,7 @@ def test_gallery_uses_only_archived_manifest_frames_for_animation() -> None:
     source = GALLERY.read_text(encoding="utf-8")
 
     assert "goes19-band02/manifest.json" in source
-    assert "Animacja nie tworzy nowych danych" in source
+    assert "The animation does not create new data" in source
     assert "f.source_url" in source
     assert "f.sha256" in source
     assert "showFrame(index+1)" in source
