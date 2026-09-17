@@ -1,7 +1,34 @@
 {
-  "generatedUtc": "2026-09-17T11:55:45.189582Z",
+  "generatedUtc": "2026-09-17T15:57:19.487686Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
+    {
+      "id": "EONET_24317",
+      "title": "Tropical Storm Dujuan",
+      "categories": [
+        "Severe Storms"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 35.0,
+        "magnitudeUnit": "kts",
+        "date": "2026-09-16T12:00:00Z",
+        "type": "Point",
+        "coordinates": [
+          149.5,
+          16.5
+        ]
+      },
+      "sources": [
+        {
+          "id": "JTWC",
+          "url": "https://www.metoc.navy.mil/jtwc/products/wp2426.tcw"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24317",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
     {
       "id": "EONET_24184",
       "title": "Cyclone Norbert",
@@ -5378,36 +5405,38 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21841",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_21845",
-      "title": "Wildfire Bench, Jefferson, Oregon",
-      "categories": [
-        "Wildfires"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 20180.0,
-        "magnitudeUnit": "acres",
-        "date": "2026-07-23T18:13:00Z",
-        "type": "Point",
-        "coordinates": [
-          -121.350222,
-          44.631778
-        ]
-      },
-      "sources": [
-        {
-          "id": "IRWIN",
-          "url": "https://irwin.doi.gov/observer/incidents/2026-ORWSA-000100"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21845",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
+    {
+      "type": "Feature",
+      "id": "EONET_24317",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.5,
+          16.5
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Tropical Storm Dujuan",
+        "categories": [
+          "Severe Storms"
+        ],
+        "observationUtc": "2026-09-16T12:00:00Z",
+        "observation_time": "2026-09-16T12:00:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24317",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24317",
+        "sources": [
+          {
+            "id": "JTWC",
+            "url": "https://www.metoc.navy.mil/jtwc/products/wp2426.tcw"
+          }
+        ]
+      }
+    },
     {
       "type": "Feature",
       "id": "EONET_24184",
@@ -11179,35 +11208,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-ORMAR-002683"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_21845",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -121.350222,
-          44.631778
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Wildfire Bench, Jefferson, Oregon",
-        "categories": [
-          "Wildfires"
-        ],
-        "observationUtc": "2026-07-23T18:13:00Z",
-        "observation_time": "2026-07-23T18:13:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21845",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21845",
-        "sources": [
-          {
-            "id": "IRWIN",
-            "url": "https://irwin.doi.gov/observer/incidents/2026-ORWSA-000100"
           }
         ]
       }
