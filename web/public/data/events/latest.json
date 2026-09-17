@@ -1,14 +1,14 @@
 {
   "schema_version": "7.0",
   "project": "Terraforming Planet",
-  "generated_at": "2026-09-17T21:43:34.643722Z",
-  "event_count": 946,
+  "generated_at": "2026-09-17T23:45:45.526063Z",
+  "event_count": 944,
   "summary": {
-    "earthquake": 204,
+    "earthquake": 202,
+    "fire": 618,
     "storm": 26,
-    "fire": 616,
     "ice": 1,
-    "volcano": 7,
+    "volcano": 5,
     "flood": 81,
     "other": 7,
     "landslide": 2,
@@ -19,7 +19,7 @@
     {
       "source": "USGS",
       "status": "ok",
-      "count": 196
+      "count": 194
     },
     {
       "source": "NASA EONET",
@@ -38,6 +38,134 @@
     }
   ],
   "events": [
+    {
+      "id": "usgs-aka2026smepok",
+      "type": "earthquake",
+      "title": "M 2.8 - 10 km SE of Anchorage, Alaska",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 61.148,
+      "longitude": -149.771,
+      "observed_at": "2026-09-17T23:27:25.566000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026smepok",
+      "metadata": {
+        "magnitude": 2.8,
+        "depth_km": 7.7
+      }
+    },
+    {
+      "id": "usgs-nc75437537",
+      "type": "earthquake",
+      "title": "M 1.2 - 18 km E of Alum Rock, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 37.3860015869141,
+      "longitude": -121.62866973877,
+      "observed_at": "2026-09-17T23:21:20.060000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75437537",
+      "metadata": {
+        "magnitude": 1.22,
+        "depth_km": 5.67999982833862
+      }
+    },
+    {
+      "id": "usgs-nc75437532",
+      "type": "earthquake",
+      "title": "M 0.2 - 7 km WNW of Cobb, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 38.8368339538574,
+      "longitude": -122.805335998535,
+      "observed_at": "2026-09-17T23:21:12.790000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75437532",
+      "metadata": {
+        "magnitude": 0.24,
+        "depth_km": 1.17999994754791
+      }
+    },
+    {
+      "id": "usgs-aka2026smdujn",
+      "type": "earthquake",
+      "title": "M 1.6 - 41 km WNW of Ninilchik, Alaska",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 60.157,
+      "longitude": -152.386,
+      "observed_at": "2026-09-17T23:03:02.456000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026smdujn",
+      "metadata": {
+        "magnitude": 1.6,
+        "depth_km": 98.1
+      }
+    },
+    {
+      "id": "usgs-pr71532078",
+      "type": "earthquake",
+      "title": "M 1.9 - 0 km E of Indios, Puerto Rico",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 17.9948333333333,
+      "longitude": -66.814,
+      "observed_at": "2026-09-17T22:48:06.700000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/pr71532078",
+      "metadata": {
+        "magnitude": 1.88,
+        "depth_km": 16.93
+      }
+    },
+    {
+      "id": "usgs-aka2026smcwxv",
+      "type": "earthquake",
+      "title": "M 1.1 - 77 km W of Salamatof, Alaska",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 60.539,
+      "longitude": -152.726,
+      "observed_at": "2026-09-17T22:35:59.285000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026smcwxv",
+      "metadata": {
+        "magnitude": 1.1,
+        "depth_km": 6.6
+      }
+    },
+    {
+      "id": "usgs-ci41334295",
+      "type": "earthquake",
+      "title": "M 2.1 - 8 km SW of Anza, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 33.5141666666667,
+      "longitude": -116.743,
+      "observed_at": "2026-09-17T22:18:54.770000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41334295",
+      "metadata": {
+        "magnitude": 2.06,
+        "depth_km": 4.83
+      }
+    },
+    {
+      "id": "usgs-uw714104731",
+      "type": "earthquake",
+      "title": "M 1.6 - 11 km NE of Ashford, Washington",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 46.8305,
+      "longitude": -121.931833333333,
+      "observed_at": "2026-09-17T21:47:28.570000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uw714104731",
+      "metadata": {
+        "magnitude": 1.55,
+        "depth_km": 5.44
+      }
+    },
     {
       "id": "usgs-ci41334271",
       "type": "earthquake",
@@ -153,17 +281,17 @@
     {
       "id": "usgs-ci41334231",
       "type": "earthquake",
-      "title": "M 3.1 - 4 km SSE of Compton, CA",
+      "title": "M 2.9 - 4 km SSE of Compton, CA",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 33.8648338317871,
-      "longitude": -118.208999633789,
-      "observed_at": "2026-09-17T20:32:30.020000Z",
+      "status": "reviewed",
+      "latitude": 33.8646666666667,
+      "longitude": -118.2075,
+      "observed_at": "2026-09-17T20:32:29.830000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41334231",
       "metadata": {
-        "magnitude": 3.08823882840527,
-        "depth_km": 13.210000038147
+        "magnitude": 2.94,
+        "depth_km": 13.23
       }
     },
     {
@@ -1639,6 +1767,22 @@
       }
     },
     {
+      "id": "usgs-uw714104021",
+      "type": "earthquake",
+      "title": "M 0.8 - 2 km SSE of King City, Oregon",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 45.3858333333333,
+      "longitude": -122.791333333333,
+      "observed_at": "2026-09-17T09:16:29.800000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uw714104021",
+      "metadata": {
+        "magnitude": 0.77,
+        "depth_km": 19.43
+      }
+    },
+    {
       "id": "usgs-tx2026siczzu",
       "type": "earthquake",
       "title": "M 1.6 - 58 km S of Whites City, New Mexico",
@@ -1993,17 +2137,17 @@
     {
       "id": "usgs-tx2026shwree",
       "type": "earthquake",
-      "title": "M 1.3 - 34 km SSE of Midland, Texas",
+      "title": "M 1.1 - 34 km SSE of Midland, Texas",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 31.698,
-      "longitude": -101.984,
-      "observed_at": "2026-09-17T05:49:36.792000Z",
+      "status": "reviewed",
+      "latitude": 31.702,
+      "longitude": -101.967,
+      "observed_at": "2026-09-17T05:49:36.918000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026shwree",
       "metadata": {
-        "magnitude": 1.3,
-        "depth_km": 2.9201
+        "magnitude": 1.1,
+        "depth_km": 8.5205
       }
     },
     {
@@ -2823,6 +2967,22 @@
       }
     },
     {
+      "id": "usgs-av94435971",
+      "type": "earthquake",
+      "title": "M 0.9 - 25 km W of Adak, Alaska",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 51.9066666666667,
+      "longitude": -177.004666666667,
+      "observed_at": "2026-09-17T01:11:52.490000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94435971",
+      "metadata": {
+        "magnitude": 0.87,
+        "depth_km": -1.78
+      }
+    },
+    {
       "id": "usgs-uw714103911",
       "type": "earthquake",
       "title": "M 1.5 - 12 km ESE of Yacolt, Washington",
@@ -2903,6 +3063,38 @@
       }
     },
     {
+      "id": "usgs-av94435936",
+      "type": "earthquake",
+      "title": "M 0.2 - 60 km SE of Pedro Bay, Alaska",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 59.3641666666667,
+      "longitude": -153.427166666667,
+      "observed_at": "2026-09-17T00:06:50.080000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94435936",
+      "metadata": {
+        "magnitude": 0.19,
+        "depth_km": 0.9
+      }
+    },
+    {
+      "id": "usgs-av94435931",
+      "type": "earthquake",
+      "title": "M 0.4 - 13 km W of Akutan, Alaska",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 54.12,
+      "longitude": -165.975333333333,
+      "observed_at": "2026-09-17T00:06:06.220000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94435931",
+      "metadata": {
+        "magnitude": 0.35,
+        "depth_km": 5.22
+      }
+    },
+    {
       "id": "usgs-nc75436937",
       "type": "earthquake",
       "title": "M 0.3 - 11 km WNW of Cobb, CA",
@@ -2951,249 +3143,465 @@
       }
     },
     {
-      "id": "usgs-nc75436917",
-      "type": "earthquake",
-      "title": "M 2.2 - 20 km W of Petrolia, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 40.3038330078125,
-      "longitude": -124.522163391113,
-      "observed_at": "2026-09-16T23:39:06.590000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75436917",
+      "id": "eonet-EONET_24483",
+      "type": "fire",
+      "title": "Wildfire Breezy, Starr, Texas",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 26.45826,
+      "longitude": -98.712896,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.712896,
+          26.45826
+        ]
+      },
+      "observed_at": "2026-09-16T20:17:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24483",
       "metadata": {
-        "magnitude": 2.18,
-        "depth_km": 10.4200000762939
+        "category": "Wildfires"
       }
     },
     {
-      "id": "usgs-uw714103841",
-      "type": "earthquake",
-      "title": "M 1.6 Explosion - 5 km WSW of Yacolt, Washington",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 45.8411666666667,
-      "longitude": -122.467666666667,
-      "observed_at": "2026-09-16T23:00:37.470000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uw714103841",
+      "id": "eonet-EONET_24488",
+      "type": "fire",
+      "title": "Wildfire FLORISTON, Nevada, California",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 39.394425,
+      "longitude": -120.025216,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.025216,
+          39.394425
+        ]
+      },
+      "observed_at": "2026-09-16T13:01:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24488",
       "metadata": {
-        "magnitude": 1.62,
-        "depth_km": -0.32
-      }
-    },
-    {
-      "id": "usgs-ci41333895",
-      "type": "earthquake",
-      "title": "M 1.1 - 16 km WSW of Johannesburg, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 35.3321666666667,
-      "longitude": -117.809333333333,
-      "observed_at": "2026-09-16T22:39:40.560000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41333895",
-      "metadata": {
-        "magnitude": 1.13,
-        "depth_km": 8.2
-      }
-    },
-    {
-      "id": "usgs-pr71531953",
-      "type": "earthquake",
-      "title": "M 2.2 - 4 km SSW of Indios, Puerto Rico",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 17.9538333333333,
-      "longitude": -66.8343333333333,
-      "observed_at": "2026-09-16T22:35:44.350000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/pr71531953",
-      "metadata": {
-        "magnitude": 2.17,
-        "depth_km": 12.63
-      }
-    },
-    {
-      "id": "usgs-nc75436882",
-      "type": "earthquake",
-      "title": "M 1.7 - 29 km N of Redway, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 40.3746681213379,
-      "longitude": -123.771331787109,
-      "observed_at": "2026-09-16T22:33:58Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75436882",
-      "metadata": {
-        "magnitude": 1.72,
-        "depth_km": 28.4699993133545
-      }
-    },
-    {
-      "id": "usgs-ci41333887",
-      "type": "earthquake",
-      "title": "M 1.1 - 4 km N of Valle Vista, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 33.7875,
-      "longitude": -116.897833333333,
-      "observed_at": "2026-09-16T22:32:44.640000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41333887",
-      "metadata": {
-        "magnitude": 1.06,
-        "depth_km": 10.74
-      }
-    },
-    {
-      "id": "usgs-ci41333879",
-      "type": "earthquake",
-      "title": "M 1.3 - 33 km WSW of Olancha, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 36.2221666666667,
-      "longitude": -118.3675,
-      "observed_at": "2026-09-16T22:32:31.140000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41333879",
-      "metadata": {
-        "magnitude": 1.3,
-        "depth_km": 2.86
-      }
-    },
-    {
-      "id": "usgs-us7000thxx",
-      "type": "earthquake",
-      "title": "M 4.2 - 3 km NNE of Gostagayevskaya, Russia",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 45.0513,
-      "longitude": 37.5188,
-      "observed_at": "2026-09-16T22:31:16.831000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000thxx",
-      "metadata": {
-        "magnitude": 4.2,
-        "depth_km": 10
-      }
-    },
-    {
-      "id": "usgs-nc75436877",
-      "type": "earthquake",
-      "title": "M 1.0 - 3 km WNW of Anderson Springs, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 38.7866668701172,
-      "longitude": -122.720497131348,
-      "observed_at": "2026-09-16T22:20:53.910000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75436877",
-      "metadata": {
-        "magnitude": 0.95,
-        "depth_km": 2.27999997138977
-      }
-    },
-    {
-      "id": "usgs-pr71531948",
-      "type": "earthquake",
-      "title": "M 3.4 - 117 km N of Charlotte Amalie, U.S. Virgin Islands",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 19.3861666666667,
-      "longitude": -65.136,
-      "observed_at": "2026-09-16T22:12:43.820000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/pr71531948",
-      "metadata": {
-        "magnitude": 3.44,
-        "depth_km": 18.36
-      }
-    },
-    {
-      "id": "usgs-nc75436867",
-      "type": "earthquake",
-      "title": "M 1.9 - 3 km ENE of The Geysers, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 38.788501739502,
-      "longitude": -122.724334716797,
-      "observed_at": "2026-09-16T22:12:00.260000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75436867",
-      "metadata": {
-        "magnitude": 1.86,
-        "depth_km": 0.930000007152557
-      }
-    },
-    {
-      "id": "usgs-aka2026skfxdv",
-      "type": "earthquake",
-      "title": "M 0.9 - 86 km NNW of Karluk, Alaska",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 58.292,
-      "longitude": -154.973,
-      "observed_at": "2026-09-16T22:06:55.465000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026skfxdv",
-      "metadata": {
-        "magnitude": 0.9,
-        "depth_km": 5
-      }
-    },
-    {
-      "id": "usgs-us7000thxt",
-      "type": "earthquake",
-      "title": "M 2.9 - 5 km SSW of Assaria, Kansas",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 38.6386,
-      "longitude": -97.6344,
-      "observed_at": "2026-09-16T21:50:57.961000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000thxt",
-      "metadata": {
-        "magnitude": 2.9,
-        "depth_km": 9.714
-      }
-    },
-    {
-      "id": "usgs-nc75436862",
-      "type": "earthquake",
-      "title": "M 0.9 - 6 km WNW of Cobb, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 38.8333320617676,
-      "longitude": -122.791831970215,
-      "observed_at": "2026-09-16T21:48:46.090000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75436862",
-      "metadata": {
-        "magnitude": 0.91,
-        "depth_km": 2.61999988555908
+        "category": "Wildfires"
       }
     },
     {
       "id": "eonet-EONET_24317",
       "type": "storm",
-      "title": "Tropical Storm Dujuan",
+      "title": "Typhoon Dujuan",
       "severity": "moderate",
       "status": "open",
-      "latitude": 22.8,
-      "longitude": 148.6,
+      "latitude": 25.2,
+      "longitude": 146,
       "geometry": {
         "type": "Point",
         "coordinates": [
-          148.6,
-          22.8
+          146,
+          25.2
         ]
       },
-      "observed_at": "2026-09-17T12:00:00Z",
+      "observed_at": "2026-09-17T18:00:00Z",
       "source": "NASA EONET",
       "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24317",
       "metadata": {
         "category": "Severe Storms"
+      }
+    },
+    {
+      "id": "eonet-EONET_24499",
+      "type": "fire",
+      "title": "Prescribed Fire RX CALV BU 104-108, Vernon, Louisiana",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 30.957333,
+      "longitude": -93.164867,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -93.164867,
+          30.957333
+        ]
+      },
+      "observed_at": "2026-09-16T09:08:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24499",
+      "metadata": {
+        "category": "Wildfires"
+      }
+    },
+    {
+      "id": "eonet-EONET_24482",
+      "type": "fire",
+      "title": "Wildfire Clark, Edwards, Texas",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 29.9328492,
+      "longitude": -100.3453084,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.3453084,
+          29.9328492
+        ]
+      },
+      "observed_at": "2026-09-16T00:29:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24482",
+      "metadata": {
+        "category": "Wildfires"
+      }
+    },
+    {
+      "id": "eonet-EONET_24476",
+      "type": "fire",
+      "title": "Wildfire Calvary Creek, Washita, Oklahoma",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 35.1580556,
+      "longitude": -98.9880556,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.9880556,
+          35.1580556
+        ]
+      },
+      "observed_at": "2026-09-15T17:09:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24476",
+      "metadata": {
+        "category": "Wildfires"
+      }
+    },
+    {
+      "id": "eonet-EONET_24481",
+      "type": "fire",
+      "title": "Wildfire Dry River, Sutton, Texas",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 30.54096369,
+      "longitude": -100.7446997,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.7446997,
+          30.54096369
+        ]
+      },
+      "observed_at": "2026-09-15T16:59:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24481",
+      "metadata": {
+        "category": "Wildfires"
+      }
+    },
+    {
+      "id": "eonet-EONET_24478",
+      "type": "fire",
+      "title": "Wildfire BLUE LAKE, Indian River, Florida",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 27.7427778,
+      "longitude": -80.7169444,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.7169444,
+          27.7427778
+        ]
+      },
+      "observed_at": "2026-09-15T16:38:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24478",
+      "metadata": {
+        "category": "Wildfires"
+      }
+    },
+    {
+      "id": "eonet-EONET_24485",
+      "type": "fire",
+      "title": "Wildfire Lobo, Eastland, Texas",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 32.42654762,
+      "longitude": -98.93066189,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.93066189,
+          32.42654762
+        ]
+      },
+      "observed_at": "2026-09-15T14:12:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24485",
+      "metadata": {
+        "category": "Wildfires"
+      }
+    },
+    {
+      "id": "eonet-EONET_24484",
+      "type": "fire",
+      "title": "Wildfire DOME, Mariposa, California",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 37.5662,
+      "longitude": -119.616167,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -119.616167,
+          37.5662
+        ]
+      },
+      "observed_at": "2026-09-15T11:29:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24484",
+      "metadata": {
+        "category": "Wildfires"
+      }
+    },
+    {
+      "id": "eonet-EONET_24502",
+      "type": "fire",
+      "title": "Wildfire Bunker Fire, Calhoun, Arkansas",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 33.5743333,
+      "longitude": -92.5861667,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -92.5861667,
+          33.5743333
+        ]
+      },
+      "observed_at": "2026-09-15T02:47:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24502",
+      "metadata": {
+        "category": "Wildfires"
+      }
+    },
+    {
+      "id": "eonet-EONET_24473",
+      "type": "fire",
+      "title": "Wildfire Hydra, Bosque, Texas",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 31.848649,
+      "longitude": -97.653304,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -97.653304,
+          31.848649
+        ]
+      },
+      "observed_at": "2026-09-14T18:19:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24473",
+      "metadata": {
+        "category": "Wildfires"
+      }
+    },
+    {
+      "id": "eonet-EONET_24474",
+      "type": "fire",
+      "title": "Wildfire Atoka Lake, Atoka, Oklahoma",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 34.4136111,
+      "longitude": -96.1063889,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -96.1063889,
+          34.4136111
+        ]
+      },
+      "observed_at": "2026-09-14T17:55:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24474",
+      "metadata": {
+        "category": "Wildfires"
+      }
+    },
+    {
+      "id": "eonet-EONET_24475",
+      "type": "fire",
+      "title": "Wildfire Tram Trail, Pushmataha, Oklahoma",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 34.2822222,
+      "longitude": -95.3741667,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -95.3741667,
+          34.2822222
+        ]
+      },
+      "observed_at": "2026-09-14T16:52:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24475",
+      "metadata": {
+        "category": "Wildfires"
+      }
+    },
+    {
+      "id": "eonet-EONET_24490",
+      "type": "fire",
+      "title": "Wildfire Bunker Fire, Calhoun, Arkansas",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 33.5744871,
+      "longitude": -92.5862323,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -92.5862323,
+          33.5744871
+        ]
+      },
+      "observed_at": "2026-09-14T14:22:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24490",
+      "metadata": {
+        "category": "Wildfires"
+      }
+    },
+    {
+      "id": "eonet-EONET_24477",
+      "type": "fire",
+      "title": "Wildfire Black Kettle, Roger Mills, Oklahoma",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 35.7588889,
+      "longitude": -99.6561111,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.6561111,
+          35.7588889
+        ]
+      },
+      "observed_at": "2026-09-14T13:07:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24477",
+      "metadata": {
+        "category": "Wildfires"
+      }
+    },
+    {
+      "id": "eonet-EONET_24487",
+      "type": "fire",
+      "title": "Wildfire Davis Coulee, Big Horn, Montana",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 45.5398,
+      "longitude": -107.6275,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -107.6275,
+          45.5398
+        ]
+      },
+      "observed_at": "2026-09-14T11:43:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24487",
+      "metadata": {
+        "category": "Wildfires"
+      }
+    },
+    {
+      "id": "eonet-EONET_24486",
+      "type": "fire",
+      "title": "Wildfire GRACEMONT, Caddo, Oklahoma",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 35.322764,
+      "longitude": -98.236762,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.236762,
+          35.322764
+        ]
+      },
+      "observed_at": "2026-09-13T15:33:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24486",
+      "metadata": {
+        "category": "Wildfires"
+      }
+    },
+    {
+      "id": "eonet-EONET_24498",
+      "type": "fire",
+      "title": "Wildfire Star Lake, Jefferson, Texas",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 29.664158,
+      "longitude": -94.158617,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -94.158617,
+          29.664158
+        ]
+      },
+      "observed_at": "2026-09-11T19:36:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24498",
+      "metadata": {
+        "category": "Wildfires"
+      }
+    },
+    {
+      "id": "eonet-EONET_24489",
+      "type": "fire",
+      "title": "Wildfire LUCAS, Lake, California",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 39.231856,
+      "longitude": -123.002756,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.002756,
+          39.231856
+        ]
+      },
+      "observed_at": "2026-09-10T17:23:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24489",
+      "metadata": {
+        "category": "Wildfires"
+      }
+    },
+    {
+      "id": "eonet-EONET_24510",
+      "type": "fire",
+      "title": "Wildfire LUCAS, Lake, California",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 39.233117,
+      "longitude": -123.003217,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.003217,
+          39.233117
+        ]
+      },
+      "observed_at": "2026-09-10T12:18:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24510",
+      "metadata": {
+        "category": "Wildfires"
       }
     },
     {
@@ -3216,6 +3624,28 @@
       "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24184",
       "metadata": {
         "category": "Severe Storms"
+      }
+    },
+    {
+      "id": "eonet-EONET_24503",
+      "type": "fire",
+      "title": "Wildfire RAY COAKER, Washington, Alabama",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 31.3738889,
+      "longitude": -88.3208333,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -88.3208333,
+          31.3738889
+        ]
+      },
+      "observed_at": "2026-09-09T21:33:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24503",
+      "metadata": {
+        "category": "Wildfires"
       }
     },
     {
@@ -4495,6 +4925,28 @@
       }
     },
     {
+      "id": "eonet-EONET_24492",
+      "type": "fire",
+      "title": "Wildfire WHISKEY, Torrance, New Mexico",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 34.678749,
+      "longitude": -106.431885,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -106.431885,
+          34.678749
+        ]
+      },
+      "observed_at": "2026-08-21T17:48:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24492",
+      "metadata": {
+        "category": "Wildfires"
+      }
+    },
+    {
       "id": "eonet-EONET_23224",
       "type": "fire",
       "title": "Wildfire Chipmunk, Miami-Dade, Florida",
@@ -4622,6 +5074,28 @@
       "observed_at": "2026-08-20T16:42:00Z",
       "source": "NASA EONET",
       "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_23210",
+      "metadata": {
+        "category": "Wildfires"
+      }
+    },
+    {
+      "id": "eonet-EONET_24493",
+      "type": "fire",
+      "title": "Wildfire Swiss Roll, Archuleta, Colorado",
+      "severity": "moderate",
+      "status": "open",
+      "latitude": 37.38545,
+      "longitude": -106.786583,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -106.786583,
+          37.38545
+        ]
+      },
+      "observed_at": "2026-08-20T11:53:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24493",
       "metadata": {
         "category": "Wildfires"
       }
@@ -13669,512 +14143,6 @@
       }
     },
     {
-      "id": "eonet-EONET_20238",
-      "type": "fire",
-      "title": "MTZ/SDU/TUSIL Wildfire, San Diego, California",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 32.732894,
-      "longitude": -116.362754,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -116.362754,
-          32.732894
-        ]
-      },
-      "observed_at": "2026-05-19T16:17:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20238",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20234",
-      "type": "fire",
-      "title": "VERONA Wildfire, Riverside, California",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 33.76272,
-      "longitude": -117.08441,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -117.08441,
-          33.76272
-        ]
-      },
-      "observed_at": "2026-05-19T15:21:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20234",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20233",
-      "type": "fire",
-      "title": "BAIN Wildfire, Riverside, California",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 33.975363,
-      "longitude": -117.505889,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -117.505889,
-          33.975363
-        ]
-      },
-      "observed_at": "2026-05-19T15:16:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20233",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20289",
-      "type": "fire",
-      "title": "Sunfish Rx Prescribed Fire, Cook, Minnesota",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 47.989121,
-      "longitude": -90.152327,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -90.152327,
-          47.989121
-        ]
-      },
-      "observed_at": "2026-05-19T12:05:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20289",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20241",
-      "type": "fire",
-      "title": "DeSoto BB 7310 S RX Prescribed Fire, Perry, Mississippi",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 31.024444,
-      "longitude": -88.857778,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -88.857778,
-          31.024444
-        ]
-      },
-      "observed_at": "2026-05-19T10:02:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20241",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20240",
-      "type": "fire",
-      "title": "Chickasawhay CPT 366 RX Prescribed Fire, Wayne, Mississippi",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 31.4618,
-      "longitude": -88.9338,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -88.9338,
-          31.4618
-        ]
-      },
-      "observed_at": "2026-05-19T09:35:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20240",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20242",
-      "type": "fire",
-      "title": "RX WINN BU  24 Prescribed Fire, Winn, Louisiana",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 32.056667,
-      "longitude": -92.841389,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -92.841389,
-          32.056667
-        ]
-      },
-      "observed_at": "2026-05-19T08:51:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20242",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20153",
-      "type": "fire",
-      "title": "Kress Wildfire, Swisher, Texas",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 34.38652018,
-      "longitude": -101.7812159,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -101.7812159,
-          34.38652018
-        ]
-      },
-      "observed_at": "2026-05-18T19:06:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20153",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20157",
-      "type": "fire",
-      "title": "SANDY Wildfire, Ventura, California",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 34.250088,
-      "longitude": -118.743684,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -118.743684,
-          34.250088
-        ]
-      },
-      "observed_at": "2026-05-18T13:21:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20157",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20159",
-      "type": "fire",
-      "title": "RIVER Wildfire, Kern, California",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 35.4458333,
-      "longitude": -118.7891667,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -118.7891667,
-          35.4458333
-        ]
-      },
-      "observed_at": "2026-05-18T12:05:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20159",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20239",
-      "type": "fire",
-      "title": "Chickasawhay CPT 400 RX Prescribed Fire, Wayne, Mississippi",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 31.5193,
-      "longitude": -88.8018,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -88.8018,
-          31.5193
-        ]
-      },
-      "observed_at": "2026-05-18T09:55:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20239",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20172",
-      "type": "fire",
-      "title": "RX WINN BU 114 Prescribed Fire, Grant, Louisiana",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 31.749722,
-      "longitude": -92.483333,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -92.483333,
-          31.749722
-        ]
-      },
-      "observed_at": "2026-05-18T08:58:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20172",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20152",
-      "type": "fire",
-      "title": "Stinky Wildfire, Potter, Texas",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 35.225011,
-      "longitude": -102.0169,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -102.0169,
-          35.225011
-        ]
-      },
-      "observed_at": "2026-05-17T18:24:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20152",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20167",
-      "type": "fire",
-      "title": "Proffitt Lake Wildfire, Meade, Kansas",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 37.2162,
-      "longitude": -100.1141,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -100.1141,
-          37.2162
-        ]
-      },
-      "observed_at": "2026-05-17T15:00:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20167",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20151",
-      "type": "fire",
-      "title": "Axtell Anceney Rd and Cottontail Rd Wildfire, Gallatin, Montana",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 45.602087,
-      "longitude": -111.283273,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -111.283273,
-          45.602087
-        ]
-      },
-      "observed_at": "2026-05-17T14:05:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20151",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20194",
-      "type": "fire",
-      "title": "APQ Area 13 RX 0516 Prescribed Fire, Highlands, Florida",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 27.621983,
-      "longitude": -81.327217,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -81.327217,
-          27.621983
-        ]
-      },
-      "observed_at": "2026-05-17T09:52:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20194",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20411",
-      "type": "volcano",
-      "title": "Kikai Volcano, Japan",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 30.793,
-      "longitude": 130.305,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          130.305,
-          30.793
-        ]
-      },
-      "observed_at": "2026-05-17T00:00:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20411",
-      "metadata": {
-        "category": "Volcanoes"
-      }
-    },
-    {
-      "id": "eonet-EONET_20163",
-      "type": "fire",
-      "title": "Sharpe Wildfire, Cimarron, Oklahoma",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 36.8933333,
-      "longitude": -102.6666667,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -102.6666667,
-          36.8933333
-        ]
-      },
-      "observed_at": "2026-05-16T20:54:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20163",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20161",
-      "type": "fire",
-      "title": "Flanders Wildfire, Crow Wing, Minnesota",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 46.598218,
-      "longitude": -94.081924,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -94.081924,
-          46.598218
-        ]
-      },
-      "observed_at": "2026-05-16T14:45:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20161",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20183",
-      "type": "fire",
-      "title": "DeSoto BB 8366 2 RX Prescribed Fire, Harrison, Mississippi",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 30.671667,
-      "longitude": -88.995,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -88.995,
-          30.671667
-        ]
-      },
-      "observed_at": "2026-05-16T11:04:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20183",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20165",
-      "type": "fire",
-      "title": "Tex-OK Wildfire, Cimarron, Oklahoma",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 36.6363889,
-      "longitude": -102.4322222,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -102.4322222,
-          36.6363889
-        ]
-      },
-      "observed_at": "2026-05-16T09:28:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20165",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20197",
-      "type": "fire",
-      "title": "Chickasawhay CPT 441 RX Prescribed Fire, Wayne, Mississippi",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 31.4806,
-      "longitude": -88.6589,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -88.6589,
-          31.4806
-        ]
-      },
-      "observed_at": "2026-05-16T09:19:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20197",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20410",
-      "type": "volcano",
-      "title": "Bezymianny Volcano, Russia",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 55.972,
-      "longitude": 160.595,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          160.595,
-          55.972
-        ]
-      },
-      "observed_at": "2026-05-16T00:00:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20410",
-      "metadata": {
-        "category": "Volcanoes"
-      }
-    },
-    {
       "id": "cems-EMSR932",
       "type": "fire",
       "title": "Wildfire in Huelva Province, Spain",
@@ -14247,7 +14215,7 @@
       "source_url": "https://mapping.emergency.copernicus.eu/activations/EMSR929",
       "metadata": {
         "code": "EMSR929",
-        "products": 8,
+        "products": 9,
         "countries": [
           "Greece"
         ],
