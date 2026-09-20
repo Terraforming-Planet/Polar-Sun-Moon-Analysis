@@ -445,3 +445,18 @@ cd web && npm test && npm run build
 ## License
 
 MIT. Individual upstream datasets retain their own agency terms and attribution requirements.
+
+## Food, water and human well-being — a thought experiment
+
+Terraforming Planet's long-term purpose is not to green deserts for its own sake. The wider idea is to explore whether better Earth observation, water retention and storage, clean energy and environmentally responsible land restoration could improve **food security, water security and quality of life**.
+
+As a thought experiment, if suitable parts of arid regions such as the Sahara could be restored and supplied with water without causing unacceptable ecological or climatic damage, the additional productive land could increase global food supply. If that were combined with lower import tariffs or other unnecessary trade barriers on essential food, greater supply and easier movement of food between regions could reduce price pressure — especially in places that depend heavily on imports.
+
+This is **not a forecast** and not a claim that the Sahara should be converted wholesale into farmland. Real outcomes would depend on water balance, energy demand, soil quality, ecosystems, local communities and rights, infrastructure, transport, trade policy and how agricultural markets respond.
+
+The research question is therefore not simply *"How much desert can we farm?"* but rather:
+
+> **Where can technology, water management and land restoration be used responsibly so that more people have reliable access to water and food, are better protected from drought and crop failure, and can live better lives?**
+
+That human-centered objective is one of the long-term motivations behind **Terraforming Planet**.
+
