@@ -1,5 +1,5 @@
 {
-  "generatedUtc": "2026-09-21T01:43:00.560524Z",
+  "generatedUtc": "2026-09-21T07:12:37.407469Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
@@ -64,13 +64,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 60.0,
+        "magnitudeValue": 65.0,
         "magnitudeUnit": "kts",
-        "date": "2026-09-20T18:00:00Z",
+        "date": "2026-09-21T00:00:00Z",
         "type": "Point",
         "coordinates": [
-          137.9,
-          31.3
+          138.7,
+          32.4
         ]
       },
       "sources": [
@@ -566,37 +566,6 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24510",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_24184",
-      "title": "Cyclone Norbert",
-      "categories": [
-        "Severe Storms"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 30.0,
-        "magnitudeUnit": "kts",
-        "date": "2026-09-15T12:00:00Z",
-        "type": "Point",
-        "coordinates": [
-          -142.4,
-          20.4
-        ]
-      },
-      "sources": [
-        {
-          "id": "JTWC",
-          "url": "https://www.metoc.navy.mil/jtwc/products/ep1426.tcw"
-        },
-        {
-          "id": "NOAA_NHC",
-          "url": "https://www.nhc.noaa.gov/archive/2026/NORBERT.shtml"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24184",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
@@ -5405,6 +5374,33 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21816",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_21848",
+      "title": "Wildfire 4-May, Inyo, California",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 1318.0,
+        "magnitudeUnit": "acres",
+        "date": "2026-07-25T02:54:00Z",
+        "type": "Point",
+        "coordinates": [
+          -118.258,
+          37.015833
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-CABDU-011386"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21848",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -5472,8 +5468,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          137.9,
-          31.3
+          138.7,
+          32.4
         ]
       },
       "properties": {
@@ -5483,8 +5479,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-09-20T18:00:00Z",
-        "observation_time": "2026-09-20T18:00:00Z",
+        "observationUtc": "2026-09-21T00:00:00Z",
+        "observation_time": "2026-09-21T00:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24317",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24317",
         "sources": [
@@ -6013,39 +6009,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-CAMEU-010693"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_24184",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -142.4,
-          20.4
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Cyclone Norbert",
-        "categories": [
-          "Severe Storms"
-        ],
-        "observationUtc": "2026-09-15T12:00:00Z",
-        "observation_time": "2026-09-15T12:00:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24184",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24184",
-        "sources": [
-          {
-            "id": "JTWC",
-            "url": "https://www.metoc.navy.mil/jtwc/products/ep1426.tcw"
-          },
-          {
-            "id": "NOAA_NHC",
-            "url": "https://www.nhc.noaa.gov/archive/2026/NORBERT.shtml"
           }
         ]
       }
@@ -11208,6 +11171,35 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-IDBOD-000764"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_21848",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.258,
+          37.015833
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Wildfire 4-May, Inyo, California",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-07-25T02:54:00Z",
+        "observation_time": "2026-07-25T02:54:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21848",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21848",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-CABDU-011386"
           }
         ]
       }
