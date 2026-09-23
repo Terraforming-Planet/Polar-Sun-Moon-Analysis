@@ -1,7 +1,34 @@
 {
-  "generatedUtc": "2026-09-23T14:38:07.538898Z",
+  "generatedUtc": "2026-09-23T18:38:02.252547Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
+    {
+      "id": "EONET_24785",
+      "title": "Tropical Cyclone 01B",
+      "categories": [
+        "Severe Storms"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 45.0,
+        "magnitudeUnit": "kts",
+        "date": "2026-09-23T12:00:00Z",
+        "type": "Point",
+        "coordinates": [
+          84,
+          17.8
+        ]
+      },
+      "sources": [
+        {
+          "id": "JTWC",
+          "url": "https://www.metoc.navy.mil/jtwc/products/io0126.tcw"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24785",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
     {
       "id": "EONET_24721",
       "title": "Hurricane Polo",
@@ -10,13 +37,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 140.0,
+        "magnitudeValue": 130.0,
         "magnitudeUnit": "kts",
-        "date": "2026-09-23T06:00:00Z",
+        "date": "2026-09-23T12:00:00Z",
         "type": "Point",
         "coordinates": [
-          -101.3,
-          14.8
+          -101.5,
+          15.2
         ]
       },
       "sources": [
@@ -97,11 +124,11 @@
       "latestGeometry": {
         "magnitudeValue": 65.0,
         "magnitudeUnit": "kts",
-        "date": "2026-09-23T06:00:00Z",
+        "date": "2026-09-23T12:00:00Z",
         "type": "Point",
         "coordinates": [
-          -128.7,
-          15.8
+          -128.2,
+          15.9
         ]
       },
       "sources": [
@@ -5382,44 +5409,46 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21846",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_21859",
-      "title": "Wildfire KAWAIHAE ROAD, Hawaii, Hawaii",
-      "categories": [
-        "Wildfires"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 500.0,
-        "magnitudeUnit": "acres",
-        "date": "2026-07-26T15:26:00Z",
-        "type": "Point",
-        "coordinates": [
-          -155.792517,
-          20.01978
-        ]
-      },
-      "sources": [
-        {
-          "id": "IRWIN",
-          "url": "https://irwin.doi.gov/observer/incidents/2026-HIHAWX-001140"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21859",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
+    {
+      "type": "Feature",
+      "id": "EONET_24785",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          84,
+          17.8
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Tropical Cyclone 01B",
+        "categories": [
+          "Severe Storms"
+        ],
+        "observationUtc": "2026-09-23T12:00:00Z",
+        "observation_time": "2026-09-23T12:00:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24785",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24785",
+        "sources": [
+          {
+            "id": "JTWC",
+            "url": "https://www.metoc.navy.mil/jtwc/products/io0126.tcw"
+          }
+        ]
+      }
+    },
     {
       "type": "Feature",
       "id": "EONET_24721",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -101.3,
-          14.8
+          -101.5,
+          15.2
         ]
       },
       "properties": {
@@ -5429,8 +5458,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-09-23T06:00:00Z",
-        "observation_time": "2026-09-23T06:00:00Z",
+        "observationUtc": "2026-09-23T12:00:00Z",
+        "observation_time": "2026-09-23T12:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24721",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24721",
         "sources": [
@@ -5509,8 +5538,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -128.7,
-          15.8
+          -128.2,
+          15.9
         ]
       },
       "properties": {
@@ -5520,8 +5549,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-09-23T06:00:00Z",
-        "observation_time": "2026-09-23T06:00:00Z",
+        "observationUtc": "2026-09-23T12:00:00Z",
+        "observation_time": "2026-09-23T12:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24720",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24720",
         "sources": [
@@ -11187,35 +11216,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-MTMCD-000565"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_21859",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -155.792517,
-          20.01978
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Wildfire KAWAIHAE ROAD, Hawaii, Hawaii",
-        "categories": [
-          "Wildfires"
-        ],
-        "observationUtc": "2026-07-26T15:26:00Z",
-        "observation_time": "2026-07-26T15:26:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21859",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21859",
-        "sources": [
-          {
-            "id": "IRWIN",
-            "url": "https://irwin.doi.gov/observer/incidents/2026-HIHAWX-001140"
           }
         ]
       }
