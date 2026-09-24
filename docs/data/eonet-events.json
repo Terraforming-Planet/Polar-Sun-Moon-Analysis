@@ -1,7 +1,61 @@
 {
-  "generatedUtc": "2026-09-24T09:34:14.818843Z",
+  "generatedUtc": "2026-09-24T14:26:50.892822Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
+    {
+      "id": "EONET_24786",
+      "title": "Tropical Storm Nolo",
+      "categories": [
+        "Severe Storms"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 40.0,
+        "magnitudeUnit": "kts",
+        "date": "2026-09-24T00:00:00Z",
+        "type": "Point",
+        "coordinates": [
+          -155.8,
+          14.6
+        ]
+      },
+      "sources": [
+        {
+          "id": "JTWC",
+          "url": "https://www.metoc.navy.mil/jtwc/products/ep1526.tcw"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24786",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_24787",
+      "title": "Tropical Storm Surigae",
+      "categories": [
+        "Severe Storms"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 35.0,
+        "magnitudeUnit": "kts",
+        "date": "2026-09-23T18:00:00Z",
+        "type": "Point",
+        "coordinates": [
+          135.8,
+          17.3
+        ]
+      },
+      "sources": [
+        {
+          "id": "JTWC",
+          "url": "https://www.metoc.navy.mil/jtwc/products/wp2526.tcw"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24787",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
     {
       "id": "EONET_24785",
       "title": "Tropical Cyclone 01B",
@@ -39,11 +93,11 @@
       "latestGeometry": {
         "magnitudeValue": 140.0,
         "magnitudeUnit": "kts",
-        "date": "2026-09-24T00:00:00Z",
+        "date": "2026-09-24T06:00:00Z",
         "type": "Point",
         "coordinates": [
-          -102.3,
-          15.8
+          -103,
+          16.4
         ]
       },
       "sources": [
@@ -95,13 +149,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 40.0,
+        "magnitudeValue": 35.0,
         "magnitudeUnit": "kts",
-        "date": "2026-09-21T21:00:00Z",
+        "date": "2026-09-24T09:00:00Z",
         "type": "Point",
         "coordinates": [
-          -32.2,
-          33.1
+          -40.5,
+          29.8
         ]
       },
       "sources": [
@@ -124,11 +178,11 @@
       "latestGeometry": {
         "magnitudeValue": 75.0,
         "magnitudeUnit": "kts",
-        "date": "2026-09-24T00:00:00Z",
+        "date": "2026-09-24T06:00:00Z",
         "type": "Point",
         "coordinates": [
-          -126.9,
-          15.6
+          -126.3,
+          15.9
         ]
       },
       "sources": [
@@ -5355,63 +5409,67 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21821",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_21856",
-      "title": "Wildfire RANSIER, Yakima, Washington",
-      "categories": [
-        "Wildfires"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 500.0,
-        "magnitudeUnit": "acres",
-        "date": "2026-07-26T16:56:00Z",
-        "type": "Point",
-        "coordinates": [
-          -120.742096,
-          46.366533
-        ]
-      },
-      "sources": [
-        {
-          "id": "IRWIN",
-          "url": "https://irwin.doi.gov/observer/incidents/2026-WAYAA-000072"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21856",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_21846",
-      "title": "Wildfire Alice, Harding, South Dakota",
-      "categories": [
-        "Wildfires"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 500.0,
-        "magnitudeUnit": "acres",
-        "date": "2026-07-26T15:42:00Z",
-        "type": "Point",
-        "coordinates": [
-          -103.533033,
-          45.85795
-        ]
-      },
-      "sources": [
-        {
-          "id": "IRWIN",
-          "url": "https://irwin.doi.gov/observer/incidents/2026-MTMCD-000565"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21846",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
+    {
+      "type": "Feature",
+      "id": "EONET_24786",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -155.8,
+          14.6
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Tropical Storm Nolo",
+        "categories": [
+          "Severe Storms"
+        ],
+        "observationUtc": "2026-09-24T00:00:00Z",
+        "observation_time": "2026-09-24T00:00:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24786",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24786",
+        "sources": [
+          {
+            "id": "JTWC",
+            "url": "https://www.metoc.navy.mil/jtwc/products/ep1526.tcw"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_24787",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.8,
+          17.3
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Tropical Storm Surigae",
+        "categories": [
+          "Severe Storms"
+        ],
+        "observationUtc": "2026-09-23T18:00:00Z",
+        "observation_time": "2026-09-23T18:00:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24787",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24787",
+        "sources": [
+          {
+            "id": "JTWC",
+            "url": "https://www.metoc.navy.mil/jtwc/products/wp2526.tcw"
+          }
+        ]
+      }
+    },
     {
       "type": "Feature",
       "id": "EONET_24785",
@@ -5447,8 +5505,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -102.3,
-          15.8
+          -103,
+          16.4
         ]
       },
       "properties": {
@@ -5458,8 +5516,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-09-24T00:00:00Z",
-        "observation_time": "2026-09-24T00:00:00Z",
+        "observationUtc": "2026-09-24T06:00:00Z",
+        "observation_time": "2026-09-24T06:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24721",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24721",
         "sources": [
@@ -5509,8 +5567,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -32.2,
-          33.1
+          -40.5,
+          29.8
         ]
       },
       "properties": {
@@ -5520,8 +5578,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-09-21T21:00:00Z",
-        "observation_time": "2026-09-21T21:00:00Z",
+        "observationUtc": "2026-09-24T09:00:00Z",
+        "observation_time": "2026-09-24T09:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24722",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24722",
         "sources": [
@@ -5538,8 +5596,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -126.9,
-          15.6
+          -126.3,
+          15.9
         ]
       },
       "properties": {
@@ -5549,8 +5607,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-09-24T00:00:00Z",
-        "observation_time": "2026-09-24T00:00:00Z",
+        "observationUtc": "2026-09-24T06:00:00Z",
+        "observation_time": "2026-09-24T06:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24720",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24720",
         "sources": [
@@ -11158,64 +11216,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-WANES-001791"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_21856",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -120.742096,
-          46.366533
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Wildfire RANSIER, Yakima, Washington",
-        "categories": [
-          "Wildfires"
-        ],
-        "observationUtc": "2026-07-26T16:56:00Z",
-        "observation_time": "2026-07-26T16:56:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21856",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21856",
-        "sources": [
-          {
-            "id": "IRWIN",
-            "url": "https://irwin.doi.gov/observer/incidents/2026-WAYAA-000072"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_21846",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -103.533033,
-          45.85795
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Wildfire Alice, Harding, South Dakota",
-        "categories": [
-          "Wildfires"
-        ],
-        "observationUtc": "2026-07-26T15:42:00Z",
-        "observation_time": "2026-07-26T15:42:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21846",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21846",
-        "sources": [
-          {
-            "id": "IRWIN",
-            "url": "https://irwin.doi.gov/observer/incidents/2026-MTMCD-000565"
           }
         ]
       }
