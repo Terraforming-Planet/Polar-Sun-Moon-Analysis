@@ -1,12 +1,12 @@
 {
   "schema_version": "7.0",
   "project": "Terraforming Planet",
-  "generated_at": "2026-09-24T12:20:28.640750Z",
-  "event_count": 1015,
+  "generated_at": "2026-09-24T17:24:37.288659Z",
+  "event_count": 996,
   "summary": {
-    "earthquake": 273,
-    "storm": 29,
-    "fire": 615,
+    "earthquake": 254,
+    "storm": 31,
+    "fire": 613,
     "ice": 1,
     "volcano": 5,
     "flood": 81,
@@ -19,7 +19,7 @@
     {
       "source": "USGS",
       "status": "ok",
-      "count": 265
+      "count": 246
     },
     {
       "source": "NASA EONET",
@@ -39,11 +39,603 @@
   ],
   "events": [
     {
+      "id": "usgs-aka2026syqizg",
+      "type": "earthquake",
+      "title": "M 1.5 - 5 km NNW of Anchor Point, Alaska",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 59.828,
+      "longitude": -151.863,
+      "observed_at": "2026-09-24T17:15:28.922000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026syqizg",
+      "metadata": {
+        "magnitude": 1.5,
+        "depth_km": 60.1
+      }
+    },
+    {
+      "id": "usgs-ci41338551",
+      "type": "earthquake",
+      "title": "M 1.1 - 2 km W of Calimesa, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 33.988,
+      "longitude": -117.079333333333,
+      "observed_at": "2026-09-24T16:30:59.270000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41338551",
+      "metadata": {
+        "magnitude": 1.09,
+        "depth_km": 15.88
+      }
+    },
+    {
+      "id": "usgs-ci41338543",
+      "type": "earthquake",
+      "title": "M 0.9 - 20 km SSW of Inyokern, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 35.4753333333333,
+      "longitude": -117.862333333333,
+      "observed_at": "2026-09-24T16:29:41.690000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41338543",
+      "metadata": {
+        "magnitude": 0.92,
+        "depth_km": 4.24
+      }
+    },
+    {
+      "id": "usgs-nc75440927",
+      "type": "earthquake",
+      "title": "M 1.0 - 6 km NW of The Geysers, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 38.8110008239746,
+      "longitude": -122.813835144043,
+      "observed_at": "2026-09-24T16:19:46.180000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75440927",
+      "metadata": {
+        "magnitude": 0.99,
+        "depth_km": 3.23000001907349
+      }
+    },
+    {
+      "id": "usgs-ci41338535",
+      "type": "earthquake",
+      "title": "M 1.6 - 26 km NW of Kernville, CA",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 35.8845,
+      "longitude": -118.662166666667,
+      "observed_at": "2026-09-24T16:06:58.890000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41338535",
+      "metadata": {
+        "magnitude": 1.56,
+        "depth_km": 16.52
+      }
+    },
+    {
+      "id": "usgs-ci41338527",
+      "type": "earthquake",
+      "title": "M 0.6 - 9 km WNW of Anza, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 33.5833333333333,
+      "longitude": -116.759833333333,
+      "observed_at": "2026-09-24T16:04:05.370000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41338527",
+      "metadata": {
+        "magnitude": 0.63,
+        "depth_km": 12.13
+      }
+    },
+    {
+      "id": "usgs-aka2026synynz",
+      "type": "earthquake",
+      "title": "M 0.4 - 61 km ENE of Pedro Bay, Alaska",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 60.019,
+      "longitude": -153.102,
+      "observed_at": "2026-09-24T16:03:26.888000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026synynz",
+      "metadata": {
+        "magnitude": 0.4,
+        "depth_km": 5
+      }
+    },
+    {
+      "id": "usgs-nc75440912",
+      "type": "earthquake",
+      "title": "M 0.8 - 6 km NNW of The Geysers, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 38.8240013122559,
+      "longitude": -122.793830871582,
+      "observed_at": "2026-09-24T15:55:28.180000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75440912",
+      "metadata": {
+        "magnitude": 0.75,
+        "depth_km": 2.8199999332428
+      }
+    },
+    {
+      "id": "usgs-nc75440902",
+      "type": "earthquake",
+      "title": "M 2.7 - 1 km S of Orange Cove, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 36.6178321838379,
+      "longitude": -119.314331054688,
+      "observed_at": "2026-09-24T15:40:28.080000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75440902",
+      "metadata": {
+        "magnitude": 2.68,
+        "depth_km": 19.4400005340576
+      }
+    },
+    {
+      "id": "usgs-hv75043262",
+      "type": "earthquake",
+      "title": "M 2.4 - 3 km SSW of Pāhala, Hawaii",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 19.1709995269775,
+      "longitude": -155.4931640625,
+      "observed_at": "2026-09-24T15:31:30.370000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75043262",
+      "metadata": {
+        "magnitude": 2.38,
+        "depth_km": 30.0900001525879
+      }
+    },
+    {
+      "id": "usgs-aka2026symrwh",
+      "type": "earthquake",
+      "title": "M 0.5 - 83 km SW of Skwentna, Alaska",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 61.46,
+      "longitude": -152.505,
+      "observed_at": "2026-09-24T15:25:45.384000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026symrwh",
+      "metadata": {
+        "magnitude": 0.5,
+        "depth_km": 15.1
+      }
+    },
+    {
+      "id": "usgs-ci41338503",
+      "type": "earthquake",
+      "title": "M 1.3 - 10 km SW of Niland, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 33.184,
+      "longitude": -115.608166666667,
+      "observed_at": "2026-09-24T15:25:03.880000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41338503",
+      "metadata": {
+        "magnitude": 1.32,
+        "depth_km": 2.51
+      }
+    },
+    {
+      "id": "usgs-nc75440887",
+      "type": "earthquake",
+      "title": "M 0.6 - 1 km N of The Geysers, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 38.7826652526855,
+      "longitude": -122.756164550781,
+      "observed_at": "2026-09-24T15:16:07.440000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75440887",
+      "metadata": {
+        "magnitude": 0.59,
+        "depth_km": 1.73000001907349
+      }
+    },
+    {
+      "id": "usgs-ci41338487",
+      "type": "earthquake",
+      "title": "M 0.9 - 21 km ESE of Anza, CA",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 33.4815,
+      "longitude": -116.466,
+      "observed_at": "2026-09-24T15:09:18.490000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41338487",
+      "metadata": {
+        "magnitude": 0.91,
+        "depth_km": 6.45
+      }
+    },
+    {
+      "id": "usgs-aka2026sylxxz",
+      "type": "earthquake",
+      "title": "M 1.9 - 24 km ENE of Sterling, Alaska",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 60.601,
+      "longitude": -150.33,
+      "observed_at": "2026-09-24T15:02:45.778000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026sylxxz",
+      "metadata": {
+        "magnitude": 1.9,
+        "depth_km": 60.8
+      }
+    },
+    {
+      "id": "usgs-aka2026sylgkh",
+      "type": "earthquake",
+      "title": "M 1.1 - 34 km SSW of Dry Creek, Alaska",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 63.378,
+      "longitude": -144.97,
+      "observed_at": "2026-09-24T14:42:33.091000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026sylgkh",
+      "metadata": {
+        "magnitude": 1.1,
+        "depth_km": 9.3
+      }
+    },
+    {
+      "id": "usgs-tx2026svkhwu",
+      "type": "earthquake",
+      "title": "M 2.9 - 37 km ESE of Balmorhea, Texas",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 30.831,
+      "longitude": -103.394,
+      "observed_at": "2026-09-24T14:39:26.649000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026svkhwu",
+      "metadata": {
+        "magnitude": 2.9,
+        "depth_km": 3.3569
+      }
+    },
+    {
+      "id": "usgs-aka2026sykywt",
+      "type": "earthquake",
+      "title": "M 2.7 - 35 km N of Valdez, Alaska",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 61.445,
+      "longitude": -146.42,
+      "observed_at": "2026-09-24T14:33:52.979000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026sykywt",
+      "metadata": {
+        "magnitude": 2.7,
+        "depth_km": 16.2
+      }
+    },
+    {
+      "id": "usgs-aka2026sykxja",
+      "type": "earthquake",
+      "title": "M 1.3 - 4 km WSW of Diamond Ridge, Alaska",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 59.661,
+      "longitude": -151.631,
+      "observed_at": "2026-09-24T14:32:07.274000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026sykxja",
+      "metadata": {
+        "magnitude": 1.3,
+        "depth_km": 66.6
+      }
+    },
+    {
+      "id": "usgs-hv75043227",
+      "type": "earthquake",
+      "title": "M 1.8 - 30 km S of Fern Forest, Hawaii",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 19.1883335113525,
+      "longitude": -155.114669799805,
+      "observed_at": "2026-09-24T14:21:43.560000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75043227",
+      "metadata": {
+        "magnitude": 1.83,
+        "depth_km": 38.0299987792969
+      }
+    },
+    {
+      "id": "usgs-us6000txc4",
+      "type": "earthquake",
+      "title": "M 2.9 - 159 km ESE of McCarthy, Alaska",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 61.1063,
+      "longitude": -140.0197,
+      "observed_at": "2026-09-24T14:14:05.188000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000txc4",
+      "metadata": {
+        "magnitude": 2.9,
+        "depth_km": 5
+      }
+    },
+    {
+      "id": "usgs-uu80157921",
+      "type": "earthquake",
+      "title": "M 1.8 - 23 km SSW of Kanosh, Utah",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 38.6226666666667,
+      "longitude": -112.589,
+      "observed_at": "2026-09-24T14:08:42.580000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80157921",
+      "metadata": {
+        "magnitude": 1.82,
+        "depth_km": 5.14
+      }
+    },
+    {
+      "id": "usgs-nc75440872",
+      "type": "earthquake",
+      "title": "M 1.3 - 11 km WNW of The Geysers, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 38.8258323669434,
+      "longitude": -122.868499755859,
+      "observed_at": "2026-09-24T14:01:40.160000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75440872",
+      "metadata": {
+        "magnitude": 1.29,
+        "depth_km": 1.94000005722046
+      }
+    },
+    {
+      "id": "usgs-uw714108751",
+      "type": "earthquake",
+      "title": "M 1.2 - 1 km NW of Lake Marcel-Stillwater, Washington",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 47.6986666666667,
+      "longitude": -121.925666666667,
+      "observed_at": "2026-09-24T13:59:20.100000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uw714108751",
+      "metadata": {
+        "magnitude": 1.16,
+        "depth_km": 26.52
+      }
+    },
+    {
+      "id": "usgs-nc75440867",
+      "type": "earthquake",
+      "title": "M 1.4 - 8 km NW of The Geysers, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 38.8303337097168,
+      "longitude": -122.81266784668,
+      "observed_at": "2026-09-24T13:54:48Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75440867",
+      "metadata": {
+        "magnitude": 1.36,
+        "depth_km": 2.13000011444092
+      }
+    },
+    {
+      "id": "usgs-aka2026syjkdf",
+      "type": "earthquake",
+      "title": "M 2.0 - 21 km NE of Moose Pass, Alaska",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 60.641,
+      "longitude": -149.122,
+      "observed_at": "2026-09-24T13:46:53.086000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026syjkdf",
+      "metadata": {
+        "magnitude": 2,
+        "depth_km": 10.5
+      }
+    },
+    {
+      "id": "usgs-hv75043192",
+      "type": "earthquake",
+      "title": "M 2.0 - 2 km SSE of Leilani Estates, Hawaii",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 19.4518333333333,
+      "longitude": -154.91,
+      "observed_at": "2026-09-24T13:39:55.400000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75043192",
+      "metadata": {
+        "magnitude": 2.01,
+        "depth_km": 5.52
+      }
+    },
+    {
+      "id": "usgs-aka2026syiqcz",
+      "type": "earthquake",
+      "title": "M 0.5 - 54 km W of Tyonek, Alaska",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 61.151,
+      "longitude": -152.137,
+      "observed_at": "2026-09-24T13:23:48.060000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026syiqcz",
+      "metadata": {
+        "magnitude": 0.5,
+        "depth_km": 15.4
+      }
+    },
+    {
+      "id": "usgs-nc75440852",
+      "type": "earthquake",
+      "title": "M 1.7 - 8 km WNW of The Geysers, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 38.7999992370605,
+      "longitude": -122.84383392334,
+      "observed_at": "2026-09-24T13:14:00.480000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75440852",
+      "metadata": {
+        "magnitude": 1.66,
+        "depth_km": -0.610000014305115
+      }
+    },
+    {
+      "id": "usgs-ci41338455",
+      "type": "earthquake",
+      "title": "M 1.6 - 13 km NE of Big Bear City, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 34.3298333333333,
+      "longitude": -116.7305,
+      "observed_at": "2026-09-24T12:54:08.120000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41338455",
+      "metadata": {
+        "magnitude": 1.63,
+        "depth_km": -1
+      }
+    },
+    {
+      "id": "usgs-nc75440847",
+      "type": "earthquake",
+      "title": "M 0.7 - 11 km WNW of The Geysers, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 38.8283348083496,
+      "longitude": -122.869163513184,
+      "observed_at": "2026-09-24T12:39:26.680000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75440847",
+      "metadata": {
+        "magnitude": 0.74,
+        "depth_km": 2.29999995231628
+      }
+    },
+    {
+      "id": "usgs-aka2026syhcrx",
+      "type": "earthquake",
+      "title": "M 1.8 - 18 km ESE of Kasilof, Alaska",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 60.282,
+      "longitude": -150.951,
+      "observed_at": "2026-09-24T12:38:19.933000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026syhcrx",
+      "metadata": {
+        "magnitude": 1.8,
+        "depth_km": 67.2
+      }
+    },
+    {
+      "id": "usgs-uu80157916",
+      "type": "earthquake",
+      "title": "M 1.5 - 24 km SSW of Kanosh, Utah",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 38.6176666666667,
+      "longitude": -112.589166666667,
+      "observed_at": "2026-09-24T12:36:50.580000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80157916",
+      "metadata": {
+        "magnitude": 1.53,
+        "depth_km": 3.55
+      }
+    },
+    {
+      "id": "usgs-us6000txbm",
+      "type": "earthquake",
+      "title": "M 5.2 - 139 km SW of Kokopo, Papua New Guinea",
+      "severity": "moderate",
+      "status": "reviewed",
+      "latitude": -5.3396,
+      "longitude": 151.4915,
+      "observed_at": "2026-09-24T12:29:58.824000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000txbm",
+      "metadata": {
+        "magnitude": 5.2,
+        "depth_km": 95.598
+      }
+    },
+    {
+      "id": "usgs-nc75440832",
+      "type": "earthquake",
+      "title": "M 1.3 - 7 km NW of The Geysers, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 38.8231658935547,
+      "longitude": -122.810333251953,
+      "observed_at": "2026-09-24T12:26:54.120000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75440832",
+      "metadata": {
+        "magnitude": 1.29,
+        "depth_km": 1.36000001430511
+      }
+    },
+    {
+      "id": "usgs-nc75440827",
+      "type": "earthquake",
+      "title": "M 1.1 - 5 km WNW of The Geysers, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 38.7955017089844,
+      "longitude": -122.81233215332,
+      "observed_at": "2026-09-24T12:23:18.710000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75440827",
+      "metadata": {
+        "magnitude": 1.05,
+        "depth_km": 3.0699999332428
+      }
+    },
+    {
+      "id": "usgs-nc75440822",
+      "type": "earthquake",
+      "title": "M 1.1 - 5 km WNW of The Geysers, CA",
+      "severity": "low",
+      "status": "automatic",
+      "latitude": 38.7960014343262,
+      "longitude": -122.8125,
+      "observed_at": "2026-09-24T12:22:51.470000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75440822",
+      "metadata": {
+        "magnitude": 1.07,
+        "depth_km": 3.25999999046326
+      }
+    },
+    {
       "id": "usgs-ci41338447",
       "type": "earthquake",
       "title": "M 0.4 - 14 km ESE of Anza, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 33.5248333333333,
       "longitude": -116.523833333333,
       "observed_at": "2026-09-24T11:56:54.580000Z",
@@ -75,7 +667,7 @@
       "type": "earthquake",
       "title": "M 0.9 - 6 km WNW of Calimesa, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 34.0118333333333,
       "longitude": -117.110666666667,
       "observed_at": "2026-09-24T11:49:06.260000Z",
@@ -171,7 +763,7 @@
       "type": "earthquake",
       "title": "M 1.3 - 15 km S of Joshua Tree, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 34.0041666666667,
       "longitude": -116.3245,
       "observed_at": "2026-09-24T11:32:28.110000Z",
@@ -203,7 +795,7 @@
       "type": "earthquake",
       "title": "M 1.6 - 14 km S of Joshua Tree, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 34.0051666666667,
       "longitude": -116.3255,
       "observed_at": "2026-09-24T11:30:00.910000Z",
@@ -439,6 +1031,22 @@
       }
     },
     {
+      "id": "usgs-tx2026svaiir",
+      "type": "earthquake",
+      "title": "M 2.7 - 30 km SW of Garden City, Texas",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 31.682,
+      "longitude": -101.721,
+      "observed_at": "2026-09-24T09:38:10.067000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026svaiir",
+      "metadata": {
+        "magnitude": 2.7,
+        "depth_km": 8.8623
+      }
+    },
+    {
       "id": "usgs-tx2026svahau",
       "type": "earthquake",
       "title": "M 3.0 - 32 km SW of Garden City, Texas",
@@ -459,7 +1067,7 @@
       "type": "earthquake",
       "title": "M 1.3 - 16 km WSW of Johannesburg, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 35.312,
       "longitude": -117.798833333333,
       "observed_at": "2026-09-24T09:30:24.030000Z",
@@ -468,6 +1076,22 @@
       "metadata": {
         "magnitude": 1.34,
         "depth_km": 6.54
+      }
+    },
+    {
+      "id": "usgs-uu80157911",
+      "type": "earthquake",
+      "title": "M 1.0 - 23 km SE of Castle Dale, Utah",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 39.0843333333333,
+      "longitude": -110.796,
+      "observed_at": "2026-09-24T09:27:56.570000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80157911",
+      "metadata": {
+        "magnitude": 1,
+        "depth_km": 17.62
       }
     },
     {
@@ -491,7 +1115,7 @@
       "type": "earthquake",
       "title": "M 0.9 - 16 km WSW of Johannesburg, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 35.313,
       "longitude": -117.795833333333,
       "observed_at": "2026-09-24T09:11:01.510000Z",
@@ -619,7 +1243,7 @@
       "type": "earthquake",
       "title": "M 2.0 - 20 km NW of Tehachapi, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 35.2661666666667,
       "longitude": -118.595,
       "observed_at": "2026-09-24T08:13:15.500000Z",
@@ -633,17 +1257,17 @@
     {
       "id": "usgs-uu80157906",
       "type": "earthquake",
-      "title": "M 2.0 - 15 km NE of Milford, Utah",
+      "title": "M 2.1 - 15 km NE of Milford, Utah",
       "severity": "low",
       "status": "reviewed",
-      "latitude": 38.5095,
-      "longitude": -112.905333333333,
-      "observed_at": "2026-09-24T08:07:08.340000Z",
+      "latitude": 38.5096666666667,
+      "longitude": -112.900666666667,
+      "observed_at": "2026-09-24T08:07:08.220000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80157906",
       "metadata": {
-        "magnitude": 2.02,
-        "depth_km": 0.07
+        "magnitude": 2.1,
+        "depth_km": 2.79
       }
     },
     {
@@ -651,7 +1275,7 @@
       "type": "earthquake",
       "title": "M 2.0 - 9 km ENE of Borrego Springs, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 33.2975,
       "longitude": -116.291666666667,
       "observed_at": "2026-09-24T07:51:30.490000Z",
@@ -683,7 +1307,7 @@
       "type": "earthquake",
       "title": "M 0.6 - 10 km ENE of Borrego Springs, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 33.3053333333333,
       "longitude": -116.281833333333,
       "observed_at": "2026-09-24T07:47:05.840000Z",
@@ -699,7 +1323,7 @@
       "type": "earthquake",
       "title": "M 0.7 - 9 km ENE of Borrego Springs, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 33.3018333333333,
       "longitude": -116.290166666667,
       "observed_at": "2026-09-24T07:44:49.730000Z",
@@ -715,7 +1339,7 @@
       "type": "earthquake",
       "title": "M 1.6 - 9 km ENE of Borrego Springs, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 33.2978333333333,
       "longitude": -116.293333333333,
       "observed_at": "2026-09-24T07:42:11.160000Z",
@@ -791,6 +1415,22 @@
       }
     },
     {
+      "id": "usgs-tx2026suwatg",
+      "type": "earthquake",
+      "title": "M 1.5 - 15 km E of Pearsall, Texas",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 28.874,
+      "longitude": -98.936,
+      "observed_at": "2026-09-24T07:28:39.286000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026suwatg",
+      "metadata": {
+        "magnitude": 1.5,
+        "depth_km": 6.5768
+      }
+    },
+    {
       "id": "usgs-tx2026suvxfk",
       "type": "earthquake",
       "title": "M 1.1 - 34 km ENE of Balmorhea, Texas",
@@ -811,7 +1451,7 @@
       "type": "earthquake",
       "title": "M 1.0 - 22 km SW of Ocotillo Wells, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 33.0053333333333,
       "longitude": -116.302833333333,
       "observed_at": "2026-09-24T07:22:01.440000Z",
@@ -843,7 +1483,7 @@
       "type": "earthquake",
       "title": "M 0.9 - 6 km NW of Mira Loma, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 34.0358333333333,
       "longitude": -117.5525,
       "observed_at": "2026-09-24T07:13:33.870000Z",
@@ -987,7 +1627,7 @@
       "type": "earthquake",
       "title": "M 0.6 - 9 km WNW of Anza, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 33.581,
       "longitude": -116.760333333333,
       "observed_at": "2026-09-24T06:42:52.850000Z",
@@ -1179,7 +1819,7 @@
       "type": "earthquake",
       "title": "M 0.7 - 9 km ENE of Borrego Springs, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 33.302,
       "longitude": -116.2905,
       "observed_at": "2026-09-24T05:39:38.650000Z",
@@ -1275,7 +1915,7 @@
       "type": "earthquake",
       "title": "M 0.6 - 7 km E of Calimesa, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 33.9953333333333,
       "longitude": -116.976666666667,
       "observed_at": "2026-09-24T04:48:22.130000Z",
@@ -1323,7 +1963,7 @@
       "type": "earthquake",
       "title": "M 0.4 - 9 km WNW of Anza, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 33.5865,
       "longitude": -116.757666666667,
       "observed_at": "2026-09-24T04:33:07.520000Z",
@@ -1369,17 +2009,17 @@
     {
       "id": "usgs-nn00924831",
       "type": "earthquake",
-      "title": "M 1.8 - 20 km ESE of Silver Springs, Nevada",
+      "title": "M 1.9 - 20 km ESE of Silver Springs, Nevada",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 39.3388,
-      "longitude": -119.0131,
-      "observed_at": "2026-09-24T04:11:57.521000Z",
+      "status": "reviewed",
+      "latitude": 39.3419,
+      "longitude": -119.0093,
+      "observed_at": "2026-09-24T04:11:58.092000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nn00924831",
       "metadata": {
-        "magnitude": 1.82,
-        "depth_km": 3.9895
+        "magnitude": 1.92,
+        "depth_km": 6.9933
       }
     },
     {
@@ -1563,7 +2203,7 @@
       "type": "earthquake",
       "title": "M 0.6 - 9 km WNW of Anza, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 33.585,
       "longitude": -116.759333333333,
       "observed_at": "2026-09-24T03:04:08.840000Z",
@@ -1572,6 +2212,22 @@
       "metadata": {
         "magnitude": 0.56,
         "depth_km": 11.67
+      }
+    },
+    {
+      "id": "usgs-tx2026sumyox",
+      "type": "earthquake",
+      "title": "M 1.6 - 11 km ESE of Pearsall, Texas",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 28.852,
+      "longitude": -98.981,
+      "observed_at": "2026-09-24T02:54:35.314000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026sumyox",
+      "metadata": {
+        "magnitude": 1.6,
+        "depth_km": 7.2223
       }
     },
     {
@@ -1588,6 +2244,22 @@
       "metadata": {
         "magnitude": 1.83,
         "depth_km": 30.1200008392334
+      }
+    },
+    {
+      "id": "usgs-tx2026sumpcn",
+      "type": "earthquake",
+      "title": "M 1.3 - 11 km ESE of Pearsall, Texas",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 28.857,
+      "longitude": -98.98,
+      "observed_at": "2026-09-24T02:43:34.494000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026sumpcn",
+      "metadata": {
+        "magnitude": 1.3,
+        "depth_km": 7.4169
       }
     },
     {
@@ -1657,17 +2329,17 @@
     {
       "id": "usgs-ci41338199",
       "type": "earthquake",
-      "title": "M 2.2 - 36 km ENE of Maneadero, B.C., MX",
+      "title": "M 2.1 - 36 km ENE of Maneadero, B.C., MX",
       "severity": "low",
-      "status": "automatic",
-      "latitude": 31.8606666666667,
-      "longitude": -116.2235,
+      "status": "reviewed",
+      "latitude": 31.8598333333333,
+      "longitude": -116.230166666667,
       "observed_at": "2026-09-24T02:16:18.100000Z",
       "source": "USGS",
       "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41338199",
       "metadata": {
-        "magnitude": 2.15,
-        "depth_km": 10
+        "magnitude": 2.12,
+        "depth_km": 8.84
       }
     },
     {
@@ -1739,7 +2411,7 @@
       "type": "earthquake",
       "title": "M 0.8 - 0 km S of Calimesa, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 33.9851666666667,
       "longitude": -117.053333333333,
       "observed_at": "2026-09-24T01:56:40Z",
@@ -1799,11 +2471,27 @@
       }
     },
     {
+      "id": "usgs-tx2026sujwhu",
+      "type": "earthquake",
+      "title": "M 1.5 - southern Texas",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 28.814,
+      "longitude": -98.959,
+      "observed_at": "2026-09-24T01:21:25.861000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026sujwhu",
+      "metadata": {
+        "magnitude": 1.5,
+        "depth_km": 8.045
+      }
+    },
+    {
       "id": "usgs-ci41338151",
       "type": "earthquake",
       "title": "M 0.7 - 10 km ENE of Coso Junction, CA",
       "severity": "low",
-      "status": "automatic",
+      "status": "reviewed",
       "latitude": 36.0738333333333,
       "longitude": -117.8445,
       "observed_at": "2026-09-24T01:15:59.430000Z",
@@ -1828,6 +2516,22 @@
       "metadata": {
         "magnitude": 0.73,
         "depth_km": 12.76
+      }
+    },
+    {
+      "id": "usgs-tx2026sujmll",
+      "type": "earthquake",
+      "title": "M 1.6 - 15 km ESE of Pearsall, Texas",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 28.815,
+      "longitude": -98.962,
+      "observed_at": "2026-09-24T01:09:58.224000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026sujmll",
+      "metadata": {
+        "magnitude": 1.6,
+        "depth_km": 8.5125
       }
     },
     {
@@ -2087,6 +2791,22 @@
       }
     },
     {
+      "id": "usgs-ok2026sryo",
+      "type": "earthquake",
+      "title": "M 0.9 - 5 km SE of Chickasha, Oklahoma",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 35.02316667,
+      "longitude": -97.8865,
+      "observed_at": "2026-09-23T23:21:42.509000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ok2026sryo",
+      "metadata": {
+        "magnitude": 0.88,
+        "depth_km": 8.44
+      }
+    },
+    {
       "id": "usgs-ci41338111",
       "type": "earthquake",
       "title": "M 0.8 - 16 km WSW of Johannesburg, CA",
@@ -2228,6 +2948,22 @@
       "metadata": {
         "magnitude": 1.06,
         "depth_km": 2.4
+      }
+    },
+    {
+      "id": "usgs-tx2026sudaer",
+      "type": "earthquake",
+      "title": "M 2.4 - 56 km S of Whites City, New Mexico",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 31.665,
+      "longitude": -104.417,
+      "observed_at": "2026-09-23T21:54:46.011000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026sudaer",
+      "metadata": {
+        "magnitude": 2.4,
+        "depth_km": 7.0227
       }
     },
     {
@@ -2631,6 +3367,22 @@
       }
     },
     {
+      "id": "usgs-ok2026srrv",
+      "type": "earthquake",
+      "title": "M 1.3 - 2 km S of Watonga, Oklahoma",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 35.826,
+      "longitude": -98.41233333,
+      "observed_at": "2026-09-23T19:57:36.770000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ok2026srrv",
+      "metadata": {
+        "magnitude": 1.32,
+        "depth_km": 6
+      }
+    },
+    {
       "id": "usgs-ci41337951",
       "type": "earthquake",
       "title": "M 1.0 Quarry Blast - 7 km E of Lebec, CA",
@@ -2823,6 +3575,22 @@
       }
     },
     {
+      "id": "usgs-tx2026stxsip",
+      "type": "earthquake",
+      "title": "M 1.7 - 12 km ESE of Pearsall, Texas",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 28.843,
+      "longitude": -98.982,
+      "observed_at": "2026-09-23T19:14:44.637000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026stxsip",
+      "metadata": {
+        "magnitude": 1.7,
+        "depth_km": 7.983
+      }
+    },
+    {
       "id": "usgs-aka2026swyhso",
       "type": "earthquake",
       "title": "M 2.1 - 57 km ENE of Pedro Bay, Alaska",
@@ -2999,6 +3767,22 @@
       }
     },
     {
+      "id": "usgs-tx2026stvzam",
+      "type": "earthquake",
+      "title": "M 1.9 - 11 km ESE of Pearsall, Texas",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 28.853,
+      "longitude": -98.987,
+      "observed_at": "2026-09-23T18:22:10.676000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026stvzam",
+      "metadata": {
+        "magnitude": 1.9,
+        "depth_km": 9.0258
+      }
+    },
+    {
       "id": "usgs-pr71534263",
       "type": "earthquake",
       "title": "M 2.3 - 2 km NNE of Guayanilla, Puerto Rico",
@@ -3012,6 +3796,22 @@
       "metadata": {
         "magnitude": 2.31,
         "depth_km": 14.44
+      }
+    },
+    {
+      "id": "usgs-tx2026stvhyu",
+      "type": "earthquake",
+      "title": "M 1.8 - 17 km ESE of Pearsall, Texas",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 28.832,
+      "longitude": -98.926,
+      "observed_at": "2026-09-23T18:02:21.292000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026stvhyu",
+      "metadata": {
+        "magnitude": 1.8,
+        "depth_km": 8.1756
       }
     },
     {
@@ -3127,6 +3927,22 @@
       }
     },
     {
+      "id": "usgs-ok2026srnb",
+      "type": "earthquake",
+      "title": "M 1.3 Quarry Blast - 2 km NE of Sportsmen Acres, Oklahoma",
+      "severity": "low",
+      "status": "reviewed",
+      "latitude": 36.25916667,
+      "longitude": -95.23,
+      "observed_at": "2026-09-23T17:33:16.510000Z",
+      "source": "USGS",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ok2026srnb",
+      "metadata": {
+        "magnitude": 1.3,
+        "depth_km": 0
+      }
+    },
+    {
       "id": "usgs-uu80157876",
       "type": "earthquake",
       "title": "M 1.8 - 7 km SSE of Salina, Utah",
@@ -3159,1123 +3975,47 @@
       }
     },
     {
-      "id": "usgs-us6000tx53",
-      "type": "earthquake",
-      "title": "M 4.9 - 193 km SE of Mata-Utu, Wallis and Futuna",
+      "id": "eonet-EONET_24786",
+      "type": "storm",
+      "title": "Tropical Storm Nolo",
       "severity": "moderate",
-      "status": "reviewed",
-      "latitude": -14.6397,
-      "longitude": -175.0529,
-      "observed_at": "2026-09-23T17:20:32.721000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tx53",
+      "status": "open",
+      "latitude": 14.6,
+      "longitude": -155.8,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -155.8,
+          14.6
+        ]
+      },
+      "observed_at": "2026-09-24T00:00:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24786",
       "metadata": {
-        "magnitude": 4.9,
-        "depth_km": 10
+        "category": "Severe Storms"
       }
     },
     {
-      "id": "usgs-ci41337791",
-      "type": "earthquake",
-      "title": "M 0.4 - 21 km N of Ridgecrest, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 35.8083333333333,
-      "longitude": -117.639166666667,
-      "observed_at": "2026-09-23T17:18:23.260000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41337791",
-      "metadata": {
-        "magnitude": 0.39,
-        "depth_km": 12.82
-      }
-    },
-    {
-      "id": "usgs-pr71534248",
-      "type": "earthquake",
-      "title": "M 1.7 - 4 km WNW of Fuig, Puerto Rico",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 18.0023333333333,
-      "longitude": -66.9543333333333,
-      "observed_at": "2026-09-23T17:01:29.210000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/pr71534248",
-      "metadata": {
-        "magnitude": 1.69,
-        "depth_km": 8.19
-      }
-    },
-    {
-      "id": "usgs-hv75042717",
-      "type": "earthquake",
-      "title": "M 2.0 - 5 km SSW of Pāhala, Hawaii",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 19.1585,
-      "longitude": -155.5035,
-      "observed_at": "2026-09-23T16:57:46.320000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75042717",
-      "metadata": {
-        "magnitude": 1.97,
-        "depth_km": 32.74
-      }
-    },
-    {
-      "id": "usgs-hv75042712",
-      "type": "earthquake",
-      "title": "M 1.7 - 8 km S of Pāhala, Hawaii",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 19.1301670074463,
-      "longitude": -155.492004394531,
-      "observed_at": "2026-09-23T16:56:10.670000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75042712",
-      "metadata": {
-        "magnitude": 1.74,
-        "depth_km": 26.2199993133545
-      }
-    },
-    {
-      "id": "usgs-hv75042707",
-      "type": "earthquake",
-      "title": "M 1.6 - 16 km NE of Pāhala, Hawaii",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 19.2865,
-      "longitude": -155.353333333333,
-      "observed_at": "2026-09-23T16:50:28.250000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75042707",
-      "metadata": {
-        "magnitude": 1.62,
-        "depth_km": 29.41
-      }
-    },
-    {
-      "id": "usgs-av94445286",
-      "type": "earthquake",
-      "title": "M 0.4 - 15 km W of Dutch Harbor, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 53.8943333333333,
-      "longitude": -166.773333333333,
-      "observed_at": "2026-09-23T16:50:02.840000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94445286",
-      "metadata": {
-        "magnitude": 0.44,
-        "depth_km": 3.38
-      }
-    },
-    {
-      "id": "usgs-ci41337775",
-      "type": "earthquake",
-      "title": "M 1.5 - 4 km S of Brawley, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 32.9453333333333,
-      "longitude": -115.527166666667,
-      "observed_at": "2026-09-23T16:49:50.490000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41337775",
-      "metadata": {
-        "magnitude": 1.53,
-        "depth_km": 11.41
-      }
-    },
-    {
-      "id": "usgs-us6000tx4w",
-      "type": "earthquake",
-      "title": "M 4.6 - 59 km WNW of San Antonio de los Cobres, Argentina",
+      "id": "eonet-EONET_24787",
+      "type": "storm",
+      "title": "Tropical Storm Surigae",
       "severity": "moderate",
-      "status": "reviewed",
-      "latitude": -24.0812,
-      "longitude": -66.8891,
-      "observed_at": "2026-09-23T16:48:37.858000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tx4w",
+      "status": "open",
+      "latitude": 17.3,
+      "longitude": 135.8,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.8,
+          17.3
+        ]
+      },
+      "observed_at": "2026-09-23T18:00:00Z",
+      "source": "NASA EONET",
+      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24787",
       "metadata": {
-        "magnitude": 4.6,
-        "depth_km": 193.188
-      }
-    },
-    {
-      "id": "usgs-ci41337767",
-      "type": "earthquake",
-      "title": "M 0.9 - 16 km WSW of Johannesburg, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 35.333,
-      "longitude": -117.805666666667,
-      "observed_at": "2026-09-23T16:48:30.810000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41337767",
-      "metadata": {
-        "magnitude": 0.89,
-        "depth_km": 5.24
-      }
-    },
-    {
-      "id": "usgs-av93067289",
-      "type": "earthquake",
-      "title": "M 1.5 - 14 km W of Dutch Harbor, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 53.897,
-      "longitude": -166.769833333333,
-      "observed_at": "2026-09-23T16:46:05.380000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av93067289",
-      "metadata": {
-        "magnitude": 1.46,
-        "depth_km": 5.21
-      }
-    },
-    {
-      "id": "usgs-av94445276",
-      "type": "earthquake",
-      "title": "M 1.7 - 15 km W of Dutch Harbor, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 53.8996666666667,
-      "longitude": -166.769833333333,
-      "observed_at": "2026-09-23T16:46:00.570000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94445276",
-      "metadata": {
-        "magnitude": 1.72,
-        "depth_km": 4.08
-      }
-    },
-    {
-      "id": "usgs-ci41337759",
-      "type": "earthquake",
-      "title": "M 1.2 - 12 km NE of Coachella, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 33.7533333333333,
-      "longitude": -116.076666666667,
-      "observed_at": "2026-09-23T16:43:05.100000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41337759",
-      "metadata": {
-        "magnitude": 1.16,
-        "depth_km": 5.57
-      }
-    },
-    {
-      "id": "usgs-hv75042697",
-      "type": "earthquake",
-      "title": "M 1.6 - 6 km WSW of Volcano, Hawaii",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 19.4118333333333,
-      "longitude": -155.283666666667,
-      "observed_at": "2026-09-23T16:40:07.820000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75042697",
-      "metadata": {
-        "magnitude": 1.61,
-        "depth_km": -0.24
-      }
-    },
-    {
-      "id": "usgs-aka2026swtbxe",
-      "type": "earthquake",
-      "title": "M 3.4 - 33 km W of Nanwalek, Alaska",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 59.402,
-      "longitude": -152.503,
-      "observed_at": "2026-09-23T16:38:10.842000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026swtbxe",
-      "metadata": {
-        "magnitude": 3.4,
-        "depth_km": 71.8
-      }
-    },
-    {
-      "id": "usgs-uw714108471",
-      "type": "earthquake",
-      "title": "M 1.1 Explosion - 4 km NNE of Roseburg North, Oregon",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 43.3031666666667,
-      "longitude": -123.287666666667,
-      "observed_at": "2026-09-23T16:22:02.400000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uw714108471",
-      "metadata": {
-        "magnitude": 1.1,
-        "depth_km": -0.57
-      }
-    },
-    {
-      "id": "usgs-ci41337751",
-      "type": "earthquake",
-      "title": "M 0.5 - 11 km NE of Julian, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 33.1485,
-      "longitude": -116.512166666667,
-      "observed_at": "2026-09-23T16:10:34.750000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41337751",
-      "metadata": {
-        "magnitude": 0.48,
-        "depth_km": 9.15
-      }
-    },
-    {
-      "id": "usgs-aka2026swsakh",
-      "type": "earthquake",
-      "title": "M 1.4 - 51 km WNW of Anchor Point, Alaska",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 59.948,
-      "longitude": -152.694,
-      "observed_at": "2026-09-23T16:09:50.471000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026swsakh",
-      "metadata": {
-        "magnitude": 1.4,
-        "depth_km": 86.6
-      }
-    },
-    {
-      "id": "usgs-nc75440392",
-      "type": "earthquake",
-      "title": "M 0.3 - 5 km WNW of The Geysers, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 38.8040008544922,
-      "longitude": -122.807830810547,
-      "observed_at": "2026-09-23T16:00:40.500000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75440392",
-      "metadata": {
-        "magnitude": 0.28,
-        "depth_km": 1.54999995231628
-      }
-    },
-    {
-      "id": "usgs-ci41337743",
-      "type": "earthquake",
-      "title": "M 1.5 Quarry Blast - 4 km SE of Home Gardens, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 33.8535,
-      "longitude": -117.487833333333,
-      "observed_at": "2026-09-23T16:00:24.730000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41337743",
-      "metadata": {
-        "magnitude": 1.45,
-        "depth_km": -0.5
-      }
-    },
-    {
-      "id": "usgs-nc75440387",
-      "type": "earthquake",
-      "title": "M 2.6 - 2 km NW of Hollister, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 36.8610000610352,
-      "longitude": -121.415000915527,
-      "observed_at": "2026-09-23T16:00:10.570000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75440387",
-      "metadata": {
-        "magnitude": 2.58,
-        "depth_km": 6.07000017166138
-      }
-    },
-    {
-      "id": "usgs-ci41337735",
-      "type": "earthquake",
-      "title": "M 0.8 - 9 km WNW of Anza, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 33.5871666666667,
-      "longitude": -116.7615,
-      "observed_at": "2026-09-23T15:58:39.460000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41337735",
-      "metadata": {
-        "magnitude": 0.76,
-        "depth_km": 11.86
-      }
-    },
-    {
-      "id": "usgs-av94445231",
-      "type": "earthquake",
-      "title": "M -0.3 - 15 km W of Dutch Harbor, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 53.9005,
-      "longitude": -166.774166666667,
-      "observed_at": "2026-09-23T15:52:43.540000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94445231",
-      "metadata": {
-        "magnitude": -0.29,
-        "depth_km": 3.79
-      }
-    },
-    {
-      "id": "usgs-tx2026stqzdi",
-      "type": "earthquake",
-      "title": "M 1.9 - 45 km NW of Toyah, Texas",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 31.622,
-      "longitude": -104.108,
-      "observed_at": "2026-09-23T15:51:27.877000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026stqzdi",
-      "metadata": {
-        "magnitude": 1.9,
-        "depth_km": 6.1127
-      }
-    },
-    {
-      "id": "usgs-av94445226",
-      "type": "earthquake",
-      "title": "M -0.5 - 15 km W of Dutch Harbor, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 53.911,
-      "longitude": -166.781,
-      "observed_at": "2026-09-23T15:51:00.870000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94445226",
-      "metadata": {
-        "magnitude": -0.53,
-        "depth_km": 4.56
-      }
-    },
-    {
-      "id": "usgs-av93067349",
-      "type": "earthquake",
-      "title": "M 0.5 - 15 km W of Dutch Harbor, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 53.8926666666667,
-      "longitude": -166.773166666667,
-      "observed_at": "2026-09-23T15:50:44.840000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av93067349",
-      "metadata": {
-        "magnitude": 0.48,
-        "depth_km": 2.51
-      }
-    },
-    {
-      "id": "usgs-av94445221",
-      "type": "earthquake",
-      "title": "M 0.5 - 15 km W of Dutch Harbor, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 53.8978333333333,
-      "longitude": -166.777,
-      "observed_at": "2026-09-23T15:43:35.190000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94445221",
-      "metadata": {
-        "magnitude": 0.52,
-        "depth_km": 3.28
-      }
-    },
-    {
-      "id": "usgs-nc75440377",
-      "type": "earthquake",
-      "title": "M 0.5 - 13 km NW of The Geysers, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 38.8431663513184,
-      "longitude": -122.877334594727,
-      "observed_at": "2026-09-23T15:36:19.830000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75440377",
-      "metadata": {
-        "magnitude": 0.47,
-        "depth_km": 2.24000000953674
-      }
-    },
-    {
-      "id": "usgs-av94445201",
-      "type": "earthquake",
-      "title": "M 1.5 - 27 km SSW of False Pass, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 54.6228333333333,
-      "longitude": -163.563,
-      "observed_at": "2026-09-23T15:35:02.980000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94445201",
-      "metadata": {
-        "magnitude": 1.51,
-        "depth_km": 6.11
-      }
-    },
-    {
-      "id": "usgs-aka2026swqzfi",
-      "type": "earthquake",
-      "title": "M 2.6 - 74 km WSW of Cantwell, Alaska",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 63.2,
-      "longitude": -150.384,
-      "observed_at": "2026-09-23T15:34:53.093000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026swqzfi",
-      "metadata": {
-        "magnitude": 2.6,
-        "depth_km": 114.6
-      }
-    },
-    {
-      "id": "usgs-nc75440372",
-      "type": "earthquake",
-      "title": "M 1.5 - 12 km WSW of Chester, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 40.28466796875,
-      "longitude": -121.372833251953,
-      "observed_at": "2026-09-23T15:30:16.170000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75440372",
-      "metadata": {
-        "magnitude": 1.53,
-        "depth_km": 7.09000015258789
-      }
-    },
-    {
-      "id": "usgs-nc75440367",
-      "type": "earthquake",
-      "title": "M 1.7 - 5 km NW of The Geysers, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 38.8141670227051,
-      "longitude": -122.796836853027,
-      "observed_at": "2026-09-23T15:30:12.560000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75440367",
-      "metadata": {
-        "magnitude": 1.7,
-        "depth_km": 2.54999995231628
-      }
-    },
-    {
-      "id": "usgs-ci41337719",
-      "type": "earthquake",
-      "title": "M 0.3 - 12 km W of Anza, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 33.57,
-      "longitude": -116.806166666667,
-      "observed_at": "2026-09-23T15:27:08.690000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41337719",
-      "metadata": {
-        "magnitude": 0.26,
-        "depth_km": 5.35
-      }
-    },
-    {
-      "id": "usgs-av93067344",
-      "type": "earthquake",
-      "title": "M 0.4 - 15 km W of Dutch Harbor, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 53.8981666666667,
-      "longitude": -166.7745,
-      "observed_at": "2026-09-23T15:19:30.190000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av93067344",
-      "metadata": {
-        "magnitude": 0.37,
-        "depth_km": 3.43
-      }
-    },
-    {
-      "id": "usgs-av94445181",
-      "type": "earthquake",
-      "title": "M -0.7 - 15 km W of Dutch Harbor, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 53.9065,
-      "longitude": -166.779166666667,
-      "observed_at": "2026-09-23T15:19:12.370000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94445181",
-      "metadata": {
-        "magnitude": -0.65,
-        "depth_km": 4.38
-      }
-    },
-    {
-      "id": "usgs-aka2026swqfex",
-      "type": "earthquake",
-      "title": "M 2.1 - 67 km SSE of Kokhanok, Alaska",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 58.85,
-      "longitude": -154.536,
-      "observed_at": "2026-09-23T15:11:46.884000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026swqfex",
-      "metadata": {
-        "magnitude": 2.1,
-        "depth_km": 129.9
-      }
-    },
-    {
-      "id": "usgs-ci41337703",
-      "type": "earthquake",
-      "title": "M 1.5 - 9 km N of Borrego Springs, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 33.3378333333333,
-      "longitude": -116.386666666667,
-      "observed_at": "2026-09-23T15:10:45.410000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41337703",
-      "metadata": {
-        "magnitude": 1.51,
-        "depth_km": 12.77
-      }
-    },
-    {
-      "id": "usgs-ci41337695",
-      "type": "earthquake",
-      "title": "M 3.2 - 17 km WSW of Johannesburg, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 35.307,
-      "longitude": -117.804166666667,
-      "observed_at": "2026-09-23T15:01:48.370000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41337695",
-      "metadata": {
-        "magnitude": 3.18,
-        "depth_km": 6.75
-      }
-    },
-    {
-      "id": "usgs-aka2026swpmtg",
-      "type": "earthquake",
-      "title": "M 2.3 - 72 km WSW of Karluk, Alaska",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 57.265,
-      "longitude": -155.519,
-      "observed_at": "2026-09-23T14:50:31.913000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026swpmtg",
-      "metadata": {
-        "magnitude": 2.3,
-        "depth_km": 65.8
-      }
-    },
-    {
-      "id": "usgs-av93067339",
-      "type": "earthquake",
-      "title": "M -0.5 - 66 km NE of Nikolski, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 53.3873333333333,
-      "longitude": -168.208666666667,
-      "observed_at": "2026-09-23T14:47:08.450000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av93067339",
-      "metadata": {
-        "magnitude": -0.54,
-        "depth_km": 3.86
-      }
-    },
-    {
-      "id": "usgs-us6000tx3n",
-      "type": "earthquake",
-      "title": "M 4.6 - south of the Fiji Islands",
-      "severity": "moderate",
-      "status": "reviewed",
-      "latitude": -23.9741,
-      "longitude": 179.2578,
-      "observed_at": "2026-09-23T14:45:35.743000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tx3n",
-      "metadata": {
-        "magnitude": 4.6,
-        "depth_km": 528.269
-      }
-    },
-    {
-      "id": "usgs-nm60628186",
-      "type": "earthquake",
-      "title": "M 1.3 - 9 km SSE of Marston, Missouri",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 36.4381666666667,
-      "longitude": -89.5716666666667,
-      "observed_at": "2026-09-23T14:43:34.750000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nm60628186",
-      "metadata": {
-        "magnitude": 1.33,
-        "depth_km": 10.16
-      }
-    },
-    {
-      "id": "usgs-us6000tx3m",
-      "type": "earthquake",
-      "title": "M 5.7 - 180 km NW of Hihifo, Tonga",
-      "severity": "moderate",
-      "status": "reviewed",
-      "latitude": -14.9369,
-      "longitude": -175.1114,
-      "observed_at": "2026-09-23T14:41:02.650000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tx3m",
-      "metadata": {
-        "magnitude": 5.7,
-        "depth_km": 10
-      }
-    },
-    {
-      "id": "usgs-av94445121",
-      "type": "earthquake",
-      "title": "M -0.3 - 15 km W of Dutch Harbor, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 53.8955,
-      "longitude": -166.7745,
-      "observed_at": "2026-09-23T14:34:41.360000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94445121",
-      "metadata": {
-        "magnitude": -0.34,
-        "depth_km": 2.91
-      }
-    },
-    {
-      "id": "usgs-av94445116",
-      "type": "earthquake",
-      "title": "M -0.1 - 15 km W of Dutch Harbor, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 53.8973333333333,
-      "longitude": -166.777,
-      "observed_at": "2026-09-23T14:31:09.250000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94445116",
-      "metadata": {
-        "magnitude": -0.11,
-        "depth_km": 3.24
-      }
-    },
-    {
-      "id": "usgs-ci41337687",
-      "type": "earthquake",
-      "title": "M 1.3 - 11 km SW of Morongo Valley, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 33.9806666666667,
-      "longitude": -116.672666666667,
-      "observed_at": "2026-09-23T14:30:47.860000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41337687",
-      "metadata": {
-        "magnitude": 1.31,
-        "depth_km": 12.75
-      }
-    },
-    {
-      "id": "usgs-ci41337679",
-      "type": "earthquake",
-      "title": "M 0.1 - 10 km ENE of Aguanga, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 33.4866666666667,
-      "longitude": -116.765166666667,
-      "observed_at": "2026-09-23T14:27:04.030000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41337679",
-      "metadata": {
-        "magnitude": 0.07,
-        "depth_km": 6.15
-      }
-    },
-    {
-      "id": "usgs-hv75042672",
-      "type": "earthquake",
-      "title": "M 1.8 - 4 km S of Pāhala, Hawaii",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 19.1598339080811,
-      "longitude": -155.48616027832,
-      "observed_at": "2026-09-23T14:22:15.620000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75042672",
-      "metadata": {
-        "magnitude": 1.76,
-        "depth_km": 10.3199996948242
-      }
-    },
-    {
-      "id": "usgs-us6000tx3l",
-      "type": "earthquake",
-      "title": "M 4.2 - 21 km ENE of Lais, Philippines",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 6.4256,
-      "longitude": 125.8221,
-      "observed_at": "2026-09-23T14:19:32.302000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tx3l",
-      "metadata": {
-        "magnitude": 4.2,
-        "depth_km": 150.252
-      }
-    },
-    {
-      "id": "usgs-av93067334",
-      "type": "earthquake",
-      "title": "M 0.5 - 152 km W of Adak, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 51.805,
-      "longitude": -178.842833333333,
-      "observed_at": "2026-09-23T14:01:28.700000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av93067334",
-      "metadata": {
-        "magnitude": 0.51,
-        "depth_km": 4.01
-      }
-    },
-    {
-      "id": "usgs-av94445091",
-      "type": "earthquake",
-      "title": "M 0.6 - 150 km W of Adak, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 51.8063333333333,
-      "longitude": -178.812166666667,
-      "observed_at": "2026-09-23T14:01:04.040000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94445091",
-      "metadata": {
-        "magnitude": 0.62,
-        "depth_km": 4.52
-      }
-    },
-    {
-      "id": "usgs-ci41337663",
-      "type": "earthquake",
-      "title": "M 1.1 - 17 km WSW of Johannesburg, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 35.3035,
-      "longitude": -117.801166666667,
-      "observed_at": "2026-09-23T13:52:30.350000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41337663",
-      "metadata": {
-        "magnitude": 1.05,
-        "depth_km": 6.04
-      }
-    },
-    {
-      "id": "usgs-av94445081",
-      "type": "earthquake",
-      "title": "M -0.2 - 15 km W of Dutch Harbor, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 53.9018333333333,
-      "longitude": -166.772833333333,
-      "observed_at": "2026-09-23T13:49:08.140000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94445081",
-      "metadata": {
-        "magnitude": -0.19,
-        "depth_km": 3.82
-      }
-    },
-    {
-      "id": "usgs-tx2026stmovc",
-      "type": "earthquake",
-      "title": "M 1.6 - 55 km SSE of Whites City, New Mexico",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 31.7,
-      "longitude": -104.21,
-      "observed_at": "2026-09-23T13:39:23.347000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026stmovc",
-      "metadata": {
-        "magnitude": 1.6,
-        "depth_km": 6.9202
-      }
-    },
-    {
-      "id": "usgs-av94445066",
-      "type": "earthquake",
-      "title": "M 1.2 - 14 km W of Dutch Harbor, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 53.8996666666667,
-      "longitude": -166.767,
-      "observed_at": "2026-09-23T13:38:37.440000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94445066",
-      "metadata": {
-        "magnitude": 1.15,
-        "depth_km": 6.34
-      }
-    },
-    {
-      "id": "usgs-se60506368",
-      "type": "earthquake",
-      "title": "M 2.3 - 7 km SE of Brevard, North Carolina",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 35.1816666666667,
-      "longitude": -82.6801666666667,
-      "observed_at": "2026-09-23T13:35:15.840000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/se60506368",
-      "metadata": {
-        "magnitude": 2.27,
-        "depth_km": 9.39
-      }
-    },
-    {
-      "id": "usgs-nc75440347",
-      "type": "earthquake",
-      "title": "M 1.1 - 5 km WNW of The Geysers, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 38.7973327636719,
-      "longitude": -122.814163208008,
-      "observed_at": "2026-09-23T13:33:25.540000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75440347",
-      "metadata": {
-        "magnitude": 1.07,
-        "depth_km": 3.36999988555908
-      }
-    },
-    {
-      "id": "usgs-aka2026swmvfb",
-      "type": "earthquake",
-      "title": "M 3.1 - 75 km WSW of Karluk, Alaska",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 57.202,
-      "longitude": -155.508,
-      "observed_at": "2026-09-23T13:30:25.056000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026swmvfb",
-      "metadata": {
-        "magnitude": 3.1,
-        "depth_km": 51.3
-      }
-    },
-    {
-      "id": "usgs-hv75042652",
-      "type": "earthquake",
-      "title": "M 2.6 - 4 km S of Pāhala, Hawaii",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 19.1621666666667,
-      "longitude": -155.484833333333,
-      "observed_at": "2026-09-23T13:27:40.550000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75042652",
-      "metadata": {
-        "magnitude": 2.57,
-        "depth_km": 10.48
-      }
-    },
-    {
-      "id": "usgs-av94445051",
-      "type": "earthquake",
-      "title": "M 0.2 - 12 km W of Akutan, Alaska",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 54.1228333333333,
-      "longitude": -165.962666666667,
-      "observed_at": "2026-09-23T13:26:36.280000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94445051",
-      "metadata": {
-        "magnitude": 0.16,
-        "depth_km": 4.92
-      }
-    },
-    {
-      "id": "usgs-nc75440342",
-      "type": "earthquake",
-      "title": "M 0.7 - 9 km WNW of The Geysers, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 38.8226661682129,
-      "longitude": -122.84400177002,
-      "observed_at": "2026-09-23T13:20:46.710000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75440342",
-      "metadata": {
-        "magnitude": 0.69,
-        "depth_km": 2.24000000953674
-      }
-    },
-    {
-      "id": "usgs-nc75440332",
-      "type": "earthquake",
-      "title": "M 2.2 - 5 km SW of Yountville, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 38.3759994506836,
-      "longitude": -122.408836364746,
-      "observed_at": "2026-09-23T13:10:11.190000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75440332",
-      "metadata": {
-        "magnitude": 2.19,
-        "depth_km": 8.36999988555908
-      }
-    },
-    {
-      "id": "usgs-us6000tx38",
-      "type": "earthquake",
-      "title": "M 5.0 - Mariana Islands region",
-      "severity": "moderate",
-      "status": "reviewed",
-      "latitude": 21.6622,
-      "longitude": 143.0239,
-      "observed_at": "2026-09-23T13:01:51.614000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tx38",
-      "metadata": {
-        "magnitude": 5,
-        "depth_km": 306.016
-      }
-    },
-    {
-      "id": "usgs-ci41337655",
-      "type": "earthquake",
-      "title": "M 1.1 - 17 km WSW of Johannesburg, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 35.3038333333333,
-      "longitude": -117.800666666667,
-      "observed_at": "2026-09-23T12:55:45.970000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41337655",
-      "metadata": {
-        "magnitude": 1.12,
-        "depth_km": 6.84
-      }
-    },
-    {
-      "id": "usgs-ci41337647",
-      "type": "earthquake",
-      "title": "M -0.1 - 7 km SW of Anza, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 33.517,
-      "longitude": -116.739,
-      "observed_at": "2026-09-23T12:49:48.660000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41337647",
-      "metadata": {
-        "magnitude": -0.07,
-        "depth_km": 4.28
-      }
-    },
-    {
-      "id": "usgs-aka2026swllkm",
-      "type": "earthquake",
-      "title": "M 1.8 - 13 km SE of Skwentna, Alaska",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 61.918,
-      "longitude": -151.189,
-      "observed_at": "2026-09-23T12:49:02.534000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026swllkm",
-      "metadata": {
-        "magnitude": 1.8,
-        "depth_km": 74
-      }
-    },
-    {
-      "id": "usgs-ci41337639",
-      "type": "earthquake",
-      "title": "M 1.0 - 8 km SW of Anza, CA",
-      "severity": "low",
-      "status": "automatic",
-      "latitude": 33.5106666666667,
-      "longitude": -116.743333333333,
-      "observed_at": "2026-09-23T12:49:01.120000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41337639",
-      "metadata": {
-        "magnitude": 1.03,
-        "depth_km": 3.35
-      }
-    },
-    {
-      "id": "usgs-ci41337623",
-      "type": "earthquake",
-      "title": "M 1.6 - 17 km WSW of Johannesburg, CA",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 35.3018333333333,
-      "longitude": -117.803,
-      "observed_at": "2026-09-23T12:38:42.960000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41337623",
-      "metadata": {
-        "magnitude": 1.55,
-        "depth_km": 7.05
-      }
-    },
-    {
-      "id": "usgs-pr71534228",
-      "type": "earthquake",
-      "title": "M 3.2 - 65 km SE of Punta Cana, Dominican Republic",
-      "severity": "low",
-      "status": "reviewed",
-      "latitude": 18.1023333333333,
-      "longitude": -68.0333333333333,
-      "observed_at": "2026-09-23T12:37:18.460000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/pr71534228",
-      "metadata": {
-        "magnitude": 3.21,
-        "depth_km": 42.45
-      }
-    },
-    {
-      "id": "usgs-us6000tx31",
-      "type": "earthquake",
-      "title": "M 4.6 - 106 km WNW of Ternate, Indonesia",
-      "severity": "moderate",
-      "status": "reviewed",
-      "latitude": 1.217,
-      "longitude": 126.5263,
-      "observed_at": "2026-09-23T12:23:20.274000Z",
-      "source": "USGS",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tx31",
-      "metadata": {
-        "magnitude": 4.6,
-        "depth_km": 48.462
+        "category": "Severe Storms"
       }
     },
     {
@@ -4350,16 +4090,16 @@
       "title": "Tropical Storm Fay",
       "severity": "moderate",
       "status": "open",
-      "latitude": 33.1,
-      "longitude": -32.2,
+      "latitude": 29.8,
+      "longitude": -40.5,
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -32.2,
-          33.1
+          -40.5,
+          29.8
         ]
       },
-      "observed_at": "2026-09-21T21:00:00Z",
+      "observed_at": "2026-09-24T09:00:00Z",
       "source": "NASA EONET",
       "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24722",
       "metadata": {
@@ -15230,50 +14970,6 @@
       "observed_at": "2026-05-25T16:59:00Z",
       "source": "NASA EONET",
       "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20250",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20258",
-      "type": "fire",
-      "title": "Kinyon Springs Wildfire, Owyhee, Idaho",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 42.734717,
-      "longitude": -115.244683,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -115.244683,
-          42.734717
-        ]
-      },
-      "observed_at": "2026-05-25T16:44:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20258",
-      "metadata": {
-        "category": "Wildfires"
-      }
-    },
-    {
-      "id": "eonet-EONET_20259",
-      "type": "fire",
-      "title": "MILE MARKER 44 FIRE - BROWARD Wildfire, Broward, Florida",
-      "severity": "moderate",
-      "status": "open",
-      "latitude": 26.0994444,
-      "longitude": -80.7791667,
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -80.7791667,
-          26.0994444
-        ]
-      },
-      "observed_at": "2026-05-23T21:26:00Z",
-      "source": "NASA EONET",
-      "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20259",
       "metadata": {
         "category": "Wildfires"
       }
