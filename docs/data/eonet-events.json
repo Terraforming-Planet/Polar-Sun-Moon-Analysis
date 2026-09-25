@@ -1,22 +1,49 @@
 {
-  "generatedUtc": "2026-09-25T09:56:49.339104Z",
+  "generatedUtc": "2026-09-25T14:56:14.934248Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
-      "id": "EONET_24786",
-      "title": "Tropical Storm Nolo",
+      "id": "EONET_24811",
+      "title": "Tropical Storm Gonzalo",
       "categories": [
         "Severe Storms"
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 60.0,
+        "magnitudeValue": 40.0,
         "magnitudeUnit": "kts",
-        "date": "2026-09-25T00:00:00Z",
+        "date": "2026-09-25T09:00:00Z",
         "type": "Point",
         "coordinates": [
-          -156,
-          14.9
+          -22.4,
+          14.2
+        ]
+      },
+      "sources": [
+        {
+          "id": "NOAA_NHC",
+          "url": "https://www.nhc.noaa.gov/archive/2026/GONZALO.shtml"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24811",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_24786",
+      "title": "Hurricane Nolo",
+      "categories": [
+        "Severe Storms"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 70.0,
+        "magnitudeUnit": "kts",
+        "date": "2026-09-25T06:00:00Z",
+        "type": "Point",
+        "coordinates": [
+          -155.8,
+          15.2
         ]
       },
       "sources": [
@@ -37,13 +64,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 40.0,
+        "magnitudeValue": 45.0,
         "magnitudeUnit": "kts",
-        "date": "2026-09-25T00:00:00Z",
+        "date": "2026-09-25T06:00:00Z",
         "type": "Point",
         "coordinates": [
-          130.7,
-          19.9
+          129.3,
+          20.7
         ]
       },
       "sources": [
@@ -118,13 +145,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 130.0,
+        "magnitudeValue": 135.0,
         "magnitudeUnit": "kts",
-        "date": "2026-09-24T18:00:00Z",
+        "date": "2026-09-25T06:00:00Z",
         "type": "Point",
         "coordinates": [
-          -104.9,
-          16.9
+          -107,
+          17.1
         ]
       },
       "sources": [
@@ -176,12 +203,12 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 35.0,
+        "magnitudeValue": 45.0,
         "magnitudeUnit": "kts",
-        "date": "2026-09-24T09:00:00Z",
+        "date": "2026-09-25T09:00:00Z",
         "type": "Point",
         "coordinates": [
-          -40.5,
+          -42.8,
           29.8
         ]
       },
@@ -203,13 +230,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 90.0,
+        "magnitudeValue": 100.0,
         "magnitudeUnit": "kts",
-        "date": "2026-09-25T00:00:00Z",
+        "date": "2026-09-25T06:00:00Z",
         "type": "Point",
         "coordinates": [
-          -124.4,
-          16.9
+          -124.1,
+          17.3
         ]
       },
       "sources": [
@@ -5382,55 +5409,57 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21972",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_21835",
-      "title": "Wildfire Twin Butte Ck, Corson, South Dakota",
-      "categories": [
-        "Wildfires"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 890.0,
-        "magnitudeUnit": "acres",
-        "date": "2026-07-27T00:31:00Z",
-        "type": "Point",
-        "coordinates": [
-          -101.8215463,
-          45.50605836
-        ]
-      },
-      "sources": [
-        {
-          "id": "IRWIN",
-          "url": "https://irwin.doi.gov/observer/incidents/2026-NDSRA-000101"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21835",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
+    {
+      "type": "Feature",
+      "id": "EONET_24811",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -22.4,
+          14.2
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Tropical Storm Gonzalo",
+        "categories": [
+          "Severe Storms"
+        ],
+        "observationUtc": "2026-09-25T09:00:00Z",
+        "observation_time": "2026-09-25T09:00:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24811",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24811",
+        "sources": [
+          {
+            "id": "NOAA_NHC",
+            "url": "https://www.nhc.noaa.gov/archive/2026/GONZALO.shtml"
+          }
+        ]
+      }
+    },
     {
       "type": "Feature",
       "id": "EONET_24786",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -156,
-          14.9
+          -155.8,
+          15.2
         ]
       },
       "properties": {
         "source": "NASA EONET",
         "evidenceType": "event-catalogue",
-        "title": "Tropical Storm Nolo",
+        "title": "Hurricane Nolo",
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-09-25T00:00:00Z",
-        "observation_time": "2026-09-25T00:00:00Z",
+        "observationUtc": "2026-09-25T06:00:00Z",
+        "observation_time": "2026-09-25T06:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24786",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24786",
         "sources": [
@@ -5447,8 +5476,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          130.7,
-          19.9
+          129.3,
+          20.7
         ]
       },
       "properties": {
@@ -5458,8 +5487,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-09-25T00:00:00Z",
-        "observation_time": "2026-09-25T00:00:00Z",
+        "observationUtc": "2026-09-25T06:00:00Z",
+        "observation_time": "2026-09-25T06:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24787",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24787",
         "sources": [
@@ -5534,8 +5563,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -104.9,
-          16.9
+          -107,
+          17.1
         ]
       },
       "properties": {
@@ -5545,8 +5574,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-09-24T18:00:00Z",
-        "observation_time": "2026-09-24T18:00:00Z",
+        "observationUtc": "2026-09-25T06:00:00Z",
+        "observation_time": "2026-09-25T06:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24721",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24721",
         "sources": [
@@ -5596,7 +5625,7 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -40.5,
+          -42.8,
           29.8
         ]
       },
@@ -5607,8 +5636,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-09-24T09:00:00Z",
-        "observation_time": "2026-09-24T09:00:00Z",
+        "observationUtc": "2026-09-25T09:00:00Z",
+        "observation_time": "2026-09-25T09:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24722",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24722",
         "sources": [
@@ -5625,8 +5654,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -124.4,
-          16.9
+          -124.1,
+          17.3
         ]
       },
       "properties": {
@@ -5636,8 +5665,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-09-25T00:00:00Z",
-        "observation_time": "2026-09-25T00:00:00Z",
+        "observationUtc": "2026-09-25T06:00:00Z",
+        "observation_time": "2026-09-25T06:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24720",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24720",
         "sources": [
@@ -11187,35 +11216,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-WYCMX-000338"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_21835",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -101.8215463,
-          45.50605836
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Wildfire Twin Butte Ck, Corson, South Dakota",
-        "categories": [
-          "Wildfires"
-        ],
-        "observationUtc": "2026-07-27T00:31:00Z",
-        "observation_time": "2026-07-27T00:31:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21835",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21835",
-        "sources": [
-          {
-            "id": "IRWIN",
-            "url": "https://irwin.doi.gov/observer/incidents/2026-NDSRA-000101"
           }
         ]
       }
