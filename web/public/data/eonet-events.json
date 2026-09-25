@@ -1,5 +1,5 @@
 {
-  "generatedUtc": "2026-09-24T21:48:36.194502Z",
+  "generatedUtc": "2026-09-25T00:11:27.193016Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
@@ -53,6 +53,33 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24787",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_24809",
+      "title": "Wildfire Merit Creek, Greene, Mississippi",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 828.0,
+        "magnitudeUnit": "acres",
+        "date": "2026-09-23T10:12:00Z",
+        "type": "Point",
+        "coordinates": [
+          -88.83785,
+          31.052583
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-MSMNF-000578"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24809",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
@@ -196,6 +223,33 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24720",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_24810",
+      "title": "Prescribed Fire CRAWFORD CORRAL RX, Tulare, California",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 690.0,
+        "magnitudeUnit": "acres",
+        "date": "2026-09-19T13:26:00Z",
+        "type": "Point",
+        "coordinates": [
+          -118.9721,
+          36.601661
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-CATUU-000092"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24810",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
@@ -5355,60 +5409,6 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21835",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_22122",
-      "title": "Wildfire Moose, Granite, Montana",
-      "categories": [
-        "Wildfires"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 594.0,
-        "magnitudeUnit": "acres",
-        "date": "2026-07-26T18:07:00Z",
-        "type": "Point",
-        "coordinates": [
-          -113.69075,
-          46.0722
-        ]
-      },
-      "sources": [
-        {
-          "id": "IRWIN",
-          "url": "https://irwin.doi.gov/observer/incidents/2026-MTBDF-266293"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22122",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_21821",
-      "title": "Wildfire SINLAHEKIN, Okanogan, Washington",
-      "categories": [
-        "Wildfires"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 939.0,
-        "magnitudeUnit": "acres",
-        "date": "2026-07-26T17:21:00Z",
-        "type": "Point",
-        "coordinates": [
-          -119.693117,
-          48.704617
-        ]
-      },
-      "sources": [
-        {
-          "id": "IRWIN",
-          "url": "https://irwin.doi.gov/observer/incidents/2026-WANES-001791"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21821",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -5466,6 +5466,35 @@
           {
             "id": "JTWC",
             "url": "https://www.metoc.navy.mil/jtwc/products/wp2526.tcw"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_24809",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -88.83785,
+          31.052583
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Wildfire Merit Creek, Greene, Mississippi",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-09-23T10:12:00Z",
+        "observation_time": "2026-09-23T10:12:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24809",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24809",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-MSMNF-000578"
           }
         ]
       }
@@ -5619,6 +5648,35 @@
           {
             "id": "NOAA_NHC",
             "url": "https://www.nhc.noaa.gov/archive/2026/ODALYS.shtml"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_24810",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.9721,
+          36.601661
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Prescribed Fire CRAWFORD CORRAL RX, Tulare, California",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-09-19T13:26:00Z",
+        "observation_time": "2026-09-19T13:26:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24810",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24810",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-CATUU-000092"
           }
         ]
       }
@@ -11158,64 +11216,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-NDSRA-000101"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_22122",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -113.69075,
-          46.0722
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Wildfire Moose, Granite, Montana",
-        "categories": [
-          "Wildfires"
-        ],
-        "observationUtc": "2026-07-26T18:07:00Z",
-        "observation_time": "2026-07-26T18:07:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22122",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22122",
-        "sources": [
-          {
-            "id": "IRWIN",
-            "url": "https://irwin.doi.gov/observer/incidents/2026-MTBDF-266293"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_21821",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -119.693117,
-          48.704617
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Wildfire SINLAHEKIN, Okanogan, Washington",
-        "categories": [
-          "Wildfires"
-        ],
-        "observationUtc": "2026-07-26T17:21:00Z",
-        "observation_time": "2026-07-26T17:21:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21821",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21821",
-        "sources": [
-          {
-            "id": "IRWIN",
-            "url": "https://irwin.doi.gov/observer/incidents/2026-WANES-001791"
           }
         ]
       }
