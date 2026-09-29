@@ -42,3 +42,10 @@ Every observation includes its published UTC timestamp, collection, footprint, c
 3. Public serving endpoint with cache headers and access control.
 4. Viewer playback that advances only between real timestamps.
 5. Geostationary weather imagery for higher-frequency full-disc sequences.
+
+## CloudFerro network maintenance
+
+See [WAW3-2 IPv6 readiness and rollback](CLOUDFERRO_S3_IPV6.md) for the
+2026-10-08 maintenance scope, a read-only IPv4/IPv6 diagnostic, and a
+per-client IPv4 fallback procedure. This does not change the current STAC
+endpoint or any live server configuration.
