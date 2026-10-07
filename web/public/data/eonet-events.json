@@ -1,7 +1,34 @@
 {
-  "generatedUtc": "2026-10-07T13:28:20.238968Z",
+  "generatedUtc": "2026-10-07T19:26:59.798275Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
+    {
+      "id": "EONET_25063",
+      "title": "Tropical Storm Isaias",
+      "categories": [
+        "Severe Storms"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 35.0,
+        "magnitudeUnit": "kts",
+        "date": "2026-10-07T09:00:00Z",
+        "type": "Point",
+        "coordinates": [
+          -94.1,
+          22
+        ]
+      },
+      "sources": [
+        {
+          "id": "NOAA_NHC",
+          "url": "https://www.nhc.noaa.gov/archive/2026/ISAIAS.shtml"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25063",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
     {
       "id": "EONET_25046",
       "title": "Tropical Storm Koguma",
@@ -10,13 +37,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 55.0,
+        "magnitudeValue": 50.0,
         "magnitudeUnit": "kts",
-        "date": "2026-10-07T06:00:00Z",
+        "date": "2026-10-07T12:00:00Z",
         "type": "Point",
         "coordinates": [
-          163.2,
-          15.5
+          162.6,
+          15.7
         ]
       },
       "sources": [
@@ -282,11 +309,11 @@
       "latestGeometry": {
         "magnitudeValue": 70.0,
         "magnitudeUnit": "kts",
-        "date": "2026-10-07T06:00:00Z",
+        "date": "2026-10-07T12:00:00Z",
         "type": "Point",
         "coordinates": [
-          -120.9,
-          20.5
+          -121.5,
+          20.7
         ]
       },
       "sources": [
@@ -446,13 +473,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 70.0,
+        "magnitudeValue": 65.0,
         "magnitudeUnit": "kts",
-        "date": "2026-10-07T06:00:00Z",
+        "date": "2026-10-07T12:00:00Z",
         "type": "Point",
         "coordinates": [
-          162,
-          25.9
+          160.3,
+          25.8
         ]
       },
       "sources": [
@@ -5378,44 +5405,46 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21965",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_22448",
-      "title": "Wildfire Lake Channel, Power, Idaho",
-      "categories": [
-        "Wildfires"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 2516.39,
-        "magnitudeUnit": "acres",
-        "date": "2026-07-29T21:36:00Z",
-        "type": "Point",
-        "coordinates": [
-          -113.020005,
-          42.665061
-        ]
-      },
-      "sources": [
-        {
-          "id": "IRWIN",
-          "url": "https://irwin.doi.gov/observer/incidents/2026-IDTFD-000999"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22448",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
+    {
+      "type": "Feature",
+      "id": "EONET_25063",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -94.1,
+          22
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Tropical Storm Isaias",
+        "categories": [
+          "Severe Storms"
+        ],
+        "observationUtc": "2026-10-07T09:00:00Z",
+        "observation_time": "2026-10-07T09:00:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25063",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25063",
+        "sources": [
+          {
+            "id": "NOAA_NHC",
+            "url": "https://www.nhc.noaa.gov/archive/2026/ISAIAS.shtml"
+          }
+        ]
+      }
+    },
     {
       "type": "Feature",
       "id": "EONET_25046",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          163.2,
-          15.5
+          162.6,
+          15.7
         ]
       },
       "properties": {
@@ -5425,8 +5454,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-10-07T06:00:00Z",
-        "observation_time": "2026-10-07T06:00:00Z",
+        "observationUtc": "2026-10-07T12:00:00Z",
+        "observation_time": "2026-10-07T12:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25046",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25046",
         "sources": [
@@ -5704,8 +5733,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -120.9,
-          20.5
+          -121.5,
+          20.7
         ]
       },
       "properties": {
@@ -5715,8 +5744,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-10-07T06:00:00Z",
-        "observation_time": "2026-10-07T06:00:00Z",
+        "observationUtc": "2026-10-07T12:00:00Z",
+        "observation_time": "2026-10-07T12:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24875",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24875",
         "sources": [
@@ -5882,8 +5911,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          162,
-          25.9
+          160.3,
+          25.8
         ]
       },
       "properties": {
@@ -5893,8 +5922,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-10-07T06:00:00Z",
-        "observation_time": "2026-10-07T06:00:00Z",
+        "observationUtc": "2026-10-07T12:00:00Z",
+        "observation_time": "2026-10-07T12:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24786",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24786",
         "sources": [
@@ -11179,35 +11208,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-GAGAS-042702"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_22448",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -113.020005,
-          42.665061
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Wildfire Lake Channel, Power, Idaho",
-        "categories": [
-          "Wildfires"
-        ],
-        "observationUtc": "2026-07-29T21:36:00Z",
-        "observation_time": "2026-07-29T21:36:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22448",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22448",
-        "sources": [
-          {
-            "id": "IRWIN",
-            "url": "https://irwin.doi.gov/observer/incidents/2026-IDTFD-000999"
           }
         ]
       }
