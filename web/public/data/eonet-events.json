@@ -1,5 +1,5 @@
 {
-  "generatedUtc": "2026-10-09T08:58:46.728225Z",
+  "generatedUtc": "2026-10-09T15:51:36.599520Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
@@ -10,12 +10,12 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 65.0,
+        "magnitudeValue": 80.0,
         "magnitudeUnit": "kts",
-        "date": "2026-10-09T00:00:00Z",
+        "date": "2026-10-09T06:00:00Z",
         "type": "Point",
         "coordinates": [
-          -104.3,
+          -104.4,
           15.7
         ]
       },
@@ -64,13 +64,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 70.0,
+        "magnitudeValue": 95.0,
         "magnitudeUnit": "kts",
-        "date": "2026-10-08T09:00:00Z",
+        "date": "2026-10-09T09:00:00Z",
         "type": "Point",
         "coordinates": [
-          -91.2,
-          23.3
+          -88,
+          26.4
         ]
       },
       "sources": [
@@ -118,13 +118,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 85.0,
+        "magnitudeValue": 95.0,
         "magnitudeUnit": "kts",
-        "date": "2026-10-09T00:00:00Z",
+        "date": "2026-10-09T06:00:00Z",
         "type": "Point",
         "coordinates": [
-          156.6,
-          18.3
+          155.5,
+          19.3
         ]
       },
       "sources": [
@@ -415,13 +415,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 50.0,
+        "magnitudeValue": 45.0,
         "magnitudeUnit": "kts",
-        "date": "2026-10-09T00:00:00Z",
+        "date": "2026-10-09T06:00:00Z",
         "type": "Point",
         "coordinates": [
-          -125.2,
-          22.5
+          -125,
+          22.6
         ]
       },
       "sources": [
@@ -583,14 +583,18 @@
       "latestGeometry": {
         "magnitudeValue": 50.0,
         "magnitudeUnit": "kts",
-        "date": "2026-10-09T00:00:00Z",
+        "date": "2026-10-09T06:00:00Z",
         "type": "Point",
         "coordinates": [
-          149.8,
-          28.2
+          148.7,
+          28.8
         ]
       },
       "sources": [
+        {
+          "id": "EO",
+          "url": "https://science.nasa.gov/earth/earth-observatory/powerful-storms-continue-to-prowl-the-pacific/"
+        },
         {
           "id": "JTWC",
           "url": "https://www.metoc.navy.mil/jtwc/products/ep1526.tcw"
@@ -678,33 +682,6 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24710",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_24722",
-      "title": "Tropical Storm Fay",
-      "categories": [
-        "Severe Storms"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 25.0,
-        "magnitudeUnit": "kts",
-        "date": "2026-09-29T21:00:00Z",
-        "type": "Point",
-        "coordinates": [
-          -48.2,
-          23.7
-        ]
-      },
-      "sources": [
-        {
-          "id": "NOAA_NHC",
-          "url": "https://www.nhc.noaa.gov/archive/2026/FAY.shtml"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24722",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
@@ -5405,6 +5382,33 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22114",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_22103",
+      "title": "Wildfire Ward, White Pine, Nevada",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 8200.0,
+        "magnitudeUnit": "acres",
+        "date": "2026-07-31T14:03:00Z",
+        "type": "Point",
+        "coordinates": [
+          -114.89485,
+          39.103167
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-NVHTF-040303"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22103",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -5414,7 +5418,7 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -104.3,
+          -104.4,
           15.7
         ]
       },
@@ -5425,8 +5429,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-10-09T00:00:00Z",
-        "observation_time": "2026-10-09T00:00:00Z",
+        "observationUtc": "2026-10-09T06:00:00Z",
+        "observation_time": "2026-10-09T06:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25094",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25094",
         "sources": [
@@ -5472,8 +5476,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -91.2,
-          23.3
+          -88,
+          26.4
         ]
       },
       "properties": {
@@ -5483,8 +5487,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-10-08T09:00:00Z",
-        "observation_time": "2026-10-08T09:00:00Z",
+        "observationUtc": "2026-10-09T09:00:00Z",
+        "observation_time": "2026-10-09T09:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25063",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25063",
         "sources": [
@@ -5530,8 +5534,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          156.6,
-          18.3
+          155.5,
+          19.3
         ]
       },
       "properties": {
@@ -5541,8 +5545,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-10-09T00:00:00Z",
-        "observation_time": "2026-10-09T00:00:00Z",
+        "observationUtc": "2026-10-09T06:00:00Z",
+        "observation_time": "2026-10-09T06:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25046",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25046",
         "sources": [
@@ -5849,8 +5853,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -125.2,
-          22.5
+          -125,
+          22.6
         ]
       },
       "properties": {
@@ -5860,8 +5864,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-10-09T00:00:00Z",
-        "observation_time": "2026-10-09T00:00:00Z",
+        "observationUtc": "2026-10-09T06:00:00Z",
+        "observation_time": "2026-10-09T06:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24875",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24875",
         "sources": [
@@ -6027,8 +6031,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          149.8,
-          28.2
+          148.7,
+          28.8
         ]
       },
       "properties": {
@@ -6038,11 +6042,15 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-10-09T00:00:00Z",
-        "observation_time": "2026-10-09T00:00:00Z",
+        "observationUtc": "2026-10-09T06:00:00Z",
+        "observation_time": "2026-10-09T06:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24786",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24786",
         "sources": [
+          {
+            "id": "EO",
+            "url": "https://science.nasa.gov/earth/earth-observatory/powerful-storms-continue-to-prowl-the-pacific/"
+          },
           {
             "id": "JTWC",
             "url": "https://www.metoc.navy.mil/jtwc/products/ep1526.tcw"
@@ -6133,35 +6141,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-LALAS-000390"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_24722",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -48.2,
-          23.7
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Tropical Storm Fay",
-        "categories": [
-          "Severe Storms"
-        ],
-        "observationUtc": "2026-09-29T21:00:00Z",
-        "observation_time": "2026-09-29T21:00:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24722",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24722",
-        "sources": [
-          {
-            "id": "NOAA_NHC",
-            "url": "https://www.nhc.noaa.gov/archive/2026/FAY.shtml"
           }
         ]
       }
@@ -11208,6 +11187,35 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-MTHLF-000529"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_22103",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -114.89485,
+          39.103167
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Wildfire Ward, White Pine, Nevada",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-07-31T14:03:00Z",
+        "observation_time": "2026-07-31T14:03:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22103",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22103",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-NVHTF-040303"
           }
         ]
       }
