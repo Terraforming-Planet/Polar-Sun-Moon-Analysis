@@ -1,5 +1,5 @@
 {
-  "generatedUtc": "2026-10-12T02:21:29.988267Z",
+  "generatedUtc": "2026-10-12T09:31:34.251701Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
@@ -10,13 +10,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 115.0,
+        "magnitudeValue": 105.0,
         "magnitudeUnit": "kts",
-        "date": "2026-10-11T18:00:00Z",
+        "date": "2026-10-12T00:00:00Z",
         "type": "Point",
         "coordinates": [
-          -105.6,
-          19.4
+          -105.8,
+          19.7
         ]
       },
       "sources": [
@@ -118,13 +118,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 105.0,
+        "magnitudeValue": 100.0,
         "magnitudeUnit": "kts",
-        "date": "2026-10-11T18:00:00Z",
+        "date": "2026-10-12T00:00:00Z",
         "type": "Point",
         "coordinates": [
           147.3,
-          27.1
+          28.3
         ]
       },
       "sources": [
@@ -242,33 +242,6 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25045",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_24962",
-      "title": "Super Typhoon Choi-wan",
-      "categories": [
-        "Severe Storms"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 75.0,
-        "magnitudeUnit": "kts",
-        "date": "2026-10-06T18:00:00Z",
-        "type": "Point",
-        "coordinates": [
-          149.5,
-          36.3
-        ]
-      },
-      "sources": [
-        {
-          "id": "JTWC",
-          "url": "https://www.metoc.navy.mil/jtwc/products/wp2626.tcw"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24962",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
@@ -5409,6 +5382,33 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22103",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_22120",
+      "title": "Wildfire Black Canyon, Sanpete, Utah",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 500.0,
+        "magnitudeUnit": "acres",
+        "date": "2026-07-30T21:26:00Z",
+        "type": "Point",
+        "coordinates": [
+          -111.307967,
+          39.383
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-UTMLF-005244"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22120",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -5418,8 +5418,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -105.6,
-          19.4
+          -105.8,
+          19.7
         ]
       },
       "properties": {
@@ -5429,8 +5429,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-10-11T18:00:00Z",
-        "observation_time": "2026-10-11T18:00:00Z",
+        "observationUtc": "2026-10-12T00:00:00Z",
+        "observation_time": "2026-10-12T00:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25094",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25094",
         "sources": [
@@ -5535,7 +5535,7 @@
         "type": "Point",
         "coordinates": [
           147.3,
-          27.1
+          28.3
         ]
       },
       "properties": {
@@ -5545,8 +5545,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-10-11T18:00:00Z",
-        "observation_time": "2026-10-11T18:00:00Z",
+        "observationUtc": "2026-10-12T00:00:00Z",
+        "observation_time": "2026-10-12T00:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25046",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25046",
         "sources": [
@@ -5669,35 +5669,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-ORWWF-000669"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_24962",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          149.5,
-          36.3
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Super Typhoon Choi-wan",
-        "categories": [
-          "Severe Storms"
-        ],
-        "observationUtc": "2026-10-06T18:00:00Z",
-        "observation_time": "2026-10-06T18:00:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24962",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24962",
-        "sources": [
-          {
-            "id": "JTWC",
-            "url": "https://www.metoc.navy.mil/jtwc/products/wp2626.tcw"
           }
         ]
       }
@@ -11216,6 +11187,35 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-NVHTF-040303"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_22120",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -111.307967,
+          39.383
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Wildfire Black Canyon, Sanpete, Utah",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-07-30T21:26:00Z",
+        "observation_time": "2026-07-30T21:26:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22120",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22120",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-UTMLF-005244"
           }
         ]
       }
