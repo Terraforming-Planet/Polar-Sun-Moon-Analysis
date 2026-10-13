@@ -1,5 +1,5 @@
 {
-  "generatedUtc": "2026-10-13T08:17:10.037276Z",
+  "generatedUtc": "2026-10-13T16:12:14.143846Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
@@ -111,6 +111,33 @@
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
     {
+      "id": "EONET_25268",
+      "title": "Iceberg B52",
+      "categories": [
+        "Sea and Lake Ice"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 48.88,
+        "magnitudeUnit": "NM^2",
+        "date": "2026-10-09T00:00:00Z",
+        "type": "Point",
+        "coordinates": [
+          -130.24,
+          -74.4
+        ]
+      },
+      "sources": [
+        {
+          "id": "NATICE",
+          "url": "https://usicecenter.gov/pub/Iceberg_Tabular.csv"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25268",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
       "id": "EONET_25235",
       "title": "Prescribed Fire COOPER UNIT - KPERP RX NKRD  CY26, Coconino, Arizona",
       "categories": [
@@ -145,13 +172,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 85.0,
+        "magnitudeValue": 80.0,
         "magnitudeUnit": "kts",
-        "date": "2026-10-13T00:00:00Z",
+        "date": "2026-10-13T06:00:00Z",
         "type": "Point",
         "coordinates": [
-          -106.9,
-          20.3
+          -107.1,
+          20.5
         ]
       },
       "sources": [
@@ -309,11 +336,11 @@
       "latestGeometry": {
         "magnitudeValue": 70.0,
         "magnitudeUnit": "kts",
-        "date": "2026-10-13T00:00:00Z",
+        "date": "2026-10-13T06:00:00Z",
         "type": "Point",
         "coordinates": [
-          151.7,
-          33.9
+          153.7,
+          35.4
         ]
       },
       "sources": [
@@ -5382,33 +5409,6 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22119",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_22111",
-      "title": "Wildfire FAIRVIEW, Spokane, Washington",
-      "categories": [
-        "Wildfires"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 1056.0,
-        "magnitudeUnit": "acres",
-        "date": "2026-08-01T17:42:00Z",
-        "type": "Point",
-        "coordinates": [
-          -117.3577,
-          47.750926
-        ]
-      },
-      "sources": [
-        {
-          "id": "IRWIN",
-          "url": "https://irwin.doi.gov/observer/incidents/2026-WANES-001852"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22111",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -5530,6 +5530,35 @@
     },
     {
       "type": "Feature",
+      "id": "EONET_25268",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -130.24,
+          -74.4
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Iceberg B52",
+        "categories": [
+          "Sea and Lake Ice"
+        ],
+        "observationUtc": "2026-10-09T00:00:00Z",
+        "observation_time": "2026-10-09T00:00:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25268",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25268",
+        "sources": [
+          {
+            "id": "NATICE",
+            "url": "https://usicecenter.gov/pub/Iceberg_Tabular.csv"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
       "id": "EONET_25235",
       "geometry": {
         "type": "Point",
@@ -5563,8 +5592,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -106.9,
-          20.3
+          -107.1,
+          20.5
         ]
       },
       "properties": {
@@ -5574,8 +5603,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-10-13T00:00:00Z",
-        "observation_time": "2026-10-13T00:00:00Z",
+        "observationUtc": "2026-10-13T06:00:00Z",
+        "observation_time": "2026-10-13T06:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25094",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25094",
         "sources": [
@@ -5737,8 +5766,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          151.7,
-          33.9
+          153.7,
+          35.4
         ]
       },
       "properties": {
@@ -5748,8 +5777,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-10-13T00:00:00Z",
-        "observation_time": "2026-10-13T00:00:00Z",
+        "observationUtc": "2026-10-13T06:00:00Z",
+        "observation_time": "2026-10-13T06:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25046",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25046",
         "sources": [
@@ -11187,35 +11216,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-OROCF-000658"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_22111",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -117.3577,
-          47.750926
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Wildfire FAIRVIEW, Spokane, Washington",
-        "categories": [
-          "Wildfires"
-        ],
-        "observationUtc": "2026-08-01T17:42:00Z",
-        "observation_time": "2026-08-01T17:42:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22111",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22111",
-        "sources": [
-          {
-            "id": "IRWIN",
-            "url": "https://irwin.doi.gov/observer/incidents/2026-WANES-001852"
           }
         ]
       }
