@@ -1,14 +1,14 @@
 {
   "type": "FeatureCollection",
-  "generated_at_utc": "2026-10-14T10:26:47.820182Z",
-  "generatedUtc": "2026-10-14T10:26:47.820182Z",
+  "generated_at_utc": "2026-10-14T15:27:49.876773Z",
+  "generatedUtc": "2026-10-14T15:27:49.876773Z",
   "notice": "Balanced 3D layer with fires, floods, storms, earthquakes and other official detections.",
   "feature_count": 600,
   "summary": {
-    "earthquake": 248,
-    "fire": 613,
+    "earthquake": 229,
+    "storm": 32,
+    "fire": 612,
     "ice": 2,
-    "storm": 31,
     "volcano": 2,
     "flood": 82,
     "other": 7,
@@ -17,12 +17,13 @@
     "industrial_accident": 1
   },
   "rendered_summary": {
-    "fire": 260,
+    "fire": 261,
     "flood": 82,
-    "storm": 31,
-    "earthquake": 223,
+    "storm": 32,
+    "earthquake": 220,
     "volcano": 2,
-    "landslide": 2
+    "landslide": 2,
+    "ice": 1
   },
   "features": [
     {
@@ -8235,12 +8236,36 @@
     },
     {
       "type": "Feature",
+      "id": "eonet-EONET_25290",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.6,
+          10.8
+        ]
+      },
+      "properties": {
+        "title": "Tropical Storm Trudy",
+        "categories": [
+          "storm"
+        ],
+        "observation_time": "2026-10-14T06:00:00Z",
+        "source_observation_time": "2026-10-14T06:00:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25290",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_25290"
+      }
+    },
+    {
+      "type": "Feature",
       "id": "eonet-EONET_25094",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -107.5,
-          20.2
+          -107.7,
+          20.0
         ]
       },
       "properties": {
@@ -8248,8 +8273,8 @@
         "categories": [
           "storm"
         ],
-        "observation_time": "2026-10-14T00:00:00Z",
-        "source_observation_time": "2026-10-14T00:00:00Z",
+        "observation_time": "2026-10-14T06:00:00Z",
+        "source_observation_time": "2026-10-14T06:00:00Z",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25094",
         "source": "NASA EONET",
         "severity": "moderate",
@@ -8979,6 +9004,654 @@
     },
     {
       "type": "Feature",
+      "id": "usgs-aka2026ujlapb",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -151.201,
+          62.805
+        ]
+      },
+      "properties": {
+        "title": "M 1.4 - 41 km NNW of Petersville, Alaska",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T15:22:42.676000Z",
+        "source_observation_time": "2026-10-14T15:22:42.676000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026ujlapb",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-aka2026ujlapb"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-ci41347519",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.808166666667,
+          33.8643333333333
+        ]
+      },
+      "properties": {
+        "title": "M 1.3 - 3 km S of Yorba Linda, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T15:18:47.550000Z",
+        "source_observation_time": "2026-10-14T15:18:47.550000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347519",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-ci41347519"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-hv75056132",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -155.364166259766,
+          19.2523326873779
+        ]
+      },
+      "properties": {
+        "title": "M 1.9 - 13 km ENE of Pāhala, Hawaii",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T15:11:33.870000Z",
+        "source_observation_time": "2026-10-14T15:11:33.870000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75056132",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-hv75056132"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-aka2026ujjuvm",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -146.265,
+          61.573
+        ]
+      },
+      "properties": {
+        "title": "M 2.2 - 49 km N of Valdez, Alaska",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T14:46:05.502000Z",
+        "source_observation_time": "2026-10-14T14:46:05.502000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026ujjuvm",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-aka2026ujjuvm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-us6000u2a6",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -70.9776,
+          -29.151
+        ]
+      },
+      "properties": {
+        "title": "M 4.2 - 67 km SSW of Vallenar, Chile",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T14:42:04.428000Z",
+        "source_observation_time": "2026-10-14T14:42:04.428000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u2a6",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-us6000u2a6"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-ci41347511",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -116.756166666667,
+          33.5893333333333
+        ]
+      },
+      "properties": {
+        "title": "M 0.6 - 9 km WNW of Anza, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T14:07:22.970000Z",
+        "source_observation_time": "2026-10-14T14:07:22.970000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347511",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-ci41347511"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-ci41347503",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -116.7645,
+          33.5776666666667
+        ]
+      },
+      "properties": {
+        "title": "M 1.7 - 9 km WNW of Anza, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T14:05:14.450000Z",
+        "source_observation_time": "2026-10-14T14:05:14.450000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347503",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-ci41347503"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-nc75449266",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.889335632324,
+          40.6769981384277
+        ]
+      },
+      "properties": {
+        "title": "M 3.0 - 23 km NE of Hydesville, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T13:56:12.400000Z",
+        "source_observation_time": "2026-10-14T13:56:12.400000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75449266",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-nc75449266"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-nm60628596",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -91.557,
+          36.759
+        ]
+      },
+      "properties": {
+        "title": "M 2.5 - 4 km SSW of Thomasville, Missouri",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T13:31:12.510000Z",
+        "source_observation_time": "2026-10-14T13:31:12.510000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nm60628596",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-nm60628596"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-nc75449261",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.768165588379,
+          38.8238334655762
+        ]
+      },
+      "properties": {
+        "title": "M 1.1 - 4 km W of Cobb, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T13:28:56.910000Z",
+        "source_observation_time": "2026-10-14T13:28:56.910000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75449261",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-nc75449261"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-us6000u2a0",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          141.9302,
+          38.6954
+        ]
+      },
+      "properties": {
+        "title": "M 4.4 - 45 km SSE of Ōfunato, Japan",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T13:19:07.599000Z",
+        "source_observation_time": "2026-10-14T13:19:07.599000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u2a0",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-us6000u2a0"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-aka2026ujfpoq",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -149.812,
+          64.77
+        ]
+      },
+      "properties": {
+        "title": "M 1.1 - 37 km WNW of Four Mile Road, Alaska",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T12:40:04.687000Z",
+        "source_observation_time": "2026-10-14T12:40:04.687000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026ujfpoq",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-aka2026ujfpoq"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-hv75056057",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -155.235168457031,
+          19.4418334960938
+        ]
+      },
+      "properties": {
+        "title": "M 2.1 - 0 km SW of Volcano, Hawaii",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T12:37:36.370000Z",
+        "source_observation_time": "2026-10-14T12:37:36.370000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75056057",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-hv75056057"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-ci41347487",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -116.7945,
+          33.9243333333333
+        ]
+      },
+      "properties": {
+        "title": "M 0.7 - 1 km NW of Cabazon, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T12:30:15.770000Z",
+        "source_observation_time": "2026-10-14T12:30:15.770000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347487",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-ci41347487"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-nc75449256",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.81616973877,
+          38.8151664733887
+        ]
+      },
+      "properties": {
+        "title": "M 1.0 - 7 km NW of The Geysers, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T12:28:41.820000Z",
+        "source_observation_time": "2026-10-14T12:28:41.820000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75449256",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-nc75449256"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-aka2026ujfclj",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -150.174,
+          62.195
+        ]
+      },
+      "properties": {
+        "title": "M 1.5 - 13 km SSE of Trapper Creek, Alaska",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T12:24:56.472000Z",
+        "source_observation_time": "2026-10-14T12:24:56.472000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026ujfclj",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-aka2026ujfclj"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-nc75449251",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.815498352051,
+          38.8146667480469
+        ]
+      },
+      "properties": {
+        "title": "M 1.3 - 7 km NW of The Geysers, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T12:22:57.020000Z",
+        "source_observation_time": "2026-10-14T12:22:57.020000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75449251",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-nc75449251"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-aka2026ujebcw",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -147.425,
+          61.878
+        ]
+      },
+      "properties": {
+        "title": "M 2.9 - 14 km ENE of Glacier View, Alaska",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T11:53:26.013000Z",
+        "source_observation_time": "2026-10-14T11:53:26.013000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026ujebcw",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-aka2026ujebcw"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-hv75056027",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -155.394836425781,
+          19.416166305542
+        ]
+      },
+      "properties": {
+        "title": "M 1.8 - 17 km W of Volcano, Hawaii",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T11:47:42.730000Z",
+        "source_observation_time": "2026-10-14T11:47:42.730000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75056027",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-hv75056027"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-aka2026ujdtzm",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -141.452,
+          61.185
+        ]
+      },
+      "properties": {
+        "title": "M 1.5 - 83 km ESE of McCarthy, Alaska",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T11:45:12.508000Z",
+        "source_observation_time": "2026-10-14T11:45:12.508000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026ujdtzm",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-aka2026ujdtzm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-ci41347479",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.3755,
+          36.0001666666667
+        ]
+      },
+      "properties": {
+        "title": "M 0.8 - 28 km N of Kernville, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T11:33:56.140000Z",
+        "source_observation_time": "2026-10-14T11:33:56.140000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347479",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-ci41347479"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-us6000u292",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -104.8335,
+          36.8994
+        ]
+      },
+      "properties": {
+        "title": "M 2.6 - 25 km S of Weston, Colorado",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T11:27:00.438000Z",
+        "source_observation_time": "2026-10-14T11:27:00.438000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u292",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-us6000u292"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-hv75056017",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -155.244506835938,
+          19.3986663818359
+        ]
+      },
+      "properties": {
+        "title": "M 2.8 - 5 km SSW of Volcano, Hawaii",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T10:56:22.080000Z",
+        "source_observation_time": "2026-10-14T10:56:22.080000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75056017",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-hv75056017"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-hv75056012",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -155.266159057617,
+          19.4331665039062
+        ]
+      },
+      "properties": {
+        "title": "M 2.2 - 3 km WSW of Volcano, Hawaii",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T10:50:48.910000Z",
+        "source_observation_time": "2026-10-14T10:50:48.910000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75056012",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-hv75056012"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-aka2026ujbyqi",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -143.925,
+          60.565
+        ]
+      },
+      "properties": {
+        "title": "M 1.8 - 100 km E of Cordova, Alaska",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T10:50:35.568000Z",
+        "source_observation_time": "2026-10-14T10:50:35.568000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026ujbyqi",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-aka2026ujbyqi"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-us6000u28y",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -178.7711,
+          -20.9899
+        ]
+      },
+      "properties": {
+        "title": "M 5.9 - Fiji region",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T10:49:47.588000Z",
+        "source_observation_time": "2026-10-14T10:49:47.588000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u28y",
+        "source": "USGS",
+        "severity": "moderate",
+        "status": "reviewed",
+        "event_id": "usgs-us6000u28y"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-hv75056007",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -155.240997314453,
+          19.4068336486816
+        ]
+      },
+      "properties": {
+        "title": "M 2.1 - 4 km S of Volcano, Hawaii",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T10:47:14.260000Z",
+        "source_observation_time": "2026-10-14T10:47:14.260000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75056007",
+        "source": "USGS",
+        "severity": "low",
+        "status": "automatic",
+        "event_id": "usgs-hv75056007"
+      }
+    },
+    {
+      "type": "Feature",
       "id": "usgs-aka2026ujbcgz",
       "geometry": {
         "type": "Point",
@@ -9003,6 +9676,54 @@
     },
     {
       "type": "Feature",
+      "id": "usgs-tx2026ufufaw",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -104.402,
+          31.641
+        ]
+      },
+      "properties": {
+        "title": "M 2.1 - 59 km S of Whites City, New Mexico",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T10:22:36.987000Z",
+        "source_observation_time": "2026-10-14T10:22:36.987000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026ufufaw",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-tx2026ufufaw"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-tx2026uftwjt",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -104.178,
+          31.711
+        ]
+      },
+      "properties": {
+        "title": "M 1.7 - 54 km SSE of Whites City, New Mexico",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T10:11:29.591000Z",
+        "source_observation_time": "2026-10-14T10:11:29.591000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026uftwjt",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-tx2026uftwjt"
+      }
+    },
+    {
+      "type": "Feature",
       "id": "usgs-ci41347471",
       "geometry": {
         "type": "Point",
@@ -9021,7 +9742,7 @@
         "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347471",
         "source": "USGS",
         "severity": "low",
-        "status": "automatic",
+        "status": "reviewed",
         "event_id": "usgs-ci41347471"
       }
     },
@@ -9093,7 +9814,7 @@
         "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347463",
         "source": "USGS",
         "severity": "low",
-        "status": "automatic",
+        "status": "reviewed",
         "event_id": "usgs-ci41347463"
       }
     },
@@ -9165,7 +9886,7 @@
         "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347455",
         "source": "USGS",
         "severity": "low",
-        "status": "automatic",
+        "status": "reviewed",
         "event_id": "usgs-ci41347455"
       }
     },
@@ -9315,6 +10036,30 @@
     },
     {
       "type": "Feature",
+      "id": "usgs-us6000u28e",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          35.0428,
+          -5.4767
+        ]
+      },
+      "properties": {
+        "title": "M 4.6 - 42 km NNE of Kilimatinde, Tanzania",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T09:16:18.828000Z",
+        "source_observation_time": "2026-10-14T09:16:18.828000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u28e",
+        "source": "USGS",
+        "severity": "moderate",
+        "status": "reviewed",
+        "event_id": "usgs-us6000u28e"
+      }
+    },
+    {
+      "type": "Feature",
       "id": "usgs-aka2026uiyrnc",
       "geometry": {
         "type": "Point",
@@ -9407,6 +10152,30 @@
         "severity": "low",
         "status": "automatic",
         "event_id": "usgs-aka2026uixvco"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-uu80159916",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -110.816833333333,
+          44.695
+        ]
+      },
+      "properties": {
+        "title": "M 0.4 - 23 km E of West Yellowstone, Montana",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T08:44:35.240000Z",
+        "source_observation_time": "2026-10-14T08:44:35.240000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80159916",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-uu80159916"
       }
     },
     {
@@ -9507,6 +10276,30 @@
     },
     {
       "type": "Feature",
+      "id": "usgs-uu80159911",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -111.205833333333,
+          39.2945
+        ]
+      },
+      "properties": {
+        "title": "M 1.1 - 15 km WNW of Orangeville, Utah",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T08:23:27.530000Z",
+        "source_observation_time": "2026-10-14T08:23:27.530000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80159911",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-uu80159911"
+      }
+    },
+    {
+      "type": "Feature",
       "id": "usgs-pr71536668",
       "geometry": {
         "type": "Point",
@@ -9535,8 +10328,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -117.189166666667,
-          34.0446666666667
+          -117.189333333333,
+          34.0455
         ]
       },
       "properties": {
@@ -9544,12 +10337,12 @@
         "categories": [
           "earthquake"
         ],
-        "observation_time": "2026-10-14T07:49:27.610000Z",
-        "source_observation_time": "2026-10-14T07:49:27.610000Z",
+        "observation_time": "2026-10-14T07:49:27.590000Z",
+        "source_observation_time": "2026-10-14T07:49:27.590000Z",
         "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347447",
         "source": "USGS",
         "severity": "low",
-        "status": "automatic",
+        "status": "reviewed",
         "event_id": "usgs-ci41347447"
       }
     },
@@ -9559,22 +10352,46 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -118.506,
-          34.1343333333333
+          -118.507166666667,
+          34.136
         ]
       },
       "properties": {
-        "title": "M 1.5 - 3 km S of Encino, CA",
+        "title": "M 1.5 - 3 km SSW of Encino, CA",
         "categories": [
           "earthquake"
         ],
-        "observation_time": "2026-10-14T07:48:42.770000Z",
-        "source_observation_time": "2026-10-14T07:48:42.770000Z",
+        "observation_time": "2026-10-14T07:48:42.710000Z",
+        "source_observation_time": "2026-10-14T07:48:42.710000Z",
         "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347439",
         "source": "USGS",
         "severity": "low",
-        "status": "automatic",
+        "status": "reviewed",
         "event_id": "usgs-ci41347439"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-uu80159901",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -111.8095,
+          39.4085
+        ]
+      },
+      "properties": {
+        "title": "M 1.3 - 17 km SSE of Levan, Utah",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T07:47:55.270000Z",
+        "source_observation_time": "2026-10-14T07:47:55.270000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80159901",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-uu80159901"
       }
     },
     {
@@ -9597,7 +10414,7 @@
         "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347431",
         "source": "USGS",
         "severity": "low",
-        "status": "automatic",
+        "status": "reviewed",
         "event_id": "usgs-ci41347431"
       }
     },
@@ -9621,7 +10438,7 @@
         "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347423",
         "source": "USGS",
         "severity": "low",
-        "status": "automatic",
+        "status": "reviewed",
         "event_id": "usgs-ci41347423"
       }
     },
@@ -9631,21 +10448,21 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -115.2625,
-          32.188
+          -115.251166666667,
+          32.1885
         ]
       },
       "properties": {
-        "title": "M 1.7 - 10 km WSW of Alberto Oviedo Mota, B.C., MX",
+        "title": "M 1.7 - 9 km WSW of Alberto Oviedo Mota, B.C., MX",
         "categories": [
           "earthquake"
         ],
-        "observation_time": "2026-10-14T07:05:22.110000Z",
-        "source_observation_time": "2026-10-14T07:05:22.110000Z",
+        "observation_time": "2026-10-14T07:05:21.970000Z",
+        "source_observation_time": "2026-10-14T07:05:21.970000Z",
         "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347415",
         "source": "USGS",
         "severity": "low",
-        "status": "automatic",
+        "status": "reviewed",
         "event_id": "usgs-ci41347415"
       }
     },
@@ -9741,7 +10558,7 @@
         "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347407",
         "source": "USGS",
         "severity": "low",
-        "status": "automatic",
+        "status": "reviewed",
         "event_id": "usgs-ci41347407"
       }
     },
@@ -9775,8 +10592,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -116.6955,
-          33.6478333333333
+          -116.695166666667,
+          33.6493333333333
         ]
       },
       "properties": {
@@ -9784,12 +10601,12 @@
         "categories": [
           "earthquake"
         ],
-        "observation_time": "2026-10-14T05:52:23.700000Z",
-        "source_observation_time": "2026-10-14T05:52:23.700000Z",
+        "observation_time": "2026-10-14T05:52:23.710000Z",
+        "source_observation_time": "2026-10-14T05:52:23.710000Z",
         "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347391",
         "source": "USGS",
         "severity": "low",
-        "status": "automatic",
+        "status": "reviewed",
         "event_id": "usgs-ci41347391"
       }
     },
@@ -9909,7 +10726,7 @@
         "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347383",
         "source": "USGS",
         "severity": "low",
-        "status": "automatic",
+        "status": "reviewed",
         "event_id": "usgs-ci41347383"
       }
     },
@@ -9943,8 +10760,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -116.704666666667,
-          33.5395
+          -116.7055,
+          33.539
         ]
       },
       "properties": {
@@ -9952,12 +10769,12 @@
         "categories": [
           "earthquake"
         ],
-        "observation_time": "2026-10-14T05:00:36.960000Z",
-        "source_observation_time": "2026-10-14T05:00:36.960000Z",
+        "observation_time": "2026-10-14T05:00:36.950000Z",
+        "source_observation_time": "2026-10-14T05:00:36.950000Z",
         "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347375",
         "source": "USGS",
         "severity": "low",
-        "status": "automatic",
+        "status": "reviewed",
         "event_id": "usgs-ci41347375"
       }
     },
@@ -10005,7 +10822,7 @@
         "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347367",
         "source": "USGS",
         "severity": "low",
-        "status": "automatic",
+        "status": "reviewed",
         "event_id": "usgs-ci41347367"
       }
     },
@@ -10015,8 +10832,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -116.927166666667,
-          33.8605
+          -116.9275,
+          33.8606666666667
         ]
       },
       "properties": {
@@ -10024,12 +10841,12 @@
         "categories": [
           "earthquake"
         ],
-        "observation_time": "2026-10-14T04:53:48.570000Z",
-        "source_observation_time": "2026-10-14T04:53:48.570000Z",
+        "observation_time": "2026-10-14T04:53:48.530000Z",
+        "source_observation_time": "2026-10-14T04:53:48.530000Z",
         "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347359",
         "source": "USGS",
         "severity": "low",
-        "status": "automatic",
+        "status": "reviewed",
         "event_id": "usgs-ci41347359"
       }
     },
@@ -10111,7 +10928,7 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -117.787833333333,
+          -117.7855,
           35.3263333333333
         ]
       },
@@ -10120,12 +10937,12 @@
         "categories": [
           "earthquake"
         ],
-        "observation_time": "2026-10-14T04:35:08.470000Z",
-        "source_observation_time": "2026-10-14T04:35:08.470000Z",
+        "observation_time": "2026-10-14T04:35:08.430000Z",
+        "source_observation_time": "2026-10-14T04:35:08.430000Z",
         "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347351",
         "source": "USGS",
         "severity": "low",
-        "status": "automatic",
+        "status": "reviewed",
         "event_id": "usgs-ci41347351"
       }
     },
@@ -10199,6 +11016,30 @@
         "severity": "low",
         "status": "automatic",
         "event_id": "usgs-aka2026uiosuh"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-uu80159896",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -110.589,
+          44.0908333333333
+        ]
+      },
+      "properties": {
+        "title": "M 1.2 - 51 km NE of Alta, Wyoming",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T04:05:39.850000Z",
+        "source_observation_time": "2026-10-14T04:05:39.850000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80159896",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-uu80159896"
       }
     },
     {
@@ -10365,7 +11206,7 @@
         "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347327",
         "source": "USGS",
         "severity": "low",
-        "status": "automatic",
+        "status": "reviewed",
         "event_id": "usgs-ci41347327"
       }
     },
@@ -10389,7 +11230,7 @@
         "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347319",
         "source": "USGS",
         "severity": "low",
-        "status": "automatic",
+        "status": "reviewed",
         "event_id": "usgs-ci41347319"
       }
     },
@@ -10563,6 +11404,102 @@
     },
     {
       "type": "Feature",
+      "id": "eonet-EONET_20710",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.378,
+          -36.868
+        ]
+      },
+      "properties": {
+        "title": "Nevados del Chillan Volcano, Chile",
+        "categories": [
+          "volcano"
+        ],
+        "observation_time": "2026-06-15T00:00:00Z",
+        "source_observation_time": "2026-06-15T00:00:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20710",
+        "source": "NASA EONET",
+        "severity": "moderate",
+        "status": "open",
+        "event_id": "eonet-EONET_20710"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cems-EMSR912",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -90.90488258150785,
+          14.467714085412526
+        ]
+      },
+      "properties": {
+        "title": "Volcano eruption in Guatemala",
+        "categories": [
+          "volcano"
+        ],
+        "observation_time": "2026-08-02T23:00:00",
+        "source_observation_time": "2026-08-02T23:00:00",
+        "source_url": "https://mapping.emergency.copernicus.eu/activations/EMSR912",
+        "source": "Copernicus EMS",
+        "severity": "moderate",
+        "status": "closed",
+        "event_id": "cems-EMSR912"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cems-EMSR751",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.524994,
+          40.964583
+        ]
+      },
+      "properties": {
+        "title": "Mass movement in Campania Region, Italy",
+        "categories": [
+          "landslide"
+        ],
+        "observation_time": "2024-08-27T12:00:00",
+        "source_observation_time": "2024-08-27T12:00:00",
+        "source_url": "https://mapping.emergency.copernicus.eu/activations/EMSR751",
+        "source": "Copernicus EMS",
+        "severity": "moderate",
+        "status": "closed",
+        "event_id": "cems-EMSR751"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cems-EMSR691",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.25532,
+          46.087352
+        ]
+      },
+      "properties": {
+        "title": "Landslide in western Slovenia",
+        "categories": [
+          "landslide"
+        ],
+        "observation_time": "2023-08-06T00:30:00",
+        "source_observation_time": "2023-08-06T00:30:00",
+        "source_url": "https://mapping.emergency.copernicus.eu/activations/EMSR691",
+        "source": "Copernicus EMS",
+        "severity": "moderate",
+        "status": "closed",
+        "event_id": "cems-EMSR691"
+      }
+    },
+    {
+      "type": "Feature",
       "id": "usgs-aka2026uimbvj",
       "geometry": {
         "type": "Point",
@@ -10635,6 +11572,30 @@
     },
     {
       "type": "Feature",
+      "id": "usgs-uu80159891",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -110.6015,
+          44.4533333333333
+        ]
+      },
+      "properties": {
+        "title": "M 1.8 - 46 km ESE of West Yellowstone, Montana",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T02:22:55.730000Z",
+        "source_observation_time": "2026-10-14T02:22:55.730000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80159891",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-uu80159891"
+      }
+    },
+    {
+      "type": "Feature",
       "id": "usgs-aka2026uikyzm",
       "geometry": {
         "type": "Point",
@@ -10703,6 +11664,30 @@
         "severity": "low",
         "status": "automatic",
         "event_id": "usgs-hv75055792"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-uu80159886",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -111.206333333333,
+          39.2935
+        ]
+      },
+      "properties": {
+        "title": "M 1.3 - 15 km WNW of Orangeville, Utah",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T01:57:12.190000Z",
+        "source_observation_time": "2026-10-14T01:57:12.190000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80159886",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-uu80159886"
       }
     },
     {
@@ -10783,21 +11768,21 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -116.708833333333,
-          33.701
+          -116.708,
+          33.6978333333333
         ]
       },
       "properties": {
-        "title": "M 0.7 - 4 km SSE of Idyllwild, CA",
+        "title": "M 0.7 - 5 km SSE of Idyllwild, CA",
         "categories": [
           "earthquake"
         ],
-        "observation_time": "2026-10-14T01:01:05.280000Z",
-        "source_observation_time": "2026-10-14T01:01:05.280000Z",
+        "observation_time": "2026-10-14T01:01:05.240000Z",
+        "source_observation_time": "2026-10-14T01:01:05.240000Z",
         "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347295",
         "source": "USGS",
         "severity": "low",
-        "status": "automatic",
+        "status": "reviewed",
         "event_id": "usgs-ci41347295"
       }
     },
@@ -10823,6 +11808,30 @@
         "severity": "low",
         "status": "reviewed",
         "event_id": "usgs-hv75055742"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-tx2026ufbmdf",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -104.302,
+          31.641
+        ]
+      },
+      "properties": {
+        "title": "M 2.2 - 59 km S of Whites City, New Mexico",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T00:53:51.355000Z",
+        "source_observation_time": "2026-10-14T00:53:51.355000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026ufbmdf",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-tx2026ufbmdf"
       }
     },
     {
@@ -10875,6 +11884,54 @@
     },
     {
       "type": "Feature",
+      "id": "usgs-ci10256974",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -116.3625,
+          33.253
+        ]
+      },
+      "properties": {
+        "title": "M 0.3 - 1 km ESE of Borrego Springs, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T00:41:18.520000Z",
+        "source_observation_time": "2026-10-14T00:41:18.520000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci10256974",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-ci10256974"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-ci41347279",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -116.7425,
+          33.5248333333333
+        ]
+      },
+      "properties": {
+        "title": "M 0.4 - 7 km WSW of Anza, CA",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T00:40:58.870000Z",
+        "source_observation_time": "2026-10-14T00:40:58.870000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347279",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-ci41347279"
+      }
+    },
+    {
+      "type": "Feature",
       "id": "usgs-aka2026uihpva",
       "geometry": {
         "type": "Point",
@@ -10895,6 +11952,30 @@
         "severity": "low",
         "status": "automatic",
         "event_id": "usgs-aka2026uihpva"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-uu80159876",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -112.909666666667,
+          38.515
+        ]
+      },
+      "properties": {
+        "title": "M 2.1 - 15 km NE of Milford, Utah",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T00:37:35.280000Z",
+        "source_observation_time": "2026-10-14T00:37:35.280000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80159876",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-uu80159876"
       }
     },
     {
@@ -10999,22 +12080,46 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -115.476166666667,
-          32.7296666666667
+          -115.477333333333,
+          32.7283333333333
         ]
       },
       "properties": {
-        "title": "M 1.8 - 5 km E of Heber, CA",
+        "title": "M 1.6 - 5 km E of Heber, CA",
         "categories": [
           "earthquake"
         ],
-        "observation_time": "2026-10-14T00:27:41.470000Z",
-        "source_observation_time": "2026-10-14T00:27:41.470000Z",
+        "observation_time": "2026-10-14T00:27:41.420000Z",
+        "source_observation_time": "2026-10-14T00:27:41.420000Z",
         "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347263",
         "source": "USGS",
         "severity": "low",
-        "status": "automatic",
+        "status": "reviewed",
         "event_id": "usgs-ci41347263"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-uu80159871",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -112.905333333333,
+          38.5115
+        ]
+      },
+      "properties": {
+        "title": "M 0.8 - 15 km NE of Milford, Utah",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-14T00:27:15.740000Z",
+        "source_observation_time": "2026-10-14T00:27:15.740000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80159871",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-uu80159871"
       }
     },
     {
@@ -11047,46 +12152,46 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -116.412,
-          33.3653333333333
+          -116.4115,
+          33.3651666666667
         ]
       },
       "properties": {
-        "title": "M 2.4 - 13 km NNW of Borrego Springs, CA",
+        "title": "M 2.5 - 13 km NNW of Borrego Springs, CA",
         "categories": [
           "earthquake"
         ],
-        "observation_time": "2026-10-13T23:59:55.970000Z",
-        "source_observation_time": "2026-10-13T23:59:55.970000Z",
+        "observation_time": "2026-10-13T23:59:55.930000Z",
+        "source_observation_time": "2026-10-13T23:59:55.930000Z",
         "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347255",
         "source": "USGS",
         "severity": "low",
-        "status": "automatic",
+        "status": "reviewed",
         "event_id": "usgs-ci41347255"
       }
     },
     {
       "type": "Feature",
-      "id": "usgs-us6000u268",
+      "id": "usgs-tx2026ueznej",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -104.2952,
-          31.716
+          -104.3,
+          31.722
         ]
       },
       "properties": {
-        "title": "M 2.6 - 51 km S of Whites City, New Mexico",
+        "title": "M 2.6 - 50 km S of Whites City, New Mexico",
         "categories": [
           "earthquake"
         ],
-        "observation_time": "2026-10-13T23:54:43.556000Z",
-        "source_observation_time": "2026-10-13T23:54:43.556000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u268",
+        "observation_time": "2026-10-13T23:54:43.577000Z",
+        "source_observation_time": "2026-10-13T23:54:43.577000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026ueznej",
         "source": "USGS",
         "severity": "low",
         "status": "reviewed",
-        "event_id": "usgs-us6000u268"
+        "event_id": "usgs-tx2026ueznej"
       }
     },
     {
@@ -11283,6 +12388,30 @@
     },
     {
       "type": "Feature",
+      "id": "usgs-ok2026ucmc",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -97.2175,
+          34.08116667
+        ]
+      },
+      "properties": {
+        "title": "M 1.6 Quarry Blast - 11 km SSE of Lone Grove, Oklahoma",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-13T23:05:43.030000Z",
+        "source_observation_time": "2026-10-13T23:05:43.030000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ok2026ucmc",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-ok2026ucmc"
+      }
+    },
+    {
+      "type": "Feature",
       "id": "usgs-nc75449056",
       "geometry": {
         "type": "Point",
@@ -11379,102 +12508,6 @@
     },
     {
       "type": "Feature",
-      "id": "eonet-EONET_20710",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -71.378,
-          -36.868
-        ]
-      },
-      "properties": {
-        "title": "Nevados del Chillan Volcano, Chile",
-        "categories": [
-          "volcano"
-        ],
-        "observation_time": "2026-06-15T00:00:00Z",
-        "source_observation_time": "2026-06-15T00:00:00Z",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_20710",
-        "source": "NASA EONET",
-        "severity": "moderate",
-        "status": "open",
-        "event_id": "eonet-EONET_20710"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "cems-EMSR912",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -90.90488258150785,
-          14.467714085412526
-        ]
-      },
-      "properties": {
-        "title": "Volcano eruption in Guatemala",
-        "categories": [
-          "volcano"
-        ],
-        "observation_time": "2026-08-02T23:00:00",
-        "source_observation_time": "2026-08-02T23:00:00",
-        "source_url": "https://mapping.emergency.copernicus.eu/activations/EMSR912",
-        "source": "Copernicus EMS",
-        "severity": "moderate",
-        "status": "closed",
-        "event_id": "cems-EMSR912"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "cems-EMSR751",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          14.524994,
-          40.964583
-        ]
-      },
-      "properties": {
-        "title": "Mass movement in Campania Region, Italy",
-        "categories": [
-          "landslide"
-        ],
-        "observation_time": "2024-08-27T12:00:00",
-        "source_observation_time": "2024-08-27T12:00:00",
-        "source_url": "https://mapping.emergency.copernicus.eu/activations/EMSR751",
-        "source": "Copernicus EMS",
-        "severity": "moderate",
-        "status": "closed",
-        "event_id": "cems-EMSR751"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "cems-EMSR691",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          14.25532,
-          46.087352
-        ]
-      },
-      "properties": {
-        "title": "Landslide in western Slovenia",
-        "categories": [
-          "landslide"
-        ],
-        "observation_time": "2023-08-06T00:30:00",
-        "source_observation_time": "2023-08-06T00:30:00",
-        "source_url": "https://mapping.emergency.copernicus.eu/activations/EMSR691",
-        "source": "Copernicus EMS",
-        "severity": "moderate",
-        "status": "closed",
-        "event_id": "cems-EMSR691"
-      }
-    },
-    {
-      "type": "Feature",
       "id": "usgs-uw714119412",
       "geometry": {
         "type": "Point",
@@ -11519,6 +12552,30 @@
         "severity": "low",
         "status": "reviewed",
         "event_id": "usgs-uw714119392"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "usgs-ok2026ucke",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -95.83766667,
+          36.20583333
+        ]
+      },
+      "properties": {
+        "title": "M 1.5 Quarry Blast - 7 km SSE of Owasso, Oklahoma",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-13T22:07:19.379000Z",
+        "source_observation_time": "2026-10-13T22:07:19.379000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ok2026ucke",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-ok2026ucke"
       }
     },
     {
@@ -12987,6 +14044,30 @@
     },
     {
       "type": "Feature",
+      "id": "usgs-ok2026ucag",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -95.07916667,
+          35.59466667
+        ]
+      },
+      "properties": {
+        "title": "M 1.5 Quarry Blast - 2 km NNE of Notiechtown, Oklahoma",
+        "categories": [
+          "earthquake"
+        ],
+        "observation_time": "2026-10-13T17:07:24.070000Z",
+        "source_observation_time": "2026-10-13T17:07:24.070000Z",
+        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ok2026ucag",
+        "source": "USGS",
+        "severity": "low",
+        "status": "reviewed",
+        "event_id": "usgs-ok2026ucag"
+      }
+    },
+    {
+      "type": "Feature",
       "id": "usgs-hv75055402",
       "geometry": {
         "type": "Point",
@@ -13299,1130 +14380,50 @@
     },
     {
       "type": "Feature",
-      "id": "usgs-hv75055367",
+      "id": "eonet-EONET_25268",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -155.512496948242,
-          19.1598339080811
+          -130.24,
+          -74.4
         ]
       },
       "properties": {
-        "title": "M 2.2 - 5 km SW of Pāhala, Hawaii",
+        "title": "Iceberg B52",
         "categories": [
-          "earthquake"
+          "ice"
         ],
-        "observation_time": "2026-10-13T15:22:48.840000Z",
-        "source_observation_time": "2026-10-13T15:22:48.840000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75055367",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-hv75055367"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-us6000u21y",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          125.5183,
-          5.3478
-        ]
-      },
-      "properties": {
-        "title": "M 4.8 - 8 km SE of Sarangani, Philippines",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T15:21:44.242000Z",
-        "source_observation_time": "2026-10-13T15:21:44.242000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u21y",
-        "source": "USGS",
+        "observation_time": "2026-10-09T00:00:00Z",
+        "source_observation_time": "2026-10-09T00:00:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25268",
+        "source": "NASA EONET",
         "severity": "moderate",
-        "status": "reviewed",
-        "event_id": "usgs-us6000u21y"
+        "status": "open",
+        "event_id": "eonet-EONET_25268"
       }
     },
     {
       "type": "Feature",
-      "id": "usgs-aka2026uhokqy",
+      "id": "eonet-EONET_21834",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -157.607,
-          56.993
+          -120.429683,
+          37.528023
         ]
       },
       "properties": {
-        "title": "M 1.9 - 59 km SSW of Ugashik, Alaska",
+        "title": "Wildfire FIELDS, Merced, California",
         "categories": [
-          "earthquake"
+          "fire"
         ],
-        "observation_time": "2026-10-13T15:05:00.569000Z",
-        "source_observation_time": "2026-10-13T15:05:00.569000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026uhokqy",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-aka2026uhokqy"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-nc75448846",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.83699798584,
-          38.8451652526855
-        ]
-      },
-      "properties": {
-        "title": "M 0.5 - 10 km WNW of Cobb, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T15:01:41.180000Z",
-        "source_observation_time": "2026-10-13T15:01:41.180000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75448846",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-nc75448846"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-av94446853",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -154.996333333333,
-          58.2795
-        ]
-      },
-      "properties": {
-        "title": "M -0.4 - 85 km NNW of Karluk, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T14:58:53.760000Z",
-        "source_observation_time": "2026-10-13T14:58:53.760000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94446853",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-av94446853"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-uw714119072",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.838333333333,
-          47.8061666666667
-        ]
-      },
-      "properties": {
-        "title": "M 0.5 - 3 km ESE of Quilcene, Washington",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T14:37:48.220000Z",
-        "source_observation_time": "2026-10-13T14:37:48.220000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uw714119072",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-uw714119072"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-us6000u21s",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          152.1255,
-          -5.4448
-        ]
-      },
-      "properties": {
-        "title": "M 5.3 - 122 km S of Kokopo, Papua New Guinea",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T14:36:10.660000Z",
-        "source_observation_time": "2026-10-13T14:36:10.660000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u21s",
-        "source": "USGS",
+        "observation_time": "2026-07-23T16:53:00Z",
+        "source_observation_time": "2026-07-23T16:53:00Z",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_21834",
+        "source": "NASA EONET",
         "severity": "moderate",
-        "status": "reviewed",
-        "event_id": "usgs-us6000u21s"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-pr71536598",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -66.5991666666667,
-          17.9446666666667
-        ]
-      },
-      "properties": {
-        "title": "M 2.2 - 7 km SSE of Ponce, Puerto Rico",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T14:31:05.970000Z",
-        "source_observation_time": "2026-10-13T14:31:05.970000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/pr71536598",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-pr71536598"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-hv75055352",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -155.49983215332,
-          19.1498336791992
-        ]
-      },
-      "properties": {
-        "title": "M 2.2 - 6 km SSW of Pāhala, Hawaii",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T14:28:38.040000Z",
-        "source_observation_time": "2026-10-13T14:28:38.040000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75055352",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-hv75055352"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026uhnbig",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -150.985,
-          60.663
-        ]
-      },
-      "properties": {
-        "title": "M 2.5 - 15 km NNE of Ridgeway, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T14:24:13.863000Z",
-        "source_observation_time": "2026-10-13T14:24:13.863000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026uhnbig",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-aka2026uhnbig"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-av94446803",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -153.078166666667,
-          60.0406666666667
-        ]
-      },
-      "properties": {
-        "title": "M -0.6 - 64 km ENE of Pedro Bay, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T14:18:03.580000Z",
-        "source_observation_time": "2026-10-13T14:18:03.580000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94446803",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-av94446803"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026uhmpua",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -155.605,
-          56.838
-        ]
-      },
-      "properties": {
-        "title": "M 1.7 - 88 km W of Akhiok, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T14:10:55.661000Z",
-        "source_observation_time": "2026-10-13T14:10:55.661000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026uhmpua",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-aka2026uhmpua"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026uhmlwl",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -151.338,
-          61.457
-        ]
-      },
-      "properties": {
-        "title": "M 2.3 - 37 km NNW of Beluga, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T14:06:41.612000Z",
-        "source_observation_time": "2026-10-13T14:06:41.612000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026uhmlwl",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-aka2026uhmlwl"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-ci41347055",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -116.731,
-          33.5315
-        ]
-      },
-      "properties": {
-        "title": "M 0.0 - 6 km WSW of Anza, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T13:59:41.730000Z",
-        "source_observation_time": "2026-10-13T13:59:41.730000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347055",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-ci41347055"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-uu80159791",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -112.907,
-          38.5075
-        ]
-      },
-      "properties": {
-        "title": "M 1.5 - 15 km NE of Milford, Utah",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T13:58:02.250000Z",
-        "source_observation_time": "2026-10-13T13:58:02.250000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80159791",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-uu80159791"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-hv75055332",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -155.481826782227,
-          19.1708335876465
-        ]
-      },
-      "properties": {
-        "title": "M 1.9 - 3 km S of Pāhala, Hawaii",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T13:57:30.510000Z",
-        "source_observation_time": "2026-10-13T13:57:30.510000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75055332",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-hv75055332"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-ci41347047",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -117.780833333333,
-          36.0251666666667
-        ]
-      },
-      "properties": {
-        "title": "M 2.7 - 15 km NE of Little Lake, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T13:55:45.280000Z",
-        "source_observation_time": "2026-10-13T13:55:45.280000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347047",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-ci41347047"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-av94446753",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -155.313166666667,
-          58.1591666666667
-        ]
-      },
-      "properties": {
-        "title": "M -0.5 - 83 km NW of Karluk, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T13:49:51.880000Z",
-        "source_observation_time": "2026-10-13T13:49:51.880000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94446753",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-av94446753"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026uhltms",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -154.286,
-          58.175
-        ]
-      },
-      "properties": {
-        "title": "M 2.0 - 68 km N of Karluk, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T13:47:10.292000Z",
-        "source_observation_time": "2026-10-13T13:47:10.292000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026uhltms",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-aka2026uhltms"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-nc75448821",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.750999450684,
-          38.7864990234375
-        ]
-      },
-      "properties": {
-        "title": "M 1.3 - 1 km NNE of The Geysers, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T13:46:09.020000Z",
-        "source_observation_time": "2026-10-13T13:46:09.020000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75448821",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-nc75448821"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026uhlglo",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -152.961,
-          60.146
-        ]
-      },
-      "properties": {
-        "title": "M 0.4 - 71 km WNW of Happy Valley, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T13:30:10.965000Z",
-        "source_observation_time": "2026-10-13T13:30:10.965000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026uhlglo",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-aka2026uhlglo"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-ci41347039",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -116.761166666667,
-          33.58
-        ]
-      },
-      "properties": {
-        "title": "M 1.1 - 9 km WNW of Anza, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T13:26:50.040000Z",
-        "source_observation_time": "2026-10-13T13:26:50.040000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41347039",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-ci41347039"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-av94446718",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -152.878333333333,
-          60.501
-        ]
-      },
-      "properties": {
-        "title": "M -1.0 - 83 km NW of Ninilchik, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T13:14:12.090000Z",
-        "source_observation_time": "2026-10-13T13:14:12.090000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94446718",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-av94446718"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-nc75448816",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -121.270164489746,
-          40.0984992980957
-        ]
-      },
-      "properties": {
-        "title": "M 2.3 - 10 km WNW of Caribou, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T13:11:33.300000Z",
-        "source_observation_time": "2026-10-13T13:11:33.300000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75448816",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-nc75448816"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-tx2026ueeehd",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -104.452,
-          31.65
-        ]
-      },
-      "properties": {
-        "title": "M 1.9 - 58 km S of Whites City, New Mexico",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T13:11:11.757000Z",
-        "source_observation_time": "2026-10-13T13:11:11.757000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/tx2026ueeehd",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-tx2026ueeehd"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-nc75448811",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.806503295898,
-          38.8354988098145
-        ]
-      },
-      "properties": {
-        "title": "M 1.1 - 7 km WNW of Cobb, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T13:08:55.970000Z",
-        "source_observation_time": "2026-10-13T13:08:55.970000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75448811",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-nc75448811"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026uhkioh",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -155.359,
-          58.164
-        ]
-      },
-      "properties": {
-        "title": "M 1.4 - 85 km NW of Karluk, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T13:02:37.533000Z",
-        "source_observation_time": "2026-10-13T13:02:37.533000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026uhkioh",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-aka2026uhkioh"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-uu80159781",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -110.603666666667,
-          44.1015
-        ]
-      },
-      "properties": {
-        "title": "M 1.3 - 51 km NE of Alta, Wyoming",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T12:57:56.880000Z",
-        "source_observation_time": "2026-10-13T12:57:56.880000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80159781",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-uu80159781"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-us6000u21d",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -81.6085,
-          7.7902
-        ]
-      },
-      "properties": {
-        "title": "M 4.5 - 26 km SSW of Zapotillo, Panama",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T12:51:32.169000Z",
-        "source_observation_time": "2026-10-13T12:51:32.169000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u21d",
-        "source": "USGS",
-        "severity": "moderate",
-        "status": "reviewed",
-        "event_id": "usgs-us6000u21d"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-uu80159776",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -112.900833333333,
-          38.47
-        ]
-      },
-      "properties": {
-        "title": "M 1.9 - 12 km NE of Milford, Utah",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T12:49:11.030000Z",
-        "source_observation_time": "2026-10-13T12:49:11.030000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80159776",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-uu80159776"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-hv75055307",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -155.612666666667,
-          19.39
-        ]
-      },
-      "properties": {
-        "title": "M 2.0 - 25 km NW of Pāhala, Hawaii",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T12:49:06.810000Z",
-        "source_observation_time": "2026-10-13T12:49:06.810000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75055307",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-hv75055307"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-us6000u219",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -70.6778,
-          -25.7094
-        ]
-      },
-      "properties": {
-        "title": "M 4.1 - 38 km SSW of Taltal, Chile",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T12:38:04.963000Z",
-        "source_observation_time": "2026-10-13T12:38:04.963000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u219",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-us6000u219"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026uhjcel",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -152.522,
-          59.857
-        ]
-      },
-      "properties": {
-        "title": "M 1.7 - 39 km WNW of Anchor Point, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T12:25:13.927000Z",
-        "source_observation_time": "2026-10-13T12:25:13.927000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026uhjcel",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-aka2026uhjcel"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-us6000u214",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -19.4308,
-          -0.4085
-        ]
-      },
-      "properties": {
-        "title": "M 6.8 - central Mid-Atlantic Ridge",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T12:23:07.248000Z",
-        "source_observation_time": "2026-10-13T12:23:07.248000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u214",
-        "source": "USGS",
-        "severity": "high",
-        "status": "reviewed",
-        "event_id": "usgs-us6000u214"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026uhivno",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -149.37,
-          65.126
-        ]
-      },
-      "properties": {
-        "title": "M 0.9 - 2 km SSW of Minto, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T12:17:36.694000Z",
-        "source_observation_time": "2026-10-13T12:17:36.694000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026uhivno",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-aka2026uhivno"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-us6000u211",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          70.8791,
-          36.5385
-        ]
-      },
-      "properties": {
-        "title": "M 4.3 - 36 km S of Jurm, Afghanistan",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T12:12:46.978000Z",
-        "source_observation_time": "2026-10-13T12:12:46.978000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u211",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-us6000u211"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-nc75448796",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.801834106445,
-          38.8228340148926
-        ]
-      },
-      "properties": {
-        "title": "M 1.0 - 6 km NW of The Geysers, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T12:08:01.710000Z",
-        "source_observation_time": "2026-10-13T12:08:01.710000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75448796",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-nc75448796"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-nc75448791",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.802833557129,
-          38.8236656188965
-        ]
-      },
-      "properties": {
-        "title": "M 0.6 - 7 km NW of The Geysers, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T12:07:16.620000Z",
-        "source_observation_time": "2026-10-13T12:07:16.620000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75448791",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-nc75448791"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-us6000u20z",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          159.9496,
-          51.6162
-        ]
-      },
-      "properties": {
-        "title": "M 4.9 - 180 km SE of Vilyuchinsk, Russia",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T12:05:41.519000Z",
-        "source_observation_time": "2026-10-13T12:05:41.519000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u20z",
-        "source": "USGS",
-        "severity": "moderate",
-        "status": "reviewed",
-        "event_id": "usgs-us6000u20z"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-av94446628",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -153.072666666667,
-          60.0413333333333
-        ]
-      },
-      "properties": {
-        "title": "M -0.7 - 64 km ENE of Pedro Bay, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T12:02:57.460000Z",
-        "source_observation_time": "2026-10-13T12:02:57.460000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/av94446628",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-av94446628"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-nc75448786",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.876167297363,
-          38.8338317871094
-        ]
-      },
-      "properties": {
-        "title": "M 0.9 - 12 km WNW of The Geysers, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T11:58:57.300000Z",
-        "source_observation_time": "2026-10-13T11:58:57.300000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75448786",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-nc75448786"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026uhifba",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -150.625,
-          62.996
-        ]
-      },
-      "properties": {
-        "title": "M 2.4 - 56 km N of Petersville, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T11:58:40.051000Z",
-        "source_observation_time": "2026-10-13T11:58:40.051000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026uhifba",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-aka2026uhifba"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-nc75448781",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.853164672852,
-          38.8248329162598
-        ]
-      },
-      "properties": {
-        "title": "M 0.7 - 10 km WNW of The Geysers, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T11:46:12.190000Z",
-        "source_observation_time": "2026-10-13T11:46:12.190000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75448781",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-nc75448781"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-pr71536588",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -68.4885,
-          19.118
-        ]
-      },
-      "properties": {
-        "title": "M 3.4 - 54 km NNE of Otra Banda, Dominican Republic",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T11:41:02.180000Z",
-        "source_observation_time": "2026-10-13T11:41:02.180000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/pr71536588",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-pr71536588"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-nc75448771",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.821998596191,
-          38.8079986572266
-        ]
-      },
-      "properties": {
-        "title": "M 1.1 - 7 km WNW of The Geysers, CA",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T11:40:33.450000Z",
-        "source_observation_time": "2026-10-13T11:40:33.450000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75448771",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-nc75448771"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-aka2026uhhlrc",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -146.32,
-          61.597
-        ]
-      },
-      "properties": {
-        "title": "M 1.8 - 49 km SSE of Nelchina, Alaska",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T11:36:16.251000Z",
-        "source_observation_time": "2026-10-13T11:36:16.251000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026uhhlrc",
-        "source": "USGS",
-        "severity": "low",
-        "status": "automatic",
-        "event_id": "usgs-aka2026uhhlrc"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "usgs-uu80159766",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -112.906,
-          38.515
-        ]
-      },
-      "properties": {
-        "title": "M 1.4 - 15 km NE of Milford, Utah",
-        "categories": [
-          "earthquake"
-        ],
-        "observation_time": "2026-10-13T11:34:42.590000Z",
-        "source_observation_time": "2026-10-13T11:34:42.590000Z",
-        "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/uu80159766",
-        "source": "USGS",
-        "severity": "low",
-        "status": "reviewed",
-        "event_id": "usgs-uu80159766"
+        "status": "open",
+        "event_id": "eonet-EONET_21834"
       }
     }
   ],
