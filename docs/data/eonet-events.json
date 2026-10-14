@@ -1,7 +1,34 @@
 {
-  "generatedUtc": "2026-10-14T10:09:27.335135Z",
+  "generatedUtc": "2026-10-14T15:06:03.744765Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
+    {
+      "id": "EONET_25290",
+      "title": "Tropical Storm Trudy",
+      "categories": [
+        "Severe Storms"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 40.0,
+        "magnitudeUnit": "kts",
+        "date": "2026-10-14T06:00:00Z",
+        "type": "Point",
+        "coordinates": [
+          -98.6,
+          10.8
+        ]
+      },
+      "sources": [
+        {
+          "id": "JTWC",
+          "url": "https://www.metoc.navy.mil/jtwc/products/ep2126.tcw"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25290",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
     {
       "id": "EONET_25238",
       "title": "Wildfire Buckhorn 2, Cassia, Idaho",
@@ -174,11 +201,11 @@
       "latestGeometry": {
         "magnitudeValue": 90.0,
         "magnitudeUnit": "kts",
-        "date": "2026-10-14T00:00:00Z",
+        "date": "2026-10-14T06:00:00Z",
         "type": "Point",
         "coordinates": [
-          -107.5,
-          20.2
+          -107.7,
+          20
         ]
       },
       "sources": [
@@ -5382,36 +5409,38 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22110",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_22119",
-      "title": "Wildfire 0658 ROUND BUTTE, Jefferson, Oregon",
-      "categories": [
-        "Wildfires"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 1039.0,
-        "magnitudeUnit": "acres",
-        "date": "2026-08-01T18:32:00Z",
-        "type": "Point",
-        "coordinates": [
-          -121.224778,
-          44.600111
-        ]
-      },
-      "sources": [
-        {
-          "id": "IRWIN",
-          "url": "https://irwin.doi.gov/observer/incidents/2026-OROCF-000658"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22119",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
+    {
+      "type": "Feature",
+      "id": "EONET_25290",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.6,
+          10.8
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Tropical Storm Trudy",
+        "categories": [
+          "Severe Storms"
+        ],
+        "observationUtc": "2026-10-14T06:00:00Z",
+        "observation_time": "2026-10-14T06:00:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25290",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25290",
+        "sources": [
+          {
+            "id": "JTWC",
+            "url": "https://www.metoc.navy.mil/jtwc/products/ep2126.tcw"
+          }
+        ]
+      }
+    },
     {
       "type": "Feature",
       "id": "EONET_25238",
@@ -5592,8 +5621,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -107.5,
-          20.2
+          -107.7,
+          20
         ]
       },
       "properties": {
@@ -5603,8 +5632,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-10-14T00:00:00Z",
-        "observation_time": "2026-10-14T00:00:00Z",
+        "observationUtc": "2026-10-14T06:00:00Z",
+        "observation_time": "2026-10-14T06:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25094",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25094",
         "sources": [
@@ -11187,35 +11216,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-CAMEU-008929"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_22119",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -121.224778,
-          44.600111
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Wildfire 0658 ROUND BUTTE, Jefferson, Oregon",
-        "categories": [
-          "Wildfires"
-        ],
-        "observationUtc": "2026-08-01T18:32:00Z",
-        "observation_time": "2026-08-01T18:32:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22119",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22119",
-        "sources": [
-          {
-            "id": "IRWIN",
-            "url": "https://irwin.doi.gov/observer/incidents/2026-OROCF-000658"
           }
         ]
       }
