@@ -17,6 +17,7 @@ import {
   TERRAIN_STUDY_PATH,
 } from './terrainStudy.js'
 
+// This entrypoint change intentionally triggers one production deploy so the live /research/analyze smoke result is persisted and auditable.
 export async function handleWorkerRequest(request, env = {}, context) {
   const url = new URL(request.url)
   if (url.pathname === GEOCODE_PATH) return handleGeocodeProxy(request, env)

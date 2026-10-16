@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: live-research-analyze-smoke
@@ -21,7 +21,14 @@ jobs:
     env:
       WORKER_URL: https://terra-observation-evidence-explainer.xodobrox.workers.dev
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
       - name: Exercise the real Zbadaj teren route
+        id: area_smoke
         shell: bash
         run: |
           set -euo pipefail
@@ -34,27 +41,107 @@ jobs:
             -w '%{http_code}' \
             "$WORKER_URL/research/analyze")"
 
-          python - "$status" <<'PY'
+          python - "$status" "$GITHUB_OUTPUT" <<'PY'
           import json
           import sys
           from pathlib import Path
 
           status = int(sys.argv[1])
+          output_path = Path(sys.argv[2])
           payload = json.loads(Path('/tmp/area-analysis.json').read_text(encoding='utf-8'))
           if status != 200:
               error = str(payload.get('error', 'unknown error')).replace('\n', ' ')[:300]
               raise SystemExit(f'Live /research/analyze failed with HTTP {status}: {error}')
 
           assert payload.get('service') == 'terra-observation-area-analysis-v2'
-          assert int(payload.get('ai_visual_image_count', 0)) >= 1
+          image_count = int(payload.get('ai_visual_image_count', 0))
+          assert image_count >= 1
           analysis = payload.get('analysis')
           assert isinstance(analysis, dict)
           for field in ('headline', 'what_is_visible', 'change_over_time', 'water_assessment', 'recommended_next_step'):
               assert isinstance(analysis.get(field), str) and analysis[field].strip(), field
-          assert isinstance(payload.get('preview_images'), list) and payload['preview_images']
+          previews = payload.get('preview_images')
+          assert isinstance(previews, list) and previews
           assert 'OPENAI_API_KEY' not in json.dumps(payload)
+
+          with output_path.open('a', encoding='utf-8') as handle:
+              handle.write(f'http_status={status}\n')
+              handle.write(f'image_count={image_count}\n')
+              handle.write(f'preview_count={len(previews)}\n')
+              handle.write('service=terra-observation-area-analysis-v2\n')
           print('Live /research/analyze passed with at least one Worker-verified official satellite image. Model output was not printed.')
           PY
+
+      - name: Persist safe live terrain diagnostic
+        if: always()
+        continue-on-error: true
+        shell: bash
+        env:
+          SMOKE_OUTCOME: ${{ steps.area_smoke.outcome }}
+          HTTP_STATUS: ${{ steps.area_smoke.outputs.http_status }}
+          IMAGE_COUNT: ${{ steps.area_smoke.outputs.image_count }}
+          PREVIEW_COUNT: ${{ steps.area_smoke.outputs.preview_count }}
+          SERVICE: ${{ steps.area_smoke.outputs.service }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          DEPLOY_RUN_URL: ${{ github.event.workflow_run.html_url }}
+          DEPLOY_SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          mkdir -p config
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          def integer(name):
+              value = os.environ.get(name, '').strip()
+              return int(value) if value.isdigit() else None
+
+          payload = {
+              'status': os.environ.get('SMOKE_OUTCOME', 'unknown'),
+              'tested_at_utc': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
+              'run_url': os.environ.get('RUN_URL', ''),
+              'deploy_run_url': os.environ.get('DEPLOY_RUN_URL', ''),
+              'deploy_source_sha': os.environ.get('DEPLOY_SOURCE_SHA', ''),
+              'worker_url': 'https://terra-observation-evidence-explainer.xodobrox.workers.dev',
+              'endpoint': '/research/analyze',
+              'ui_path': 'Zbadaj teren',
+              'http_status': integer('HTTP_STATUS'),
+              'service': os.environ.get('SERVICE', '') or None,
+              'verified_official_image_count': integer('IMAGE_COUNT'),
+              'preview_image_count': integer('PREVIEW_COUNT'),
+              'contains_secret_values': False,
+              'contains_openai_output': False,
+          }
+          Path('config/live-research-analyze-status.json').write_text(
+              json.dumps(payload, indent=2, sort_keys=True) + '\n',
+              encoding='utf-8',
+          )
+          PY
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/live-research-analyze-status.json
+          if git diff --cached --quiet; then
+            echo 'Live terrain diagnostic is unchanged.'
+            exit 0
+          fi
+          git commit -m 'chore(config): record live terrain analysis status'
+          for attempt in 1 2 3 4; do
+            if git fetch origin main \
+              && git rebase origin/main \
+              && git push origin HEAD:main; then
+              echo 'Live terrain diagnostic persisted.'
+              exit 0
+            fi
+            git rebase --abort >/dev/null 2>&1 || true
+            git reset --hard origin/main >/dev/null 2>&1 || true
+            git checkout -- config/live-research-analyze-status.json >/dev/null 2>&1 || true
+            sleep $((attempt * 4))
+          done
+          echo 'Could not persist live terrain diagnostic.'
+          exit 1
 
       - name: Summary
         if: always()
@@ -66,4 +153,5 @@ jobs:
             echo '- UI path: Zbadaj teren'
             echo '- Requires at least one Worker-verified official satellite image'
             echo '- Real OpenAI call is exercised; model output is not printed'
+            echo "- Result: ${{ steps.area_smoke.outcome }}"
           } >> "$GITHUB_STEP_SUMMARY"
