@@ -1,5 +1,5 @@
 {
-  "generatedUtc": "2026-10-15T23:59:38.486825Z",
+  "generatedUtc": "2026-10-16T03:42:04.269086Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
@@ -39,11 +39,11 @@
       "latestGeometry": {
         "magnitudeValue": 80.0,
         "magnitudeUnit": "kts",
-        "date": "2026-10-15T12:00:00Z",
+        "date": "2026-10-15T18:00:00Z",
         "type": "Point",
         "coordinates": [
           -101.6,
-          12.9
+          13.5
         ]
       },
       "sources": [
@@ -307,12 +307,12 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 50.0,
+        "magnitudeValue": 45.0,
         "magnitudeUnit": "kts",
-        "date": "2026-10-15T12:00:00Z",
+        "date": "2026-10-15T18:00:00Z",
         "type": "Point",
         "coordinates": [
-          -108,
+          -108.2,
           19.2
         ]
       },
@@ -948,37 +948,6 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24908",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_24786",
-      "title": "Hurricane Nolo",
-      "categories": [
-        "Severe Storms"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 35.0,
-        "magnitudeUnit": "kts",
-        "date": "2026-10-10T12:00:00Z",
-        "type": "Point",
-        "coordinates": [
-          145.6,
-          31
-        ]
-      },
-      "sources": [
-        {
-          "id": "EO",
-          "url": "https://science.nasa.gov/earth/earth-observatory/powerful-storms-continue-to-prowl-the-pacific/"
-        },
-        {
-          "id": "JTWC",
-          "url": "https://www.metoc.navy.mil/jtwc/products/ep1526.tcw"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24786",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
@@ -5409,6 +5378,33 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22127",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_22115",
+      "title": "Wildfire Eggo, Wallowa, Oregon",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 3774.0,
+        "magnitudeUnit": "acres",
+        "date": "2026-08-01T20:28:00Z",
+        "type": "Point",
+        "coordinates": [
+          -117.0871,
+          45.6696
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-OR974S-000423"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22115",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -5448,7 +5444,7 @@
         "type": "Point",
         "coordinates": [
           -101.6,
-          12.9
+          13.5
         ]
       },
       "properties": {
@@ -5458,8 +5454,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-10-15T12:00:00Z",
-        "observation_time": "2026-10-15T12:00:00Z",
+        "observationUtc": "2026-10-15T18:00:00Z",
+        "observation_time": "2026-10-15T18:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25290",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25290",
         "sources": [
@@ -5737,7 +5733,7 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -108,
+          -108.2,
           19.2
         ]
       },
@@ -5748,8 +5744,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-10-15T12:00:00Z",
-        "observation_time": "2026-10-15T12:00:00Z",
+        "observationUtc": "2026-10-15T18:00:00Z",
+        "observation_time": "2026-10-15T18:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25094",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25094",
         "sources": [
@@ -6427,39 +6423,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-MTHLF-000752"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_24786",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          145.6,
-          31
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Hurricane Nolo",
-        "categories": [
-          "Severe Storms"
-        ],
-        "observationUtc": "2026-10-10T12:00:00Z",
-        "observation_time": "2026-10-10T12:00:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24786",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24786",
-        "sources": [
-          {
-            "id": "EO",
-            "url": "https://science.nasa.gov/earth/earth-observatory/powerful-storms-continue-to-prowl-the-pacific/"
-          },
-          {
-            "id": "JTWC",
-            "url": "https://www.metoc.navy.mil/jtwc/products/ep1526.tcw"
           }
         ]
       }
@@ -11216,6 +11179,35 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-OKOKS-260786"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_22115",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.0871,
+          45.6696
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Wildfire Eggo, Wallowa, Oregon",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-08-01T20:28:00Z",
+        "observation_time": "2026-08-01T20:28:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22115",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22115",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-OR974S-000423"
           }
         ]
       }
