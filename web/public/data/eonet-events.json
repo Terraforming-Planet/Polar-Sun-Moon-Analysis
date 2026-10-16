@@ -1,7 +1,61 @@
 {
-  "generatedUtc": "2026-10-16T13:28:28.416397Z",
+  "generatedUtc": "2026-10-16T17:36:47.558116Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
+    {
+      "id": "EONET_25340",
+      "title": "Tropical Cyclone 01P",
+      "categories": [
+        "Severe Storms"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 35.0,
+        "magnitudeUnit": "kts",
+        "date": "2026-10-16T06:00:00Z",
+        "type": "Point",
+        "coordinates": [
+          -163.3,
+          -10.8
+        ]
+      },
+      "sources": [
+        {
+          "id": "JTWC",
+          "url": "https://www.metoc.navy.mil/jtwc/products/sh0127.tcw"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25340",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_25339",
+      "title": "Tropical Storm Champi",
+      "categories": [
+        "Severe Storms"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 45.0,
+        "magnitudeUnit": "kts",
+        "date": "2026-10-16T00:00:00Z",
+        "type": "Point",
+        "coordinates": [
+          153.8,
+          11.3
+        ]
+      },
+      "sources": [
+        {
+          "id": "JTWC",
+          "url": "https://www.metoc.navy.mil/jtwc/products/wp2926.tcw"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25339",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
     {
       "id": "EONET_25310",
       "title": "Prescribed Fire Newman Piles RX, Coconino, Arizona",
@@ -5351,63 +5405,67 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22443",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_22127",
-      "title": "Wildfire Semi 270, Woodward, Oklahoma",
-      "categories": [
-        "Wildfires"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 682.0,
-        "magnitudeUnit": "acres",
-        "date": "2026-08-01T20:51:00Z",
-        "type": "Point",
-        "coordinates": [
-          -99.5161667,
-          36.5143333
-        ]
-      },
-      "sources": [
-        {
-          "id": "IRWIN",
-          "url": "https://irwin.doi.gov/observer/incidents/2026-OKOKS-260786"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22127",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_22115",
-      "title": "Wildfire Eggo, Wallowa, Oregon",
-      "categories": [
-        "Wildfires"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 3774.0,
-        "magnitudeUnit": "acres",
-        "date": "2026-08-01T20:28:00Z",
-        "type": "Point",
-        "coordinates": [
-          -117.0871,
-          45.6696
-        ]
-      },
-      "sources": [
-        {
-          "id": "IRWIN",
-          "url": "https://irwin.doi.gov/observer/incidents/2026-OR974S-000423"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22115",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
+    {
+      "type": "Feature",
+      "id": "EONET_25340",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -163.3,
+          -10.8
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Tropical Cyclone 01P",
+        "categories": [
+          "Severe Storms"
+        ],
+        "observationUtc": "2026-10-16T06:00:00Z",
+        "observation_time": "2026-10-16T06:00:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25340",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25340",
+        "sources": [
+          {
+            "id": "JTWC",
+            "url": "https://www.metoc.navy.mil/jtwc/products/sh0127.tcw"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_25339",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          153.8,
+          11.3
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Tropical Storm Champi",
+        "categories": [
+          "Severe Storms"
+        ],
+        "observationUtc": "2026-10-16T00:00:00Z",
+        "observation_time": "2026-10-16T00:00:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25339",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25339",
+        "sources": [
+          {
+            "id": "JTWC",
+            "url": "https://www.metoc.navy.mil/jtwc/products/wp2926.tcw"
+          }
+        ]
+      }
+    },
     {
       "type": "Feature",
       "id": "EONET_25310",
@@ -11150,64 +11208,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-MTBRF-000282"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_22127",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -99.5161667,
-          36.5143333
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Wildfire Semi 270, Woodward, Oklahoma",
-        "categories": [
-          "Wildfires"
-        ],
-        "observationUtc": "2026-08-01T20:51:00Z",
-        "observation_time": "2026-08-01T20:51:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22127",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22127",
-        "sources": [
-          {
-            "id": "IRWIN",
-            "url": "https://irwin.doi.gov/observer/incidents/2026-OKOKS-260786"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_22115",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -117.0871,
-          45.6696
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Wildfire Eggo, Wallowa, Oregon",
-        "categories": [
-          "Wildfires"
-        ],
-        "observationUtc": "2026-08-01T20:28:00Z",
-        "observation_time": "2026-08-01T20:28:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22115",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22115",
-        "sources": [
-          {
-            "id": "IRWIN",
-            "url": "https://irwin.doi.gov/observer/incidents/2026-OR974S-000423"
           }
         ]
       }
