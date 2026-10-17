@@ -1,5 +1,5 @@
 {
-  "generatedUtc": "2026-10-17T00:55:50.642453Z",
+  "generatedUtc": "2026-10-17T05:13:49.529873Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
@@ -31,7 +31,7 @@
     },
     {
       "id": "EONET_25339",
-      "title": "Tropical Storm Champi",
+      "title": "Typhoon Champi",
       "categories": [
         "Severe Storms"
       ],
@@ -836,37 +836,6 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25041",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_24875",
-      "title": "Cyclone Rachel",
-      "categories": [
-        "Severe Storms"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 30.0,
-        "magnitudeUnit": "kts",
-        "date": "2026-10-11T12:00:00Z",
-        "type": "Point",
-        "coordinates": [
-          -115.4,
-          33.9
-        ]
-      },
-      "sources": [
-        {
-          "id": "JTWC",
-          "url": "https://www.metoc.navy.mil/jtwc/products/ep1826.tcw"
-        },
-        {
-          "id": "NOAA_NHC",
-          "url": "https://www.nhc.noaa.gov/archive/2026/RACHEL.shtml"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24875",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
@@ -5405,6 +5374,33 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22443",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_22127",
+      "title": "Wildfire Semi 270, Woodward, Oklahoma",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 682.0,
+        "magnitudeUnit": "acres",
+        "date": "2026-08-01T20:51:00Z",
+        "type": "Point",
+        "coordinates": [
+          -99.5161667,
+          36.5143333
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-OKOKS-260786"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22127",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -5450,7 +5446,7 @@
       "properties": {
         "source": "NASA EONET",
         "evidenceType": "event-catalogue",
-        "title": "Tropical Storm Champi",
+        "title": "Typhoon Champi",
         "categories": [
           "Severe Storms"
         ],
@@ -6303,39 +6299,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-AZCOF-001521"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_24875",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -115.4,
-          33.9
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Cyclone Rachel",
-        "categories": [
-          "Severe Storms"
-        ],
-        "observationUtc": "2026-10-11T12:00:00Z",
-        "observation_time": "2026-10-11T12:00:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24875",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_24875",
-        "sources": [
-          {
-            "id": "JTWC",
-            "url": "https://www.metoc.navy.mil/jtwc/products/ep1826.tcw"
-          },
-          {
-            "id": "NOAA_NHC",
-            "url": "https://www.nhc.noaa.gov/archive/2026/RACHEL.shtml"
           }
         ]
       }
@@ -11208,6 +11171,35 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-MTBRF-000282"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_22127",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.5161667,
+          36.5143333
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Wildfire Semi 270, Woodward, Oklahoma",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-08-01T20:51:00Z",
+        "observation_time": "2026-08-01T20:51:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22127",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22127",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-OKOKS-260786"
           }
         ]
       }
