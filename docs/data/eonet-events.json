@@ -1,10 +1,10 @@
 {
-  "generatedUtc": "2026-10-19T01:41:07.856692Z",
+  "generatedUtc": "2026-10-19T06:49:34.834493Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
       "id": "EONET_25340",
-      "title": "Tropical Cyclone 01P",
+      "title": "Tropical Cyclone Wati",
       "categories": [
         "Severe Storms"
       ],
@@ -37,13 +37,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 120.0,
+        "magnitudeValue": 135.0,
         "magnitudeUnit": "kts",
-        "date": "2026-10-18T18:00:00Z",
+        "date": "2026-10-19T00:00:00Z",
         "type": "Point",
         "coordinates": [
-          140.2,
-          13.8
+          139.2,
+          14
         ]
       },
       "sources": [
@@ -91,13 +91,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 85.0,
+        "magnitudeValue": 75.0,
         "magnitudeUnit": "kts",
-        "date": "2026-10-18T18:00:00Z",
+        "date": "2026-10-19T00:00:00Z",
         "type": "Point",
         "coordinates": [
-          -106.9,
-          19.3
+          -107.4,
+          19.6
         ]
       },
       "sources": [
@@ -512,33 +512,6 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25239",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_25046",
-      "title": "Typhoon Koguma",
-      "categories": [
-        "Severe Storms"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 50.0,
-        "magnitudeUnit": "kts",
-        "date": "2026-10-13T18:00:00Z",
-        "type": "Point",
-        "coordinates": [
-          157.2,
-          38.3
-        ]
-      },
-      "sources": [
-        {
-          "id": "JTWC",
-          "url": "https://www.metoc.navy.mil/jtwc/products/wp2726.tcw"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25046",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
@@ -5401,6 +5374,33 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22127",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_22115",
+      "title": "Wildfire Eggo, Wallowa, Oregon",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 3774.0,
+        "magnitudeUnit": "acres",
+        "date": "2026-08-01T20:28:00Z",
+        "type": "Point",
+        "coordinates": [
+          -117.0871,
+          45.6696
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-OR974S-000423"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22115",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -5417,7 +5417,7 @@
       "properties": {
         "source": "NASA EONET",
         "evidenceType": "event-catalogue",
-        "title": "Tropical Cyclone 01P",
+        "title": "Tropical Cyclone Wati",
         "categories": [
           "Severe Storms"
         ],
@@ -5439,8 +5439,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          140.2,
-          13.8
+          139.2,
+          14
         ]
       },
       "properties": {
@@ -5450,8 +5450,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-10-18T18:00:00Z",
-        "observation_time": "2026-10-18T18:00:00Z",
+        "observationUtc": "2026-10-19T00:00:00Z",
+        "observation_time": "2026-10-19T00:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25339",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25339",
         "sources": [
@@ -5497,8 +5497,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -106.9,
-          19.3
+          -107.4,
+          19.6
         ]
       },
       "properties": {
@@ -5508,8 +5508,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-10-18T18:00:00Z",
-        "observation_time": "2026-10-18T18:00:00Z",
+        "observationUtc": "2026-10-19T00:00:00Z",
+        "observation_time": "2026-10-19T00:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25290",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25290",
         "sources": [
@@ -5951,35 +5951,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-UTUWF-200827"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_25046",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          157.2,
-          38.3
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Typhoon Koguma",
-        "categories": [
-          "Severe Storms"
-        ],
-        "observationUtc": "2026-10-13T18:00:00Z",
-        "observation_time": "2026-10-13T18:00:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25046",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25046",
-        "sources": [
-          {
-            "id": "JTWC",
-            "url": "https://www.metoc.navy.mil/jtwc/products/wp2726.tcw"
           }
         ]
       }
@@ -11200,6 +11171,35 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-OKOKS-260786"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_22115",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.0871,
+          45.6696
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Wildfire Eggo, Wallowa, Oregon",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-08-01T20:28:00Z",
+        "observation_time": "2026-08-01T20:28:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22115",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22115",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-OR974S-000423"
           }
         ]
       }
