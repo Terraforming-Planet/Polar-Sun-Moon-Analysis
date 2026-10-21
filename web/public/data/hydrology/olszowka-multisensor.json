@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-10-20T19:28:47.539891+00:00",
+  "generated_at_utc": "2026-10-21T15:57:17.228246+00:00",
   "aoi": {
     "id": "olszowka-gardeja-water-testbed",
     "label": "Olszówka · Gardeja · lokalny poligon hydrologiczny",
@@ -15,6 +15,48 @@
     ]
   },
   "observations": [
+    {
+      "id": "S2C_MSIL2A_20261021T100041_N0513_R122_T34UCE_20261021T123814",
+      "collection": "sentinel-2-l2a",
+      "datetime_utc": "2026-10-21T10:00:41.025000Z",
+      "platform": "sentinel-2c",
+      "constellation": "sentinel-2",
+      "instrument": [
+        "msi"
+      ],
+      "cloud_cover_percent": 71.61,
+      "bbox": [
+        17.940406316632895,
+        53.146540927794426,
+        19.651120770782793,
+        54.140186775460364
+      ],
+      "preview_url": "https://datahub.creodias.eu/odata/v1/Assets(91b2eb23-17d7-4e92-9a7d-0b3436cedf89)/$value",
+      "product_url": "https://stac.dataspace.copernicus.eu/v1/collections/sentinel-2-l2a/items/S2C_MSIL2A_20261021T100041_N0513_R122_T34UCE_20261021T123814",
+      "evidence_class": "satellite_observation_metadata",
+      "synthetic": false
+    },
+    {
+      "id": "S2C_MSIL2A_20261021T100041_N0513_R122_T33UYV_20261021T123814",
+      "collection": "sentinel-2-l2a",
+      "datetime_utc": "2026-10-21T10:00:41.025000Z",
+      "platform": "sentinel-2c",
+      "constellation": "sentinel-2",
+      "instrument": [
+        "msi"
+      ],
+      "cloud_cover_percent": 72.69,
+      "bbox": [
+        18.00854447188723,
+        53.07125652870583,
+        19.733490371633078,
+        54.10922199205192
+      ],
+      "preview_url": "https://datahub.creodias.eu/odata/v1/Assets(5f7aeffc-a43f-4ab9-b6bc-28fa3113ec7a)/$value",
+      "product_url": "https://stac.dataspace.copernicus.eu/v1/collections/sentinel-2-l2a/items/S2C_MSIL2A_20261021T100041_N0513_R122_T33UYV_20261021T123814",
+      "evidence_class": "satellite_observation_metadata",
+      "synthetic": false
+    },
     {
       "id": "S2A_MSIL2A_20261020T095041_N0513_R079_T34UCE_20261020T150311",
       "collection": "sentinel-2-l2a",
@@ -226,48 +268,6 @@
       "synthetic": false
     },
     {
-      "id": "S2A_MSIL2A_20261013T100041_N0513_R122_T34UCE_20261013T145611",
-      "collection": "sentinel-2-l2a",
-      "datetime_utc": "2026-10-13T10:00:41.024000Z",
-      "platform": "sentinel-2a",
-      "constellation": "sentinel-2",
-      "instrument": [
-        "msi"
-      ],
-      "cloud_cover_percent": 80.41,
-      "bbox": [
-        17.940406316632895,
-        53.123645037009204,
-        19.651120770782793,
-        54.140186775460364
-      ],
-      "preview_url": "https://datahub.creodias.eu/odata/v1/Assets(a8d192e8-7036-42fd-80ef-bf02a594d46e)/$value",
-      "product_url": "https://stac.dataspace.copernicus.eu/v1/collections/sentinel-2-l2a/items/S2A_MSIL2A_20261013T100041_N0513_R122_T34UCE_20261013T145611",
-      "evidence_class": "satellite_observation_metadata",
-      "synthetic": false
-    },
-    {
-      "id": "S2A_MSIL2A_20261013T100041_N0513_R122_T33UYV_20261013T145611",
-      "collection": "sentinel-2-l2a",
-      "datetime_utc": "2026-10-13T10:00:41.024000Z",
-      "platform": "sentinel-2a",
-      "constellation": "sentinel-2",
-      "instrument": [
-        "msi"
-      ],
-      "cloud_cover_percent": 80.28,
-      "bbox": [
-        17.98849229446918,
-        53.07125652870583,
-        19.733490371633078,
-        54.10922199205192
-      ],
-      "preview_url": "https://datahub.creodias.eu/odata/v1/Assets(3c98c478-a713-4ecf-9be3-66a0c68f83ed)/$value",
-      "product_url": "https://stac.dataspace.copernicus.eu/v1/collections/sentinel-2-l2a/items/S2A_MSIL2A_20261013T100041_N0513_R122_T33UYV_20261013T145611",
-      "evidence_class": "satellite_observation_metadata",
-      "synthetic": false
-    },
-    {
       "id": "S1C_IW_GRDH_1SDV_20261012T045927_20261012T045952_009847_0139FA_D22B_COG",
       "collection": "sentinel-1-grd",
       "datetime_utc": "2026-10-12T04:59:27.664306Z",
@@ -417,10 +417,5 @@
       }
     ]
   },
-  "errors": [
-    {
-      "collection": "sentinel-2-l2a",
-      "error": "The read operation timed out"
-    }
-  ]
+  "errors": []
 }
