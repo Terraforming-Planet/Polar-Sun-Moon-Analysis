@@ -1,5 +1,5 @@
 {
-  "generatedUtc": "2026-10-22T04:43:17.318334Z",
+  "generatedUtc": "2026-10-22T09:39:16.210021Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
@@ -199,13 +199,13 @@
       ],
       "closed": null,
       "latestGeometry": {
-        "magnitudeValue": 135.0,
+        "magnitudeValue": 115.0,
         "magnitudeUnit": "kts",
-        "date": "2026-10-21T18:00:00Z",
+        "date": "2026-10-22T00:00:00Z",
         "type": "Point",
         "coordinates": [
-          126.9,
-          19.9
+          126,
+          20.3
         ]
       },
       "sources": [
@@ -539,33 +539,6 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25235",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_25094",
-      "title": "Hurricane Simon",
-      "categories": [
-        "Severe Storms"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 30.0,
-        "magnitudeUnit": "kts",
-        "date": "2026-10-16T18:00:00Z",
-        "type": "Point",
-        "coordinates": [
-          -110,
-          21.3
-        ]
-      },
-      "sources": [
-        {
-          "id": "JTWC",
-          "url": "https://www.metoc.navy.mil/jtwc/products/ep2026.tcw"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25094",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
@@ -5401,6 +5374,33 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22107",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_22109",
+      "title": "Wildfire Johnson Canyon, Box Elder, Utah",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 6500.0,
+        "magnitudeUnit": "acres",
+        "date": "2026-08-01T21:07:00Z",
+        "type": "Point",
+        "coordinates": [
+          -112.304918,
+          41.874782
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-UTBRS-200554"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22109",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -5613,8 +5613,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          126.9,
-          19.9
+          126,
+          20.3
         ]
       },
       "properties": {
@@ -5624,8 +5624,8 @@
         "categories": [
           "Severe Storms"
         ],
-        "observationUtc": "2026-10-21T18:00:00Z",
-        "observation_time": "2026-10-21T18:00:00Z",
+        "observationUtc": "2026-10-22T00:00:00Z",
+        "observation_time": "2026-10-22T00:00:00Z",
         "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25339",
         "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25339",
         "sources": [
@@ -5980,35 +5980,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-AZKNF-001101"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_25094",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -110,
-          21.3
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Hurricane Simon",
-        "categories": [
-          "Severe Storms"
-        ],
-        "observationUtc": "2026-10-16T18:00:00Z",
-        "observation_time": "2026-10-16T18:00:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25094",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_25094",
-        "sources": [
-          {
-            "id": "JTWC",
-            "url": "https://www.metoc.navy.mil/jtwc/products/ep2026.tcw"
           }
         ]
       }
@@ -11200,6 +11171,35 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-WASPA-001868"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_22109",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -112.304918,
+          41.874782
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Wildfire Johnson Canyon, Box Elder, Utah",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-08-01T21:07:00Z",
+        "observation_time": "2026-08-01T21:07:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22109",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22109",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-UTBRS-200554"
           }
         ]
       }
