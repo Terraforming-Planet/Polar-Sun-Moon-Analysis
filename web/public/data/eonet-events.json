@@ -1,5 +1,5 @@
 {
-  "generatedUtc": "2026-11-28T02:54:01.202550Z",
+  "generatedUtc": "2026-11-28T11:12:15.993033Z",
   "sourceUrl": "https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200",
   "events": [
     {
@@ -242,33 +242,6 @@
         }
       ],
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_26575",
-      "evidenceType": "event-catalogue",
-      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
-    },
-    {
-      "id": "EONET_26463",
-      "title": "Tropical Cyclone Xavier",
-      "categories": [
-        "Severe Storms"
-      ],
-      "closed": null,
-      "latestGeometry": {
-        "magnitudeValue": 30.0,
-        "magnitudeUnit": "kts",
-        "date": "2026-11-23T00:00:00Z",
-        "type": "Point",
-        "coordinates": [
-          -168.8,
-          -11.8
-        ]
-      },
-      "sources": [
-        {
-          "id": "JTWC",
-          "url": "https://www.metoc.navy.mil/jtwc/products/sh0427.tcw"
-        }
-      ],
-      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_26463",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     },
@@ -5401,6 +5374,33 @@
       "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22609",
       "evidenceType": "event-catalogue",
       "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
+    },
+    {
+      "id": "EONET_22616",
+      "title": "Wildfire XU Hill, Oglala Lakota, South Dakota",
+      "categories": [
+        "Wildfires"
+      ],
+      "closed": null,
+      "latestGeometry": {
+        "magnitudeValue": 1297.23,
+        "magnitudeUnit": "acres",
+        "date": "2026-08-11T20:30:00Z",
+        "type": "Point",
+        "coordinates": [
+          -102.4230758,
+          43.62272514
+        ]
+      },
+      "sources": [
+        {
+          "id": "IRWIN",
+          "url": "https://irwin.doi.gov/observer/incidents/2026-SDPRA-000130"
+        }
+      ],
+      "link": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22616",
+      "evidenceType": "event-catalogue",
+      "scientificLimit": "EONET is an event catalogue; it is not a direct measurement of severity, area, intensity, or current danger."
     }
   ],
   "features": [
@@ -5661,35 +5661,6 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-AZCOF-001646"
-          }
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "EONET_26463",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -168.8,
-          -11.8
-        ]
-      },
-      "properties": {
-        "source": "NASA EONET",
-        "evidenceType": "event-catalogue",
-        "title": "Tropical Cyclone Xavier",
-        "categories": [
-          "Severe Storms"
-        ],
-        "observationUtc": "2026-11-23T00:00:00Z",
-        "observation_time": "2026-11-23T00:00:00Z",
-        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_26463",
-        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_26463",
-        "sources": [
-          {
-            "id": "JTWC",
-            "url": "https://www.metoc.navy.mil/jtwc/products/sh0427.tcw"
           }
         ]
       }
@@ -11200,6 +11171,35 @@
           {
             "id": "IRWIN",
             "url": "https://irwin.doi.gov/observer/incidents/2026-COLSX-001549"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "EONET_22616",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -102.4230758,
+          43.62272514
+        ]
+      },
+      "properties": {
+        "source": "NASA EONET",
+        "evidenceType": "event-catalogue",
+        "title": "Wildfire XU Hill, Oglala Lakota, South Dakota",
+        "categories": [
+          "Wildfires"
+        ],
+        "observationUtc": "2026-08-11T20:30:00Z",
+        "observation_time": "2026-08-11T20:30:00Z",
+        "eventUrl": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22616",
+        "source_url": "https://eonet.gsfc.nasa.gov/api/v3/events/EONET_22616",
+        "sources": [
+          {
+            "id": "IRWIN",
+            "url": "https://irwin.doi.gov/observer/incidents/2026-SDPRA-000130"
           }
         ]
       }
